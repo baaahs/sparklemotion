@@ -42,7 +42,8 @@ object PixelArrayDevice : PixelArrayFixtureType() {
         override val fixtureType: FixtureType
             get() = PixelArrayDevice
 
-        override fun edit(): MutableFixtureOptions = MutableOptions(this)
+        override fun edit(): MutableFixtureOptions =
+            MutableOptions(componentCount, pixelFormat, gammaCorrection, pixelArrangement)
 
         private fun generatePixelLocations(pixelCount: Int, entity: Model.Entity?, model: Model): List<Vector3F>? =
             pixelArrangement?.forFixture(pixelCount, entity, model)
@@ -86,14 +87,14 @@ object PixelArrayDevice : PixelArrayFixtureType() {
         }
     }
 
-    class MutableOptions(config: Options) : MutableFixtureOptions {
+    class MutableOptions(
+        var componentCount: Int?,
+        var pixelFormat: PixelFormat?,
+        var gammaCorrection: Float?,
+        var pixelArrangement: SurfacePixelStrategy?
+    ) : MutableFixtureOptions {
         override val fixtureType: FixtureType
             get() = PixelArrayDevice
-
-        var componentCount: Int? = config.componentCount
-        var pixelFormat: PixelFormat? = config.pixelFormat
-        var gammaCorrection: Float? = config.gammaCorrection
-        var pixelArrangement: SurfacePixelStrategy? = config.pixelArrangement
 
         override fun build(): FixtureOptions =
             Options(componentCount, pixelFormat, gammaCorrection, pixelArrangement)

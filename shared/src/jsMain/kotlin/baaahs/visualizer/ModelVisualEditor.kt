@@ -3,9 +3,9 @@ package baaahs.visualizer
 import baaahs.geom.toEulerAngle
 import baaahs.model.EntityId
 import baaahs.model.Model
-import baaahs.model.ModelData
 import baaahs.scene.EditingEntity
-import baaahs.scene.MutableModel
+import baaahs.scene.MutableScene
+import baaahs.scene.Scene
 import baaahs.util.Clock
 import baaahs.util.three.addEventListener
 import baaahs.visualizer.entity.ItemVisualizer
@@ -18,7 +18,7 @@ import web.dom.observers.IntersectionObserver
 import kotlin.reflect.KClass
 
 class ModelVisualEditor(
-    var mutableModel: MutableModel,
+    var mutableScene: MutableScene,
     clock: Clock,
     adapter: EntityAdapter,
     elements: List<Pair<KClass<out Extension>, () -> Extension>> = emptyList(),
@@ -32,8 +32,8 @@ class ModelVisualEditor(
 ) {
     override val facade = Facade()
 
-    private var modelData: ModelData = mutableModel.build()
-    var model: Model = modelData.open()
+    private var sceneData: Scene = mutableScene.build()
+    var model: Model = sceneData.open().model
         private set
 
     var selectedEntity: Model.Entity?
@@ -128,7 +128,7 @@ class ModelVisualEditor(
 
         val itemVisualizer = obj?.itemVisualizer
         val modelEntity = obj?.modelEntity
-        val mutableEntity = modelEntity?.let { mutableModel.findById(it.id) }
+        val mutableEntity = modelEntity?.let { mutableScene.model.findById(it.id) }
 
         itemVisualizer?.selected = true
         selectedEntity = modelEntity
@@ -138,7 +138,7 @@ class ModelVisualEditor(
         editingEntity = obj?.let {
             EditingEntity(
                 mutableEntity ?: error("No mutable entity for selection?"),
-                mutableModel.units,
+                mutableScene.model.units,
                 itemVisualizer ?: error("No visualizer for selection?"),
                 onChange
             )
@@ -156,10 +156,10 @@ class ModelVisualEditor(
     }
 
     fun refresh() {
-        val newData = mutableModel.build()
-        if (modelData != newData) {
-            modelData = newData
-            model = newData.open()
+        val newSceneData = mutableScene.build()
+        if (sceneData != newSceneData) {
+            sceneData = newSceneData
+            model = newSceneData.open().model
             clear()
             units = model.units
             initialViewingAngle = model.initialViewingAngle

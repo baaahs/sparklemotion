@@ -5,6 +5,8 @@ import baaahs.controller.Controller
 import baaahs.controller.ControllerId
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureMapping
+import baaahs.fixtures.FixtureOptions
+import baaahs.fixtures.TransportConfig
 import baaahs.mapping.MappingManager
 import baaahs.model.Model
 import baaahs.sm.webapi.Problem
@@ -12,7 +14,7 @@ import baaahs.util.Logger
 
 class OpenScene(
     val model: Model,
-    val controllers: Map<ControllerId, ControllerConfig> = emptyMap(),
+    val controllers: Map<ControllerId, OpenControllerConfig<*>> = emptyMap(),
     val isFallback: Boolean = false
 ) : OpenDocument {
     override val title: String
@@ -22,8 +24,8 @@ class OpenScene(
         get() = buildList {
             model.visit { entity -> addAll(entity.problems) }
 
-            controllers.forEach { (controllerId, controllerConfig) ->
-                controllerConfig.fixtures.forEach { data ->
+            controllers.forEach { (controllerId, openControllerConfig) ->
+                openControllerConfig.controllerConfig.fixtures.forEach { data ->
                     val entity = data.entityId?.let { model.findEntityByNameOrNull(it) }
 
                     if (data.entityId != null && entity == null) {
@@ -53,9 +55,10 @@ class OpenScene(
     }
 
     fun relevantFixtureMappings(controller: Controller, mappingManager: MappingManager): List<FixtureMapping> {
-        val mappingsFromScene = (controllers[controller.controllerId]
-            ?.fixtures?.map { fixtureMappingData -> fixtureMappingData.open(model) }
-            ?: emptyList())
+        val openConfig = controllers[controller.controllerId]
+        val mappingsFromScene = openConfig?.fixtureMappings
+            ?: emptyList()
+
         val mappingsFromLegacy = mappingManager.findMappings(controller.controllerId)
         return (mappingsFromScene + mappingsFromLegacy)
             .ifEmpty { controller.getAnonymousFixtureMappings() }
@@ -63,10 +66,26 @@ class OpenScene(
 
     companion object {
         private val logger = Logger<OpenScene>()
+    }
+}
 
-        fun open(scene: Scene): OpenScene {
-            val model = scene.model.open()
-            return OpenScene(model, scene.controllers)
-        }
+class OpenControllerConfig<T : ControllerConfig>(
+    val id: ControllerId,
+    val controllerConfig: T,
+    val fixtureMappings: List<FixtureMapping>
+) {
+    val controllerType: String
+        get() = controllerConfig.controllerType
+    val title: String
+        get() = controllerConfig.title
+    val defaultFixtureOptions: FixtureOptions?
+        get() = controllerConfig.defaultFixtureOptions
+    val emptyTransportConfig: TransportConfig
+        get() = controllerConfig.emptyTransportConfig
+    val defaultTransportConfig: TransportConfig?
+        get() = controllerConfig.defaultTransportConfig
+
+    override fun toString(): String {
+        return "OpenControllerConfig(id=$id, controllerConfig=$controllerConfig, fixtureMappings=$fixtureMappings)"
     }
 }

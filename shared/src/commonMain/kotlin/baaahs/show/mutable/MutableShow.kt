@@ -24,6 +24,10 @@ import baaahs.util.CacheBuilder
 class MutableShow(
     baseShow: Show
 ) : MutablePatchHolder(baseShow), MutableDocument<Show> {
+    constructor(title: String, block: MutableShow.() -> Unit = {}) : this(Show(title)) {
+        this.block()
+    }
+
     override val mutableShow: MutableShow get() = this
 
     private val implicitControls: Map<String, Control> = baseShow.findImplicitControls()
@@ -67,10 +71,6 @@ class MutableShow(
             }
             editor.incomingLinks.putAll(resolvedIncomingLinks)
         }
-    }
-
-    constructor(title: String, block: MutableShow.() -> Unit = {}) : this(Show(title)) {
-        this.block()
     }
 
     fun invoke(block: MutableShow.() -> Unit) = this.block()

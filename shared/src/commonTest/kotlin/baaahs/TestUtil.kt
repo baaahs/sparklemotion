@@ -14,12 +14,11 @@ import baaahs.gl.patch.ProgramNode
 import baaahs.gl.render.ComponentRenderEngine
 import baaahs.gl.render.RenderTarget
 import baaahs.gl.testToolchain
-import baaahs.model.FakeModelEntity
-import baaahs.model.Model
-import baaahs.model.ModelData
-import baaahs.model.SurfaceDataForTest
-import baaahs.scene.OpenScene
+import baaahs.model.*
+import baaahs.scene.MutableModel
+import baaahs.scene.MutableScene
 import baaahs.scene.Scene
+import baaahs.scene.mutable.SceneBuilder
 import baaahs.show.Shader
 import baaahs.show.Stream
 import baaahs.show.live.LinkedPatch
@@ -93,16 +92,37 @@ fun testModelSurfaceData(
     vertices: List<Vector3F> = emptyList()
 ) = SurfaceDataForTest(name, name, expectedPixelCount = expectedPixelCount, vertices = vertices)
 
+fun entityDataForTest(name: String): EntityData {
+    val entityBuilders: List<() -> EntityData> = listOf(
+        { GridData(name, rows = 2, columns = 2, rowGap = 1f, columnGap = 1f) },
+        { LightRingData(name) },
+        { LightBarData(name, startVertex = Vector3F.origin, endVertex = Vector3F.unit3d) },
+    )
+    return entityBuilders.random().invoke()
+}
+
+@Deprecated("Use sceneDataForTest().", ReplaceWith("sceneDataForTest(entities).model"))
 fun fakeModel(vararg entities: Model.Entity) = modelForTest(entities.toList())
+@Deprecated("Use sceneDataForTest().", ReplaceWith("sceneDataForTest(entities).model"))
 fun fakeModel(entities: List<Model.Entity>) = modelForTest(entities)
 
-val TestModel = modelForTest(listOf(testModelSurface("Panel")))
-val TestModelData = ModelData("Test Model", listOf(testModelSurfaceData("Panel")))
-fun testScene(model: Model = TestModel) = OpenScene(model)
-fun testSceneData(model: ModelData = TestModelData) = Scene(model)
+val TestModelSurfaceData = testModelSurfaceData("Panel")
+val TestSceneData = Scene(
+    ModelData("Test Model", listOf("panel1")),
+    mapOf("panel1" to TestModelSurfaceData),
+    emptyMap()
+)
+val TestModel = TestSceneData.open().model
 
+@Deprecated("Use sceneDataForTest().", ReplaceWith("sceneDataForTest(entities).model"))
 fun modelForTest(entities: List<Model.Entity>) = Model("Test Model", entities)
+@Deprecated("Use sceneDataForTest().", ReplaceWith("sceneDataForTest(entities).model"))
 fun modelForTest(vararg entities: Model.Entity) = Model("Test Model", entities.toList())
+
+fun sceneDataForTest(vararg entities: EntityData, callback: MutableScene.() -> Unit = {}) = MutableScene(
+    MutableModel("Test Model", entities.map { it.edit() }.toMutableList(), ModelUnit.Centimeters, 0f),
+    mutableMapOf()
+).apply(callback).build(SceneBuilder())
 
 class TestRenderContext(
     vararg val modelEntities: Model.Entity = arrayOf(FakeModelEntity("device1"))

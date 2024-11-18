@@ -6,9 +6,9 @@ import baaahs.controller.ControllerId
 import baaahs.controller.ControllerManager
 import baaahs.controller.ControllerState
 import baaahs.plugin.Plugins
-import baaahs.scene.ControllerConfig
 import baaahs.scene.MutableControllerConfig
 import baaahs.scene.MutableDirectDmxControllerConfig
+import baaahs.scene.OpenControllerConfig
 import baaahs.sim.FakeDmxUniverse
 import baaahs.util.Clock
 import baaahs.util.Logger
@@ -27,10 +27,11 @@ interface DmxManager {
         override fun createMutableControllerConfigFor(
             controllerId: ControllerId?,
             state: ControllerState?
-        ): MutableControllerConfig {
-            val title = state?.title ?: controllerId?.id ?: "Direct DMX"
-            return MutableDirectDmxControllerConfig(DirectDmxControllerConfig(title))
-        }
+        ): MutableControllerConfig =
+            MutableDirectDmxControllerConfig(
+                state?.title ?: controllerId?.id ?: "Direct DMX",
+                mutableListOf(), null, null
+            )
     }
 }
 
@@ -62,7 +63,7 @@ class DmxManagerImpl(
         }
     }
 
-    override fun onConfigChange(controllerConfigs: Map<ControllerId, ControllerConfig>) {
+    override fun onConfigChange(controllerConfigs: Map<ControllerId, OpenControllerConfig<*>>) {
     }
 
     override fun stop() {

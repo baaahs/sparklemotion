@@ -103,7 +103,7 @@ class LetValueSpec : DescribeSpec({
          */
 
         context("with nullable values") {
-            val nullable by value { null }
+            val nullable by value<Any?> { null }
 
             it("can return null") {
                 expect(null) { nullable }

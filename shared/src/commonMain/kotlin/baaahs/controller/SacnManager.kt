@@ -10,12 +10,8 @@ import baaahs.fixtures.ConfigPreview
 import baaahs.fixtures.FixtureOptions
 import baaahs.fixtures.FixturePreview
 import baaahs.fixtures.TransportConfig
-import baaahs.model.Model
 import baaahs.net.Network
-import baaahs.scene.ControllerConfig
-import baaahs.scene.FixtureMappingData
-import baaahs.scene.MutableControllerConfig
-import baaahs.scene.MutableSacnControllerConfig
+import baaahs.scene.*
 import baaahs.util.Clock
 import baaahs.util.Delta
 import baaahs.util.Logger
@@ -39,7 +35,7 @@ class SacnManager(
 ) : BaseControllerManager(controllerTypeName) {
     private val senderCid = "SparkleMotion000".encodeToByteArray()
     private val sacnLink = SacnLink(link, senderCid, "SparkleMotion", clock)
-    private var lastConfig: Map<ControllerId, SacnControllerConfig> = emptyMap()
+    private var lastConfig: Map<ControllerId, OpenControllerConfig<SacnControllerConfig>> = emptyMap()
     private var controllers: Map<ControllerId, SacnController> = emptyMap()
     private var discoveredControllers: MutableMap<ControllerId, SacnController> = hashMapOf()
 
@@ -47,8 +43,10 @@ class SacnManager(
         startWledDiscovery()
     }
 
-    override fun onConfigChange(controllerConfigs: Map<ControllerId, ControllerConfig>) {
-        handleConfigs(controllerConfigs.filterByType())
+    override fun onConfigChange(controllerConfigs: Map<ControllerId, OpenControllerConfig<*>>) {
+        handleConfigs(controllerConfigs.values
+            .filterIsInstance<OpenControllerConfig<SacnControllerConfig>>()
+        )
     }
 
     inline fun <reified T : ControllerConfig> Map<ControllerId, ControllerConfig>.filterByType(): Map<ControllerId, T> =
@@ -70,32 +68,38 @@ class SacnManager(
         TODO("not implemented")
     }
 
-    private fun handleConfigs(configs: Map<ControllerId, SacnControllerConfig>) {
+    private fun handleConfigs(configs: List<OpenControllerConfig<SacnControllerConfig>>) {
+        val configMap = configs.associateBy { it.id }
         controllers = buildMap {
-            Delta.diff(lastConfig, configs, object : Delta.MapChangeListener<ControllerId, SacnControllerConfig> {
-                override fun onAdd(key: ControllerId, value: SacnControllerConfig) {
-                    val controller = SacnController(
-                        key.id, sacnLink, link.createAddress(value.address),
-                        value.defaultFixtureOptions, value.defaultTransportConfig,
-                        value.universes, clock.now(),
-                        universeListener
-                    )
-                    put(controller.controllerId, controller)
-                    notifyListeners { onAdd(controller) }
-                }
+            Delta.diff(
+                lastConfig,
+                configMap,
+                object : Delta.MapChangeListener<ControllerId, OpenControllerConfig<SacnControllerConfig>> {
+                    override fun onAdd(key: ControllerId, value: OpenControllerConfig<SacnControllerConfig>) {
+                        val controllerConfig = value.controllerConfig
+                        val controller = SacnController(
+                            key.id, sacnLink, link.createAddress(controllerConfig.address),
+                            value.defaultFixtureOptions, value.defaultTransportConfig,
+                            controllerConfig.universes, clock.now(),
+                            universeListener
+                        )
+                        put(controller.controllerId, controller)
+                        notifyListeners { onAdd(controller) }
+                    }
 
-                override fun onRemove(key: ControllerId, value: SacnControllerConfig) {
-                    val oldController = controllers[key]
-                    if (oldController == null) {
-                        logger.warn { "Unknown controller \"$key\" removed." }
-                    } else {
-                        oldController.release()
-                        notifyListeners { onRemove(oldController) }
+                    override fun onRemove(key: ControllerId, value: OpenControllerConfig<SacnControllerConfig>) {
+                        val oldController = controllers[key]
+                        if (oldController == null) {
+                            logger.warn { "Unknown controller \"$key\" removed." }
+                        } else {
+                            oldController.release()
+                            notifyListeners { onRemove(oldController) }
+                        }
                     }
                 }
-            })
+            )
         }
-        lastConfig = configs
+        lastConfig = configMap
     }
 
     private fun startWledDiscovery() {
@@ -171,15 +175,12 @@ class SacnManager(
         override fun createMutableControllerConfigFor(
             controllerId: ControllerId?,
             state: ControllerState?
-        ): MutableControllerConfig {
-            val sacnState = state as? State
-            val title = state?.title ?: controllerId?.id ?: "New sACN Controller"
-            return MutableSacnControllerConfig(SacnControllerConfig(
-                title,
-                sacnState?.address ?: "",
-                1
-            ))
-        }
+        ): MutableControllerConfig =
+            MutableSacnControllerConfig(
+                state?.title ?: controllerId?.id ?: "New sACN Controller",
+                (state as? State)?.address ?: "",
+                1, mutableListOf(), null, null
+            )
     }
 }
 
@@ -200,14 +201,16 @@ data class SacnControllerConfig(
     @Transient
     private var dmxAllocator: DynamicDmxAllocator? = null
 
-    override fun edit(): MutableControllerConfig =
-        MutableSacnControllerConfig(this)
+    override fun edit(fixtureMappings: MutableList<MutableFixtureMapping>): MutableControllerConfig =
+        MutableSacnControllerConfig(
+            title, address, universes, fixtureMappings, defaultFixtureOptions?.edit(), defaultTransportConfig?.edit()
+        )
 
     // TODO: This is pretty dumb, find a better way to do this.
-    override fun buildFixturePreviews(tempModel: Model): List<FixturePreview> {
+    override fun buildFixturePreviews(sceneOpener: SceneOpener): List<FixturePreview> {
         dmxAllocator = DynamicDmxAllocator()
         try {
-            return super.buildFixturePreviews(tempModel)
+            return super.buildFixturePreviews(sceneOpener)
         } finally {
             dmxAllocator = null
         }
