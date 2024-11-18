@@ -8,23 +8,24 @@ import baaahs.scene.MutableScene
 import baaahs.scene.SceneOpener
 import baaahs.scene.mutable.SceneBuilder
 import baaahs.ui.render
-import baaahs.ui.typographyH5
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
 import materialui.icon
+import mui.icons.material.ExpandMore
 import mui.material.*
-import react.Props
-import react.RBuilder
-import react.RHandler
-import react.dom.header
-import react.dom.html.ReactHTML.li
-import react.useContext
+import mui.material.styles.Theme
+import mui.material.styles.useTheme
+import mui.system.sx
+import react.*
+import web.cssom.em
 
 private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>("ControllerConfigEditor") { props ->
     val appContext = useContext(appContext)
     val sceneEditorClient = observe(appContext.sceneEditorClient)
+    val editMode = observe(appContext.sceneManager.editMode)
 
     val styles = appContext.allStyles.controllerEditor
+    val theme = useTheme<Theme>()
 
     val mutableControllerConfig = memo(props.mutableScene, props.controllerId) {
         props.mutableScene.controllers[props.controllerId]
@@ -43,75 +44,129 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
     }
 
     Container {
-        typographyH5 {
-            +mutableControllerConfig.title.ifBlank { "Untitled" }
-            +" — ${mutableControllerConfig.controllerMeta.controllerTypeName}"
+        attrs.sx {
+            paddingTop = 1.em
         }
+//        typographyH5 {
+//            +mutableControllerConfig.title.ifBlank { "Untitled" }
+//            +" — ${mutableControllerConfig.controllerMeta.controllerTypeName}"
+//        }
 
         val controllerState = sceneEditorClient.controllerStates[props.controllerId]
 
-        Typography {
-            li { +"Title: ${controllerState?.title}" }
-            li { +"Address: ${controllerState?.address}" }
-            li { +"Online Since: ${controllerState?.onlineSince}" }
-            li { +"Firmware Version: ${controllerState?.firmwareVersion}" }
-            li { +"Last Error Message: ${controllerState?.lastErrorMessage}" }
-            li { +"Last Error At: ${controllerState?.lastErrorAt}" }
+        Accordion {
+            attrs.elevation = 4
+
+            AccordionSummary {
+                attrs.expandIcon = ExpandMore.create()
+                Typography { +"Controller Info" }
+            }
+
+            AccordionDetails {
+                Table {
+                    attrs.size = Size.small
+
+                    TableRow {
+                        TableHead { +"Type:" }
+                        TableCell { +mutableControllerConfig.controllerMeta.controllerTypeName }
+                    }
+                    TableRow {
+                        TableHead { +"Address:" }
+                        TableCell { +(controllerState?.address ?: "") }
+                    }
+                    TableRow {
+                        TableHead { +"Online Since:" }
+                        TableCell { +(controllerState?.onlineSince?.toString() ?: "Offline") }
+                    }
+                    TableRow {
+                        TableHead { +"Firmware Version:" }
+                        TableCell { +(controllerState?.firmwareVersion ?: "") }
+                    }
+                    TableRow {
+                        TableHead { +"Last Error Message:" }
+                        TableCell { +(controllerState?.lastErrorMessage ?: "") }
+                    }
+                    TableRow {
+                        TableHead { +"Last Error At:" }
+                        TableCell { +(controllerState?.lastErrorAt?.toString() ?: "") }
+                    }
+                }
+
+                editingController.getEditorPanelViews().forEach {
+                    it.render(this)
+                }
+            }
         }
-    }
 
-    editingController.getEditorPanelViews().forEach {
-        it.render(this)
-    }
+        Accordion {
+            attrs.elevation = 4
 
-    Card {
-        attrs.className = -styles.defaultConfigs
-        attrs.elevation = 4
+            AccordionSummary {
+                attrs.expandIcon = ExpandMore.create()
+                Typography { +"Fixtures" }
+            }
 
-        header {
-            +"Controller Defaults"
-        }
-
-        fixtureConfigPicker {
-            attrs.editingController = editingController
-            attrs.mutableFixtureOptions = mutableControllerConfig.defaultFixtureOptions
-            attrs.setMutableFixtureOptions = { mutableControllerConfig.defaultFixtureOptions = it }
-            attrs.allowNullFixtureOptions = true
-        }
-
-        transportConfigPicker {
-            attrs.editingController = editingController
-            attrs.mutableTransportConfig = mutableControllerConfig.defaultTransportConfig
-            attrs.setMutableTransportConfig = { mutableControllerConfig.defaultTransportConfig = it }
-        }
-    }
-
-
-    header { +"Fixture Mappings" }
-
-    val sceneBuilder = SceneBuilder()
+            AccordionDetails {
+                val sceneBuilder = SceneBuilder()
     val tempScene = props.mutableScene.build(sceneBuilder)
-    val tempController = mutableControllerConfig.build(sceneBuilder)
+                val tempController = mutableControllerConfig.build(sceneBuilder)
     val sceneOpener = SceneOpener(tempScene)
         .also { it.open() }
-    val fixturePreviews = tempController.buildFixturePreviews(sceneOpener)
-    mutableControllerConfig.fixtures.zip(fixturePreviews).forEach { (mutableFixtureMapping, fixturePreview) ->
-        fixtureMappingEditor {
-            attrs.mutableScene = props.mutableScene
-            attrs.editingController = editingController
-            attrs.mutableFixtureMapping = mutableFixtureMapping
-            attrs.fixturePreview = fixturePreview
-            attrs.initiallyOpen = recentlyAddedFixtureMappingRef.current == mutableFixtureMapping
+                val fixturePreviews = tempController.buildFixturePreviews(sceneOpener)
+                mutableControllerConfig.fixtures.zip(fixturePreviews).forEach { (mutableFixtureMapping, fixturePreview) ->
+                    fixtureMappingEditor {
+                        attrs.mutableScene = props.mutableScene
+                        attrs.editingController = editingController
+                        attrs.mutableFixtureMapping = mutableFixtureMapping
+                        attrs.fixturePreview = fixturePreview
+                        attrs.initiallyOpen = recentlyAddedFixtureMappingRef.current == mutableFixtureMapping
+                    }
+                }
+
+                Button {
+                    attrs.className = -styles.button
+                    attrs.color = ButtonColor.secondary
+                    attrs.onClick = handleNewFixtureMappingClick
+
+                    icon(mui.icons.material.AddCircleOutline)
+                    +"New…"
+                }
+            }
         }
-    }
 
-    Button {
-        attrs.className = -styles.button
-        attrs.color = ButtonColor.secondary
-        attrs.onClick = handleNewFixtureMappingClick
+        Accordion {
+            attrs.elevation = 4
 
-        icon(mui.icons.material.AddCircleOutline)
-        +"New…"
+            AccordionSummary {
+                attrs.expandIcon = ExpandMore.create()
+                Typography { +"Controller Fixture Defaults" }
+            }
+            AccordionDetails {
+                fixtureConfigPicker {
+                    attrs.editingController = editingController
+                    attrs.mutableFixtureOptions = mutableControllerConfig.defaultFixtureOptions
+                    attrs.setMutableFixtureOptions = { mutableControllerConfig.defaultFixtureOptions = it }
+                    attrs.allowNullFixtureOptions = true
+                }
+
+            }
+        }
+
+        Accordion {
+            attrs.elevation = 4
+
+            AccordionSummary {
+                attrs.expandIcon = ExpandMore.create()
+                Typography { +"Controller Transport Defaults" }
+            }
+            AccordionDetails {
+                transportConfigPicker {
+                    attrs.editingController = editingController
+                    attrs.mutableTransportConfig = mutableControllerConfig.defaultTransportConfig
+                    attrs.setMutableTransportConfig = { mutableControllerConfig.defaultTransportConfig = it }
+                }
+            }
+        }
     }
 }
 
