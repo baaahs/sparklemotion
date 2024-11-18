@@ -1,9 +1,11 @@
 package baaahs.gl.render
 
-import baaahs.*
+import baaahs.TestModel
+import baaahs.describe
 import baaahs.device.EnumeratedPixelLocations
 import baaahs.device.FixtureType
 import baaahs.device.PixelLocations
+import baaahs.englishize
 import baaahs.fixtures.*
 import baaahs.geom.Vector3F
 import baaahs.gl.*
@@ -15,6 +17,7 @@ import baaahs.gl.result.ResultStorage
 import baaahs.gl.shader.InputPort
 import baaahs.kotest.value
 import baaahs.model.Model
+import baaahs.only
 import baaahs.plugin.SerializerRegistrar
 import baaahs.scene.MutableFixtureOptions
 import baaahs.show.*
@@ -24,10 +27,10 @@ import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
 import com.danielgergely.kgl.*
 import io.kotest.core.spec.style.DescribeSpec
-import io.kotest.matchers.*
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.shouldBe
 
 @Suppress("unused")
 class ComponentRenderEngineSpec : DescribeSpec({
@@ -178,12 +181,12 @@ class ComponentRenderEngineSpec : DescribeSpec({
 
                         it("should allocate a texture to hold per-pixel data for all fixtures") {
                             (texture.width to texture.height)
-                                .shouldBe(64 to 2)
+                                .shouldBe(64 to 1)
 
                             fakeGlProgram.renders.map { it.findUniformTextureConfig("perPixelDataTexture").buffer }
                                 .shouldContainExactly(
-                                    listOf(10f, 11f, 12f, 13f, 14f, 15f, 16f, 17f, 18f, 19f, 20f, 21f, 22f, 23f, 24f, 25f, 26f, 27f, 28f, 29f, 30f, 31f, 32f, 33f, 34f, 35f, 36f, 37f, 38f, 39f, 40f, 41f, 42f, 43f, 44f, 45f, 46f, 47f, 48f, 49f, 50f, 51f, 52f, 53f, 54f, 55f, 56f, 57f, 58f, 59f, 60f, 61f, 62f, 63f, 64f, 65f, 66f, 67f, 68f, 69f, 70f, 71f, 72f, 73f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f),
-                                    listOf(10f, 11f, 12f, 13f, 14f, 15f, 16f, 17f, 18f, 19f, 20f, 21f, 22f, 23f, 24f, 25f, 26f, 27f, 28f, 29f, 30f, 31f, 32f, 33f, 34f, 35f, 36f, 37f, 38f, 39f, 40f, 41f, 42f, 43f, 44f, 45f, 46f, 47f, 48f, 49f, 50f, 51f, 52f, 53f, 54f, 55f, 56f, 57f, 58f, 59f, 60f, 61f, 62f, 63f, 64f, 65f, 66f, 67f, 68f, 69f, 70f, 71f, 72f, 73f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
+                                    listOf(10f, 11f, 12f, 13f, 14f, 15f, 16f, 17f, 18f, 19f, 20f, 21f, 22f, 23f, 24f, 25f, 26f, 27f, 28f, 29f, 30f, 31f, 32f, 33f, 34f, 35f, 36f, 37f, 38f, 39f, 40f, 41f, 42f, 43f, 44f, 45f, 46f, 47f, 48f, 49f, 50f, 51f, 52f, 53f, 54f, 55f, 56f, 57f, 58f, 59f, 60f, 61f, 62f, 63f, 64f, 65f, 66f, 67f, 68f, 69f, 70f, 71f, 72f, 73f),
+                                    listOf(10f, 11f, 12f, 13f, 14f, 15f, 16f, 17f, 18f, 19f, 20f, 21f, 22f, 23f, 24f, 25f, 26f, 27f, 28f, 29f, 30f, 31f, 32f, 33f, 34f, 35f, 36f, 37f, 38f, 39f, 40f, 41f, 42f, 43f, 44f, 45f, 46f, 47f, 48f, 49f, 50f, 51f, 52f, 53f, 54f, 55f, 56f, 57f, 58f, 59f, 60f, 61f, 62f, 63f, 64f, 65f, 66f, 67f, 68f, 69f, 70f, 71f, 72f, 73f)
 //                                    listOf(10f, 20f, 21f), // First frame, fixture1.
 //                                    listOf(10f, 20f, 21f), // First frame, fixture2.
 //                                    listOf(10f, 20f, 21f), // Second frame, fixture1.

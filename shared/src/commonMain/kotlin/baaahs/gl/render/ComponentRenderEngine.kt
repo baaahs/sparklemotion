@@ -160,7 +160,7 @@ class ComponentRenderEngine(
     }
 
     val Int.bufWidth: Int get() = max(minTextureWidth, min(this, maxFramebufferWidth))
-    val Int.bufHeight: Int get() = this / maxFramebufferWidth + 1
+    val Int.bufHeight: Int get() = (this - 1) / maxFramebufferWidth + 1
     val Int.bufSize: Int get() = bufWidth * bufHeight
 
     inner class Arrangement(val componentCount: Int, addedRenderTargets: List<FixtureRenderTarget>) {
