@@ -19,7 +19,7 @@ class V2_ModelEntityIdsSpec : DescribeSpec({
         val fromJsonObj by value { json.parseToJsonElement(fromJson) as JsonObject }
         val toJsonObj by value { migration.migrate(fromJsonObj) }
 
-        context("migration of default grid direction and zigZag") {
+        context("migration to give entities unique ids in a dictionary") {
             override(fromJson) {
                 /**language=json*/
                 """
@@ -40,6 +40,21 @@ class V2_ModelEntityIdsSpec : DescribeSpec({
                                     "instance": 2
                                 }
                             ]
+                        },
+                        "controllers": {
+                            "SACN:main": {
+                                "type": "SACN",
+                                "title": "Main",
+                                "fixtures": [
+                                    {
+                                        "entityId": "DJ Lightbox",
+                                        "fixtureConfig": {
+                                            "type": "PixelArray",
+                                            "pixelCount": 240
+                                        }
+                                    }
+                                ]
+                            }
                         }
                     }
                 """.trimIndent()
@@ -52,6 +67,21 @@ class V2_ModelEntityIdsSpec : DescribeSpec({
                         {
                             "model": {
                                 "title": "Scene"
+                            },
+                            "controllers": {
+                                "SACN:main": {
+                                    "type": "SACN",
+                                    "title": "Main",
+                                    "fixtures": [
+                                        {
+                                            "entityId": "djLightbox",
+                                            "fixtureConfig": {
+                                                "type": "PixelArray",
+                                                "pixelCount": 240
+                                            }
+                                        }
+                                    ]
+                                }
                             },
                             "entities": {
                                 "djLightbox": {

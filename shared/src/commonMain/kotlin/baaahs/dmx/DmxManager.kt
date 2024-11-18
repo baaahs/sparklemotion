@@ -27,10 +27,11 @@ interface DmxManager {
         override fun createMutableControllerConfigFor(
             controllerId: ControllerId?,
             state: ControllerState?
-        ): MutableControllerConfig {
-            val title = state?.title ?: controllerId?.id ?: "Direct DMX"
-            return MutableDirectDmxControllerConfig(DirectDmxControllerConfig(title))
-        }
+        ): MutableControllerConfig =
+            MutableDirectDmxControllerConfig(
+                state?.title ?: controllerId?.id ?: "Direct DMX",
+                mutableListOf(), null, null
+            )
     }
 }
 

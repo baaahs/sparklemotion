@@ -7,7 +7,6 @@ import baaahs.device.MovingHeadDevice
 import baaahs.device.PixelArrayDevice
 import baaahs.device.PixelFormat
 import baaahs.dmx.Shenzarpy
-import baaahs.fakeModel
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureListener
 import baaahs.fixtures.FixtureMapping
@@ -16,12 +15,11 @@ import baaahs.gl.override
 import baaahs.gl.render.FixtureTypeForTest
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.kotest.value
-import baaahs.model.FakeModelEntity
-import baaahs.model.Model
+import baaahs.model.FakeModelEntityData
 import baaahs.model.MovingHead
 import baaahs.only
-import baaahs.openSceneForModel
 import baaahs.scene.SceneMonitor
+import baaahs.sceneDataForTest
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldBeEmpty
@@ -35,18 +33,23 @@ import kotlin.random.Random
 class ControllersManagerSpec : DescribeSpec({
     describe<ControllersManager> {
         val modelFixtureType by value { FixtureTypeForTest() }
-        val modelEntity by value<Model.Entity> { FakeModelEntity("panel", modelFixtureType) }
-        val model by value<Model?> { fakeModel(modelEntity) }
-        val fakeControllerConfig by value { FakeControllerConfig("controller1") }
-        val fakeControllerId by value { fakeControllerConfig.controllerId }
+        val modelEntity by value { FakeModelEntityData("panel", modelFixtureType) }
+        val fakeControllerConfig by value { MutableFakeControllerConfig("controller1", mutableListOf(), null, null) }
+        val fakeControllerId by value { fakeControllerConfig.likelyControllerId }
+        val scene by value { sceneDataForTest(modelEntity) {
+            controllers.putAll(mapOf(fakeControllerId to fakeControllerConfig))
+        } }
+        val openScene by value { scene.open() }
+        val model by value { openScene.model }
         val legacyMappings by value {
-            mapOf(
-                fakeControllerId to
-                        listOf(FixtureMapping(modelEntity, modelEntity.fixtureType.emptyOptions))
+            mapOf(fakeControllerId to listOf(
+                FixtureMapping(
+                    model.findEntityByName(modelEntity.title),
+                    modelEntity.fixtureType.emptyOptions
+                ))
             )
         }
         val mappingManager by value { FakeMappingManager(legacyMappings, false) }
-        val openScene by value { model?.openSceneForModel(mapOf(fakeControllerId to fakeControllerConfig)) }
         val fakeControllerMgr by value { FakeControllerManager() }
         val controllerManagers by value { listOf(fakeControllerMgr) }
         val fixtureListener by value { FakeFixtureListener() }
@@ -124,9 +127,9 @@ class ControllersManagerSpec : DescribeSpec({
                 }
 
                 context("and the controller specifies an anonymous fixture") {
-                    value(fakeControllerConfig) {
-                        FakeControllerConfig(
-                            "controller1",
+                    override(fakeControllerConfig) {
+                        MutableFakeControllerConfig(
+                            "controller1", mutableListOf(), null, null,
                             anonymousFixtureMapping = FixtureMapping(
                                 null, PixelArrayDevice.Options(
                                     pixelCount = 3,
@@ -162,7 +165,8 @@ class ControllersManagerSpec : DescribeSpec({
                     mapOf(
                         fakeControllerId to listOf(
                             FixtureMapping(
-                                modelEntity, PixelArrayDevice.Options(
+                                openScene.model.findEntityByName(modelEntity.title),
+                                PixelArrayDevice.Options(
                                     3, PixelFormat.RGB8,
                                     pixelArrangement = LinearSurfacePixelStrategy(Random(1))
                                 )
@@ -196,7 +200,8 @@ class ControllersManagerSpec : DescribeSpec({
                         mapOf(
                             fakeControllerId to listOf(
                                 FixtureMapping(
-                                    modelEntity, PixelArrayDevice.Options(
+                                    openScene.model.findEntityByName(modelEntity.title),
+                                    PixelArrayDevice.Options(
                                         3,
                                         pixelLocations = listOf(
                                             Vector3F(1f, 1f, 1f),

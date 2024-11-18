@@ -1,6 +1,5 @@
 package baaahs
 
-import baaahs.controller.ControllerId
 import baaahs.dmx.Dmx
 import baaahs.dmx.DmxManager
 import baaahs.fixtures.Fixture
@@ -16,10 +15,10 @@ import baaahs.gl.render.ComponentRenderEngine
 import baaahs.gl.render.RenderTarget
 import baaahs.gl.testToolchain
 import baaahs.model.*
-import baaahs.scene.ControllerConfig
-import baaahs.scene.OpenControllerConfig
-import baaahs.scene.OpenScene
+import baaahs.scene.MutableModel
+import baaahs.scene.MutableScene
 import baaahs.scene.Scene
+import baaahs.scene.mutable.SceneBuilder
 import baaahs.show.Shader
 import baaahs.show.Stream
 import baaahs.show.live.LinkedPatch
@@ -102,7 +101,9 @@ fun entityDataForTest(name: String): EntityData {
     return entityBuilders.random().invoke()
 }
 
+@Deprecated("Use sceneDataForTest().", ReplaceWith("sceneDataForTest(entities).model"))
 fun fakeModel(vararg entities: Model.Entity) = modelForTest(entities.toList())
+@Deprecated("Use sceneDataForTest().", ReplaceWith("sceneDataForTest(entities).model"))
 fun fakeModel(entities: List<Model.Entity>) = modelForTest(entities)
 
 val TestModelSurfaceData = testModelSurfaceData("Panel")
@@ -113,16 +114,15 @@ val TestSceneData = Scene(
 )
 val TestModel = TestSceneData.open().model
 
+@Deprecated("Use sceneDataForTest().", ReplaceWith("sceneDataForTest(entities).model"))
 fun modelForTest(entities: List<Model.Entity>) = Model("Test Model", entities)
+@Deprecated("Use sceneDataForTest().", ReplaceWith("sceneDataForTest(entities).model"))
 fun modelForTest(vararg entities: Model.Entity) = Model("Test Model", entities.toList())
-fun Model.openSceneForModel(controllerConfigs: Map<ControllerId, ControllerConfig>) =
-    OpenScene(
-        this,
-        controllerConfigs.entries.associate { (id, config) ->
-            val fixtureMappings = config.fixtures.map { it.open(this) }
-            id to OpenControllerConfig(id, config, fixtureMappings)
-        }
-    )
+
+fun sceneDataForTest(vararg entities: EntityData, callback: MutableScene.() -> Unit = {}) = MutableScene(
+    MutableModel("Test Model", entities.map { it.edit() }.toMutableList(), ModelUnit.Centimeters, 0f),
+    mutableMapOf()
+).apply(callback).build(SceneBuilder())
 
 class TestRenderContext(
     vararg val modelEntities: Model.Entity = arrayOf(FakeModelEntity("device1"))

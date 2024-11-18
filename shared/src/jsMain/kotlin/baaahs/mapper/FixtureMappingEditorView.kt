@@ -4,9 +4,8 @@ import baaahs.app.ui.appContext
 import baaahs.app.ui.editor.betterSelect
 import baaahs.fixtures.FixturePreview
 import baaahs.fixtures.FixturePreviewError
-import baaahs.getBang
-import baaahs.model.Model
 import baaahs.scene.EditingController
+import baaahs.scene.MutableEntity
 import baaahs.scene.MutableFixtureMapping
 import baaahs.scene.MutableScene
 import baaahs.ui.asTextNode
@@ -21,18 +20,14 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.controllerEditor
 
-    val allEntities = buildMap {
-        props.mutableScene.build().open().model.visit { entity ->
-            put(entity.name, entity)
-        }
-    }
+    val allEntities = buildList { props.mutableScene.model.visit { add(it) } }
 
     val transportConfig = props.mutableFixtureMapping.transportConfig
 
     val handleEntityChange by handler(
         props.mutableScene, props.mutableFixtureMapping, props.editingController
-    ) { value: Model.Entity? ->
-        props.mutableFixtureMapping.entityId = value?.name
+    ) { value: MutableEntity? ->
+        props.mutableFixtureMapping.entity = value
         props.editingController.onChange()
     }
 
@@ -49,17 +44,17 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
             attrs.onClick = toggleExpanded
 
             if (!expanded) {
-                val entityName = props.mutableFixtureMapping.entityId
-                if (entityName != null) +entityName else i { +"Anonymous" }
+                val entity = props.mutableFixtureMapping.entity
+                if (entity != null) +entity.title else i { +"Anonymous" }
             } else {
-                betterSelect<Model.Entity?> {
+                betterSelect<MutableEntity?> {
                     attrs.label = "Model Entity"
-                    attrs.values = listOf(null) + allEntities.values.sortedBy { it.title }
+                    attrs.values = listOf(null) + allEntities.sortedBy { it.title }
                     attrs.renderValueOption = { option ->
                         option?.title?.asTextNode()
                             ?: buildElement { i { +"Anonymous" } }
                     }
-                    attrs.value = props.mutableFixtureMapping.entityId?.let { allEntities.getBang(it, "entity") }
+                    attrs.value = props.mutableFixtureMapping.entity
                     attrs.onChange = handleEntityChange
                 }
             }

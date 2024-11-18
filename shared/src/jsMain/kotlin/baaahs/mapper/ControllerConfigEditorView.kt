@@ -2,11 +2,10 @@ package baaahs.mapper
 
 import baaahs.app.ui.appContext
 import baaahs.controller.ControllerId
-import baaahs.device.PixelArrayDevice
 import baaahs.scene.EditingController
-import baaahs.scene.FixtureMappingData
 import baaahs.scene.MutableFixtureMapping
 import baaahs.scene.MutableScene
+import baaahs.scene.SceneOpener
 import baaahs.scene.mutable.SceneBuilder
 import baaahs.ui.render
 import baaahs.ui.typographyH5
@@ -27,10 +26,9 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
 
     val styles = appContext.allStyles.controllerEditor
 
-    val state = sceneEditorClient.controllerStates[props.controllerId]
     val mutableControllerConfig = memo(props.mutableScene, props.controllerId) {
         props.mutableScene.controllers[props.controllerId]
-            ?: sceneEditorClient.createMutableControllerConfigFor(props.controllerId, state)
+            ?: sceneEditorClient.createMutableControllerConfigFor(props.controllerId)
                 .also { props.mutableScene.controllers[props.controllerId] = it }
     }
 
@@ -38,7 +36,7 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
 
     val recentlyAddedFixtureMappingRef = ref<MutableFixtureMapping>(null)
     val handleNewFixtureMappingClick by mouseEventHandler(mutableControllerConfig, props.onEdit) {
-        val newMapping = MutableFixtureMapping(FixtureMappingData(fixtureOptions = PixelArrayDevice.Options()))
+        val newMapping = MutableFixtureMapping(null, null, null)
         mutableControllerConfig.fixtures.add(newMapping)
         recentlyAddedFixtureMappingRef.current = newMapping
         props.onEdit()
@@ -92,9 +90,11 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
     header { +"Fixture Mappings" }
 
     val sceneBuilder = SceneBuilder()
-    val tempModel = props.mutableScene.build(sceneBuilder).open().model
+    val tempScene = props.mutableScene.build(sceneBuilder)
     val tempController = mutableControllerConfig.build(sceneBuilder)
-    val fixturePreviews = tempController.buildFixturePreviews(tempModel)
+    val sceneOpener = SceneOpener(tempScene)
+        .also { it.open() }
+    val fixturePreviews = tempController.buildFixturePreviews(sceneOpener)
     mutableControllerConfig.fixtures.zip(fixturePreviews).forEach { (mutableFixtureMapping, fixturePreview) ->
         fixtureMappingEditor {
             attrs.mutableScene = props.mutableScene

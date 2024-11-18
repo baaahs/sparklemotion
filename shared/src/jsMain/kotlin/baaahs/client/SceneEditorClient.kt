@@ -32,8 +32,8 @@ class SceneEditorClient(
         val fixtures: List<FixtureInfo>
             get() = this@SceneEditorClient.fixtures
 
-        fun createMutableControllerConfigFor(controllerId: ControllerId, state: ControllerState?): MutableControllerConfig =
-            plugins.createMutableControllerConfigFor(controllerId, state)
+        fun createMutableControllerConfigFor(controllerId: ControllerId): MutableControllerConfig =
+            plugins.createMutableControllerConfigFor(controllerId, controllerStates[controllerId])
     }
 
     fun onClose() {
