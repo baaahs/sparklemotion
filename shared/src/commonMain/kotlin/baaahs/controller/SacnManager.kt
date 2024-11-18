@@ -10,13 +10,8 @@ import baaahs.fixtures.ConfigPreview
 import baaahs.fixtures.FixtureOptions
 import baaahs.fixtures.FixturePreview
 import baaahs.fixtures.TransportConfig
-import baaahs.model.Model
 import baaahs.net.Network
-import baaahs.scene.ControllerConfig
-import baaahs.scene.FixtureMappingData
-import baaahs.scene.MutableControllerConfig
-import baaahs.scene.MutableSacnControllerConfig
-import baaahs.scene.OpenControllerConfig
+import baaahs.scene.*
 import baaahs.util.Clock
 import baaahs.util.Delta
 import baaahs.util.Logger
@@ -180,15 +175,12 @@ class SacnManager(
         override fun createMutableControllerConfigFor(
             controllerId: ControllerId?,
             state: ControllerState?
-        ): MutableControllerConfig {
-            val sacnState = state as? State
-            val title = state?.title ?: controllerId?.id ?: "New sACN Controller"
-            return MutableSacnControllerConfig(SacnControllerConfig(
-                title,
-                sacnState?.address ?: "",
-                1
-            ))
-        }
+        ): MutableControllerConfig =
+            MutableSacnControllerConfig(
+                state?.title ?: controllerId?.id ?: "New sACN Controller",
+                (state as? State)?.address ?: "",
+                1, mutableListOf(), null, null
+            )
     }
 }
 
@@ -209,14 +201,16 @@ data class SacnControllerConfig(
     @Transient
     private var dmxAllocator: DynamicDmxAllocator? = null
 
-    override fun edit(): MutableControllerConfig =
-        MutableSacnControllerConfig(this)
+    override fun edit(fixtureMappings: MutableList<MutableFixtureMapping>): MutableControllerConfig =
+        MutableSacnControllerConfig(
+            title, address, universes, fixtureMappings, defaultFixtureOptions?.edit(), defaultTransportConfig?.edit()
+        )
 
     // TODO: This is pretty dumb, find a better way to do this.
-    override fun buildFixturePreviews(tempModel: Model): List<FixturePreview> {
+    override fun buildFixturePreviews(sceneOpener: SceneOpener): List<FixturePreview> {
         dmxAllocator = DynamicDmxAllocator()
         try {
-            return super.buildFixturePreviews(tempModel)
+            return super.buildFixturePreviews(sceneOpener)
         } finally {
             dmxAllocator = null
         }

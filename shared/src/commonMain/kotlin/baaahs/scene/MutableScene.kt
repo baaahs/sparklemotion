@@ -14,7 +14,6 @@ import baaahs.fixtures.TransportConfig
 import baaahs.fixtures.TransportType
 import baaahs.geom.EulerAngle
 import baaahs.geom.Vector3F
-import baaahs.getBang
 import baaahs.model.*
 import baaahs.model.importers.ObjImporter
 import baaahs.scene.mutable.SceneBuilder
@@ -26,19 +25,19 @@ import baaahs.sm.webapi.Problem
 import baaahs.ui.View
 
 class MutableScene(
-    baseScene: Scene
+    val model: MutableModel,
+    val controllers: MutableMap<ControllerId, MutableControllerConfig>
 ) : MutableDocument<Scene> {
-    constructor(title: String, block: MutableScene.() -> Unit = {}) : this(Scene(ModelData(title))) {
+    constructor(
+        title: String,
+        block: MutableScene.() -> Unit = {}
+    ) : this(MutableModel(title, mutableListOf(), ModelUnit.default, 0f), mutableMapOf()) {
         this.block()
     }
 
     override var title
         get() = model.title
         set(value) { model.title = value }
-    val model = baseScene.model.edit(baseScene.entities)
-    val controllers: MutableMap<ControllerId, MutableControllerConfig> =
-        baseScene.controllers
-            .mapValues { (_, v) -> v.edit() }.toMutableMap()
 
     override fun getEditorPanels(editableManager: EditableManager<*>): List<DialogPanel> = listOf(
         ScenePropertiesEditorPanel(
@@ -56,9 +55,7 @@ class MutableScene(
         )
     }
 
-    override fun build(): Scene {
-        return build(SceneBuilder())
-    }
+    override fun build(): Scene = build(SceneBuilder())
 }
 
 interface MutableControllerConfig {
@@ -78,23 +75,21 @@ interface MutableControllerConfig {
     fun getEditorPanels(editingController: EditingController<*>): List<ControllerEditorPanel<*>>
 }
 
-class MutableBrainControllerConfig(config: BrainControllerConfig) : MutableControllerConfig {
+class MutableBrainControllerConfig(
+    override var title: String,
+    var address: String?,
+    override val fixtures: MutableList<MutableFixtureMapping>,
+    override var defaultFixtureOptions: MutableFixtureOptions?,
+    override var defaultTransportConfig: MutableTransportConfig?
+) : MutableControllerConfig {
     override val controllerMeta: ControllerManager.Meta
         get() = BrainManager
-    override var title: String = config.title
-    var address: String? = config.address
-    override val fixtures: MutableList<MutableFixtureMapping> =
-        config.fixtures.map { it.edit() }.toMutableList()
-    override var defaultFixtureOptions: MutableFixtureOptions? =
-        config.defaultFixtureOptions?.edit()
-    override var defaultTransportConfig: MutableTransportConfig? =
-        config.defaultTransportConfig?.edit()
     override val supportedTransportTypes: List<TransportType>
         get() = listOf(BrainTransportType)
 
     override fun build(sceneBuilder: SceneBuilder): ControllerConfig =
         BrainControllerConfig(
-            title, address, fixtures.map { it.build() },
+            title, address, fixtures.map { it.build(sceneBuilder) },
             defaultFixtureOptions?.build(), defaultTransportConfig?.build()
         )
 
@@ -102,22 +97,20 @@ class MutableBrainControllerConfig(config: BrainControllerConfig) : MutableContr
         listOf(BrainControllerEditorPanel)
 }
 
-class MutableDirectDmxControllerConfig(config: DirectDmxControllerConfig) : MutableControllerConfig {
+class MutableDirectDmxControllerConfig(
+    override var title: String,
+    override val fixtures: MutableList<MutableFixtureMapping>,
+    override var defaultFixtureOptions: MutableFixtureOptions?,
+    override var defaultTransportConfig: MutableTransportConfig?
+) : MutableControllerConfig {
     override val controllerMeta: ControllerManager.Meta
         get() = DmxManager
-    override var title: String = config.title
-    override val fixtures: MutableList<MutableFixtureMapping> =
-        config.fixtures.map { it.edit() }.toMutableList()
-    override var defaultFixtureOptions: MutableFixtureOptions? =
-        config.defaultFixtureOptions?.edit()
-    override var defaultTransportConfig: MutableTransportConfig? =
-        config.defaultTransportConfig?.edit()
     override val supportedTransportTypes: List<TransportType>
         get() = listOf(DmxTransportType)
 
     override fun build(sceneBuilder: SceneBuilder): ControllerConfig =
         DirectDmxControllerConfig(
-            title, fixtures.map { it.build() },
+            title, fixtures.map { it.build(sceneBuilder) },
             defaultFixtureOptions?.build(),
             defaultTransportConfig?.build()
         )
@@ -126,24 +119,22 @@ class MutableDirectDmxControllerConfig(config: DirectDmxControllerConfig) : Muta
         listOf(DirectDmxControllerEditorPanel)
 }
 
-class MutableSacnControllerConfig(config: SacnControllerConfig) : MutableControllerConfig {
+class MutableSacnControllerConfig(
+    override var title: String,
+    var address: String,
+    var universes: Int,
+    override val fixtures: MutableList<MutableFixtureMapping>,
+    override var defaultFixtureOptions: MutableFixtureOptions?,
+    override var defaultTransportConfig: MutableTransportConfig?,
+) : MutableControllerConfig {
     override val controllerMeta: ControllerManager.Meta
         get() = SacnManager
-    override var title: String = config.title
-    var address: String = config.address
-    var universes: Int = config.universes
-    override val fixtures: MutableList<MutableFixtureMapping> =
-        config.fixtures.map { it.edit() }.toMutableList()
-    override var defaultFixtureOptions: MutableFixtureOptions? =
-        config.defaultFixtureOptions?.edit()
-    override var defaultTransportConfig: MutableTransportConfig? =
-        config.defaultTransportConfig?.edit()
     override val supportedTransportTypes: List<TransportType>
         get() = listOf(DmxTransportType)
 
     override fun build(sceneBuilder: SceneBuilder): ControllerConfig =
         SacnControllerConfig(
-            title, address, universes, fixtures.map { it.build() },
+            title, address, universes, fixtures.map { it.build(sceneBuilder) },
             defaultFixtureOptions?.build(),
             defaultTransportConfig?.build()
         )
@@ -152,25 +143,29 @@ class MutableSacnControllerConfig(config: SacnControllerConfig) : MutableControl
         listOf(SacnControllerEditorPanel)
 }
 
-class MutableFixtureMapping(fixtureMappingData: FixtureMappingData) {
-    var entityId: String? = fixtureMappingData.entityId
-    var fixtureOptions: MutableFixtureOptions = fixtureMappingData.fixtureOptions.edit()
-    var transportConfig: MutableTransportConfig? = fixtureMappingData.transportConfig?.edit()
-
-    fun build(): FixtureMappingData =
-        FixtureMappingData(entityId, fixtureOptions.build(), transportConfig?.build())
+class MutableFixtureMapping(
+    var entity: MutableEntity?,
+    var fixtureOptions: MutableFixtureOptions?,
+    var transportConfig: MutableTransportConfig?,
+) {
+    fun build(sceneBuilder: SceneBuilder): FixtureMappingData {
+        val entityId = entity?.let { sceneBuilder.idFor(it.build()) }
+        return FixtureMappingData(entityId, fixtureOptions?.build(), transportConfig?.build())
+    }
 }
 
-class MutableModel(baseModel: ModelData, entities: Map<EntityId, EntityData>) {
-    var title = baseModel.title
-    val entities = baseModel.entityIds.map {
-        entities.getBang(it, "entities").edit()
-    }.toMutableList()
-    var units = baseModel.units
-    var initialViewingAngle = baseModel.initialViewingAngle
-
+class MutableModel(
+    var title: String,
+    val entities: MutableList<MutableEntity>,
+    var units: ModelUnit,
+    var initialViewingAngle: Float
+) {
     fun build(sceneBuilder: SceneBuilder): ModelData {
         return ModelData(title, entities.map { sceneBuilder.idFor(it.build()) }, units, initialViewingAngle)
+    }
+
+    fun visit(callback: (MutableEntity) -> Unit) {
+        entities.forEach { it.visit(callback) }
     }
 
     fun findById(id: EntityId): MutableEntity? =
@@ -183,37 +178,22 @@ class MutableModel(baseModel: ModelData, entities: Map<EntityId, EntityData>) {
         }
 }
 
-abstract class MutableEntity : MutableEditable {
-    constructor(baseEntity: EntityData) {
-        this.title = baseEntity.title
-        this.description = baseEntity.description
-        this.position = baseEntity.position
-        this.rotation = baseEntity.rotation
-        this.scale = baseEntity.scale
-        this.id = baseEntity.id
-    }
-
-    constructor(
-        title: String, description: String?,
-        position: Vector3F, rotation: EulerAngle, scale: Vector3F,
-        id: EntityId
-    ) {
-        this.title = title
-        this.description = description
-        this.position = position
-        this.rotation = rotation
-        this.scale = scale
-        this.id = id
-    }
-
-    final override var title: String
-    var description: String?
-    var position: Vector3F
-    var rotation: EulerAngle
-    var scale: Vector3F
+abstract class MutableEntity(
+    final override var title: String,
+    var description: String?,
+    var position: Vector3F,
+    var rotation: EulerAngle,
+    var scale: Vector3F,
     val id: EntityId
+) : MutableEditable {
+    constructor(baseEntity: EntityData) : this(
+        baseEntity.title, baseEntity.description, baseEntity.position, baseEntity.rotation, baseEntity.scale, baseEntity.id
+    )
 
     abstract fun build(): EntityData
+
+    open fun visit(callback: (MutableEntity) -> Unit) =
+        callback(this)
 
     open fun findById(id: EntityId): MutableEntity? =
         if (this.id == id) this else null
@@ -231,6 +211,11 @@ abstract class MutableEntityGroup(
     baseEntityData: EntityData
 ): MutableEntity(baseEntityData) {
     abstract val children: MutableList<MutableEntity>
+
+    override fun visit(callback: (MutableEntity) -> Unit) {
+        super.visit(callback)
+        children.forEach { it.visit(callback) }
+    }
 
     override fun findById(id: EntityId): MutableEntity? =
         super.findById(id)

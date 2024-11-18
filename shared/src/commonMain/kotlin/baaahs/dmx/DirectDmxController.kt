@@ -6,10 +6,7 @@ import baaahs.controller.ControllerState
 import baaahs.fixtures.*
 import baaahs.io.ByteArrayWriter
 import baaahs.model.Model
-import baaahs.scene.ControllerConfig
-import baaahs.scene.FixtureMappingData
-import baaahs.scene.MutableControllerConfig
-import baaahs.scene.MutableDirectDmxControllerConfig
+import baaahs.scene.*
 import baaahs.util.Clock
 import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
@@ -144,14 +141,16 @@ data class DirectDmxControllerConfig(
     @Transient
     private var dmxAllocator: DynamicDmxAllocator? = null
 
-    override fun edit(): MutableControllerConfig =
-        MutableDirectDmxControllerConfig(this)
+    override fun edit(fixtureMappings: MutableList<MutableFixtureMapping>): MutableControllerConfig =
+        MutableDirectDmxControllerConfig(
+            title, fixtureMappings, defaultFixtureOptions?.edit(), defaultTransportConfig?.edit()
+        )
 
     // TODO: This is pretty dumb, find a better way to do this.
-    override fun buildFixturePreviews(tempModel: Model): List<FixturePreview> {
+    override fun buildFixturePreviews(sceneOpener: SceneOpener): List<FixturePreview> {
         dmxAllocator = DynamicDmxAllocator()
         try {
-            return super.buildFixturePreviews(tempModel)
+            return super.buildFixturePreviews(sceneOpener)
         } finally {
             dmxAllocator = null
         }

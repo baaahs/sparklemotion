@@ -125,8 +125,10 @@ class FakeControllerConfig(
 
     val controllerId = ControllerId(controllerType, title)
 
-    override fun edit(): MutableControllerConfig =
-        MutableFakeControllerConfig(this)
+    override fun edit(fixtureMappings: MutableList<MutableFixtureMapping>): MutableControllerConfig =
+        MutableFakeControllerConfig(
+            title, fixtureMappings, defaultFixtureOptions?.edit(), defaultTransportConfig?.edit()
+        )
 
     override fun createFixturePreview(
         fixtureOptions: FixtureOptions,
@@ -135,24 +137,25 @@ class FakeControllerConfig(
 }
 
 class MutableFakeControllerConfig(
-    config: FakeControllerConfig
+    override var title: String,
+    override val fixtures: MutableList<MutableFixtureMapping>,
+    override var defaultFixtureOptions: MutableFixtureOptions?,
+    override var defaultTransportConfig: MutableTransportConfig?,
+    val anonymousFixtureMapping: FixtureMapping? = null
 ) : MutableControllerConfig {
     override val controllerMeta: ControllerManager.Meta = FakeControllerManager
-    override var title: String = config.title
-    override val fixtures: MutableList<MutableFixtureMapping> =
-        config.fixtures.map { it.edit() }.toMutableList()
-    override var defaultFixtureOptions: MutableFixtureOptions? =
-        config.defaultFixtureOptions?.edit()
-    override var defaultTransportConfig: MutableTransportConfig? =
-        config.defaultTransportConfig?.edit()
     override val supportedTransportTypes: List<TransportType>
         get() = listOf(FakeTransportType)
 
+    val likelyControllerId: ControllerId =
+        ControllerId(FakeControllerManager.controllerTypeName, title)
+
     override fun build(sceneBuilder: SceneBuilder): FakeControllerConfig =
         FakeControllerConfig(
-            title, fixtures.map { it.build() },
+            title, fixtures.map { it.build(sceneBuilder) },
             defaultFixtureOptions?.build(),
-            defaultTransportConfig?.build()
+            defaultTransportConfig?.build(),
+            anonymousFixtureMapping
         )
 
     override fun getEditorPanels(editingController: EditingController<*>): List<ControllerEditorPanel<*>> {
@@ -202,7 +205,7 @@ class FakeControllerManager(
             state: ControllerState?
         ): MutableControllerConfig {
             val title = state?.title ?: controllerId?.id ?: "Fake"
-            return MutableFakeControllerConfig(FakeControllerConfig(title))
+            return MutableFakeControllerConfig(title, mutableListOf(), null, null)
         }
     }
 }

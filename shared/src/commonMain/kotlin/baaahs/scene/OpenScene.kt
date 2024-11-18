@@ -85,8 +85,6 @@ class OpenControllerConfig<T : ControllerConfig>(
     val defaultTransportConfig: TransportConfig?
         get() = controllerConfig.defaultTransportConfig
 
-    fun edit(): MutableControllerConfig = controllerConfig.edit()
-
     override fun toString(): String {
         return "OpenControllerConfig(id=$id, controllerConfig=$controllerConfig, fixtureMappings=$fixtureMappings)"
     }

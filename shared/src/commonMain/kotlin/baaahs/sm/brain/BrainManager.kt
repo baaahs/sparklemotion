@@ -305,12 +305,13 @@ class BrainManager(
         override fun createMutableControllerConfigFor(
             controllerId: ControllerId?,
             state: ControllerState?
-        ): MutableControllerConfig {
-            val title = state?.title
-                ?: controllerId?.id
-                ?: "brainXXXX"
-            return MutableBrainControllerConfig(BrainControllerConfig(title))
-        }
+        ): MutableControllerConfig =
+            MutableBrainControllerConfig(
+                state?.title
+                    ?: controllerId?.id
+                    ?: "brainXXXX",
+                null, mutableListOf(), null, null
+            )
     }
 }
 
@@ -344,8 +345,10 @@ data class BrainControllerConfig(
     override val emptyTransportConfig: TransportConfig
         get() = BrainTransportConfig()
 
-    override fun edit(): MutableControllerConfig =
-        MutableBrainControllerConfig(this)
+    override fun edit(fixtureMappings: MutableList<MutableFixtureMapping>): MutableControllerConfig =
+        MutableBrainControllerConfig(
+            title, address, fixtureMappings, defaultFixtureOptions?.edit(), defaultTransportConfig?.edit()
+        )
 
     override fun createFixturePreview(fixtureOptions: FixtureOptions, transportConfig: TransportConfig): FixturePreview {
         return object : FixturePreview {
