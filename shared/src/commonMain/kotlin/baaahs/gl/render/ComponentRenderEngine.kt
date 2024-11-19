@@ -12,8 +12,10 @@ import baaahs.gl.patch.LinkedProgram
 import baaahs.gl.result.ResultBuffer
 import baaahs.gl.result.ResultType
 import baaahs.util.Logger
+import baaahs.util.unixMillis
 import com.danielgergely.kgl.GL_COLOR_BUFFER_BIT
 import com.danielgergely.kgl.GL_DEPTH_BUFFER_BIT
+import kotlinx.datetime.Clock
 import kotlin.math.max
 import kotlin.math.min
 
@@ -109,7 +111,11 @@ class ComponentRenderEngine(
 
     override fun render() {
         gl.setViewport(0, 0, arrangement.pixWidth, arrangement.pixHeight)
-        gl.check { clearColor(.1f, .5f, 0f, 1f) }
+        if ((Clock.System.now().unixMillis % 1000) < 500) {
+            gl.check { clearColor(0f, 0f, 1/255f, 1f) }
+        } else {
+            gl.check { clearColor(0f, 0f, 0f, 1f) }
+        }
         gl.check { clear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) }
 
         arrangement.render()
