@@ -20,6 +20,7 @@ class ControllersManager(
     private val byType = controllerManagers.associateBy { it.controllerType }
     private var deferFixtureRefresh = false
     private val controllers = mutableMapOf<ControllerId, LiveController>()
+    private var controllersChanged = true
     private var scene: OpenScene? = sceneProvider.openScene
 
     init {
@@ -32,6 +33,7 @@ class ControllersManager(
 
                     val liveController = LiveController(controller)
                     controllers[controller.controllerId] = liveController
+                    controllersChanged = true
 
                     if (!deferFixtureRefresh)
                         refreshControllerFixtures(listOf(liveController))
@@ -41,6 +43,7 @@ class ControllersManager(
                 override fun onRemove(controller: Controller) {
                     logger.debug { "onRemove(${controller.controllerId})" }
                     val liveController = controllers.remove(controller.controllerId)
+                        .also { if (it != null) controllersChanged = true }
                         ?: error("Don't know about ${controller.controllerId}")
 
                     fixturesChanged(removed = liveController.fixtures)
@@ -73,6 +76,8 @@ class ControllersManager(
     private fun refreshControllerFixtures(
         controllers: Collection<LiveController> = this.controllers.values
     ) {
+        if (!controllersChanged) return
+
         val addFixtures = arrayListOf<Fixture>()
         val removeFixtures = arrayListOf<Fixture>()
         controllers.forEach { liveController ->
@@ -89,6 +94,7 @@ class ControllersManager(
         }
 
         fixturesChanged(addFixtures, removeFixtures)
+        controllersChanged = false
     }
 
     override fun beforeFrame() {
@@ -147,7 +153,9 @@ class ControllersManager(
     private class LiveController(
         val controller: Controller,
         val fixtures: MutableList<Fixture> = arrayListOf()
-    )
+    ) {
+        override fun toString(): String = "LiveController(controller=$controller, fixtures=$fixtures)"
+    }
 
     companion object {
         private val logger = Logger<ControllersManager>()

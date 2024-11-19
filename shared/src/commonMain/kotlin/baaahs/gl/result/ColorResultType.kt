@@ -41,13 +41,13 @@ object ColorResultType : ResultType<ColorResultType.Buffer> {
             val offset = componentIndex * stride
 
             // Using Color's int constructor fixes a bug in Safari causing
-            // color values above 127 to be treated as 0. Untested. :-(
-            return Color.from(
-                r = byteBuffer[offset].toInt() and 0xff,
-                g = byteBuffer[offset + 1].toInt() and 0xff,
-                b = byteBuffer[offset + 2].toInt() and 0xff,
-                a = byteBuffer[offset + 3].toInt() and 0xff
-            )
+                // color values above 127 to be treated as 0. Untested. :-(
+                return Color.from(
+                    r = byteBuffer[offset].toInt() and 0xff,
+                    g = byteBuffer[offset + 1].toInt() and 0xff,
+                    b = byteBuffer[offset + 2].toInt() and 0xff,
+                    a = byteBuffer[offset + 3].toInt() and 0xff
+                )
         }
 
         override fun getFixtureView(fixture: Fixture, bufferOffset: Int): ColorFixtureResults {

@@ -28,7 +28,7 @@ class Quad(private val gl: GlContext, rects: List<Rect>) {
         println("vertices.size = ${vertices.size}")
         println("vertices = ${vertices.joinToString()}")
         if (vertices.isNotEmpty()) {
-            gl.check { bufferData(GL_ARRAY_BUFFER, sourceData, vertices.size, GL_STATIC_DRAW) }
+            gl.check { bufferData(GL_ARRAY_BUFFER, sourceData, vertices.size * BYTES_PER_FLOAT, GL_STATIC_DRAW) }
         }
         gl.check { bindBuffer(GL_ARRAY_BUFFER, null) }
         gl.check { bindVertexArray(null) }
@@ -72,5 +72,8 @@ class Quad(private val gl: GlContext, rects: List<Rect>) {
 
     companion object {
         val quadRect2x2 = Rect(1f, -1f, -1f, 1f)
+
+        // Yuck, I guess we're hardcoding this? WebGL and jvm GL worked with this as 1, iOS failed.
+        const val BYTES_PER_FLOAT = 4
     }
 }

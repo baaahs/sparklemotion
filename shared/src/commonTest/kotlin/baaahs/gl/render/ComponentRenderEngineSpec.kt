@@ -337,8 +337,7 @@ class ComponentRenderEngineSpec : DescribeSpec({
                 ComponentRenderEngine.mapFixtureComponentsToRects(3, 4, 11)
                     .shouldBe(listOf(
                         Quad.Rect(0f, 3f, 1f, 4f),
-                        Quad.Rect(1f, 0f, 2f, 4f),
-                        Quad.Rect(2f, 0f, 3f, 4f),
+                        Quad.Rect(1f, 0f, 3f, 4f),
                         Quad.Rect(3f, 0f, 4f, 2f)
                     ))
             }

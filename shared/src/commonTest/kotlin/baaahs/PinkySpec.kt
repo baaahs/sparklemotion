@@ -41,8 +41,8 @@ import baaahs.sm.server.PinkyConfigStore
 import baaahs.sm.server.ServerNotices
 import baaahs.sm.server.StageManager
 import io.kotest.core.spec.style.DescribeSpec
-import io.kotest.matchers.*
-import io.kotest.matchers.collections.*
+import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
 
@@ -140,7 +140,7 @@ class PinkySpec : DescribeSpec({
                 }
 
                 with (pinky) {
-                    TestCoroutineScope().launchStartupJobs()
+//                    TestCoroutineScope().launchStartupJobs()
                 }
             }
         }

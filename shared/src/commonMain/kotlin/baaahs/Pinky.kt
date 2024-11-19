@@ -53,6 +53,7 @@ class Pinky(
     private val pinkyConfigStore: PinkyConfigStore,
     private val eventManager: EventManager,
 ) {
+    private var daemonJobs: Job? = null
     val facade = Facade()
 
     fun switchTo(newShow: Show?, file: Fs.File? = null) {
@@ -94,7 +95,7 @@ class Pinky(
 
             val daemonJobs = launch(CoroutineName("Pinky Daemon Jobs")) {
                 launchDaemonJobs()
-            }
+            }.also { this@Pinky.daemonJobs = it }
 
             startupJobs.join()
 
@@ -226,6 +227,12 @@ class Pinky(
                 logger.info { "Framerate: ${facade.framerate.summarize()}" }
             }
         }
+    }
+
+    suspend fun stop() {
+        keepRunning = false
+        daemonJobs?.cancelAndJoin()
+        httpServer.stop()
     }
 
     private fun maybeChangeThingsIfUsersAreIdle() {

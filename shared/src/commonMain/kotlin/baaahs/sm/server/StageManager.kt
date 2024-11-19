@@ -131,7 +131,6 @@ class StageManager(
     }
 
     private fun housekeeping() {
-        logger.info { "Housekeeping..." }
         if (checkActivePatchSet) {
             showRunner?.onSelectedPatchesChanged()
             checkActivePatchSet = false
