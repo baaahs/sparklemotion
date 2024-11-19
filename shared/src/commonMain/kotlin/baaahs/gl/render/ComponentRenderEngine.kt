@@ -240,7 +240,7 @@ class ComponentRenderEngine(
 
         /**
          * Resulting Rects represent render coordinates which cover the pixels
-         * corresponding to this fixture.
+         * corresponding to a fixture.
          *
          * @param startPix the pixel index for the start of the first component
          * @param fbPixWidth the width of the framebuffer in pixels
@@ -252,7 +252,7 @@ class ComponentRenderEngine(
             fbPixWidth: Int,
             componentCount: Int
         ): List<Quad.Rect> {
-            fun makeQuad(offsetPix: Int, widthPix: Int): Quad.Rect {
+            fun makeRect(offsetPix: Int, widthPix: Int): Quad.Rect {
                 val xStartPixel = offsetPix % fbPixWidth
                 val yStartPixel = offsetPix / fbPixWidth
                 val xEndPixel = xStartPixel + widthPix
@@ -265,18 +265,31 @@ class ComponentRenderEngine(
                 )
             }
 
+            fun Quad.Rect.isFullRow(): Boolean =
+                left == 0f && right == fbPixWidth.toFloat()
+            fun Quad.Rect.addRow(): Quad.Rect =
+                Quad.Rect(top, left, bottom + 1, right)
+
             var nextComponentOffset = startPix
             var componentsLeft = componentCount
             val rects = mutableListOf<Quad.Rect>()
+            var priorRect: Quad.Rect? = null
             while (componentsLeft > 0) {
                 val rowPixelOffset = nextComponentOffset % fbPixWidth
                 val rowPixelsLeft = fbPixWidth - rowPixelOffset
                 val rowPixelsTaken = min(componentsLeft, rowPixelsLeft)
-                rects.add(makeQuad(nextComponentOffset, rowPixelsTaken))
+                val nextRect = makeRect(nextComponentOffset, rowPixelsTaken)
+                if (priorRect?.isFullRow() == true && nextRect.isFullRow()) {
+                    priorRect = priorRect.addRow()
+                } else {
+                    if (priorRect != null) rects.add(priorRect)
+                    priorRect = nextRect
+                }
 
                 nextComponentOffset += rowPixelsTaken
                 componentsLeft -= rowPixelsTaken
             }
+            if (priorRect != null) rects.add(priorRect)
             return rects
         }
 
