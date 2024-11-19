@@ -331,15 +331,25 @@ class ComponentRenderEngineSpec : DescribeSpec({
 
             it("should include multiple rows in a rect if possible") {
                 // ...x
-                // xxxx // TODO: These two could be merged.
-                // xxxx
+                // xxxx <-- these two rows
+                // xxxx <--  are merged into one rect.
                 // xx..
                 ComponentRenderEngine.mapFixtureComponentsToRects(3, 4, 11)
                     .shouldBe(listOf(
                         Quad.Rect(0f, 3f, 1f, 4f),
-                        Quad.Rect(1f, 0f, 2f, 4f),
-                        Quad.Rect(2f, 0f, 3f, 4f),
+                        Quad.Rect(1f, 0f, 3f, 4f),
                         Quad.Rect(3f, 0f, 4f, 2f)
+                    ))
+            }
+
+            it("should include full first and last rows in a rect if possible") {
+                // ....
+                // xxxx <-- these three rows
+                // xxxx <--  are merged into
+                // xxxx <--   one rect.
+                ComponentRenderEngine.mapFixtureComponentsToRects(4, 4, 12)
+                    .shouldBe(listOf(
+                        Quad.Rect(1f, 0f, 4f, 4f)
                     ))
             }
         }
