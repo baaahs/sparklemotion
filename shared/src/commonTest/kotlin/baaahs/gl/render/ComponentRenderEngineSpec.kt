@@ -304,6 +304,45 @@ class ComponentRenderEngineSpec : DescribeSpec({
                 }
             }
         }
+
+        describe("component mapping to framebuffer") {
+            it("should start at startPix") {
+                // ....
+                // xxx.
+                ComponentRenderEngine.mapFixtureComponentsToRects(4, 4, 3)
+                    .shouldBe(
+                        listOf(
+                            Quad.Rect(1f, 0f, 2f, 3f)
+                        )
+                    )
+            }
+
+            it("should wrap as necessary") {
+                // ...x
+                // xxxx
+                // xx..
+                ComponentRenderEngine.mapFixtureComponentsToRects(3, 4, 7)
+                    .shouldBe(listOf(
+                        Quad.Rect(0f, 3f, 1f, 4f),
+                        Quad.Rect(1f, 0f, 2f, 4f),
+                        Quad.Rect(2f, 0f, 3f, 2f)
+                    ))
+            }
+
+            it("should include multiple rows in a rect if possible") {
+                // ...x
+                // xxxx // TODO: These two could be merged.
+                // xxxx
+                // xx..
+                ComponentRenderEngine.mapFixtureComponentsToRects(3, 4, 11)
+                    .shouldBe(listOf(
+                        Quad.Rect(0f, 3f, 1f, 4f),
+                        Quad.Rect(1f, 0f, 2f, 4f),
+                        Quad.Rect(2f, 0f, 3f, 4f),
+                        Quad.Rect(3f, 0f, 4f, 2f)
+                    ))
+            }
+        }
     }
 })
 

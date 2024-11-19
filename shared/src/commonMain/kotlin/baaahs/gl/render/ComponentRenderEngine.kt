@@ -62,7 +62,7 @@ class ComponentRenderEngine(
         val rects = mapFixtureComponentsToRects(
             nextComponentOffset,
             maxFramebufferWidth,
-            fixture
+            fixture.componentCount
         )
         val renderTarget = FixtureRenderTarget(
             fixture, nextRectOffset, rects, fixture.componentCount, nextComponentOffset, resultStorage,
@@ -232,11 +232,23 @@ class ComponentRenderEngine(
         private val logger = Logger<ComponentRenderEngine>()
         private const val fbMaxPixWidth = 1024
 
-        /** Resulting Rect is in pixel coordinates starting at (0,0) with Y increasing. */
-        internal fun mapFixtureComponentsToRects(nextPix: Int, pixWidth: Int, fixture: Fixture): List<Quad.Rect> {
+        /**
+         * Resulting Rects represent render coordinates which cover the pixels
+         * corresponding to this fixture.
+         *
+         * @param startPix the pixel index for the start of the first component
+         * @param fbPixWidth the width of the framebuffer in pixels
+         * @param componentCount the number of components to map
+         * @return a list of Rects corresponding to the components to the framebuffer
+         **/
+        internal fun mapFixtureComponentsToRects(
+            startPix: Int,
+            fbPixWidth: Int,
+            componentCount: Int
+        ): List<Quad.Rect> {
             fun makeQuad(offsetPix: Int, widthPix: Int): Quad.Rect {
-                val xStartPixel = offsetPix % pixWidth
-                val yStartPixel = offsetPix / pixWidth
+                val xStartPixel = offsetPix % fbPixWidth
+                val yStartPixel = offsetPix / fbPixWidth
                 val xEndPixel = xStartPixel + widthPix
                 val yEndPixel = yStartPixel + 1
                 return Quad.Rect(
@@ -247,12 +259,12 @@ class ComponentRenderEngine(
                 )
             }
 
-            var nextComponentOffset = nextPix
-            var componentsLeft = fixture.componentCount
+            var nextComponentOffset = startPix
+            var componentsLeft = componentCount
             val rects = mutableListOf<Quad.Rect>()
             while (componentsLeft > 0) {
-                val rowPixelOffset = nextComponentOffset % pixWidth
-                val rowPixelsLeft = pixWidth - rowPixelOffset
+                val rowPixelOffset = nextComponentOffset % fbPixWidth
+                val rowPixelsLeft = fbPixWidth - rowPixelOffset
                 val rowPixelsTaken = min(componentsLeft, rowPixelsLeft)
                 rects.add(makeQuad(nextComponentOffset, rowPixelsTaken))
 
