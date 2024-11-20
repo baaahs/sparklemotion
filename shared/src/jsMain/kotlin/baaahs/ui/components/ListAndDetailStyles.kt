@@ -8,7 +8,7 @@ import mui.material.styles.Theme
 import styled.StyleSheet
 
 class ListAndDetailStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor", isStatic = true) {
-    val listSheet by css {
+    val listSheetSmall by css {
         position = Position.relative
         display = Display.flex
         flexDirection = FlexDirection.column
@@ -16,7 +16,7 @@ class ListAndDetailStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor", 
         height = 100.pct
     }
 
-    val detailSheet by css {
+    val detailSheetSmall by css {
         position = Position.absolute
         display = Display.flex
         flexDirection = FlexDirection.column
@@ -25,6 +25,24 @@ class ListAndDetailStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor", 
         bottom = 0.px
         right = 0.px
         zIndex = StyleConstants.Layers.aboveStickyTableHeaders
+    }
+
+    val containerLarge by css {
+        display = Display.grid
+        gridTemplateColumns = GridTemplateColumns("2fr 3fr")
+        gap = 1.em
+        height = 100.pct
+    }
+
+    val listLarge by css {
+        position = Position.relative
+        display = Display.flex
+        flexDirection = FlexDirection.column
+    }
+
+    val detailLarge by css {
+        display = Display.flex
+        flexDirection = FlexDirection.column
     }
 
     val detailContent by css {

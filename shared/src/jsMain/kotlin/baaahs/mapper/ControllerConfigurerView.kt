@@ -1,5 +1,6 @@
 package baaahs.mapper
 
+import `<dynamic>`.set
 import baaahs.app.ui.appContext
 import baaahs.controller.ControllerId
 import baaahs.controller.ControllerMatcher
@@ -142,6 +143,7 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                                 }
 
                                 TableRow {
+                                    attrs.selected = controllerId == selectedController
                                     attrs.onClick = handleControllerSelect
                                     attrs.asDynamic()["data-controller-id"] = controllerId.name()
 
