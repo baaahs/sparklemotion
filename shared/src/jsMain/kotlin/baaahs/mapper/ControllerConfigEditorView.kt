@@ -66,29 +66,31 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
                 Table {
                     attrs.size = Size.small
 
-                    TableRow {
-                        TableHead { +"Type:" }
-                        TableCell { +mutableControllerConfig.controllerMeta.controllerTypeName }
-                    }
-                    TableRow {
-                        TableHead { +"Address:" }
-                        TableCell { +(controllerState?.address ?: "") }
-                    }
-                    TableRow {
-                        TableHead { +"Online Since:" }
-                        TableCell { +(controllerState?.onlineSince?.toString() ?: "Offline") }
-                    }
-                    TableRow {
-                        TableHead { +"Firmware Version:" }
-                        TableCell { +(controllerState?.firmwareVersion ?: "") }
-                    }
-                    TableRow {
-                        TableHead { +"Last Error Message:" }
-                        TableCell { +(controllerState?.lastErrorMessage ?: "") }
-                    }
-                    TableRow {
-                        TableHead { +"Last Error At:" }
-                        TableCell { +(controllerState?.lastErrorAt?.toString() ?: "") }
+                    TableBody {
+                        TableRow {
+                            TableCell { attrs.variant = TableCellVariant.head; +"Type:" }
+                            TableCell { +mutableControllerConfig.controllerMeta.controllerTypeName }
+                        }
+                        TableRow {
+                            TableCell { attrs.variant = TableCellVariant.head; +"Address:" }
+                            TableCell { +(controllerState?.address ?: "") }
+                        }
+                        TableRow {
+                            TableCell { attrs.variant = TableCellVariant.head; +"Online Since:" }
+                            TableCell { +(controllerState?.onlineSince?.toString() ?: "Offline") }
+                        }
+                        TableRow {
+                            TableCell { attrs.variant = TableCellVariant.head; +"Firmware Version:" }
+                            TableCell { +(controllerState?.firmwareVersion ?: "") }
+                        }
+                        TableRow {
+                            TableCell { attrs.variant = TableCellVariant.head; +"Last Error Message:" }
+                            TableCell { +(controllerState?.lastErrorMessage ?: "") }
+                        }
+                        TableRow {
+                            TableCell { attrs.variant = TableCellVariant.head; +"Last Error At:" }
+                            TableCell { +(controllerState?.lastErrorAt?.toString() ?: "") }
+                        }
                     }
                 }
 
