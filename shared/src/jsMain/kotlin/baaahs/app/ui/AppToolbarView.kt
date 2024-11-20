@@ -6,6 +6,7 @@ import baaahs.app.ui.editor.ShowEditIntent
 import baaahs.app.ui.settings.displaySettings
 import baaahs.app.ui.settings.fullScreenToggleButton
 import baaahs.client.document.DocumentManager
+import baaahs.client.document.SceneManager
 import baaahs.sm.webapi.Severity
 import baaahs.ui.*
 import js.objects.jso
@@ -173,7 +174,7 @@ private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props -
                             +"Redo"
                         }
 
-                        if (props.appMode == AppMode.Scene) {
+                        if (!SceneManager.AUTO_SYNC && props.appMode == AppMode.Scene) {
                             Button {
                                 attrs.startIcon = +Sync
                                 attrs.disabled = documentManager.isSynced
