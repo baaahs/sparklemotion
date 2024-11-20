@@ -19,8 +19,8 @@
     <!-- Outer notch -->
     <circle cx="233" cy="76" r="20" fill="#000" />
 
-    <!-- DMX Text -->
+    <!-- sACN Text -->
     <text x="150" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="64" fill="#777">
-        DMX
+        sACN
     </text>
 </svg>

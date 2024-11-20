@@ -199,6 +199,8 @@ class FakeControllerManager(
     companion object : ControllerManager.Meta {
         override val controllerTypeName: String
             get() = "FAKE"
+        override val controllerIcon: String
+            get() = TODO("not implemented")
 
         override fun createMutableControllerConfigFor(
             controllerId: ControllerId?,
