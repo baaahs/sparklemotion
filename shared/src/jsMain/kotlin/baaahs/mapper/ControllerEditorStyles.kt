@@ -27,6 +27,9 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
         display = Display.block
         overflowY = Overflow.scroll
         height = 100.pct
+        td {
+            whiteSpace = WhiteSpace.nowrap
+        }
     }
 
     val navigatorPane by css {
@@ -48,6 +51,18 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
     }
     val navigatorPaneHeader by css {
         lineHeight = 1.5.em.lh
+    }
+
+    val statusDot by css {
+        width = 10.px
+        height = 10.px
+        backgroundColor = Color.red
+        borderRadius = 50.pct
+        display = Display.inlineBlock
+    }
+
+    val fixtureListItem by css {
+        listStyleType = ListStyleType.circle
     }
 
     val defaultConfigs by css {
