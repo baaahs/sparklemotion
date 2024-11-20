@@ -11,6 +11,7 @@ import baaahs.sm.brain.BrainManager
 import baaahs.ui.*
 import baaahs.ui.components.DetailRenderer
 import baaahs.ui.components.ListRenderer
+import baaahs.ui.components.collapsibleSearchBox
 import baaahs.ui.components.listAndDetail
 import js.objects.jso
 import kotlinx.css.Color
@@ -47,7 +48,7 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
 
     var controllerMatcher by state { ControllerMatcher("") }
     val handleSearchChange by handler { value: String -> controllerMatcher = ControllerMatcher(value) }
-    val handleSearchRequest by handler {}
+    val handleSearchRequest by handler { value: String -> }
     val handleSearchCancel by handler { controllerMatcher = ControllerMatcher("") }
 
     var selectedController by state<ControllerId?> { null }
@@ -59,50 +60,19 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
         selectedController = null
     }
 
-    val handleNewControllerClick by mouseEventHandler() {
+    val handleNewControllerClick by mouseEventHandler {
         selectedController = ControllerId(SacnManager.controllerTypeName, "new")
-    }
-
-    var searchFieldFocused by state { false }
-    val searchFieldRef = useRef<HTMLElement>()
-    val handleSearchBoxClick by mouseEventHandler { e ->
-        searchFieldFocused = true
-        (searchFieldRef.current?.querySelector("input") as? HTMLInputElement)
-            ?.focus()
-        e.preventDefault()
     }
 
     listAndDetail<ControllerId> {
         attrs.listHeader = buildElement {
             span {
                 +"Controllers"
-
-                FormControl {
-                    attrs.className = -styles.searchBoxFormControl
-                    attrs.onClick = handleSearchBoxClick
-
-                    TextField<StandardTextFieldProps> {
-                        ref = searchFieldRef
-                        attrs.sx {
-                            val isOpen = searchFieldFocused || controllerMatcher.searchString.isNotBlank()
-                            width = if (isOpen) 15.em else 3.em
-                            backgroundColor = if (isOpen) rgba(0, 0, 0, 0.25).asColor() else rgba(0, 0, 0, 0.0).asColor()
-                            transition = "width 300ms, backgrond-color 300ms".unsafeCast<Transition>()
-                        }
-                        attrs.size = Size.small
-                        attrs.InputProps = jso {
-                            endAdornment = buildElement { icon(Search) }
-                        }
-                        attrs.defaultValue = controllerMatcher.searchString
-
-                        attrs.onChange = { event ->
-                            handleSearchChange(event.target.value)
-                        }
-                        attrs.onFocus = { _ -> searchFieldFocused = true }
-                        attrs.onBlur = { _ -> searchFieldFocused = false }
-                    }
-
-//                    FormHelperText { +"Enter stuff to search for!" }
+                collapsibleSearchBox {
+                    attrs.searchString = controllerMatcher.searchString
+                    attrs.onSearchChange = handleSearchChange
+                    attrs.onSearchRequest = handleSearchRequest
+                    attrs.onSearchCancel = handleSearchCancel
                 }
             }
         }
@@ -116,7 +86,10 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
 
                     TableHead {
                         TableRow {
-                            TableCell { +"" } // Status icon
+                            TableCell {
+                                attrs.sx { width = 1.pct } // So the table fills full width.
+                                +""
+                            } // Status icon
                             TableCell { +"Name" }
                             TableCell { +"Fixtures" }
                         }
@@ -149,7 +122,7 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
 
                                     TableCell {
                                         attrs.align = TableCellAlign.center
-                                        attrs.sx { width = 1.pct }
+                                        attrs.sx { width = 1.pct } // So the table fills full width.
 
                                         div(+styles.statusDot) {
                                             inlineStyles {

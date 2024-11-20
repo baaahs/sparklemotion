@@ -25,7 +25,7 @@ private val ListAndDetailView = xComponent<ListAndDetailProps<*>>("ListAndDetail
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.listAndDetail
     val theme = useTheme<Theme>()
-    val isSmallScreen = useMediaQuery(theme.breakpoints.down(Breakpoint.md))
+    val isNarrowScreen = useMediaQuery(theme.breakpoints.down(Breakpoint.md))
 
     val handleDeselect by mouseEventHandler(props.onDeselect) {
         props.onDeselect?.invoke()
@@ -47,7 +47,7 @@ private val ListAndDetailView = xComponent<ListAndDetailProps<*>>("ListAndDetail
         }
     }
 
-    if (isSmallScreen) {
+    if (isNarrowScreen) {
         Paper {
             attrs.className = -styles.listSheetSmall
 

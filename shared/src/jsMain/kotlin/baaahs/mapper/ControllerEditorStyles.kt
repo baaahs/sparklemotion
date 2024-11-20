@@ -89,43 +89,6 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
         }
     }
 
-    val propertiesPane by css {
-        display = Display.grid
-        gridTemplateRows = GridTemplateRows(GridAutoRows.minContent, GridAutoRows.auto)
-        height = 100.pct
-        zIndex = StyleConstants.Layers.aboveStickyTableHeaders
-    }
-
-    val propertiesPaneContent by css {
-        minHeight = 0.px
-        overflow = Overflow.scroll
-    }
-
-    val noControllerSelected by css {
-        gridTemplateColumns = GridTemplateColumns.auto
-        descendants(selector(::propertiesPane)) {
-            display = Display.none
-        }
-    }
-
-    val searchBoxFormControl by css {
-        position = Position.absolute
-        right = 1.em
-        top = 4.px
-        flexDirection = FlexDirection.rowReverse
-        width = 15.em
-        fieldset {
-            borderColor = Color.transparent.important
-        }
-    }
-
-    val searchBarPaper by css {
-        backgroundColor = theme.palette.primary.dark.asColor().darken(20)
-        marginTop = 8.px
-        marginBottom = 8.px
-        marginLeft = 1.em
-    }
-
     val button by css {
         textTransform = TextTransform.none
     }
