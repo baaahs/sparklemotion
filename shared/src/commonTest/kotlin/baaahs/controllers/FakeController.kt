@@ -77,8 +77,8 @@ data class FakeTransportConfig(
     )
 
     override fun preview(): ConfigPreview = object : ConfigPreview {
-        override fun summary(): List<Pair<String, String?>> = listOf(
-            "Start Channel" to startChannel?.toString()
+        override fun summary(): List<ConfigPreviewNugget> = listOf(
+            ConfigPreviewNugget("Start Channel", startChannel?.toString())
         )
     }
 }

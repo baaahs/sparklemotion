@@ -1,7 +1,10 @@
 package baaahs.device
 
 import baaahs.dmx.Shenzarpy
-import baaahs.fixtures.*
+import baaahs.fixtures.ConfigPreview
+import baaahs.fixtures.ConfigPreviewNugget
+import baaahs.fixtures.FixtureConfig
+import baaahs.fixtures.FixtureOptions
 import baaahs.gl.patch.ContentType
 import baaahs.gl.render.RenderResults
 import baaahs.gl.result.ResultStorage
@@ -91,8 +94,10 @@ object MovingHeadDevice : FixtureType {
         )
 
         override fun preview(): ConfigPreview = object : ConfigPreview {
-            override fun summary(): List<Pair<String, String?>> =
-                listOf("Adapter" to adapter?.id)
+            override fun summary(): List<ConfigPreviewNugget> =
+                listOf(
+                    ConfigPreviewNugget("Adapter", adapter?.id)
+                )
         }
 
         override fun toConfig(entity: Model.Entity?, model: Model, defaultComponentCount: Int?): FixtureConfig =

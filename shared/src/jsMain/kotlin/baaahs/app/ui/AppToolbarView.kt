@@ -22,7 +22,6 @@ import mui.material.Link
 import mui.material.Tab
 import mui.material.styles.Theme
 import mui.material.styles.useTheme
-import mui.system.Breakpoint
 import mui.system.useMediaQuery
 import react.*
 import react.dom.div
@@ -35,7 +34,7 @@ import web.cssom.pct
 private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props ->
     val appContext = useContext(appContext)
     val theme = useTheme<Theme>()
-    val isSmallScreen = useMediaQuery(theme.breakpoints.down(Breakpoint.sm))
+    val isSmallScreen = useMediaQuery(theme.isSmallScreen)
     val themeStyles = appContext.allStyles.appUi
 
     val showManager = appContext.showManager

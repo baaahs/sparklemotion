@@ -1,32 +1,33 @@
 package baaahs.mapper
 
 import baaahs.app.ui.Styles
+import baaahs.app.ui.appContext
 import baaahs.app.ui.model.modelEditor
 import baaahs.client.SceneEditorClient
 import baaahs.client.document.SceneManager
+import baaahs.ui.muiClasses
+import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import kotlinx.html.hidden
-import mui.material.AppBar
-import mui.material.AppBarPosition
 import mui.material.Tab
+import mui.material.TabClasses
 import mui.material.Tabs
-import org.w3c.dom.events.Event
-import react.Props
-import react.RBuilder
-import react.RHandler
-import react.buildElement
+import mui.material.TabsClasses
+import react.*
 import react.dom.div
-import styled.inlineStyles
 
-private enum class PageTabs {
-    Model,
-    Controllers,
-    Fixtures,
-    Mapping
+private enum class PageTabs(val title: String) {
+    Model("Model"),
+    Controllers("Controllers"),
+//    Fixtures("Fixtures"),
+    Mapping("Pixel Mapping")
 }
 
 val SceneEditorView = xComponent<SceneEditorViewProps>("SceneEditorView") { props ->
+    val appContext = useContext(appContext)
+    val themeStyles = appContext.allStyles.appUi
+
     observe(props.sceneManager)
 
     var selectedTab by state { PageTabs.Model }
@@ -39,19 +40,21 @@ val SceneEditorView = xComponent<SceneEditorViewProps>("SceneEditorView") { prop
     }
     val mutableScene = props.sceneManager.mutableScene
 
-    div(+Styles.adminRoot) {
-        AppBar {
-            attrs.position = AppBarPosition.relative
+    div(+Styles.sceneEditorRoot) {
+        Tabs {
+            attrs.classes = muiClasses<TabsClasses> {
+                root = -themeStyles.sceneEditorTabs
+            }
+            attrs.value = selectedTab
+            attrs.onChange = handleChangeTab
 
-            Tabs {
-                attrs.value = selectedTab
-                attrs.onChange = handleChangeTab
-
-                PageTabs.entries.forEach { tab ->
-                    Tab {
-                        attrs.label = buildElement { +tab.name.replace("_", " ") }
-                        attrs.value = tab
+            PageTabs.entries.forEach { tab ->
+                Tab {
+                    attrs.classes = muiClasses<TabClasses> {
+                        selected = -themeStyles.sceneEditorTabSelected
                     }
+                    attrs.label = buildElement { +tab.title }
+                    attrs.value = tab
                 }
             }
         }
@@ -70,12 +73,12 @@ val SceneEditorView = xComponent<SceneEditorViewProps>("SceneEditorView") { prop
             }
         }
 
-        tabPanel(PageTabs.Fixtures, selectedTab) {
-            fixtureConfigurer {
-                attrs.mutableScene = mutableScene
-                attrs.onEdit = handleEdit
-            }
-        }
+//        tabPanel(PageTabs.Fixtures, selectedTab) {
+//            fixtureConfigurer {
+//                attrs.mutableScene = mutableScene
+//                attrs.onEdit = handleEdit
+//            }
+//        }
 
         tabPanel(PageTabs.Mapping, selectedTab) {
             mapperAppWrapper {
@@ -89,12 +92,7 @@ val SceneEditorView = xComponent<SceneEditorViewProps>("SceneEditorView") { prop
 private fun RBuilder.tabPanel(tab: PageTabs, selectedTab: PageTabs, block: RBuilder.() -> Unit) {
     val isCurrent = tab == selectedTab
 
-    div(+Styles.adminTabPanel) {
-        inlineStyles {
-//            minHeight = 0.px
-//            flex(1.0, 0.0)
-        }
-
+    div(+Styles.sceneEditorTabPanel) {
         attrs.hidden = !isCurrent
         if (isCurrent) block()
     }

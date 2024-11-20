@@ -3,17 +3,13 @@ package baaahs.ui.components
 import baaahs.app.ui.StyleConstants
 import baaahs.ui.asColor
 import kotlinx.css.*
-import kotlinx.css.Display
-import kotlinx.css.FlexDirection
-import kotlinx.css.flexDirection
-import kotlinx.css.height
-import kotlinx.css.pct
 import kotlinx.css.properties.TextDecoration
 import mui.material.styles.Theme
 import styled.StyleSheet
 
 class ListAndDetailStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor", isStatic = true) {
     val listSheet by css {
+        position = Position.relative
         display = Display.flex
         flexDirection = FlexDirection.column
         width = 100.vw
@@ -24,8 +20,10 @@ class ListAndDetailStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor", 
         position = Position.absolute
         display = Display.flex
         flexDirection = FlexDirection.column
-        width = 100.vw
-        height = 100.pct
+        top = 0.px
+        left = 0.px
+        bottom = 0.px
+        right = 0.px
         zIndex = StyleConstants.Layers.aboveStickyTableHeaders
     }
 

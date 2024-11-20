@@ -395,7 +395,7 @@ class BrainTransportConfig() : TransportConfig {
         this
 
     override fun preview(): ConfigPreview = object : ConfigPreview {
-        override fun summary(): List<Pair<String, String?>> = emptyList()
+        override fun summary(): List<ConfigPreviewNugget> = emptyList()
     }
 }
 

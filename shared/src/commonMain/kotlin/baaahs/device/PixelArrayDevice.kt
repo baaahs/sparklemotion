@@ -1,6 +1,7 @@
 package baaahs.device
 
 import baaahs.fixtures.ConfigPreview
+import baaahs.fixtures.ConfigPreviewNugget
 import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.FixtureOptions
 import baaahs.geom.Vector3F
@@ -63,10 +64,10 @@ object PixelArrayDevice : PixelArrayFixtureType() {
         )
 
         override fun preview(): ConfigPreview = object : ConfigPreview {
-            override fun summary(): List<Pair<String, String?>> = listOf(
-                "Pixel Count" to pixelCount?.toString(),
-                "Pixel Format" to pixelFormat?.name,
-                "Gamma Correction" to gammaCorrection?.toString()
+            override fun summary(): List<ConfigPreviewNugget> = listOf(
+                ConfigPreviewNugget("Pixel Count", pixelCount?.toString(), "px"),
+                ConfigPreviewNugget("Pixel Format", pixelFormat?.name),
+                ConfigPreviewNugget("Gamma Correction", gammaCorrection?.toString(), "gamma")
             )
         }
 
