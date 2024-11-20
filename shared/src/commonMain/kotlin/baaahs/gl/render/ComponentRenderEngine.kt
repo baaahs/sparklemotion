@@ -12,8 +12,10 @@ import baaahs.gl.patch.LinkedProgram
 import baaahs.gl.result.ResultBuffer
 import baaahs.gl.result.ResultType
 import baaahs.util.Logger
+import baaahs.util.unixMillis
 import com.danielgergely.kgl.GL_COLOR_BUFFER_BIT
 import com.danielgergely.kgl.GL_DEPTH_BUFFER_BIT
+import kotlinx.datetime.Clock
 import kotlin.math.max
 import kotlin.math.min
 
@@ -62,7 +64,7 @@ class ComponentRenderEngine(
         val rects = mapFixtureComponentsToRects(
             nextComponentOffset,
             maxFramebufferWidth,
-            fixture
+            fixture.componentCount
         )
         val renderTarget = FixtureRenderTarget(
             fixture, nextRectOffset, rects, fixture.componentCount, nextComponentOffset, resultStorage,
@@ -109,7 +111,11 @@ class ComponentRenderEngine(
 
     override fun render() {
         gl.setViewport(0, 0, arrangement.pixWidth, arrangement.pixHeight)
-        gl.check { clearColor(.1f, .5f, 0f, 1f) }
+        if ((Clock.System.now().unixMillis % 1000) < 500) {
+            gl.check { clearColor(0f, 0f, 1/255f, 1f) }
+        } else {
+            gl.check { clearColor(0f, 0f, 0f, 1f) }
+        }
         gl.check { clear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) }
 
         arrangement.render()
@@ -160,7 +166,7 @@ class ComponentRenderEngine(
     }
 
     val Int.bufWidth: Int get() = max(minTextureWidth, min(this, maxFramebufferWidth))
-    val Int.bufHeight: Int get() = this / maxFramebufferWidth + 1
+    val Int.bufHeight: Int get() = (this - 1) / maxFramebufferWidth + 1
     val Int.bufSize: Int get() = bufWidth * bufHeight
 
     inner class Arrangement(val componentCount: Int, addedRenderTargets: List<FixtureRenderTarget>) {
@@ -232,11 +238,23 @@ class ComponentRenderEngine(
         private val logger = Logger<ComponentRenderEngine>()
         private const val fbMaxPixWidth = 1024
 
-        /** Resulting Rect is in pixel coordinates starting at (0,0) with Y increasing. */
-        internal fun mapFixtureComponentsToRects(nextPix: Int, pixWidth: Int, fixture: Fixture): List<Quad.Rect> {
-            fun makeQuad(offsetPix: Int, widthPix: Int): Quad.Rect {
-                val xStartPixel = offsetPix % pixWidth
-                val yStartPixel = offsetPix / pixWidth
+        /**
+         * Resulting Rects represent render coordinates which cover the pixels
+         * corresponding to a fixture.
+         *
+         * @param startPix the pixel index for the start of the first component
+         * @param fbPixWidth the width of the framebuffer in pixels
+         * @param componentCount the number of components to map
+         * @return a list of Rects corresponding to the components to the framebuffer
+         **/
+        internal fun mapFixtureComponentsToRects(
+            startPix: Int,
+            fbPixWidth: Int,
+            componentCount: Int
+        ): List<Quad.Rect> {
+            fun makeRect(offsetPix: Int, widthPix: Int): Quad.Rect {
+                val xStartPixel = offsetPix % fbPixWidth
+                val yStartPixel = offsetPix / fbPixWidth
                 val xEndPixel = xStartPixel + widthPix
                 val yEndPixel = yStartPixel + 1
                 return Quad.Rect(
@@ -247,18 +265,31 @@ class ComponentRenderEngine(
                 )
             }
 
-            var nextComponentOffset = nextPix
-            var componentsLeft = fixture.componentCount
+            fun Quad.Rect.isFullRow(): Boolean =
+                left == 0f && right == fbPixWidth.toFloat()
+            fun Quad.Rect.addRow(): Quad.Rect =
+                Quad.Rect(top, left, bottom + 1, right)
+
+            var nextComponentOffset = startPix
+            var componentsLeft = componentCount
             val rects = mutableListOf<Quad.Rect>()
+            var priorRect: Quad.Rect? = null
             while (componentsLeft > 0) {
-                val rowPixelOffset = nextComponentOffset % pixWidth
-                val rowPixelsLeft = pixWidth - rowPixelOffset
+                val rowPixelOffset = nextComponentOffset % fbPixWidth
+                val rowPixelsLeft = fbPixWidth - rowPixelOffset
                 val rowPixelsTaken = min(componentsLeft, rowPixelsLeft)
-                rects.add(makeQuad(nextComponentOffset, rowPixelsTaken))
+                val nextRect = makeRect(nextComponentOffset, rowPixelsTaken)
+                if (priorRect?.isFullRow() == true && nextRect.isFullRow()) {
+                    priorRect = priorRect.addRow()
+                } else {
+                    if (priorRect != null) rects.add(priorRect)
+                    priorRect = nextRect
+                }
 
                 nextComponentOffset += rowPixelsTaken
                 componentsLeft -= rowPixelsTaken
             }
+            if (priorRect != null) rects.add(priorRect)
             return rects
         }
 

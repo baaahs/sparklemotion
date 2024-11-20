@@ -25,7 +25,11 @@ class Quad(private val gl: GlContext, rects: List<Rect>) {
     init {
         gl.check { bindVertexArray(vao) }
         gl.check { bindBuffer(GL_ARRAY_BUFFER, quadVertexBuffer) }
-        gl.check { bufferData(GL_ARRAY_BUFFER, sourceData, vertices.size, GL_STATIC_DRAW) }
+        if (vertices.isNotEmpty()) {
+            // Buffer size is ignored by kgl on WebGL and JVM (it's calculated from the buffer) but required for native.
+            val bufferSize = vertices.size * BYTES_PER_FLOAT
+            gl.check { bufferData(GL_ARRAY_BUFFER, sourceData, bufferSize, GL_STATIC_DRAW) }
+        }
         gl.check { bindBuffer(GL_ARRAY_BUFFER, null) }
         gl.check { bindVertexArray(null) }
     }
@@ -68,5 +72,7 @@ class Quad(private val gl: GlContext, rects: List<Rect>) {
 
     companion object {
         val quadRect2x2 = Rect(1f, -1f, -1f, 1f)
+
+        const val BYTES_PER_FLOAT = 4
     }
 }
