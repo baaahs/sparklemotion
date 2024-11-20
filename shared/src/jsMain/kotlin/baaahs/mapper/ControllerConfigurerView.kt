@@ -1,6 +1,5 @@
 package baaahs.mapper
 
-import `<dynamic>`.set
 import baaahs.app.ui.appContext
 import baaahs.controller.ControllerId
 import baaahs.controller.ControllerMatcher
@@ -12,7 +11,9 @@ import baaahs.ui.components.DetailRenderer
 import baaahs.ui.components.ListRenderer
 import baaahs.ui.components.listAndDetail
 import js.objects.jso
+import kotlinx.css.Color
 import kotlinx.css.RuleSet
+import kotlinx.css.color
 import materialui.icon
 import mui.icons.material.Search
 import mui.material.*
@@ -21,9 +22,12 @@ import react.*
 import react.dom.div
 import react.dom.header
 import react.dom.html.ReactHTML.span
+import react.dom.li
+import styled.inlineStyles
 import web.cssom.Padding
 import web.cssom.Transition
 import web.cssom.em
+import web.cssom.pct
 import web.html.HTMLElement
 import web.html.HTMLInputElement
 
@@ -109,15 +113,8 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
 
                     TableHead {
                         TableRow {
-//                            TableCell { +"Type" }
-                            TableCell { +"ID" }
-                            TableCell { +"Address" }
-//                    TableCell { +"Model Element" }
-//                    TableCell { +"Pixels" }
-//                    TableCell { +"Mapped" }
-                            TableCell { +"Status" }
-                            TableCell { +"Firmware" }
-                            TableCell { +"Last Error" }
+                            TableCell { +"" } // Status icon
+                            TableCell { +"Name" }
                             TableCell { +"Fixtures" }
                         }
                     }
@@ -131,7 +128,7 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                                 if (controllerId.controllerType != lastControllerType) {
                                     TableRow {
                                         TableCell {
-                                            attrs.colSpan = 6
+                                            attrs.colSpan = 3
                                             attrs.sx { padding = Padding(0.em, 0.em) }
                                             header(+styles.navigatorPaneHeader) {
                                                 +controllerId.controllerType
@@ -147,36 +144,29 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                                     attrs.onClick = handleControllerSelect
                                     attrs.asDynamic()["data-controller-id"] = controllerId.name()
 
-                                    TableCell { +(state?.title ?: mutableController?.title ?: "Unnamed Controller") }
-                                    TableCell { +(state?.address ?: "None") }
-//                            TableCell { +(brainData.modelEntity ?: "Anonymous") }
-//                            TableCell { +brainData.pixelCount.toString() }
-//                            TableCell { +brainData.mappedPixelCount.toString() }
                                     TableCell {
-                                        val onlineSince = state?.onlineSince
-                                        if (onlineSince != null) {
-                                            +"Online"
+                                        attrs.align = TableCellAlign.center
+                                        attrs.sx { width = 1.pct }
 
-                                            attrs.title = "Online since $onlineSince"
-                                        } else {
-                                            +"Offline"
+                                        div(+styles.statusDot) {
+                                            inlineStyles {
+                                                color = when {
+                                                    state?.lastErrorAt != null -> Color.red
+                                                    state?.onlineSince != null -> Color.green
+                                                    else -> Color.grey
+                                                }
+                                            }
                                         }
                                     }
-                                    TableCell { +(state?.firmwareVersion ?: "") }
+
                                     TableCell {
-                                        +(state?.lastErrorMessage ?: "")
-                                        state?.lastErrorAt?.let { +" at $it" }
+                                        +(state?.title ?: mutableController?.title ?: "Unnamed Controller")
                                     }
 
                                     TableCell {
                                         fixtureInfos[controllerId]?.forEach { fixtureInfo ->
-                                            span {
-                                                attrs.title = run {
-                                                    fixtureInfo.entityId?.let {
-                                                        props.mutableScene.model.findById(it)?.title
-                                                    } ?: "[anonymous]"
-                                                }
-                                                +(fixtureInfo.entityId ?: "[anonymous]")
+                                            li(+styles.fixtureListItem) {
+                                                +(fixtureInfo.entityName ?: "[anonymous]")
                                             }
                                         }
                                     }
@@ -186,7 +176,7 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
 
                         TableRow {
                             TableCell {
-                                attrs.colSpan = 6
+                                attrs.colSpan = 3
 
                                 div(+styles.navigatorPaneActions) {
                                     Button {

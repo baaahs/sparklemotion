@@ -42,7 +42,7 @@ private val FixtureConfigurerView = xComponent<FixtureConfigurerProps>("FixtureC
                     .forEach { fixtureInfo ->
                         TableRow {
                             TableCell { +fixtureInfo.name }
-                            TableCell { +(fixtureInfo.entityId ?: "Anonymous") }
+                            TableCell { +(fixtureInfo.entityName ?: "Anonymous") }
                             TableCell { +fixtureInfo.controllerId.name() }
                             TableCell { +fixtureInfo.transportConfig.toString() }
                             TableCell { +"?" }
