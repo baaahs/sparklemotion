@@ -228,34 +228,36 @@ private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props -
                 ButtonGroup {
                     attrs.className = -themeStyles.appToolbarButtonGroup
 
-                    if (showProblemsSeverity != null) {
-                        Tooltip {
-                            attrs.title = "Show Problems".asTextNode()
+                    if (props.appMode == AppMode.Show) {
+                        if (showProblemsSeverity != null) {
+                            Tooltip {
+                                attrs.title = "Show Problems".asTextNode()
 
-                            IconButton {
-                                attrs.className = -themeStyles.appToolbarProblemsIcon
-                                Link {
-                                    attrs.className = ClassName(showProblemsSeverity.cssClass)
-                                    attrs.onClick = toggleProblems.withMouseEvent()
-                                    icon(showProblemsSeverity.icon)
-                                }
+                                IconButton {
+                                    attrs.className = -themeStyles.appToolbarProblemsIcon
+                                    Link {
+                                        attrs.className = ClassName(showProblemsSeverity.cssClass)
+                                        attrs.onClick = toggleProblems.withMouseEvent()
+                                        icon(showProblemsSeverity.icon)
+                                    }
 
-                                mui.material.Badge {
-                                    attrs.sx = jso { height = 50.pct }
-                                    attrs.badgeContent =
-                                        showManager.showProblems.size.toString().asTextNode()
+                                    mui.material.Badge {
+                                        attrs.sx = jso { height = 50.pct }
+                                        attrs.badgeContent =
+                                            showManager.showProblems.size.toString().asTextNode()
+                                    }
                                 }
                             }
                         }
+
+                        if (appContext.uiSettings.developerMode) {
+                            devModeToolbarMenu {}
+                        }
+
+                        displaySettings {}
+
+                        fullScreenToggleButton {}
                     }
-
-                    if (appContext.uiSettings.developerMode) {
-                        devModeToolbarMenu {}
-                    }
-
-                    displaySettings {}
-
-                    fullScreenToggleButton {}
 
                     help {
                         attrs.divClass = themeStyles.appToolbarHelpIcon.name
