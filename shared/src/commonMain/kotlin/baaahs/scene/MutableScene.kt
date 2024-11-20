@@ -198,6 +198,9 @@ abstract class MutableEntity(
     open fun findById(id: EntityId): MutableEntity? =
         if (this.id == id) this else null
 
+    fun matches(mutableEntityMatcher: MutableEntityMatcher): Boolean =
+        mutableEntityMatcher.matches(title, description)
+
     /** @return `true` if `mutableEntity` was found and deleted. */
     open fun delete(mutableEntity: MutableEntity): Boolean = false
 
@@ -440,4 +443,22 @@ interface MutableTransportConfig {
     fun build(): TransportConfig
     fun getEditorView(editingController: EditingController<*>): View
     fun toSummaryString(): String
+}
+
+class MutableEntityMatcher(val searchString: String = "") {
+    private val searchTerms = searchString.lowercase().split(" ")
+
+    fun matches(
+        mutableEntity: MutableEntity?
+    ): Boolean {
+        if (searchTerms.isEmpty()) return true
+
+        return mutableEntity?.matches(this) == true
+    }
+
+    fun matches(vararg s: String?): Boolean {
+        return s.filterNotNull().any { searchTarget ->
+            searchTerms.any { searchTarget.lowercase().contains(it) }
+        }
+    }
 }

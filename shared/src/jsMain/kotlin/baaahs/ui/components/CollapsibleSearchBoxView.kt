@@ -52,6 +52,10 @@ private val CollapsibleSearchBoxView = xComponent<CollapsibleSearchBoxProps>("Co
     val handleSearchCancel by mouseEventHandler(props.onSearchCancel) { _ ->
         props.onSearchCancel?.invoke()
     }
+    val handleFocus by focusEventHandler { _ -> searchFieldFocused = true }
+    val handleBlur by focusEventHandler { _ -> searchFieldFocused = false }
+
+    val isSearching = props.isSearching == true
 
     FormControl {
         attrs.className = -styles.searchBoxFormControl
@@ -63,25 +67,21 @@ private val CollapsibleSearchBoxView = xComponent<CollapsibleSearchBoxProps>("Co
                 val isOpen = searchFieldFocused || props.searchString?.isNotBlank() == true
                 width = if (isOpen) 15.em else 3.em
                 backgroundColor = if (isOpen) rgba(0, 0, 0, 0.25).asColor() else rgba(0, 0, 0, 0.0).asColor()
-                transition = "width 300ms, backgrond-color 300ms".unsafeCast<Transition>()
+                transition = "width 300ms, background-color 300ms".unsafeCast<Transition>()
             }
             attrs.size = Size.small
             attrs.InputProps = jso {
-                endAdornment = buildElement {
-                    if (props.isSearching == true) {
-                        icon(Search)
-                    } else {
-                        StopCircle.create {
-                            this@jso.onClick = handleSearchCancel
-                        }
-                    }
+                endAdornment = if (isSearching) {
+                    StopCircle.create { this.onClick = handleSearchCancel }
+                } else {
+                    Search.create()
                 }
             }
             attrs.defaultValue = props.searchString
 
             attrs.onChange = handleSearchChange
-            attrs.onFocus = { _ -> searchFieldFocused = true }
-            attrs.onBlur = { _ -> searchFieldFocused = false }
+            attrs.onFocus = handleFocus
+            attrs.onBlur = handleBlur
         }
 
         props.helpText?.let {
@@ -91,12 +91,12 @@ private val CollapsibleSearchBoxView = xComponent<CollapsibleSearchBoxProps>("Co
 }
 
 external interface CollapsibleSearchBoxProps : Props {
-    var helpText: ReactElement<*>?
     var searchString: String?
     var isSearching: Boolean?
     var onSearchChange: ((String) -> Unit)?
     var onSearchRequest: ((String) -> Unit)?
     var onSearchCancel: (() -> Unit)?
+    var helpText: ReactElement<*>?
 }
 
 fun RBuilder.collapsibleSearchBox(handler: RHandler<CollapsibleSearchBoxProps>) =
