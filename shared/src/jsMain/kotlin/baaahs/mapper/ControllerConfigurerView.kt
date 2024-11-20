@@ -4,8 +4,10 @@ import baaahs.app.ui.appContext
 import baaahs.controller.ControllerId
 import baaahs.controller.ControllerMatcher
 import baaahs.controller.SacnManager
+import baaahs.dmx.DmxManager
 import baaahs.fixtures.FixtureInfo
 import baaahs.scene.MutableScene
+import baaahs.sm.brain.BrainManager
 import baaahs.ui.*
 import baaahs.ui.components.DetailRenderer
 import baaahs.ui.components.ListRenderer
@@ -21,6 +23,7 @@ import mui.system.sx
 import react.*
 import react.dom.div
 import react.dom.header
+import react.dom.html.ReactHTML.img
 import react.dom.html.ReactHTML.span
 import react.dom.li
 import styled.inlineStyles
@@ -160,6 +163,17 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                                     }
 
                                     TableCell {
+                                        img {
+                                            attrs.className = -styles.controllerIcon
+                                            attrs.src = "/assets/controllers/${
+                                                when (controllerId.controllerType) {
+                                                    BrainManager.controllerTypeName -> "baaahs-brain.svg"
+                                                    DmxManager.controllerTypeName -> "dmx.svg"
+                                                    SacnManager.controllerTypeName -> "sacn.svg"
+                                                    else -> "unknown.svg"
+                                                }
+                                            }"
+                                        }
                                         +(state?.title ?: mutableController?.title ?: "Unnamed Controller")
                                     }
 

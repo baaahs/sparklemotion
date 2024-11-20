@@ -61,6 +61,13 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
         display = Display.inlineBlock
     }
 
+    val controllerIcon by css {
+        width = 1.5.em
+        marginRight = 1.em
+        verticalAlign = VerticalAlign.middle
+        marginLeft = (-1).em
+    }
+
     val fixtureListItem by css {
         listStyleType = ListStyleType.circle
     }

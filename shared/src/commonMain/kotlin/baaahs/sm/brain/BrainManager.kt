@@ -288,6 +288,8 @@ class BrainManager(
 
     companion object : ControllerManager.Meta {
         override val controllerTypeName: String = "Brain"
+        override val controllerIcon: String
+            get() = "baaahs-brain.svg"
 
         val waitPeriodAfterNetworkError = 5.seconds
 

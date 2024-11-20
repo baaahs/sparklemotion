@@ -22,6 +22,9 @@ interface DmxManager {
     companion object : ControllerManager.Meta {
         override val controllerTypeName: String
             get() = "DMX"
+        override val controllerIcon: String
+            get() = "dmx.svg"
+
         internal val logger = Logger<DmxManager>()
 
         override fun createMutableControllerConfigFor(
