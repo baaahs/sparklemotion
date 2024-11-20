@@ -2,12 +2,26 @@ package baaahs.ui.components
 
 import baaahs.app.ui.StyleConstants
 import baaahs.ui.asColor
+import baaahs.ui.important
 import kotlinx.css.*
 import kotlinx.css.properties.TextDecoration
 import mui.material.styles.Theme
 import styled.StyleSheet
 
-class ListAndDetailStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor", isStatic = true) {
+class CollapsibleSearchBoxStyles(val theme: Theme) : StyleSheet("ui-components-collapsible-search-box", isStatic = true) {
+    val searchBoxFormControl by css {
+        position = Position.absolute
+        right = 1.em
+        top = 4.px
+        flexDirection = FlexDirection.rowReverse
+        width = 15.em
+        fieldset {
+            borderColor = Color.transparent.important
+        }
+    }
+}
+
+class ListAndDetailStyles(val theme: Theme) : StyleSheet("ui-components-list-and-detail", isStatic = true) {
     val listSheetSmall by css {
         position = Position.relative
         display = Display.flex
