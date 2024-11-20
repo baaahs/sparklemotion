@@ -1,14 +1,17 @@
 package baaahs.ui.components
 
 import baaahs.app.ui.appContext
-import baaahs.ui.*
+import baaahs.ui.unaryMinus
+import baaahs.ui.unaryPlus
+import baaahs.ui.xComponent
 import materialui.icon
+import mui.icons.material.Close
 import mui.material.*
-import mui.material.Fade
-import mui.material.Link
-import mui.material.Paper
-import mui.material.SlideDirection
+import mui.material.styles.Theme
+import mui.material.styles.useTheme
+import mui.system.Breakpoint
 import mui.system.sx
+import mui.system.useMediaQuery
 import react.*
 import react.dom.div
 import react.dom.html.ReactHTML.header
@@ -21,6 +24,8 @@ import kotlin.time.Duration.Companion.milliseconds
 private val ListAndDetailView = xComponent<ListAndDetailProps<*>>("ListAndDetail") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.listAndDetail
+    val theme = useTheme<Theme>()
+    val isSmallScreen = useMediaQuery(theme.breakpoints.down(Breakpoint.md))
 
     val handleDeselect by mouseEventHandler(props.onDeselect) {
         props.onDeselect?.invoke()
@@ -42,52 +47,90 @@ private val ListAndDetailView = xComponent<ListAndDetailProps<*>>("ListAndDetail
         }
     }
 
-    Paper {
-        attrs.className = -styles.listSheet
+    if (isSmallScreen) {
+        Paper {
+            attrs.className = -styles.listSheetSmall
 
-        header {
-            Fade {
-                attrs.`in` = props.selection == null
+            header {
+                Fade {
+                    attrs.`in` = props.selection == null
+                    attrs.timeout = speedMs
+
+                    span { child(props.listHeader) }
+                }
+            }
+
+            with (props.listRenderer) { render() }
+
+            Slide {
+                attrs.direction = SlideDirection.left
+                attrs.`in` = props.selection != null
                 attrs.timeout = speedMs
 
-                span { child(props.listHeader) }
-            }
-        }
+                Paper {
+                    attrs.className = -styles.detailSheetSmall
 
-        with (props.listRenderer) {
-            render()
-        }
+                    header {
+                        attrs.className = -styles.detailHeader
 
-        Slide {
-            attrs.direction = SlideDirection.left
-            attrs.`in` = props.selection != null
-            attrs.timeout = speedMs
-
-            Paper {
-                attrs.className = -styles.detailSheet
-
-                header {
-                    attrs.className = -styles.detailHeader
-
-                    Link {
-                        attrs.onClick = handleDeselect
-                        icon(mui.icons.material.ArrowBackIosNew) {
-                            this.sx {
-                                verticalAlign = VerticalAlign.middle
-                                paddingBottom = 2.px
+                        Link {
+                            attrs.onClick = handleDeselect
+                            icon(mui.icons.material.ArrowBackIosNew) {
+                                this.sx {
+                                    verticalAlign = VerticalAlign.middle
+                                    paddingBottom = 2.px
+                                }
                             }
+
+                            +props.listHeaderText
                         }
 
-                        +props.listHeaderText
+                        +(cachedDetailHeader ?: "")
                     }
 
-                    +(cachedDetailHeader ?: "")
+                    div(+styles.detailContent) {
+                        cachedSelection?.let { selection ->
+                            with (props.detailRenderer) {
+                                render(selection.unsafeCast<Nothing>())
+                            }
+                        }
+                    }
                 }
+            }
+        }
+    } else {
+        div(+styles.containerLarge) {
+            Paper {
+                attrs.className = -styles.listLarge
 
-                div(+styles.detailContent) {
-                    cachedSelection?.let { selection ->
-                        with (props.detailRenderer) {
-                            render(selection.unsafeCast<Nothing>())
+                header { span { child(props.listHeader) } }
+
+                Paper { with (props.listRenderer) { render() } }
+            }
+
+            Paper {
+                attrs.className = -styles.detailLarge
+
+                if (props.selection != null) {
+                    header {
+                        attrs.className = -styles.detailHeader
+                        +(cachedDetailHeader ?: "")
+
+                        Button {
+                            attrs.sx {
+                                float = web.cssom.Float.right
+                                marginTop = 5.px
+                            }
+                            attrs.onClick = handleDeselect
+                            icon(Close)
+                        }
+                    }
+
+                    div(+styles.detailContent) {
+                        cachedSelection?.let { selection ->
+                            with (props.detailRenderer) {
+                                render(selection.unsafeCast<Nothing>())
+                            }
                         }
                     }
                 }
