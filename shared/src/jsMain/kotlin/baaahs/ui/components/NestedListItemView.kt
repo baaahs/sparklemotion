@@ -30,6 +30,7 @@ private val NestedListItemView = xComponent<NestedListItemProps>("NestedListItem
         attrs.key = props.getKey?.invoke(props.item.item!!)
         attrs.dense = true
         attrs.selected = props.item.isSelected
+        attrs.disabled = props.disabled == true
         attrs.autoFocus = props.item.isSelected
         attrs.onFocus = handleFocus
         attrs.onClick = handleClick
@@ -73,6 +74,7 @@ external interface NestedListItemProps : PropsWithChildren {
     var item: NestedListItem<*>
     var getKey: ((Any) -> String?)?
     var renderer: Renderer<*>
+    var disabled: Boolean?
     var nestLevel: Int
     var onFocus: ((NestedListItem<*>?) -> Unit)?
     var onSelect: ((NestedListItem<*>?) -> Unit)?

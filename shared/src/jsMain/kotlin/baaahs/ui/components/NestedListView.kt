@@ -68,10 +68,15 @@ private val NestedListView = xComponent<NestedListProps<*>>("NestedList") { prop
 
     fun RBuilder.renderItems(items: List<NestedListItem<*>>, nestLevel: Int = 0) {
         items.forEach { item ->
+            val searchMatcher = props.searchMatcher
+            val matchesSearch = searchMatcher == null
+                    || searchMatcher(item.item.unsafeCast<Nothing>())
+
             nestedListItem {
                 attrs.item = item
                 attrs.getKey = props.getKey.unsafeCast<(Any) -> String?>()
                 attrs.renderer = props.renderer
+                attrs.disabled = !matchesSearch
                 attrs.nestLevel = nestLevel
                 attrs.onFocus = handleListItemFocus
                 attrs.onSelect = handleListItemSelect
@@ -97,6 +102,7 @@ external interface NestedListProps<T> : Props {
     var renderer: Renderer<T>
     var onFocus: ((T?) -> Unit)?
     var onSelect: ((T?) -> Unit)?
+    var searchMatcher: ((T) -> Boolean)?
 }
 
 fun interface Renderer<T> {

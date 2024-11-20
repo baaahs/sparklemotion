@@ -46,10 +46,10 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
     val fixtureInfos = sceneEditorClient.fixtures.groupBy(FixtureInfo::controllerId)
     val allControllerIds = (mutableControllers.keys + controllerStates.keys).sorted()
 
-    var controllerMatcher by state { ControllerMatcher("") }
+    var controllerMatcher by state { ControllerMatcher() }
     val handleSearchChange by handler { value: String -> controllerMatcher = ControllerMatcher(value) }
     val handleSearchRequest by handler { value: String -> }
-    val handleSearchCancel by handler { controllerMatcher = ControllerMatcher("") }
+    val handleSearchCancel by handler { controllerMatcher = ControllerMatcher() }
 
     var selectedController by state<ControllerId?> { null }
     val handleControllerSelect by mouseEventHandler { event ->
