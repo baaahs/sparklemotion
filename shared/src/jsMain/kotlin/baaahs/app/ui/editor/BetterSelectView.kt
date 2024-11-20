@@ -32,6 +32,7 @@ private val BetterSelectView = xComponent<BetterSelectProps<Any?>>("BetterSelect
 
     FormControl {
         attrs.margin = FormControlMargin.dense
+        attrs.fullWidth = props.fullWidth ?: false
 
         props.label?.let { label ->
             InputLabel {
@@ -83,6 +84,7 @@ external interface BetterSelectProps<T: Any?> : Props {
     var renderValueSelected: ((T) -> ReactNode)?
     var value: T
     var onChange: (T) -> Unit
+    var fullWidth: Boolean?
 }
 
 fun <T : Any?> RBuilder.betterSelect(handler: RHandler<BetterSelectProps<T>>) =

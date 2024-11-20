@@ -5,7 +5,6 @@ import baaahs.ui.*
 import kotlinx.css.*
 import kotlinx.css.properties.*
 import mui.material.styles.Theme
-import mui.system.Breakpoint
 import styled.StyleSheet
 import baaahs.app.ui.controls.Styles as ControlsStyles
 
@@ -112,7 +111,7 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
             whiteSpace = WhiteSpace.pre
             marginRight = .75.em
 
-            theme.breakpoints.down(Breakpoint.sm)() {
+            theme.isSmallScreen {
                 fontSize = .9.rem
             }
         }
@@ -322,10 +321,24 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
     val showTabs by css {
         background = theme.palette.background.paper
     }
+
+    val sceneEditorTabs by css {
+        backgroundColor = theme.palette.text.primary.asColor()
+            .withAlpha(.125).blend(Color(theme.palette.background.paper))
+    }
+
+    val sceneEditorTabSelected by css {
+        backgroundColor = theme.palette.text.secondary.asColor()
+            .withAlpha(.35).blend(Color(theme.palette.background.paper))
+            .important
+    }
 }
 
 object Styles : StyleSheet("app-ui", isStatic = true) {
-    val adminRoot by css {
+    val isSmallScreen by css {}
+    val isNotSmallScreen by css {}
+
+    val sceneEditorRoot by css {
         display = Display.flex
 
         top = 0.px
@@ -338,7 +351,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         overflow = Overflow.hidden
     }
 
-    val adminTabPanel by css {
+    val sceneEditorTabPanel by css {
         overflow = Overflow.hidden
         flex = Flex.GROW_SHRINK
     }
@@ -594,6 +607,10 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
 
         button {
             fontFamily = "inherit"
+        }
+
+        ".${isSmallScreen.name} .${sceneEditorRoot.name}" {
+            flexDirection = FlexDirection.columnReverse
         }
 
         ".${editModeOn.name}.${unplacedControlsPalette.name}" {

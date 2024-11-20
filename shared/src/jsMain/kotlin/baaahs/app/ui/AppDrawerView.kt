@@ -9,7 +9,6 @@ import mui.icons.material.Article
 import mui.material.*
 import mui.material.styles.Theme
 import mui.material.styles.useTheme
-import mui.system.Breakpoint
 import mui.system.Direction
 import mui.system.useMediaQuery
 import react.*
@@ -22,7 +21,7 @@ import react.dom.span
 private val AppDrawerView = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props ->
     val appContext = useContext(appContext)
     val theme = useTheme<Theme>()
-    val isSmallScreen = useMediaQuery(theme.breakpoints.down(Breakpoint.sm))
+    val isSmallScreen = useMediaQuery(theme.isSmallScreen)
     val themeStyles = appContext.allStyles.appUi
     val documentManager = observe(props.documentManager)
     val openDocument = documentManager.openDocument

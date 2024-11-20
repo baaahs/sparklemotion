@@ -108,13 +108,43 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
         textTransform = TextTransform.none
     }
 
-    val expansionPanelRoot by css {
-        backgroundColor = theme.palette.primary.main.asColor()
+    val accordionPreview by css {
+        color = theme.palette.text.primary.asColor().withAlpha(.5)
+        paddingLeft = 1.em
+    }
+
+    val accordionDetails by css {
+        padding = Padding(0.px)
+    }
+
+    val previewChip by css {
+        display = Display.flex
+        flexDirection = column
+        alignItems = Align.center
+        lineHeight = 90.pct.lh
+
+        firstChild { }
+        lastChild { fontSize = .9.em }
+    }
+
+    val accordionRoot by css {
+        backgroundColor = theme.palette.primary.main.asColor().withAlpha(.125)
+        borderTopLeftRadius = 0.px.important
+        borderTopRightRadius = 0.px.important
+    }
+
+    val expansionPanelSummaryContent by css {
+        overflow = Overflow.hidden
+        justifyContent = JustifyContent.spaceBetween
+    }
+
+    val expansionPanelSummaryChips by css {
+        overflow = Overflow.scroll
     }
 
     val configCardOuter by css {
         backgroundColor = theme.palette.primary.main.asColor()
-            .withAlpha(.75).blend(Color(theme.palette.background.paper))
+            .withAlpha(.25).blend(Color(theme.palette.background.paper))
         padding = Padding(.5.em)
 
         adjacentSibling(".$name-configCardOuter") {

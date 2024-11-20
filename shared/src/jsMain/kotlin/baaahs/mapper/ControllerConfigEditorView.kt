@@ -43,6 +43,11 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
         props.onEdit()
     }
 
+    val handleDeleteFixtureMapping by handler(mutableControllerConfig, props.onEdit) { fixtureMapping: MutableFixtureMapping ->
+        mutableControllerConfig.fixtures.remove(fixtureMapping)
+        props.onEdit()
+    }
+
     Container {
         attrs.sx {
             paddingTop = 1.em
@@ -106,14 +111,22 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
             AccordionSummary {
                 attrs.expandIcon = ExpandMore.create()
                 Typography { +"Fixtures" }
+
+                Typography {
+                    attrs.className = -styles.accordionPreview
+                    +mutableControllerConfig.fixtures.joinToString(", ") {
+                        it.entity?.title ?: "Anonymous"
+                    }
+                }
             }
 
             AccordionDetails {
+                attrs.className = -styles.accordionDetails
                 val sceneBuilder = SceneBuilder()
-    val tempScene = props.mutableScene.build(sceneBuilder)
+                val tempScene = props.mutableScene.build(sceneBuilder)
                 val tempController = mutableControllerConfig.build(sceneBuilder)
-    val sceneOpener = SceneOpener(tempScene)
-        .also { it.open() }
+                val sceneOpener = SceneOpener(tempScene)
+                    .also { it.open() }
                 val fixturePreviews = tempController.buildFixturePreviews(sceneOpener)
                 mutableControllerConfig.fixtures.zip(fixturePreviews).forEach { (mutableFixtureMapping, fixturePreview) ->
                     fixtureMappingEditor {
@@ -122,16 +135,24 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
                         attrs.mutableFixtureMapping = mutableFixtureMapping
                         attrs.fixturePreview = fixturePreview
                         attrs.initiallyOpen = recentlyAddedFixtureMappingRef.current == mutableFixtureMapping
+                        attrs.onDelete = handleDeleteFixtureMapping
                     }
                 }
 
-                Button {
-                    attrs.className = -styles.button
-                    attrs.color = ButtonColor.secondary
-                    attrs.onClick = handleNewFixtureMappingClick
+                Paper {
+                    attrs.className = -styles.accordionRoot
 
-                    icon(mui.icons.material.AddCircleOutline)
-                    +"New…"
+                    Box {
+                        Button {
+                            attrs.className = -styles.button
+                            attrs.color = ButtonColor.secondary
+                            attrs.fullWidth = true
+                            attrs.onClick = handleNewFixtureMappingClick
+
+                            icon(mui.icons.material.AddCircleOutline)
+                            +"New Fixture Mapping…"
+                        }
+                    }
                 }
             }
         }
