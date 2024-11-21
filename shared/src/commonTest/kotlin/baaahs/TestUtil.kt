@@ -6,6 +6,7 @@ import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureTypeRenderPlan
 import baaahs.fixtures.NullTransport
 import baaahs.fixtures.ProgramRenderPlan
+import baaahs.geom.EulerAngle
 import baaahs.geom.Vector3F
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.openShader
@@ -92,11 +93,18 @@ fun testModelSurfaceData(
     vertices: List<Vector3F> = emptyList()
 ) = SurfaceDataForTest(name, name, expectedPixelCount = expectedPixelCount, vertices = vertices)
 
-fun entityDataForTest(name: String): EntityData {
+fun entityDataForTest(
+    name: String,
+    position: Vector3F = Vector3F.origin,
+    rotation: EulerAngle = EulerAngle.identity,
+    scale: Vector3F = Vector3F.unit3d
+): EntityData {
     val entityBuilders: List<() -> EntityData> = listOf(
-        { GridData(name, rows = 2, columns = 2, rowGap = 1f, columnGap = 1f) },
-        { LightRingData(name) },
-        { LightBarData(name, startVertex = Vector3F.origin, endVertex = Vector3F.unit3d) },
+        { GridData(name, rows = 2, columns = 2, rowGap = 1f, columnGap = 1f,
+            position = position, rotation = rotation, scale = scale) },
+        { LightRingData(name, position = position, rotation = rotation, scale = scale) },
+        { LightBarData(name, startVertex = Vector3F.origin, endVertex = Vector3F.unit3d,
+            position = position, rotation = rotation, scale = scale) },
     )
     return entityBuilders.random().invoke()
 }
