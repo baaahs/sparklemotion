@@ -19,7 +19,7 @@ class SceneOpener(
             error("Entity \"$id\" already exists in the scene.")
 
         val entityData = scene.entities.getBang(id, "entity")
-        val currentMatrix = accumulatedMatrix * entityData.transformation
+        val currentMatrix = accumulatedMatrix // TODO: multiply by entityData.transformation for children.
         return entityData.open(currentMatrix)
             .also { entityMap[id] = it }
     }
