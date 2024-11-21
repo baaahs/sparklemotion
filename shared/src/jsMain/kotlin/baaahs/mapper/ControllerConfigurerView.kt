@@ -9,16 +9,13 @@ import baaahs.fixtures.FixtureInfo
 import baaahs.scene.MutableScene
 import baaahs.sm.brain.BrainManager
 import baaahs.ui.*
-import baaahs.ui.components.DetailRenderer
-import baaahs.ui.components.ListRenderer
+import baaahs.ui.components.ListAndDetail
 import baaahs.ui.components.collapsibleSearchBox
 import baaahs.ui.components.listAndDetail
-import js.objects.jso
 import kotlinx.css.Color
 import kotlinx.css.RuleSet
 import kotlinx.css.color
 import materialui.icon
-import mui.icons.material.Search
 import mui.material.*
 import mui.system.sx
 import react.*
@@ -29,11 +26,9 @@ import react.dom.html.ReactHTML.span
 import react.dom.li
 import styled.inlineStyles
 import web.cssom.Padding
-import web.cssom.Transition
 import web.cssom.em
 import web.cssom.pct
 import web.html.HTMLElement
-import web.html.HTMLInputElement
 
 private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("ControllerConfigurer") { props ->
     val appContext = useContext(appContext)
@@ -77,7 +72,7 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
             }
         }
         attrs.listHeaderText = "Controllers".asTextNode()
-        attrs.listRenderer = ListRenderer {
+        attrs.listRenderer = ListAndDetail.ListRenderer {
             div(+styles.navigatorPaneContent) {
                 Table {
                     attrs.className = -styles.controllersTable
@@ -184,7 +179,7 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
         }
         attrs.selection = selectedController
         attrs.detailHeader = selectedController?.name()
-        attrs.detailRenderer = DetailRenderer { controller ->
+        attrs.detailRenderer = ListAndDetail.DetailRenderer { controller ->
             controllerConfigEditor {
                 attrs.mutableScene = props.mutableScene
                 attrs.controllerId = controller

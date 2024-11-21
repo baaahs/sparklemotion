@@ -26,7 +26,7 @@ class ListAndDetailStyles(val theme: Theme) : StyleSheet("ui-components-list-and
         position = Position.relative
         display = Display.flex
         flexDirection = FlexDirection.column
-        width = 100.vw
+        width = 100.pct
         height = 100.pct
     }
 
@@ -43,24 +43,38 @@ class ListAndDetailStyles(val theme: Theme) : StyleSheet("ui-components-list-and
 
     val containerLarge by css {
         display = Display.grid
-        gridTemplateColumns = GridTemplateColumns("2fr 3fr")
         gap = 1.em
         height = 100.pct
+    }
+
+    val containerXStacked by css {
+        gridTemplateColumns = GridTemplateColumns("1fr 1fr")
+        height = 100.pct
+    }
+
+    val containerYStacked by css {
+        gridTemplateRows = GridTemplateRows("1fr 2fr")
+        width = 100.pct
     }
 
     val listLarge by css {
         position = Position.relative
         display = Display.flex
         flexDirection = FlexDirection.column
+        overflow = Overflow.auto
     }
 
     val detailLarge by css {
         display = Display.flex
         flexDirection = FlexDirection.column
+        overflow = Overflow.auto
     }
 
     val detailContent by css {
         overflowY = Overflow.scroll
+        display = Display.flex
+        justifyContent = JustifyContent.center
+
     }
 
     val detailHeader by css {
