@@ -49,11 +49,13 @@ class ListAndDetailStyles(val theme: Theme) : StyleSheet("ui-components-list-and
 
     val containerXStacked by css {
         gridTemplateColumns = GridTemplateColumns("1fr 1fr")
+        gridTemplateRows = GridTemplateRows(100.pct)
         height = 100.pct
     }
 
     val containerYStacked by css {
         gridTemplateRows = GridTemplateRows("1fr 2fr")
+        gridTemplateColumns = GridTemplateColumns(GridAutoRows.auto)
         width = 100.pct
     }
 
@@ -67,14 +69,12 @@ class ListAndDetailStyles(val theme: Theme) : StyleSheet("ui-components-list-and
     val detailLarge by css {
         display = Display.flex
         flexDirection = FlexDirection.column
-        overflow = Overflow.auto
     }
 
     val detailContent by css {
-        overflowY = Overflow.scroll
         display = Display.flex
         justifyContent = JustifyContent.center
-
+        overflow = Overflow.auto
     }
 
     val detailHeader by css {
