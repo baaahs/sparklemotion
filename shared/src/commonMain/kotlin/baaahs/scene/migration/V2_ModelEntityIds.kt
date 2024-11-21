@@ -23,6 +23,7 @@ object V2_ModelEntityIds : DataMigrator.Migration(2) {
             // Migrate entities to dictionary in the scene.
             replaceJsonObj("model") { model ->
                 model.jsonObject.edit {
+                    val topLevelEntityIds = mutableListOf<String>()
                     (this["entities"] as JsonArray?)?.forEach { obj ->
                         val objMap = (obj as JsonObject).toMap()
                         val title = objMap["title"]?.jsonPrimitive?.contentOrNull
@@ -32,8 +33,10 @@ object V2_ModelEntityIds : DataMigrator.Migration(2) {
                         val id = entityIds.idFor(obj) { suggestedId }
                         entities[id] = obj
                         title?.let { entityIdsByName[it] = id }
+                        topLevelEntityIds.add(id)
                     }
                     this.remove("entities")
+                    this.put("entityIds", JsonArray(topLevelEntityIds.map { JsonPrimitive(it) }))
                 }
             }
             this["entities"] = JsonObject(entities)

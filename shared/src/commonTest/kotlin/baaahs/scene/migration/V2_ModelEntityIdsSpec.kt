@@ -66,7 +66,8 @@ class V2_ModelEntityIdsSpec : DescribeSpec({
                     """
                         {
                             "model": {
-                                "title": "Scene"
+                                "title": "Scene",
+                                "entityIds": ["djLightbox", "grid", "grid2"]
                             },
                             "controllers": {
                                 "SACN:main": {
