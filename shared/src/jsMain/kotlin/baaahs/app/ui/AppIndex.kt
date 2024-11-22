@@ -16,6 +16,7 @@ import baaahs.client.document.ShowManager
 import baaahs.gl.withCache
 import baaahs.mapper.JsMapperBuilder
 import baaahs.mapper.sceneEditor
+import baaahs.mapper.styleIf
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
 import baaahs.util.JsClock
@@ -26,6 +27,7 @@ import materialui.icon
 import mui.material.CssBaseline
 import mui.material.Paper
 import mui.material.styles.ThemeProvider
+import mui.system.useMediaQuery
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -50,6 +52,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         handleUiSettingsChange { it.copy(darkMode = !it.darkMode) }
     }
     val theme = if (darkMode) Themes.Dark else Themes.Light
+    val isSmallScreen = useMediaQuery(theme.isSmallScreen)
 
     val appMode = uiSettings.appMode
     val handleAppModeChange by handler(handleUiSettingsChange) { newAppMode: AppMode ->
@@ -226,7 +229,9 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                             attrs.onAppModeChange = handleAppModeChange
                         }
 
-                        div(+themeStyles.appContent) {
+                        div(+themeStyles.appContent and
+                                styleIf(isSmallScreen, Styles.isSmallScreen, Styles.isNotSmallScreen)
+                        ) {
                             ErrorBoundary {
                                 attrs.FallbackComponent = ErrorDisplay
 

@@ -17,6 +17,7 @@ interface ControllerManager {
 
     interface Meta {
         val controllerTypeName: String
+        val controllerIcon: String
 
         /**
          * A class of controllers may imply a certain fixture configuration, e.g. colors

@@ -6,6 +6,7 @@ import baaahs.app.ui.editor.ShowEditIntent
 import baaahs.app.ui.settings.displaySettings
 import baaahs.app.ui.settings.fullScreenToggleButton
 import baaahs.client.document.DocumentManager
+import baaahs.client.document.SceneManager
 import baaahs.sm.webapi.Severity
 import baaahs.ui.*
 import js.objects.jso
@@ -22,7 +23,6 @@ import mui.material.Link
 import mui.material.Tab
 import mui.material.styles.Theme
 import mui.material.styles.useTheme
-import mui.system.Breakpoint
 import mui.system.useMediaQuery
 import react.*
 import react.dom.div
@@ -35,7 +35,7 @@ import web.cssom.pct
 private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props ->
     val appContext = useContext(appContext)
     val theme = useTheme<Theme>()
-    val isSmallScreen = useMediaQuery(theme.breakpoints.down(Breakpoint.sm))
+    val isSmallScreen = useMediaQuery(theme.isSmallScreen)
     val themeStyles = appContext.allStyles.appUi
 
     val showManager = appContext.showManager
@@ -174,7 +174,7 @@ private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props -
                             +"Redo"
                         }
 
-                        if (props.appMode == AppMode.Scene) {
+                        if (!SceneManager.AUTO_SYNC && props.appMode == AppMode.Scene) {
                             Button {
                                 attrs.startIcon = +Sync
                                 attrs.disabled = documentManager.isSynced
@@ -229,34 +229,36 @@ private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props -
                 ButtonGroup {
                     attrs.className = -themeStyles.appToolbarButtonGroup
 
-                    if (showProblemsSeverity != null) {
-                        Tooltip {
-                            attrs.title = "Show Problems".asTextNode()
+                    if (props.appMode == AppMode.Show) {
+                        if (showProblemsSeverity != null) {
+                            Tooltip {
+                                attrs.title = "Show Problems".asTextNode()
 
-                            IconButton {
-                                attrs.className = -themeStyles.appToolbarProblemsIcon
-                                Link {
-                                    attrs.className = ClassName(showProblemsSeverity.cssClass)
-                                    attrs.onClick = toggleProblems.withMouseEvent()
-                                    icon(showProblemsSeverity.icon)
-                                }
+                                IconButton {
+                                    attrs.className = -themeStyles.appToolbarProblemsIcon
+                                    Link {
+                                        attrs.className = ClassName(showProblemsSeverity.cssClass)
+                                        attrs.onClick = toggleProblems.withMouseEvent()
+                                        icon(showProblemsSeverity.icon)
+                                    }
 
-                                mui.material.Badge {
-                                    attrs.sx = jso { height = 50.pct }
-                                    attrs.badgeContent =
-                                        showManager.showProblems.size.toString().asTextNode()
+                                    mui.material.Badge {
+                                        attrs.sx = jso { height = 50.pct }
+                                        attrs.badgeContent =
+                                            showManager.showProblems.size.toString().asTextNode()
+                                    }
                                 }
                             }
                         }
+
+                        if (appContext.uiSettings.developerMode) {
+                            devModeToolbarMenu {}
+                        }
+
+                        displaySettings {}
+
+                        fullScreenToggleButton {}
                     }
-
-                    if (appContext.uiSettings.developerMode) {
-                        devModeToolbarMenu {}
-                    }
-
-                    displaySettings {}
-
-                    fullScreenToggleButton {}
 
                     help {
                         attrs.divClass = themeStyles.appToolbarHelpIcon.name

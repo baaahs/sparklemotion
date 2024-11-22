@@ -166,6 +166,8 @@ class SacnManager(
 
     companion object : ControllerManager.Meta {
         override val controllerTypeName = "SACN"
+        override val controllerIcon: String
+            get() = "sacn.svg"
 
         private val logger = Logger<SacnManager>()
         private val json = Json {

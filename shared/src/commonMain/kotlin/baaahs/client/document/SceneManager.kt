@@ -135,7 +135,7 @@ class SceneManager(
             if (!retainMutableDocument)
                 this@SceneManager.mutableScene = null
 
-            super.onEdit(document, documentState, pushToUndoStack, false)
+            super.onEdit(document, documentState, pushToUndoStack, AUTO_SYNC)
         }
 
         override fun onEdit(mutableDocument: MutableDocument<Scene>, pushToUndoStack: Boolean) {
@@ -155,5 +155,9 @@ class SceneManager(
         fun onEdit(pushToUndoStack: Boolean = true) {
             onEdit(mutableScene, pushToUndoStack)
         }
+    }
+
+    companion object {
+        const val AUTO_SYNC = true
     }
 }

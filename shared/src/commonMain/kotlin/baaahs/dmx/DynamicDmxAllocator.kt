@@ -1,6 +1,7 @@
 package baaahs.dmx
 
 import baaahs.fixtures.ConfigPreview
+import baaahs.fixtures.ConfigPreviewNugget
 import baaahs.io.ByteArrayWriter
 import kotlin.math.max
 import kotlin.math.min
@@ -158,10 +159,12 @@ data class StaticDmxMapping(
     }
 
     fun preview(dmxUniverses: DmxUniverses): ConfigPreview = object : ConfigPreview {
-        override fun summary(): List<Pair<String, String?>> = listOf(
-            "Start" to dmxUniverses.describeChannel(startChannel),
-            "End" to dmxUniverses.describeChannel(
-                calculateEndChannel(dmxUniverses.channelsPerUniverse)
+        override fun summary(): List<ConfigPreviewNugget> = listOf(
+            ConfigPreviewNugget("Start", dmxUniverses.describeChannel(startChannel), "start"),
+            ConfigPreviewNugget(
+                "End", dmxUniverses.describeChannel(
+                    calculateEndChannel(dmxUniverses.channelsPerUniverse)
+                ), "end"
             )
         )
     }

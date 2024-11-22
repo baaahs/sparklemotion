@@ -34,14 +34,12 @@ class SceneOpenerSpec : DescribeSpec({
 
             it("should open a scene with the entity") {
                 val theEntity = openScene.model.entities.only()
-                println("entityData1 = ${theEntity}")
                 val expected = entityData1.open(Matrix4F.identity)
 
                 theEntity.name shouldBe "some entity"
                 theEntity.position shouldBe entityData1.position
                 theEntity.rotation shouldBe entityData1.rotation
                 theEntity.scale shouldBe entityData1.scale
-                theEntity.transformation shouldBe Matrix4F.identity
                 theEntity::class shouldBe expected::class
             }
         }

@@ -38,6 +38,7 @@ private val FixtureConfigPickerView = xComponent<FixtureConfigPickerProps>("Fixt
             attrs.value = fixtureConfig?.fixtureType
             attrs.renderValueOption = { o -> (o?.title ?: "Default").asTextNode() }
             attrs.onChange = handleFixtureTypeChange
+            attrs.fullWidth = true
         }
 
         if (fixtureConfig != null) {

@@ -15,6 +15,7 @@ import mui.material.Typography
 import mui.material.TypographyProps
 import mui.material.styles.Theme
 import mui.material.styles.TypographyVariant
+import mui.system.Breakpoint
 import react.*
 import react.dom.RDOMBuilder
 import react.dom.events.*
@@ -284,6 +285,8 @@ fun Theme.paperContrast(amount: Double) =
 val Theme.paperLowContrast get() = paperContrast(.25)
 val Theme.paperMediumContrast get() = paperContrast(.5)
 val Theme.paperHighContrast get() = paperContrast(.75)
+
+val Theme.isSmallScreen: String get() = breakpoints.down(Breakpoint.sm)
 
 fun HTMLElement.fitText() {
     val parentEl = parentElement!!

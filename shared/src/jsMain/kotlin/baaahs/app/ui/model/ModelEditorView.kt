@@ -1,35 +1,43 @@
 package baaahs.app.ui.model
 
 import baaahs.app.ui.appContext
+import baaahs.mapper.styleIf
 import baaahs.model.EntityData
 import baaahs.model.Model
+import baaahs.scene.EditingEntity
 import baaahs.scene.MutableEntity
 import baaahs.scene.MutableEntityGroup
+import baaahs.scene.MutableEntityMatcher
 import baaahs.scene.MutableScene
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.SimulationEnv
 import baaahs.ui.*
+import baaahs.ui.components.ListAndDetail
+import baaahs.ui.components.ListAndDetail.Orientation.*
 import baaahs.ui.components.NestedList
 import baaahs.ui.components.Renderer
+import baaahs.ui.components.collapsibleSearchBox
+import baaahs.ui.components.listAndDetail
 import baaahs.ui.components.nestedList
 import baaahs.util.useResizeListener
 import baaahs.visualizer.*
 import baaahs.visualizer.sim.PixelArranger
 import baaahs.visualizer.sim.SwirlyPixelArranger
-import kotlinx.css.Padding
-import kotlinx.css.em
-import kotlinx.css.padding
+import baaahs.window
 import materialui.icon
 import mui.icons.material.Delete
 import mui.material.*
+import mui.material.styles.Theme
+import mui.material.styles.useTheme
+import mui.system.useMediaQuery
 import react.Props
 import react.RBuilder
 import react.RHandler
+import react.buildElement
 import react.dom.div
 import react.dom.header
-import react.dom.i
+import react.dom.span
 import react.useContext
-import styled.inlineStyles
 import web.dom.Element
 import web.dom.document
 import web.html.HTMLDivElement
@@ -37,6 +45,9 @@ import web.html.HTMLDivElement
 private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.modelEditor
+    val theme = useTheme<Theme>()
+    val isPortraitScreen = useMediaQuery("(orientation: portrait)")
+
     val editMode = observe(appContext.sceneManager.editMode)
 
     val mutableScene = props.mutableScene
@@ -94,6 +105,11 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
     }
     nestedList.update(mutableModel.entities)
 
+    var entityMatcher by state { MutableEntityMatcher() }
+    val handleSearchChange by handler { value: String -> entityMatcher = MutableEntityMatcher(value) }
+    val handleSearchRequest by handler { value: String -> }
+    val handleSearchCancel by handler { entityMatcher = MutableEntityMatcher() }
+
     val selectedMutableEntity = visualizer.selectedEntity?.let { mutableModel.findById(it.id) }
     nestedList.select(selectedMutableEntity)
     lastSelectedEntity.current = selectedMutableEntity?.let { visualizer.model.findEntityById(it.id) }
@@ -102,6 +118,12 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
         visualizer.selectedEntity =
             mutableEntity?.let { visualizer.findById(it.id)?.modelEntity }
         lastSelectedEntity.current = mutableEntity?.id?.let { visualizer.model.findEntityById(it) }
+        forceRender()
+    }
+
+    val handleListItemDeselect by handler(visualizer) {
+        visualizer.selectedEntity = null
+        lastSelectedEntity.current = null
         forceRender()
     }
 
@@ -137,26 +159,13 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
         }
     }
 
-    val editingEntity = visualizer.editingEntity
+    val selectedEditingEntity = visualizer.editingEntity
 
     useResizeListener(visualizerParentEl) {  _, _ ->
         visualizer.resize()
     }
 
-    Paper {
-        attrs.className = -styles.editorPanes
-        div(+styles.navigatorPane) {
-            header { +"Model Entities" }
-
-            div(+styles.navigatorPaneContent) {
-                nestedList<MutableEntity> {
-                    attrs.nestedList = nestedList
-                    attrs.renderer = Renderer { item -> +item.item.title }
-                    attrs.onSelect = handleListItemSelect
-                }
-            }
-        }
-
+    div(styleIf(isPortraitScreen, styles.editorPanesPortrait, styles.editorPanesLandscape)) {
         div(+styles.visualizerPane) {
             div(+styles.visualizer) {
                 ref = visualizerParentEl
@@ -170,38 +179,62 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
                 }
             }
         }
-
         div(+styles.propertiesPane) {
-            div(+styles.propertiesPaneContent) {
-                if (editingEntity == null) {
-                    div {
-                        inlineStyles { padding = Padding(1.em) }
-                        i { +"Maybe click on something, why don't ya?" }
+            listAndDetail<EditingEntity<*>> {
+                attrs.listHeader = buildElement {
+                    span {
+                        +"Model Entities"
+                        collapsibleSearchBox {
+                            attrs.searchString = entityMatcher.searchString
+                            attrs.onSearchChange = handleSearchChange
+                            attrs.onSearchRequest = handleSearchRequest
+                            attrs.onSearchCancel = handleSearchCancel
+                        }
                     }
-                } else {
-                    editingEntity.let {
-                        FormControl {
-                            attrs.margin = FormControlMargin.dense
-
-                            editingEntity.getEditorPanelViews().forEach {
-                                it.render(this)
-                            }
-
-                            header { +"Actions" }
-
-                            if (editMode.isOn) {
-                                IconButton {
-                                    attrs.onClick = handleDeleteEntity.withMouseEvent()
-                                    attrs.color = IconButtonColor.secondary
-                                    icon(Delete)
-                                    +"Delete Entity"
-                                }
+                }
+                attrs.listHeaderText = "Model Entities".asTextNode()
+                attrs.listRenderer = ListAndDetail.ListRenderer {
+                    div(+styles.navigatorPane) {
+                        div(+styles.navigatorPaneContent) {
+                            nestedList<MutableEntity> {
+                                attrs.nestedList = nestedList
+                                attrs.renderer = Renderer { item -> +item.item.title }
+                                attrs.onSelect = handleListItemSelect
+                                attrs.searchMatcher = entityMatcher::matches
                             }
                         }
                     }
                 }
+                attrs.selection = selectedEditingEntity
+                attrs.detailHeader = selectedMutableEntity?.title
+                attrs.detailRenderer = ListAndDetail.DetailRenderer { editingEntity ->
+                    FormControl {
+                        attrs.margin = FormControlMargin.dense
+
+                        editingEntity.getEditorPanelViews().forEach {
+                            it.render(this)
+                        }
+
+                        header { +"Actions" }
+
+                        if (editMode.isOn) {
+                            IconButton {
+                                attrs.onClick = handleDeleteEntity.withMouseEvent()
+                                attrs.color = IconButtonColor.secondary
+                                icon(Delete)
+                                +"Delete Entity"
+                            }
+                        }
+                    }
+                }
+                attrs.onDeselect = handleListItemDeselect
+                if (isPortraitScreen)
+                    attrs.orientation = if (window.innerWidth < 450) zStacked else xStacked
+                else
+                    attrs.orientation = if (window.innerHeight < 450) zStacked else yStacked
             }
         }
+
     }
 }
 

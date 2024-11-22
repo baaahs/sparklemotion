@@ -18,7 +18,7 @@ class FixturePublisher(
         addedFixtures.forEach {
             fixtures[it] = FixtureInfo(
                 it.name,
-                it.modelEntity?.name, // TODO: name vs id?
+                it.modelEntity?.name, // TODO: Name isn't a unique selector for entities, fix.
                 it.transport.controller.controllerId,
                 it.transport.config
             )
@@ -30,13 +30,13 @@ class FixturePublisher(
 @Serializable
 data class FixtureInfo(
     val name: String,
-    val entityId: String?,
+    val entityName: String?,
     val controllerId: ControllerId,
     val transportConfig: TransportConfig?
 ) {
-    fun matches(search: String): Boolean {
-        val s = search.lowercase()
+    fun matches(searchTerm: String): Boolean {
+        val s = searchTerm.lowercase()
         return name.lowercase().contains(s) ||
-                entityId?.lowercase()?.contains(s) ?: false
+                entityName?.lowercase()?.contains(s) == true
     }
 }
