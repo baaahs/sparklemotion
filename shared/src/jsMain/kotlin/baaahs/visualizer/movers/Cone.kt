@@ -38,6 +38,7 @@ actual class Cone actual constructor(
                 it.rotateX(PI)
             }
     private val inner = Mesh(innerGeometry, innerMaterial)
+        .apply { name = "Inner Cone" }
 
     private val outerBaseOpacity = .4
     private val outerMaterial = MeshBasicMaterial().apply {
@@ -57,6 +58,7 @@ actual class Cone actual constructor(
                 it.rotateX(PI)
             }
     private val outer = Mesh(outerGeometry, outerMaterial)
+        .apply { name = "Outer Cone" }
 
     private val baseOpacities = listOf(innerBaseOpacity, outerBaseOpacity)
     private val materials = listOf(innerMaterial, outerMaterial)

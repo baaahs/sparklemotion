@@ -15,14 +15,14 @@ class SharpyVisualizer(
     val group = Group()
 
     private val sharpyMaterial = MeshLambertMaterial()
-    private val base = Mesh(BoxGeometry(), sharpyMaterial).also { group.add(it) }
+    private val base = Mesh(BoxGeometry(), sharpyMaterial).also { group.add(it); it.name = "Sharpy Base" }
     private val armature = Group().also { group.add(it) }
 
-    private val leftArm = Mesh(BoxGeometry(), sharpyMaterial).also { armature.add(it) }
-    private val rightArm = Mesh(BoxGeometry(), sharpyMaterial).also { armature.add(it) }
-    private val armBase = Mesh(BoxGeometry(), sharpyMaterial).also { armature.add(it) }
+    private val leftArm = Mesh(BoxGeometry(), sharpyMaterial).also { armature.add(it); it.name = "Sharpy Left Arm" }
+    private val rightArm = Mesh(BoxGeometry(), sharpyMaterial).also { armature.add(it); it.name = "Sharpy Right Arm" }
+    private val armBase = Mesh(BoxGeometry(), sharpyMaterial).also { armature.add(it); it.name = "Sharpy Arm Base" }
 
-    private val can = Mesh(CylinderGeometry(), sharpyMaterial).also { armature.add(it) }
+    private val can = Mesh(CylinderGeometry(), sharpyMaterial).also { armature.add(it); it.name = "Sharpy Can" }
     private val beam = Beam.selectFor(adapter, units).also { can.add(it.vizObj) }
         .also { it.vizObj.ignoreForCameraFit() }
 

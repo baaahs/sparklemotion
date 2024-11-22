@@ -535,7 +535,9 @@ class JsMapper(
         val surfaceNormal = surfaceGeometry.panelNormal
 
         val panelMaterial = MeshBasicMaterial().apply { color = Color(0, 0, 0) }
-        val mesh = Mesh(geom, panelMaterial)
+        val mesh = Mesh(geom, panelMaterial).apply {
+            name = "${entity.name} (mapper surface depiction)"
+        }
         entity.transform(mesh)
         mesh.name = entity.name
         uiScene.add(mesh)
@@ -820,7 +822,8 @@ class JsMapper(
 
             val originMarker = Mesh(
                 SphereGeometry(1, 32, 32),
-                MeshBasicMaterial().apply { color = Color(0xff0000) })
+                MeshBasicMaterial().apply { color = Color(0xff0000) }
+            ).apply { name = "Origin marker" }
             uiScene.add(originMarker)
 
             val boundingBox = Box3().setFromObject(wireframe)

@@ -32,10 +32,11 @@ class Container(
             position.add(offset)
         }
 
-    fun createMesh(material: MeshBasicMaterial): Mesh<BoxGeometry, MeshBasicMaterial> {
+    fun createMesh(material: MeshBasicMaterial, name: String? = null): Mesh<BoxGeometry, MeshBasicMaterial> {
         val geom = BoxGeometry(size.x, size.y, size.z)
 
         return Mesh(geom, material).apply {
+            if (name != null) this.name = name
             applyTransforms(this)
             if (isCentered)
                 position.add(offset)
@@ -178,7 +179,7 @@ abstract class PixelArrayVisualizer<T : PixelArray>(
         val pixelLocations = getPixelLocations().map { it.toVector3() }.toTypedArray()
         val container = calculateContainer(pixelLocations)
         val containerOutline = container.createOutline(containerOutlineMaterial)
-        val containerMesh = container.createMesh(containerMaterial)
+        val containerMesh = container.createMesh(containerMaterial, item.name)
 
         obj.clear()
         obj.add(containerOutline)

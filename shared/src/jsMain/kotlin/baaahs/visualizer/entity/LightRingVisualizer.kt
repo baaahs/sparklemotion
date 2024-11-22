@@ -14,6 +14,7 @@ class LightRingVisualizer(
     vizPixels: VizPixels?
 ) : BaseEntityVisualizer<LightRing>(lightRing) {
     private val ringMesh = Mesh<RingGeometry, MeshBasicMaterial>()
+        .apply { name = item.name }
     private val ringMaterial = MeshBasicMaterial()
 
     private val lineMaterial = LineDashedMaterial()
@@ -66,6 +67,7 @@ class LightRingVisualizer(
         // TODO: Replace with arrow.
         pixelLocations.firstOrNull()?.let { pixel0 ->
             obj.add(Mesh(SphereGeometry(newItem.radius / 20).apply {
+                name = "${item.name} pixel 0"
                 translate(pixel0.x, pixel0.y, pixel0.z)
             }, pixel0IndicatorMaterial))
         }

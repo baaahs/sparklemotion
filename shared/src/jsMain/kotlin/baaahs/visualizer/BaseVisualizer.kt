@@ -50,8 +50,8 @@ open class BaseVisualizer(
     private val frameListeners = mutableListOf<FrameListener>()
 
     protected val camera = PerspectiveCamera(45, 1.0, 0.1, 10000)
-    private val ambientLight = AmbientLight(Color(0xFFFFFF), .25)
-    private val directionalLight = DirectionalLight(Color(0xFFFFFF), 1)
+    private val ambientLight = AmbientLight(Color(0x00FF00), .25)
+    private val directionalLight = DirectionalLight(Color(0xFF0000), 1)
     private val renderer = WebGLRenderer(jso {
         antialias = true
     }).apply {
@@ -76,7 +76,7 @@ open class BaseVisualizer(
         }
 
     protected val realScene = Scene().apply { matrixWorldAutoUpdate = false }
-    protected val scene = Group().also { realScene.add(it) }
+    protected val scene = Group().also { it.name = "BaseVisualizer scene"; realScene.add(it) }
     protected var sceneNeedsUpdate = true
     protected var fitCamera = true
 
@@ -144,8 +144,8 @@ open class BaseVisualizer(
 
     init {
         realScene.add(camera)
-        realScene.add(ambientLight)
-        realScene.add(directionalLight)
+//        realScene.add(ambientLight)
+//        realScene.add(directionalLight)
 //        renderer.setPixelRatio(window.devicePixelRatio)
 
         raycaster.params.Points.threshold = 1
@@ -347,6 +347,11 @@ open class BaseVisualizer(
         }
 
         allExtensions { context.beforeRender() }
+        realScene.traverseVisible { obj ->
+            if (obj.name == "6D") {
+                console.log("6D: ", obj)
+            }
+        }
         renderer.render(realScene, camera)
         allExtensions { context.render() }
         facade.framerate.elapsed((clock.now() - startTime).inWholeMilliseconds.toInt())
@@ -357,7 +362,9 @@ open class BaseVisualizer(
     }
 
     private fun requestAnimationFrame() {
-        web.animations.requestAnimationFrame { render() }
+        setTimeout({
+            web.animations.requestAnimationFrame { render() }
+        }, DEFAULT_REFRESH_DELAY)
     }
 
 // vector.applyMatrix(object.matrixWorld).project(camera) to get 2d x,y coord
@@ -420,7 +427,7 @@ open class BaseVisualizer(
     }
 
     companion object {
-        private const val DEFAULT_REFRESH_DELAY = 50 // ms
+        private const val DEFAULT_REFRESH_DELAY = 500 // ms
         private val logger = Logger<BaseVisualizer>()
     }
 }

@@ -55,7 +55,7 @@ class BrainSurfaceSimulation(
         }
 
     override val itemVisualizer: SurfaceVisualizer by lazy {
-        SurfaceVisualizer(surface, adapter, surfaceGeometry, vizPixels)
+        SurfaceVisualizer(surface, adapter, surfaceGeometry, vizPixels, origin = "BrainSurfaceSimulation")
     }
 
     override val previewFixture: Fixture by lazy {

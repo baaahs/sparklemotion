@@ -40,7 +40,6 @@ class VizPixels(
     private val colorsAsInts = IntArray(size) // store colors as an int array too for Pixels.get()
 
     private val pixelsMesh = Mesh(BufferGeometry(), MeshBasicMaterial().apply {
-        name = "VizPixels"
         side = if (bothSides) DoubleSide else FrontSide
         transparent = true
         opacity = .3333
@@ -51,6 +50,8 @@ class VizPixels(
         vertexColors = true
 
         map = roundLightTx
+    }.apply {
+        name = "VizPixels"
     })
 
     // Build plane geometries to represent individual pixels.

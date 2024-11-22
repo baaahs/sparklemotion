@@ -14,10 +14,12 @@ class SurfaceVisualizer(
     private val surface: Model.Surface,
     private val adapter: EntityAdapter,
     val surfaceGeometry: SurfaceGeometry,
-    vizPixels: VizPixels? = null
+    vizPixels: VizPixels? = null,
+    origin: String? = null
 ) : BaseEntityVisualizer<Model.Surface>(surface) {
     private val mesh = Mesh(surfaceGeometry.geometry, MeshBasicMaterial()).apply {
-        name = "Surface: ${surfaceGeometry.name}"
+        name = "Surface: ${surfaceGeometry.name}${origin?.let { " ($it)" } ?: ""}"
+        Exception("Created SurfaceVisualizer for ${surfaceGeometry.name} ($origin)").printStackTrace()
     }
 
     private val lineMaterial = LineDashedMaterial()
@@ -40,6 +42,7 @@ class SurfaceVisualizer(
         }
 
     override val obj = Group().apply {
+        name = "SurfaceVisualizer.obj for ${surface.name}"
         add(mesh)
         vizPixels?.addTo(this)
     }

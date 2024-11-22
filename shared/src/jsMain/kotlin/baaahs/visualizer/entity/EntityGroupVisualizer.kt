@@ -13,7 +13,7 @@ class EntityGroupVisualizer(
     objGroup: Model.EntityGroup,
     adapter: EntityAdapter
 ) : BaseEntityVisualizer<Model.EntityGroup>(objGroup) {
-    override val obj: Object3D = Group()
+    override val obj: Object3D = Group().apply { name = "EntityGroupVisualizer: ${objGroup.title}" }
     private val groupVisualizer =
         GroupVisualizer("Group: ${objGroup.title}", objGroup.entities, adapter)
             .also { obj.add(it.groupObj) }
@@ -58,6 +58,7 @@ class EntityGroupVisualizer(
         box.addPadding(amount)
     }
 }
+
 
 var Object3D.itemVisualizer: ItemVisualizer<*>?
     get() = userData.asDynamic()["entityVisualizer"] as ItemVisualizer<*>?
