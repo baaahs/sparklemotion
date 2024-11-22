@@ -1,6 +1,7 @@
 package baaahs.dmx
 
 import baaahs.fixtures.ConfigPreview
+import baaahs.fixtures.ConfigPreviewNugget
 import baaahs.fixtures.TransportConfig
 import baaahs.fixtures.TransportType
 import baaahs.scene.EditingController
@@ -42,9 +43,9 @@ data class DmxTransportConfig(
     )
 
     override fun preview(): ConfigPreview = object : ConfigPreview {
-        override fun summary(): List<Pair<String, String?>> = listOf(
-            "Start Channel" to startChannel?.toString(),
-            "Start In Fresh Universe" to fixtureStartsInFreshUniverse?.toString()
+        override fun summary(): List<ConfigPreviewNugget> = listOf(
+            ConfigPreviewNugget("Start Channel", startChannel?.toString()),
+            ConfigPreviewNugget("Start In Fresh Universe", fixtureStartsInFreshUniverse?.toString())
         )
     }
 }

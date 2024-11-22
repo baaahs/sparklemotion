@@ -27,6 +27,9 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
         display = Display.block
         overflowY = Overflow.scroll
         height = 100.pct
+        td {
+            whiteSpace = WhiteSpace.nowrap
+        }
     }
 
     val navigatorPane by css {
@@ -50,6 +53,25 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
         lineHeight = 1.5.em.lh
     }
 
+    val statusDot by css {
+        width = 10.px
+        height = 10.px
+        backgroundColor = Color.red
+        borderRadius = 50.pct
+        display = Display.inlineBlock
+    }
+
+    val controllerIcon by css {
+        width = 1.5.em
+        marginRight = 1.em
+        verticalAlign = VerticalAlign.middle
+        marginLeft = (-1).em
+    }
+
+    val fixtureListItem by css {
+        listStyleType = ListStyleType.circle
+    }
+
     val defaultConfigs by css {
         backgroundColor = theme.palette.info.main.asColor()
         marginTop = 1.em
@@ -67,54 +89,47 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
         }
     }
 
-    val propertiesPane by css {
-        display = Display.grid
-        gridTemplateRows = GridTemplateRows(GridAutoRows.minContent, GridAutoRows.auto)
-        height = 100.pct
-        zIndex = StyleConstants.Layers.aboveStickyTableHeaders
-    }
-
-    val propertiesPaneContent by css {
-        minHeight = 0.px
-        overflow = Overflow.scroll
-    }
-
-    val noControllerSelected by css {
-        gridTemplateColumns = GridTemplateColumns.auto
-        descendants(selector(::propertiesPane)) {
-            display = Display.none
-        }
-    }
-
-    val searchBoxFormControl by css {
-        position = Position.absolute
-        right = 1.em
-        top = 4.px
-        flexDirection = FlexDirection.rowReverse
-        width = 15.em
-        fieldset {
-            borderColor = Color.transparent.important
-        }
-    }
-
-    val searchBarPaper by css {
-        backgroundColor = theme.palette.primary.dark.asColor().darken(20)
-        marginTop = 8.px
-        marginBottom = 8.px
-        marginLeft = 1.em
-    }
-
     val button by css {
         textTransform = TextTransform.none
     }
 
-    val expansionPanelRoot by css {
-        backgroundColor = theme.palette.primary.main.asColor()
+    val accordionPreview by css {
+        color = theme.palette.text.primary.asColor().withAlpha(.5)
+        paddingLeft = 1.em
+    }
+
+    val accordionDetails by css {
+        padding = Padding(0.px)
+    }
+
+    val previewChip by css {
+        display = Display.flex
+        flexDirection = column
+        alignItems = Align.center
+        lineHeight = 90.pct.lh
+
+        firstChild { }
+        lastChild { fontSize = .9.em }
+    }
+
+    val accordionRoot by css {
+        backgroundColor = theme.palette.primary.main.asColor().withAlpha(.125)
+        borderTopLeftRadius = 0.px.important
+        borderTopRightRadius = 0.px.important
+    }
+
+    val expansionPanelSummaryContent by css {
+        overflow = Overflow.hidden
+        justifyContent = JustifyContent.spaceBetween
+    }
+
+    val expansionPanelSummaryChips by css {
+        overflow = Overflow.scroll
     }
 
     val configCardOuter by css {
         backgroundColor = theme.palette.primary.main.asColor()
-            .withAlpha(.75).blend(Color(theme.palette.background.paper))
+            .withAlpha(.25).blend(Color(theme.palette.background.paper))
         padding = Padding(.5.em)
 
         adjacentSibling(".$name-configCardOuter") {

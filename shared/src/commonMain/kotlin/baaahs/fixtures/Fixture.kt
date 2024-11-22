@@ -40,8 +40,14 @@ class FixturePreviewError(val e: Exception) : FixturePreview {
 }
 
 interface ConfigPreview {
-    fun summary(): List<Pair<String, String?>>
+    fun summary(): List<ConfigPreviewNugget>
 }
+
+data class ConfigPreviewNugget(
+    val title: String,
+    val value: String?,
+    val shortTitle: String? = null
+)
 
 fun pixelArrayFixture(
     modelEntity: Model.Entity?,

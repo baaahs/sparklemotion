@@ -8,22 +8,48 @@
   <link rel="icon" href="../favicon.png"/>
   <link rel="stylesheet" href="../styles.css"/>
   <link rel="stylesheet" href="../react-mosaic-component.css"/>
+  <style type="text/css">
+      #box {
+          background: white;
+          color: black;
+          font-family: 'Press Start 2P', monospace;
+          border: 2px solid black;
+          display: flex;
+          margin: auto;
+          padding: 1em;
+          height: 150px;
+          align-items: center;
+          transition: width 100ms, height 100ms;
+      }
+
+      #_patience_ {
+          padding-right: 5em
+      }
+
+      @media only screen
+      and (min-device-width: 320px)
+      and (max-device-width: 480px)
+      and (-webkit-min-device-pixel-ratio: 2) {
+          #box {
+              flex-direction: column;
+              width: 80%;
+              height: auto;
+          }
+          #_patience_ {
+              padding-right: 0;
+              padding-bottom: 2em;
+              margin-top: -2em;
+          }
+      }
+  </style>
 </head>
 <body class="sparklemotion-ui">
 <div id="content">
-  <div style="
-    background: white;
-    color: black;
-    font-family: 'Press Start 2P', monospace;
-    border: 2px solid black;
-    display: flex;
-    margin: auto;
-    padding: 1em;
-    height: 150px;
-    align-items: center;
-  ">
-    <img style="transform: scale(.5);" src="../loading.gif" alt=""/>
-    <div id="_patience_" style="padding-right: 5em;">Patience...</div>
+  <div style="display: flex; height: 100vh;">
+    <div id="box">
+      <img style="transform: scale(.5);" src="../loading.gif" alt=""/>
+      <div id="_patience_">Patience...</div>
+    </div>
   </div>
   <div id="_errors_"></div>
 </div>

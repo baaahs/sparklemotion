@@ -9,14 +9,23 @@ import styled.StyleSheet
 import web.cssom.important
 
 class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", isStatic = true) {
-    val editorPanes by css {
+    val editorPanesPortrait by css {
+        display = Display.grid
+        gridTemplateRows = GridTemplateRows(
+            GridAutoRows.minMax(40.pct, 40.pct),
+            GridAutoRows.minMax(60.pct, 60.pct)
+        )
+        width = 100.pct
+        height = 100.pct
+    }
+
+    val editorPanesLandscape by css {
         display = Display.grid
         gridTemplateColumns = GridTemplateColumns(
-            GridAutoRows.minMax(15.em, 15.pct),
             GridAutoRows.auto,
-            GridAutoRows.minMax(20.em, 20.pct)
+            GridAutoRows.minMax(LinearDimension.auto, 23.em)
         )
-        gridTemplateRows = GridTemplateRows(100.pct)
+        width = 100.pct
         height = 100.pct
     }
 
@@ -68,12 +77,7 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
     }
 
     val propertiesPane by css {
-        display = Display.grid
-        gridTemplateRows = GridTemplateRows(GridAutoRows.minContent, GridAutoRows.auto)
         height = 100.pct
-    }
-    val propertiesPaneContent by css {
-        minHeight = 0.px
         overflow = Overflow.scroll
     }
 

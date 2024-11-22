@@ -288,6 +288,8 @@ class BrainManager(
 
     companion object : ControllerManager.Meta {
         override val controllerTypeName: String = "Brain"
+        override val controllerIcon: String
+            get() = "baaahs-brain.svg"
 
         val waitPeriodAfterNetworkError = 5.seconds
 
@@ -395,7 +397,7 @@ class BrainTransportConfig() : TransportConfig {
         this
 
     override fun preview(): ConfigPreview = object : ConfigPreview {
-        override fun summary(): List<Pair<String, String?>> = emptyList()
+        override fun summary(): List<ConfigPreviewNugget> = emptyList()
     }
 }
 

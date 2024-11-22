@@ -44,6 +44,7 @@ private val TransportConfigPickerView = xComponent<TransportConfigPickerProps>("
             attrs.value = transportConfig?.transportType
             attrs.renderValueOption = { o -> (o?.title ?: "Default").asTextNode() }
             attrs.onChange = handleTransportTypeChange
+            attrs.fullWidth = true
         }
 
         if (transportConfig != null) {
