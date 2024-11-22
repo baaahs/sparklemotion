@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
+    <circle cx="150" cy="150" r="145" fill="#fff" />
+
+    <!-- Outer gray ring -->
+    <circle cx="150" cy="150" r="140" fill="#ccc" />
+
+    <!-- Inner black circle -->
+    <circle cx="150" cy="150" r="120" fill="#000" />
+
+    <!-- Pin 1 -->
+    <circle cx="90" cy="150" r="20" fill="#ccc" />
+
+    <!-- Pin 2 -->
+    <circle cx="210" cy="150" r="20" fill="#ccc" />
+
+    <!-- Pin 3 -->
+    <circle cx="150" cy="220" r="20" fill="#ccc" />
+
+    <!-- Outer notch -->
+    <circle cx="233" cy="76" r="20" fill="#000" />
+
+    <!-- sACN Text -->
+    <text x="150" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="64" fill="#777">
+        sACN
+    </text>
+</svg>
