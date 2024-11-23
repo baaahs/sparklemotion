@@ -34,7 +34,7 @@ import kotlinx.coroutines.InternalCoroutinesApi
 class RemoteVisualizerClientSpec : DescribeSpec({
     describe<RemoteVisualizerClient> {
         val pubSubRig by value { TestRig() }
-        val dispatcher by value { pubSubRig.dispatcher }
+        val dispatcher by value { pubSubRig.fakePinkyDispatcher }
         var cleanupTestCoroutines: () -> Unit = {}
         val coroutineScope by value {
             createTestCoroutineScope(dispatcher).also { scope ->
