@@ -4,7 +4,7 @@ import baaahs.decodeBase64
 import baaahs.document
 import baaahs.get2DContext
 import baaahs.util.Clock
-import baaahs.util.JsClock
+import baaahs.util.SystemClock
 import external.gifuct.ParsedFrameDims
 import external.gifuct.decompressFrames
 import external.gifuct.parseGIF
@@ -203,7 +203,7 @@ class JsUByteClampedArray(private val delegate: Uint8ClampedArray) : UByteClampe
     }
 }
 
-class GifImage(data: ByteArray, clock: Clock = JsClock) : Image {
+class GifImage(data: ByteArray, clock: Clock = SystemClock) : Image {
     private val parsedGif = parseGIF(Uint8Array.asDynamic().from(data))
     private val frames = decompressFrames(parsedGif, true)
     private val animator = Animator(frames.map { it.delay }, clock)

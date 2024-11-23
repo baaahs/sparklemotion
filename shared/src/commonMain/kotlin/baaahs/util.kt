@@ -1,9 +1,6 @@
 package baaahs
 
-import baaahs.util.Clock
-import baaahs.util.Logger
-import baaahs.util.asDoubleSeconds
-import baaahs.util.asMillis
+import baaahs.util.*
 import kotlinx.coroutines.*
 import kotlin.math.*
 import kotlin.random.Random
@@ -97,7 +94,7 @@ fun Int.boundedBy(range: IntRange): Int {
 }
 
 
-expect val internalTimerClock: Clock
+val internalTimerClock: Clock = SystemClock
 
 expect fun <T> doRunBlocking(block: suspend () -> T): T
 
