@@ -34,7 +34,7 @@ import baaahs.sim.SimulationEnv
 import baaahs.sm.brain.proto.Ports
 import baaahs.sm.server.ExceptionReporter
 import baaahs.util.Clock
-import baaahs.util.JsClock
+import baaahs.util.SystemClock
 import baaahs.visualizer.Visualizer
 import baaahs.visualizer.remote.RemoteVisualizerClient
 import baaahs.visualizer.sim.PixelArranger
@@ -62,7 +62,7 @@ open class JsPlatformModule(
     override val Scope.network: Network
         get() = network_
     override val Scope.clock: Clock
-        get() = JsClock
+        get() = SystemClock
     override val Scope.mediaDevices: MediaDevices
         get() = RealMediaDevices()
 

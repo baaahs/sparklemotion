@@ -25,8 +25,6 @@ fun main(args: Array<String>) {
 
 @ObsoleteCoroutinesApi
 class PinkyMain(private val args: Array<String>) : BasePinkyMain() {
-    private val logger by lazy { Logger("PinkyMain") }
-
     fun run() {
         GlBase.manager // First thing, we need to wake up OpenGL on the main thread.
 
