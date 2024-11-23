@@ -6,8 +6,6 @@ import baaahs.di.JvmPinkyModule
 import baaahs.di.JvmPlatformModule
 import baaahs.di.PluginsModule
 import baaahs.gl.GlBase
-import baaahs.io.Fs
-import baaahs.io.RealFs
 import baaahs.sm.brain.ProdBrainSimulator
 import baaahs.util.KoinLogger
 import baaahs.util.Logger
@@ -18,7 +16,6 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
-import java.nio.file.Path
 import kotlin.system.exitProcess
 
 @ObsoleteCoroutinesApi
@@ -56,6 +53,7 @@ class PinkyMain(private val args: Array<String>) : BasePinkyMain() {
         val pinkyScope = pinkyInjector.koin.createScope<Pinky>()
         val pinky = pinkyScope.get<Pinky>()
         configureKtor(pinky, pinkyScope)
+            .start()
 
         logger.info { responses.random() }
 
