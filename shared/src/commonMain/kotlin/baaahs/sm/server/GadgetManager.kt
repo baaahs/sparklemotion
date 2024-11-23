@@ -8,6 +8,7 @@ import baaahs.util.Logger
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.JsonElement
 import kotlin.concurrent.Volatile
 
 class GadgetManager(
@@ -21,8 +22,7 @@ class GadgetManager(
     var lastUserInteraction = clock.now()
 
     fun <T : Gadget> registerGadget(id: String, gadget: T) {
-        val topic =
-            PubSub.Topic("/gadgets/$id", GadgetDataSerializer)
+        val topic = topicFor(id)
         val channel = pubSub.publish(topic, gadget.state) { updated ->
             pinkyMainScope.launch(CoroutineName("Gadget Update Handler")) {
                 lastUserInteraction = clock.now()
@@ -34,6 +34,9 @@ class GadgetManager(
         gadget.listen { channel.onChange(it.state) }
         gadgets[id] = gadget
     }
+
+    internal fun topicFor(id: String): PubSub.Topic<Map<String, JsonElement>> =
+        PubSub.Topic("/gadgets/$id", GadgetDataSerializer)
 
     fun <T : Gadget> useGadget(id: String): T {
         @Suppress("UNCHECKED_CAST")

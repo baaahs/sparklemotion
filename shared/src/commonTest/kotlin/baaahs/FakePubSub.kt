@@ -28,12 +28,12 @@ class FakePubSub(
 @ExperimentalCoroutinesApi
 @InternalCoroutinesApi
 class TestRig {
-    val dispatcher = TestCoroutineDispatcher()
-    val testCoroutineScope = createTestCoroutineScope(dispatcher)
-    val network = FakeNetwork(0, coroutineScope = testCoroutineScope)
+    val fakePinkyDispatcher = TestCoroutineDispatcher()
+    val pinkyScope = createTestCoroutineScope(fakePinkyDispatcher)
+    val network = FakeNetwork(0, coroutineScope = pinkyScope)
 
     val serverNetwork = network.link("server")
-    val server = PubSub.listen(serverNetwork.createHttpServer(1234), testCoroutineScope)
+    val server = PubSub.listen(serverNetwork.createHttpServer(1234), pinkyScope)
     val serverConnections =
         arrayListOf<PubSub.ConnectionFromClient>()
             .also { list ->
@@ -43,15 +43,15 @@ class TestRig {
     val serverLog = mutableListOf<String>()
 
     val client1Network = network.link("client1")
-    val client1 = PubSub.Client(client1Network, serverNetwork.myAddress, 1234, testCoroutineScope)
+    val client1 = PubSub.Client(client1Network, serverNetwork.myAddress, 1234, pinkyScope)
     val client1Log = mutableListOf<String>()
 
     val client2Network = network.link("client2")
-    val client2 = PubSub.Client(client2Network, serverNetwork.myAddress, 1234, testCoroutineScope)
+    val client2 = PubSub.Client(client2Network, serverNetwork.myAddress, 1234, pinkyScope)
     val client2Log = mutableListOf<String>()
 
     fun cleanup() {
-        testCoroutineScope.cleanupTestCoroutines()
+        pinkyScope.cleanupTestCoroutines()
     }
 }
 
