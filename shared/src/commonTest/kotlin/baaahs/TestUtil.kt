@@ -14,8 +14,11 @@ import baaahs.gl.patch.ProgramLinker
 import baaahs.gl.patch.ProgramNode
 import baaahs.gl.render.ComponentRenderEngine
 import baaahs.gl.render.RenderTarget
+import baaahs.gl.testPlugins
 import baaahs.gl.testToolchain
 import baaahs.model.*
+import baaahs.plugin.PluginContext
+import baaahs.plugin.Plugins
 import baaahs.scene.MutableModel
 import baaahs.scene.MutableScene
 import baaahs.scene.Scene
@@ -51,9 +54,8 @@ fun MutableList<String>.assertContents(s: String) {
     this.clear()
 }
 
-var json = Json { serializersModule = Gadget.serialModule }
-
 fun <T> serializationRoundTrip(serializer: KSerializer<T>, obj: T): T {
+    val json = testPlugins().json
     val jsonString = json.encodeToString(serializer, obj)
     return json.decodeFromString(serializer, jsonString)
 }

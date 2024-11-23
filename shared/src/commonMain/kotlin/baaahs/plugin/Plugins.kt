@@ -1,6 +1,7 @@
 package baaahs.plugin
 
 import baaahs.Gadget
+import baaahs.GadgetType
 import baaahs.PubSub
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.PortLinkOption
@@ -158,8 +159,8 @@ sealed class Plugins(
     }
 
     val feedBuilders = FeedBuilders()
-
     val fixtureTypes = FixtureTypes()
+    private val gadgets = Gadgets()
 
     val controllers = Controllers()
 
@@ -254,7 +255,7 @@ sealed class Plugins(
 
     val serialModule = SerializersModule {
         include(serializersModuleOf(Instant::class, InstantIso8601Serializer))
-        include(Gadget.serialModule)
+        include(gadgets.serialModule)
         include(contentTypes.serialModule)
         include(controlSerialModule)
         contextual(Feed::class, PluginFeedSerializer(feedBuilders.serialModulesByPlugin))
@@ -550,6 +551,22 @@ sealed class Plugins(
             return all.flatMap { fixtureType ->
                 fixtureType.feedBuilders.filter { feed -> feed.contentType == contentType }
             }.mapNotNull { safeBuild(it, inputPort) }
+        }
+    }
+
+    inner class Gadgets {
+        val all = openPlugins.flatMap { it.gadgetTypes }.toSet()
+
+        val serialModule = SerializersModule {
+            polymorphic(Gadget::class) {
+
+                all.forEach {
+                    fun <T : Gadget> GadgetType<T>.register() =
+                        subclass(klass, serializer)
+
+                    it.register()
+                }
+            }
         }
     }
 
