@@ -1,12 +1,46 @@
 package baaahs.sm.server
 
 import baaahs.Pinky
+import baaahs.Pluggables
+import baaahs.di.PinkyModule
+import baaahs.di.PlatformModule
+import baaahs.di.PluginsModule
 import baaahs.io.Fs
 import baaahs.net.Network
+import baaahs.util.KoinLogger
+import baaahs.util.Logger
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
+import org.koin.dsl.koinApplication
 
 abstract class BasePinkyMain {
+    internal val logger by lazy { Logger<BasePinkyMain>() }
+
+    internal lateinit var pinky: Pinky
+
+    fun startUp(
+        platformModule: PlatformModule,
+        pinkyModule: PinkyModule
+    ): Scope {
+        val pinkyInjector = koinApplication {
+            logger(KoinLogger())
+
+            modules(
+                PluginsModule(Pluggables.plugins).getModule(),
+                platformModule.getModule(),
+                pinkyModule.getModule()
+            )
+        }
+
+        val pinkyScope = pinkyInjector.koin.createScope<Pinky>()
+        pinky = pinkyScope.get<Pinky>()
+        configureKtor(pinky, pinkyScope)
+            .start()
+
+        logger.info { responses.random() }
+        return pinkyScope
+    }
+
     protected fun configureKtor(pinky: Pinky, pinkyScope: Scope): Network.HttpServer {
         val ktor = pinky.httpServer
 

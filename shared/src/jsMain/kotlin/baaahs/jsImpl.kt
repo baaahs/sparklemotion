@@ -1,7 +1,5 @@
 package baaahs
 
-import baaahs.util.Clock
-import baaahs.util.JsClock
 import baaahs.util.Logger
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
@@ -21,8 +19,6 @@ actual fun <T> doRunBlocking(block: suspend () -> T): T {
 }
 
 val resourcesBase: String get() = kotlinx.browser.document["resourcesBase"]
-
-actual val internalTimerClock: Clock = JsClock
 
 actual fun decodeBase64(s: String): ByteArray =
     atob(s).let { binaryStr ->

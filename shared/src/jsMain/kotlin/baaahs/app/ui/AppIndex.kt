@@ -19,7 +19,7 @@ import baaahs.mapper.sceneEditor
 import baaahs.mapper.styleIf
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
-import baaahs.util.JsClock
+import baaahs.util.SystemClock
 import baaahs.window
 import external.ErrorBoundary
 import js.objects.jso
@@ -76,7 +76,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
             this.allStyles = allStyles
             this.prompt = { prompt = it }
             this.keyboard = keyboard
-            this.clock = JsClock
+            this.clock = SystemClock
             this.showManager = props.showManager
             this.sceneManager = props.sceneManager
             this.sceneProvider = webClient.sceneProvider
