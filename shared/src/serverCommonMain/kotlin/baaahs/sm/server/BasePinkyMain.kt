@@ -2,12 +2,15 @@ package baaahs.sm.server
 
 import baaahs.Pinky
 import baaahs.io.Fs
+import baaahs.net.Network
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 
 abstract class BasePinkyMain {
-    protected fun configureKtor(pinky: Pinky, pinkyScope: Scope) {
+    protected fun configureKtor(pinky: Pinky, pinkyScope: Scope): Network.HttpServer {
         val ktor = pinky.httpServer
+
+//        ktor.application.install(CallLogging)
 
         val dataDir = pinkyScope.get<Fs>().resolve(".")
         val firmwareDir = pinkyScope.get<Fs.File>(named("firmwareDir"))
@@ -25,11 +28,11 @@ abstract class BasePinkyMain {
             staticFiles("/data/", dataDir)
             staticFiles("/fw/", firmwareDir)
         }
-        ktor.start()
+        return ktor
     }
 
     companion object {
-        internal val responses = listOf(
+        val responses = listOf(
             "I think so, Brain, but Lederhosen won't stretch that far.",
             "Yeah, but I thought Madonna already had a steady bloke!",
             "I think so, Brain, but what would goats be doing in red leather turbans?",
