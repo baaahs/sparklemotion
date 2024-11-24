@@ -109,7 +109,7 @@ class ShowManager(
     }
 
     inner class Facade : DocumentManager<Show, ShowState>.Facade() {
-        override val openDocument: OpenDocument?
+        override val openDocument: OpenDocument<Show>?
             get() = openShow
         val show get() = this@ShowManager.document
         val openShow get() = this@ShowManager.openShow
