@@ -83,6 +83,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
             this.fileDialog = webClient.fileDialog
             this.notifier = webClient.notifier
             this.gridLayoutContext = gridLayoutContext
+            this.featureFlags = webClient.featureFlags
 
             this.openEditor = { editIntent ->
                 editableManager.openEditor(
