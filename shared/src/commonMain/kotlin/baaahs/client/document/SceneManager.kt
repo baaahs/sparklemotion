@@ -122,7 +122,7 @@ class SceneManager(
         }
 
     inner class Facade : DocumentManager<Scene, Unit>.Facade() {
-        override val openDocument: OpenDocument?
+        override val openDocument: OpenDocument<Scene>?
             get() = openScene
         val scene get() = this@SceneManager.document
         val openScene get() = this@SceneManager.openScene

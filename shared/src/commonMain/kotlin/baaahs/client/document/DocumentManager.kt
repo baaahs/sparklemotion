@@ -152,7 +152,7 @@ abstract class DocumentManager<T, TState>(
     }
 
     abstract inner class Facade : baaahs.ui.Facade(), EditHandler<T, TState> {
-        abstract val openDocument: OpenDocument?
+        abstract val openDocument: OpenDocument<T>?
         val documentType get() = this@DocumentManager.documentType
         val documentTypeTitle get() = this@DocumentManager.documentType.title
         val file get() = this@DocumentManager.file
