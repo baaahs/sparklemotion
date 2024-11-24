@@ -1,6 +1,5 @@
 package baaahs.client.document
 
-import baaahs.DocumentState
 import baaahs.PubSub
 import baaahs.app.ui.UiActions
 import baaahs.client.Notifier
@@ -31,6 +30,8 @@ class SceneManager(
 ), IObservable by Observable() {
     override val facade = Facade()
     override val documentTitle get() = document?.title
+    override val autoSyncToServer: Boolean
+        get() = AUTO_SYNC
 
     private var mutableScene: MutableScene? = null
 
@@ -116,11 +117,11 @@ class SceneManager(
         /** Ugh super janky. */
         private var retainMutableDocument = false
 
-        override fun onEdit(document: Scene, documentState: Unit, pushToUndoStack: Boolean, syncToServer: Boolean) {
+        override fun onEdit(document: Scene, documentState: Unit, pushToUndoStack: Boolean) {
             if (!retainMutableDocument)
                 this@SceneManager.mutableScene = null
 
-            super.onEdit(document, documentState, pushToUndoStack, AUTO_SYNC)
+            super.onEdit(document, documentState, pushToUndoStack)
         }
 
         override fun onEdit(mutableDocument: MutableDocument<Scene>, pushToUndoStack: Boolean) {

@@ -36,6 +36,7 @@ class ShowManager(
 ) {
     override val facade = Facade()
     override val documentTitle get() = document?.title
+    override val autoSyncToServer: Boolean = true
 
     private val problems = arrayListOf<Problem>().apply {
         pubSub.subscribe(Topics.showProblems) {

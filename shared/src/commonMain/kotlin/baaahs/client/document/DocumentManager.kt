@@ -28,6 +28,7 @@ abstract class DocumentManager<T, TState, OpenT : OpenDocument<T>>(
 ) {
     abstract val facade: Facade
     abstract val documentTitle: String?
+    abstract val autoSyncToServer: Boolean
 
     private val fileType: FileType get() = documentType.fileType
 
@@ -113,7 +114,7 @@ abstract class DocumentManager<T, TState, OpenT : OpenDocument<T>>(
     suspend fun onSaveAs(file: Fs.File) {
         serverCommands.saveAs(file)
     }
-    
+
     abstract suspend fun onDownload()
 
     abstract suspend fun onUpload(name: String, content: String)
@@ -127,19 +128,28 @@ abstract class DocumentManager<T, TState, OpenT : OpenDocument<T>>(
     protected abstract fun openDocument(newDocument: T, newDocumentState: TState?): OpenT
 
     protected fun switchTo(documentState: DocumentState<T, TState>?, isLocalEdit: Boolean) {
+        if (isLocalEdit && autoSyncToServer) {
+            // Push document to server.
+            editState = documentState
+        }
+
         localState = documentState
 
         val newDocument = documentState?.document
         val newDocumentState = documentState?.state
-        val newIsUnsaved = documentState?.isUnsaved ?: false
+        val newIsUnsaved = documentState?.isUnsaved == true
         val newFile = documentState?.file
         val newOpenDocument = newDocument?.let {
             openDocument(newDocument, newDocumentState)
         }
 
+        file = newFile
+        document = newDocument
+        isUnsaved = newIsUnsaved
+        if (!newIsUnsaved) documentAsSaved = newDocument
         (openDocument as? RefCounted)?.disuse()
         openDocument = newOpenDocument.also { (it as? RefCounted)?.use() }
-        update(newDocument, newFile, newIsUnsaved)
+        everSynced = true
 
         onSwitch(isLocalEdit)
 
@@ -148,17 +158,8 @@ abstract class DocumentManager<T, TState, OpenT : OpenDocument<T>>(
 
     open fun onSwitch(isLocalEdit: Boolean) {}
 
-    protected fun update(newDocument: T?, newFile: Fs.File?, newIsUnsaved: Boolean) {
-        document = newDocument
-        file = newFile
-        isUnsaved = newIsUnsaved
-        if (!newIsUnsaved) documentAsSaved = newDocument
-        everSynced = true
-    }
-
-    fun isModified(newDocument: T): Boolean {
-        return documentAsSaved?.equals(newDocument) != true
-    }
+    fun isModified(newDocument: T): Boolean =
+        documentAsSaved?.equals(newDocument) != true
 
     protected fun confirmCloseIfUnsaved(): Boolean {
         if (!isUnsaved) return true
@@ -205,12 +206,9 @@ abstract class DocumentManager<T, TState, OpenT : OpenDocument<T>>(
         fun undo() { if (undoStack.canUndo()) undoStack.undo() }
         fun redo() { if (undoStack.canRedo()) undoStack.redo() }
 
-        override fun onEdit(document: T, documentState: TState, pushToUndoStack: Boolean, syncToServer: Boolean) {
+        override fun onEdit(document: T, documentState: TState, pushToUndoStack: Boolean) {
             val isUnsaved = this@DocumentManager.isModified(document)
             val newEditState = DocumentState(document, documentState, isUnsaved, file)
-            if (syncToServer) {
-                this@DocumentManager.editState = newEditState
-            }
             switchTo(newEditState, true)
 
             if (pushToUndoStack) {
