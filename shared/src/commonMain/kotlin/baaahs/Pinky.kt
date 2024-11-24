@@ -2,6 +2,7 @@ package baaahs
 
 import baaahs.api.ws.WebSocketRouter
 import baaahs.app.settings.FeatureFlags
+import baaahs.app.settings.Provider
 import baaahs.client.EventManager
 import baaahs.controller.ControllersManager
 import baaahs.dmx.DmxManager
@@ -55,7 +56,7 @@ class Pinky(
     private val pinkyMapperHandlers: PinkyMapperHandlers,
     private val pinkyConfigStore: PinkyConfigStore,
     private val eventManager: EventManager,
-    private val featureFlags: FeatureFlags
+    private val featureFlagsProvider: Provider<FeatureFlags>
 ) : CoroutineScope {
     val facade = Facade()
 

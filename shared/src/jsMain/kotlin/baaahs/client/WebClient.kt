@@ -61,6 +61,8 @@ class WebClient(
             pinkyState = newState
             facade.notifyChanged()
         }
+
+        featureFlagsProvider.addObserver { facade.notifyChanged() }
     }
 
     private val shaderLibraries = ShaderLibraries(pubSub, remoteFsSerializer)
@@ -123,12 +125,6 @@ class WebClient(
     }
 
     inner class Facade : baaahs.ui.Facade() {
-        init {
-            this@WebClient.featureFlagsProvider.addObserver {
-                this.notifyChanged()
-            }
-        }
-
         val fileDialog: FileDialog
             get() = this@WebClient.fileDialog
 

@@ -56,12 +56,12 @@ fun main(args: Array<String>) {
     globalLaunch {
         when (mode) {
             "Simulator" -> launchSimulator(queryParams)
-            else -> launchUi(mode, FeatureFlags())
+            else -> launchUi(mode)
         }
     }
 }
 
-private fun launchUi(appName: String?, featureFlags: FeatureFlags) {
+private fun launchUi(appName: String?) {
     tryCatchAndShowErrors {
         val pinkyAddress = JsPlatform.myAddress
         val network = BrowserNetwork(pinkyAddress, Ports.PINKY)
@@ -79,17 +79,17 @@ private fun launchUi(appName: String?, featureFlags: FeatureFlags) {
 
         val app = when (appName) {
             "Monitor" -> {
-                koin.loadModules(listOf(JsMonitorWebClientModule(featureFlags).getModule()))
+                koin.loadModules(listOf(JsMonitorWebClientModule().getModule()))
                 koin.createScope<MonitorUi>().get<MonitorUi>()
             }
 
             "UI" -> {
-                koin.loadModules(listOf(JsUiWebClientModule(featureFlags).getModule()))
+                koin.loadModules(listOf(JsUiWebClientModule().getModule()))
                 koin.createScope<WebClient>().get<WebClient>()
             }
 
             "PatchEditor" -> {
-                koin.loadModules(listOf(JsUiWebClientModule(featureFlags).getModule()))
+                koin.loadModules(listOf(JsUiWebClientModule().getModule()))
                 koin.createScope<WebClient>().get<PatchEditorApp>()
             }
 
@@ -136,8 +136,8 @@ private fun launchSimulator(
             JsSimPinkyModule(
                 sceneMonitor, pinkySettings, Dispatchers.Main, simMappingManager, featureFlags
             ).getModule(),
-            JsUiWebClientModule(featureFlags).getModule(),
-            JsMonitorWebClientModule(featureFlags).getModule(),
+            JsUiWebClientModule().getModule(),
+            JsMonitorWebClientModule().getModule(),
         )
     }.koin
 

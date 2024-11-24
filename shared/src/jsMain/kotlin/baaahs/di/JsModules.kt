@@ -3,7 +3,7 @@ package baaahs.di
 import baaahs.MediaDevices
 import baaahs.PubSub
 import baaahs.app.settings.FeatureFlags
-import baaahs.app.settings.ObservableProvider
+import baaahs.app.settings.FeatureFlagsManager
 import baaahs.app.settings.Provider
 import baaahs.app.ui.PatchEditorApp
 import baaahs.app.ui.dialog.FileDialog
@@ -60,9 +60,7 @@ class JsStandaloneWebClientModule(
     }
 }
 
-open class JsUiWebClientModule(
-    private val featureFlags: FeatureFlags
-) : WebClientModule() {
+open class JsUiWebClientModule : WebClientModule() {
     override fun getModule(): Module = module {
         scope<WebClient> {
             scoped { get<Network>().link("app") }
@@ -71,17 +69,16 @@ open class JsUiWebClientModule(
             scoped<PubSub.Endpoint> { get<PubSub.Client>() }
             scoped { Plugins.buildForClient(get(), get(named(PluginsModule.Qualifier.ActivePlugins))) }
             scoped<Plugins> { get<ClientPlugins>() }
-            scoped {
-                ClientStorage(BrowserSandboxFs("Browser Local Storage")) }
+            scoped { ClientStorage(BrowserSandboxFs("Browser Local Storage")) }
             scoped<Toolchain> { RootToolchain(get()) }
             scoped { WebClient(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
             scoped { ClientStageManager(get(), get(), get()) }
             scoped<RemoteFsSerializer> { PubSubRemoteFsClientBackend(get()) }
             scoped { FileDialog() }
             scoped<IFileDialog> { get<FileDialog>() }
+            scoped<Provider<FeatureFlags>> { FeatureFlagsManager.Client(get()) }
             scoped { ShowManager(get(), get(), get(), get(), get(), get(), get(), get()) }
             scoped { SceneMonitor() }
-            scoped<Provider<FeatureFlags>> { ObservableProvider(featureFlags) }
             scoped { SceneManager(get(), get(), get(), get(), get(), get(), get()) }
             scoped<SceneProvider> { get<SceneMonitor>() }
             scoped { Notifier(get()) }
@@ -101,9 +98,7 @@ open class JsUiWebClientModule(
     }
 }
 
-class JsMonitorWebClientModule(
-    private val featureFlags: FeatureFlags
-) : KModule {
+class JsMonitorWebClientModule : KModule {
     override fun getModule(): Module = module {
         scope<MonitorUi> {
             scoped { get<Network>().link("monitor") }
@@ -113,7 +108,6 @@ class JsMonitorWebClientModule(
             scoped { Plugins.buildForClient(get(), get(named(PluginsModule.Qualifier.ActivePlugins))) }
             scoped<Plugins> { get<ClientPlugins>() }
             scoped<RemoteFsSerializer> { PubSubRemoteFsClientBackend(get()) }
-            scoped<Provider<FeatureFlags>> { ObservableProvider(featureFlags) }
             scoped { SceneManager(get(), get(), get(), get(), get(), get(), get()) }
             scoped { SceneMonitor() }
             scoped<SceneProvider> { get<SceneMonitor>() }
