@@ -12,8 +12,8 @@ data class FeatureFlags(
 @Serializable
 data class DocumentFeatureFlags(
     val autoSync: Boolean = true,
-    val autoSave: Boolean = true,
-    val canSwitch: Boolean = false,
+    val autoSave: Boolean = false,
+    val multiDoc: Boolean = true,
 )
 
 abstract class Provider<T> : Observable() {

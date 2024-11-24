@@ -60,7 +60,9 @@ class JsStandaloneWebClientModule(
     }
 }
 
-open class JsUiWebClientModule : WebClientModule() {
+open class JsUiWebClientModule(
+    private val featureFlags: FeatureFlags
+) : WebClientModule() {
     override fun getModule(): Module = module {
         scope<WebClient> {
             scoped { get<Network>().link("app") }
@@ -79,7 +81,7 @@ open class JsUiWebClientModule : WebClientModule() {
             scoped<IFileDialog> { get<FileDialog>() }
             scoped { ShowManager(get(), get(), get(), get(), get(), get(), get(), get()) }
             scoped { SceneMonitor() }
-            scoped<Provider<FeatureFlags>> { ObservableProvider(FeatureFlags()) }
+            scoped<Provider<FeatureFlags>> { ObservableProvider(featureFlags) }
             scoped { SceneManager(get(), get(), get(), get(), get(), get(), get()) }
             scoped<SceneProvider> { get<SceneMonitor>() }
             scoped { Notifier(get()) }
@@ -99,7 +101,9 @@ open class JsUiWebClientModule : WebClientModule() {
     }
 }
 
-class JsMonitorWebClientModule : KModule {
+class JsMonitorWebClientModule(
+    private val featureFlags: FeatureFlags
+) : KModule {
     override fun getModule(): Module = module {
         scope<MonitorUi> {
             scoped { get<Network>().link("monitor") }
@@ -109,7 +113,7 @@ class JsMonitorWebClientModule : KModule {
             scoped { Plugins.buildForClient(get(), get(named(PluginsModule.Qualifier.ActivePlugins))) }
             scoped<Plugins> { get<ClientPlugins>() }
             scoped<RemoteFsSerializer> { PubSubRemoteFsClientBackend(get()) }
-            scoped<Provider<FeatureFlags>> { ObservableProvider(FeatureFlags()) }
+            scoped<Provider<FeatureFlags>> { ObservableProvider(featureFlags) }
             scoped { SceneManager(get(), get(), get(), get(), get(), get(), get()) }
             scoped { SceneMonitor() }
             scoped<SceneProvider> { get<SceneMonitor>() }
