@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.app.settings.FeatureFlags
 import baaahs.client.EventManager
 import baaahs.controller.ControllersManager
 import baaahs.dmx.Dmx
@@ -107,7 +108,8 @@ class PinkySpec : DescribeSpec({
                 stageManager, controllersManager, brainManager,
                 ShaderLibraryManager(plugins, fakeFs, FsServerSideSerializer(), pubSub),
                 Pinky.NetworkStats(), PinkySettings(), serverNotices, PinkyMapperHandlers(mappingStore),
-                PinkyConfigStore(plugins, fakeFs.rootFile), eventManager
+                PinkyConfigStore(plugins, fakeFs.rootFile), eventManager,
+                FeatureFlags()
             )
         }
         val pinkyLink by value { network.links.only() }

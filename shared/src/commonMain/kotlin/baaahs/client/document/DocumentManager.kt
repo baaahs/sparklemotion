@@ -1,7 +1,9 @@
 package baaahs.client.document
 
 import baaahs.DocumentState
+import baaahs.DocumentUndoState
 import baaahs.PubSub
+import baaahs.app.settings.DocumentFeatureFlags
 import baaahs.client.Notifier
 import baaahs.doc.DocumentType
 import baaahs.doc.FileType
@@ -13,6 +15,7 @@ import baaahs.ui.DialogHolder
 import baaahs.ui.confirm
 import baaahs.util.RefCounted
 import baaahs.util.UndoStack
+import baaahs.util.globalLaunch
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.modules.SerializersModule
 
@@ -28,7 +31,7 @@ abstract class DocumentManager<T, TState, OpenT : OpenDocument<T>>(
 ) {
     abstract val facade: Facade
     abstract val documentTitle: String?
-    abstract val autoSyncToServer: Boolean
+    abstract val featureFlags: DocumentFeatureFlags
 
     private val fileType: FileType get() = documentType.fileType
 
@@ -48,14 +51,14 @@ abstract class DocumentManager<T, TState, OpenT : OpenDocument<T>>(
     val editMode = EditMode(EditMode.Mode.Never)
     protected var openDocument: OpenT? = null
 
-    protected val undoStack = object : UndoStack<DocumentState<T, TState>>() {
-        override fun undo(): DocumentState<T, TState> {
+    protected val undoStack = object : UndoStack<DocumentUndoState<T, TState>>() {
+        override fun undo(): DocumentUndoState<T, TState> {
             return super.undo().also { (document, documentState) ->
                 facade.onEdit(document, documentState, pushToUndoStack = false)
             }
         }
 
-        override fun redo(): DocumentState<T, TState> {
+        override fun redo(): DocumentUndoState<T, TState> {
             return super.redo().also { (document, documentState) ->
                 facade.onEdit(document, documentState, pushToUndoStack = false)
             }
@@ -67,10 +70,7 @@ abstract class DocumentManager<T, TState, OpenT : OpenDocument<T>>(
     protected var localState: DocumentState<T, TState>? = null
     protected var editState by
         pubSub.state(topic, null, stateChannels) { incoming ->
-            localState = incoming
-            switchTo(incoming, false)
-            undoStack.reset(incoming)
-            facade.notifyChanged()
+            switchTo(incoming, isRemoteChange = true)
         }
 
     private val serverCommands =
@@ -127,18 +127,19 @@ abstract class DocumentManager<T, TState, OpenT : OpenDocument<T>>(
 
     protected abstract fun openDocument(newDocument: T, newDocumentState: TState?): OpenT
 
-    protected fun switchTo(documentState: DocumentState<T, TState>?, isLocalEdit: Boolean) {
-        if (isLocalEdit && autoSyncToServer) {
+    protected fun switchTo(incomingDocumentState: DocumentState<T, TState>?, isRemoteChange: Boolean) {
+        if (!isRemoteChange && featureFlags.autoSync) {
             // Push document to server.
-            editState = documentState
+            editState = incomingDocumentState
         }
 
-        localState = documentState
+        val oldLocalState = localState
+        localState = incomingDocumentState
 
-        val newDocument = documentState?.document
-        val newDocumentState = documentState?.state
-        val newIsUnsaved = documentState?.isUnsaved == true
-        val newFile = documentState?.file
+        val newDocument = incomingDocumentState?.document
+        val newDocumentState = incomingDocumentState?.state
+        val newIsUnsaved = incomingDocumentState?.isUnsaved == true
+        val newFile = incomingDocumentState?.file
         val newOpenDocument = newDocument?.let {
             openDocument(newDocument, newDocumentState)
         }
@@ -151,12 +152,30 @@ abstract class DocumentManager<T, TState, OpenT : OpenDocument<T>>(
         openDocument = newOpenDocument.also { (it as? RefCounted)?.use() }
         everSynced = true
 
-        onSwitch(isLocalEdit)
+        onSwitch(isRemoteChange)
+
+        if (isRemoteChange) {
+            if (oldLocalState?.file != incomingDocumentState?.file) {
+                // If the current file changed on the server side, reset the undo stack.
+                undoStack.reset(incomingDocumentState?.toUndoState())
+            } else if (
+                oldLocalState?.document != incomingDocumentState?.document &&
+                incomingDocumentState?.document != null
+            ) {
+                // If the document was changed by another client, push the change to the undo stack;
+                // changes to the document state don't trigger an undo stack push though.
+                undoStack.changed(incomingDocumentState.toUndoState())
+            }
+        }
 
         facade.notifyChanged()
+
+        if (featureFlags.autoSave && file != null && isUnsaved) {
+            globalLaunch { serverCommands.save() }
+        }
     }
 
-    open fun onSwitch(isLocalEdit: Boolean) {}
+    open fun onSwitch(isRemoteChange: Boolean) {}
 
     fun isModified(newDocument: T): Boolean =
         documentAsSaved?.equals(newDocument) != true
@@ -188,6 +207,7 @@ abstract class DocumentManager<T, TState, OpenT : OpenDocument<T>>(
         val canUndo get() = undoStack.canUndo()
         val canRedo get() = undoStack.canRedo()
         val editMode get() = this@DocumentManager.editMode
+        val featureFlags get() = this@DocumentManager.featureFlags
 
         suspend fun onNew(dialogHolder: DialogHolder) = this@DocumentManager.onNew(dialogHolder)
         suspend fun onNew(document: T) = this@DocumentManager.onNew(document)
@@ -209,10 +229,10 @@ abstract class DocumentManager<T, TState, OpenT : OpenDocument<T>>(
         override fun onEdit(document: T, documentState: TState, pushToUndoStack: Boolean) {
             val isUnsaved = this@DocumentManager.isModified(document)
             val newEditState = DocumentState(document, documentState, isUnsaved, file)
-            switchTo(newEditState, true)
+            switchTo(newEditState, isRemoteChange = false)
 
             if (pushToUndoStack) {
-                undoStack.changed(newEditState)
+                undoStack.changed(newEditState.toUndoState())
             }
 
             notifyChanged()

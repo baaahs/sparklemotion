@@ -1,6 +1,9 @@
 package baaahs.client.document
 
 import baaahs.PubSub
+import baaahs.app.settings.DocumentFeatureFlags
+import baaahs.app.settings.FeatureFlags
+import baaahs.app.settings.Provider
 import baaahs.app.ui.UiActions
 import baaahs.client.Notifier
 import baaahs.doc.SceneDocumentType
@@ -16,6 +19,7 @@ import baaahs.ui.DialogMenuItem.Divider
 import baaahs.ui.DialogMenuItem.Option
 import baaahs.ui.IObservable
 import baaahs.ui.Observable
+import baaahs.util.globalLaunch
 
 class SceneManager(
     pubSub: PubSub.Client,
@@ -23,15 +27,16 @@ class SceneManager(
     private val plugins: Plugins,
     notifier: Notifier,
     fileDialog: IFileDialog,
-    private val sceneMonitor: SceneMonitor
+    private val sceneMonitor: SceneMonitor,
+    private val featureFlagsProvider: Provider<FeatureFlags>
 ) : DocumentManager<Scene, Unit, OpenScene>(
     SceneDocumentType, pubSub, Scene.createTopic(plugins.serialModule, remoteFsSerializer),
     remoteFsSerializer, plugins, notifier, fileDialog, Scene.serializer()
 ), IObservable by Observable() {
     override val facade = Facade()
     override val documentTitle get() = document?.title
-    override val autoSyncToServer: Boolean
-        get() = AUTO_SYNC
+    override val featureFlags: DocumentFeatureFlags
+        get() = featureFlagsProvider.get().scenes
 
     private var mutableScene: MutableScene? = null
 
@@ -97,9 +102,13 @@ class SceneManager(
     override fun openDocument(newDocument: Scene, newDocumentState: Unit?): OpenScene =
         newDocument.open()
 
-    override fun onSwitch(isLocalEdit: Boolean) {
-        if (!isLocalEdit) mutableScene = null
+    override fun onSwitch(isRemoteChange: Boolean) {
+        if (isRemoteChange) mutableScene = null
         sceneMonitor.onChange(openDocument)
+
+        if (featureFlags.autoSave) {
+            globalLaunch { onSave() }
+        }
     }
 
     private fun edit(): MutableScene =
@@ -141,9 +150,5 @@ class SceneManager(
         fun onEdit(pushToUndoStack: Boolean = true) {
             onEdit(mutableScene, pushToUndoStack)
         }
-    }
-
-    companion object {
-        const val AUTO_SYNC = true
     }
 }

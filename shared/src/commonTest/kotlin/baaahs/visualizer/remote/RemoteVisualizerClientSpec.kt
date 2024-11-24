@@ -1,6 +1,8 @@
 package baaahs.visualizer.remote
 
 import baaahs.*
+import baaahs.app.settings.FeatureFlags
+import baaahs.app.settings.ObservableProvider
 import baaahs.client.Notifier
 import baaahs.client.document.FakeFileDialog
 import baaahs.client.document.SceneManager
@@ -49,7 +51,8 @@ class RemoteVisualizerClientSpec : DescribeSpec({
         val sceneManager by value {
             SceneManager(
                 pubSubRig.client1, PubSubRemoteFsClientBackend(pubSubRig.client1),
-                plugins, Notifier(pubSubRig.client1), FakeFileDialog(), sceneMonitor
+                plugins, Notifier(pubSubRig.client1), FakeFileDialog(), sceneMonitor,
+                ObservableProvider(FeatureFlags())
             )
         }
         val server by value {

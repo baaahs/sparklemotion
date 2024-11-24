@@ -1,6 +1,7 @@
 package baaahs.di
 
 import baaahs.*
+import baaahs.app.settings.FeatureFlags
 import baaahs.client.EventManager
 import baaahs.controller.ControllersManager
 import baaahs.controller.ControllersPublisher
@@ -94,6 +95,7 @@ interface PinkyModule : KModule {
     val Scope.pinkySettings: PinkySettings
     val Scope.sceneMonitor: SceneMonitor get() = SceneMonitor()
     val Scope.pinkyMapperHandlers: PinkyMapperHandlers get() = PinkyMapperHandlers(get())
+    val Scope.featureFlags: FeatureFlags get() = FeatureFlags()
 
     object Named {
         val pinkyContext = named("PinkyContext")
@@ -190,12 +192,13 @@ interface PinkyModule : KModule {
             scoped { pinkySettings }
             scoped { ServerNotices(get(), get(Named.pinkyContext)) }
             scoped { PinkyMapperHandlers(get()) }
+            scoped { featureFlags }
             scoped {
                 Pinky(
                     get(), get(), get(), get(Named.dataDir), get(), get(),
                     get(), get(), get(), get(), get(Named.pinkyContext), get(), get(),
                     get(), get(), get(), get(), get(), get(),
-                    pinkyMapperHandlers, get(), get()
+                    pinkyMapperHandlers, get(), get(), get()
                 )
             }
         }

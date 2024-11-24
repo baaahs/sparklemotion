@@ -1,6 +1,9 @@
 package baaahs.client.document
 
 import baaahs.PubSub
+import baaahs.app.settings.DocumentFeatureFlags
+import baaahs.app.settings.FeatureFlags
+import baaahs.app.settings.Provider
 import baaahs.app.ui.UiActions
 import baaahs.client.ClientStageManager
 import baaahs.client.Notifier
@@ -29,14 +32,18 @@ class ShowManager(
     notifier: Notifier,
     fileDialog: IFileDialog,
     private val showMonitor: ShowMonitor,
-    private val stageManager: ClientStageManager
+    private val stageManager: ClientStageManager,
+    private val featureFlagsProvider: Provider<FeatureFlags>
 ) : DocumentManager<Show, ShowState, OpenShow>(
     ShowDocumentType, pubSub, ShowState.createTopic(plugins.serialModule, remoteFsSerializer),
     remoteFsSerializer, plugins, notifier, fileDialog, Show.serializer()
 ) {
     override val facade = Facade()
     override val documentTitle get() = document?.title
-    override val autoSyncToServer: Boolean = true
+    override val featureFlags: DocumentFeatureFlags
+        get() = featureFlagsProvider.get().scenes
+
+    private var openShow: OpenShow? = null
 
     private val problems = arrayListOf<Problem>().apply {
         pubSub.subscribe(Topics.showProblems) {
@@ -92,7 +99,7 @@ class ShowManager(
     override fun openDocument(newDocument: Show, newDocumentState: ShowState?): OpenShow =
         stageManager.openShow(newDocument, newDocumentState)
 
-    override fun onSwitch(isLocalEdit: Boolean) {
+    override fun onSwitch(isRemoteChange: Boolean) {
         showMonitor.onChange(openDocument)
     }
 

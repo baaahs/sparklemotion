@@ -2,6 +2,8 @@ package baaahs.client
 
 import baaahs.PinkyState
 import baaahs.PubSub
+import baaahs.app.settings.FeatureFlags
+import baaahs.app.settings.Provider
 import baaahs.app.settings.UiSettings
 import baaahs.app.ui.AppIndex
 import baaahs.app.ui.AppMode
@@ -20,6 +22,7 @@ import baaahs.plugin.Plugins
 import baaahs.scene.SceneProvider
 import baaahs.sim.HostedWebApp
 import baaahs.sm.webapi.Topics
+import baaahs.ui.addObserver
 import baaahs.util.globalLaunch
 import js.objects.jso
 import react.ReactElement
@@ -39,7 +42,8 @@ class WebClient(
     private val showManager: ShowManager,
     private val sceneManager: SceneManager,
     private val stageManager: ClientStageManager,
-    private val eventManager: EventManager
+    private val eventManager: EventManager,
+    private val featureFlagsProvider: Provider<FeatureFlags>
 ) : HostedWebApp {
     val facade = Facade()
 
@@ -119,6 +123,12 @@ class WebClient(
     }
 
     inner class Facade : baaahs.ui.Facade() {
+        init {
+            this@WebClient.featureFlagsProvider.addObserver {
+                this.notifyChanged()
+            }
+        }
+
         val fileDialog: FileDialog
             get() = this@WebClient.fileDialog
 
@@ -158,6 +168,9 @@ class WebClient(
 
         val eventManager: EventManager
             get() = this@WebClient.eventManager
+
+        val featureFlags: FeatureFlags
+            get() = this@WebClient.featureFlagsProvider.get()
 
         var appMode: AppMode
             get() = this@WebClient.uiSettings.appMode
