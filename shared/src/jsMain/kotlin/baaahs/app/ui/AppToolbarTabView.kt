@@ -54,7 +54,7 @@ external interface AppToolbarTabProps : Props {
     var currentAppMode: AppMode
     var value: AppMode
     var document: OpenDocument<*>?
-    var documentManager: DocumentManager<*, *>.Facade
+    var documentManager: DocumentManager<*, *, *>.Facade
     var onEditButtonClick: () -> Unit
 }
 

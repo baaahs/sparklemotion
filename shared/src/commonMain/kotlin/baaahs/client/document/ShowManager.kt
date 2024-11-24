@@ -1,6 +1,5 @@
 package baaahs.client.document
 
-import baaahs.DocumentState
 import baaahs.PubSub
 import baaahs.app.ui.UiActions
 import baaahs.client.ClientStageManager
@@ -89,22 +88,11 @@ class ShowManager(
         onNew(show)
     }
 
-    override fun switchTo(documentState: DocumentState<Show, ShowState>?, isLocalEdit: Boolean) {
-        localState = documentState
+    override fun openDocument(newDocument: Show, newDocumentState: ShowState?): OpenShow =
+        stageManager.openShow(newDocument, newDocumentState)
 
-        val newShow = documentState?.document
-        val newShowState = documentState?.state
-        val newIsUnsaved = documentState?.isUnsaved ?: false
-        val newFile = documentState?.file
-        val newOpenShow = newShow?.let {
-            stageManager.openShow(newShow, newShowState)
-        }
-        openDocument?.disuse()
-        openDocument = newOpenShow?.also { it.use() }
-
-        update(newShow, newFile, newIsUnsaved)
-
-        showMonitor.onChange(newOpenShow)
+    override fun onSwitch(isLocalEdit: Boolean) {
+        showMonitor.onChange(openDocument)
     }
 
     inner class Facade : DocumentManager<Show, ShowState, OpenShow>.Facade() {

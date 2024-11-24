@@ -93,24 +93,12 @@ class SceneManager(
         onNew(scene)
     }
 
-    override fun switchTo(documentState: DocumentState<Scene, Unit>?, isLocalEdit: Boolean) {
-        localState = documentState
+    override fun openDocument(newDocument: Scene, newDocumentState: Unit?): OpenScene =
+        newDocument.open()
 
-        val newScene = documentState?.document
-        val newSceneState = documentState?.state
-        val newIsUnsaved = documentState?.isUnsaved ?: false
-        val newFile = documentState?.file
-        val newOpenScene = newScene?.let {
-//            stageManager.openScene(newScene, newSceneState)
-        }
-//        openScene?.disuse()
-//        openScene = newOpenScene?.also { it.use() }
-
-        update(newScene, newFile, newIsUnsaved)
-        openDocument = newScene?.open()
+    override fun onSwitch(isLocalEdit: Boolean) {
         if (!isLocalEdit) mutableScene = null
         sceneMonitor.onChange(openDocument)
-        facade.notifyChanged()
     }
 
     private fun edit(): MutableScene =

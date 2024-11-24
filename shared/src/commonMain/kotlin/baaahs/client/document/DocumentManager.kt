@@ -11,6 +11,7 @@ import baaahs.plugin.Plugins
 import baaahs.show.mutable.EditHandler
 import baaahs.ui.DialogHolder
 import baaahs.ui.confirm
+import baaahs.util.RefCounted
 import baaahs.util.UndoStack
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.modules.SerializersModule
@@ -123,7 +124,29 @@ abstract class DocumentManager<T, TState, OpenT : OpenDocument<T>>(
         serverCommands.switchTo(null)
     }
 
-    protected abstract fun switchTo(documentState: DocumentState<T, TState>?, isLocalEdit: Boolean)
+    protected abstract fun openDocument(newDocument: T, newDocumentState: TState?): OpenT
+
+    protected fun switchTo(documentState: DocumentState<T, TState>?, isLocalEdit: Boolean) {
+        localState = documentState
+
+        val newDocument = documentState?.document
+        val newDocumentState = documentState?.state
+        val newIsUnsaved = documentState?.isUnsaved ?: false
+        val newFile = documentState?.file
+        val newOpenDocument = newDocument?.let {
+            openDocument(newDocument, newDocumentState)
+        }
+
+        (openDocument as? RefCounted)?.disuse()
+        openDocument = newOpenDocument.also { (it as? RefCounted)?.use() }
+        update(newDocument, newFile, newIsUnsaved)
+
+        onSwitch(isLocalEdit)
+
+        facade.notifyChanged()
+    }
+
+    open fun onSwitch(isLocalEdit: Boolean) {}
 
     protected fun update(newDocument: T?, newFile: Fs.File?, newIsUnsaved: Boolean) {
         document = newDocument

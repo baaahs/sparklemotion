@@ -294,7 +294,7 @@ private val Severity.cssClass get() = name.lowercase() + "Severity"
 
 external interface AppToolbarProps : Props {
     var appMode: AppMode
-    var documentManager: DocumentManager<*, *>.Facade
+    var documentManager: DocumentManager<*, *, *>.Facade
     var onMenuButtonClick: () -> Unit
     var onAppModeChange: (AppMode) -> Unit
 }
