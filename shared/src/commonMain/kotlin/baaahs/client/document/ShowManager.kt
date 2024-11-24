@@ -31,13 +31,12 @@ class ShowManager(
     fileDialog: IFileDialog,
     private val showMonitor: ShowMonitor,
     private val stageManager: ClientStageManager
-) : DocumentManager<Show, ShowState>(
+) : DocumentManager<Show, ShowState, OpenShow>(
     ShowDocumentType, pubSub, ShowState.createTopic(plugins.serialModule, remoteFsSerializer),
     remoteFsSerializer, plugins, notifier, fileDialog, Show.serializer()
 ) {
     override val facade = Facade()
     override val documentTitle get() = document?.title
-    private var openShow: OpenShow? = null
 
     private val problems = arrayListOf<Problem>().apply {
         pubSub.subscribe(Topics.showProblems) {
@@ -100,19 +99,17 @@ class ShowManager(
         val newOpenShow = newShow?.let {
             stageManager.openShow(newShow, newShowState)
         }
-        openShow?.disuse()
-        openShow = newOpenShow?.also { it.use() }
+        openDocument?.disuse()
+        openDocument = newOpenShow?.also { it.use() }
 
         update(newShow, newFile, newIsUnsaved)
 
         showMonitor.onChange(newOpenShow)
     }
 
-    inner class Facade : DocumentManager<Show, ShowState>.Facade() {
-        override val openDocument: OpenDocument<Show>?
-            get() = openShow
+    inner class Facade : DocumentManager<Show, ShowState, OpenShow>.Facade() {
         val show get() = this@ShowManager.document
-        val openShow get() = this@ShowManager.openShow
+        val openShow get() = this@ShowManager.openDocument
         val showProblems get() = this@ShowManager.problems
 
         override fun onEdit(mutableDocument: MutableDocument<Show>, pushToUndoStack: Boolean) {
