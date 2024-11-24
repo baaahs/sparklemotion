@@ -183,7 +183,7 @@ external interface AppDrawerProps : Props {
     var appMode: AppMode
     var onAppModeChange: (AppMode) -> Unit
 
-    var documentManager: DocumentManager<*, *>.Facade
+    var documentManager: DocumentManager<*, *, *>.Facade
 
     var onLayoutEditorDialogToggle: () -> Unit
 
