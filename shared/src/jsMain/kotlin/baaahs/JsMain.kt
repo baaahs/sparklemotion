@@ -56,12 +56,12 @@ fun main(args: Array<String>) {
     globalLaunch {
         when (mode) {
             "Simulator" -> launchSimulator(queryParams)
-            else -> launchUi(mode)
+            else -> launchUi(mode, FeatureFlags())
         }
     }
 }
 
-private fun launchUi(appName: String?) {
+private fun launchUi(appName: String?, featureFlags: FeatureFlags) {
     tryCatchAndShowErrors {
         val pinkyAddress = JsPlatform.myAddress
         val network = BrowserNetwork(pinkyAddress, Ports.PINKY)
@@ -79,17 +79,17 @@ private fun launchUi(appName: String?) {
 
         val app = when (appName) {
             "Monitor" -> {
-                koin.loadModules(listOf(JsMonitorWebClientModule().getModule()))
+                koin.loadModules(listOf(JsMonitorWebClientModule(featureFlags).getModule()))
                 koin.createScope<MonitorUi>().get<MonitorUi>()
             }
 
             "UI" -> {
-                koin.loadModules(listOf(JsUiWebClientModule().getModule()))
+                koin.loadModules(listOf(JsUiWebClientModule(featureFlags).getModule()))
                 koin.createScope<WebClient>().get<WebClient>()
             }
 
             "PatchEditor" -> {
-                koin.loadModules(listOf(JsUiWebClientModule().getModule()))
+                koin.loadModules(listOf(JsUiWebClientModule(featureFlags).getModule()))
                 koin.createScope<WebClient>().get<PatchEditorApp>()
             }
 
@@ -103,15 +103,18 @@ private fun launchUi(appName: String?) {
 private fun launchSimulator(
     queryParams: Map<String, String>
 ) {
-    val pixelDensity = queryParams.getOrElse("pixelDensity") { "0.2" }.toFloat()
-    val pixelSpacing = queryParams.getOrElse("pixelSpacing") { "3" }.toFloat()
-    val autoSync = queryParams.getOrElse("autoSync") { "true" }.toBoolean()
-    val autoSave = queryParams.getOrElse("autoSave") { "true" }.toBoolean()
-    val monoDoc = queryParams.getOrElse("monoDoc") { "true" }.toBoolean()
-    val featureFlags = FeatureFlags(
-        shows = DocumentFeatureFlags(autoSync, autoSave, monoDoc),
-        scenes = DocumentFeatureFlags(autoSync, autoSave, monoDoc),
-    )
+    val pixelDensity = queryParams["pixelDensity"]?.toFloat() ?: 0.2f
+    val pixelSpacing = queryParams["pixelSpacing"]?.toFloat() ?: 3f
+    val featureFlags = run {
+        val defaults = DocumentFeatureFlags()
+        val autoSync = queryParams["autoSync"]?.toBoolean() ?: defaults.autoSync
+        val autoSave = queryParams["autoSave"]?.toBoolean() ?: defaults.autoSave
+        val multiDoc = queryParams["multiDoc"]?.toBoolean() ?: defaults.multiDoc
+        FeatureFlags(
+            shows = DocumentFeatureFlags(autoSync, autoSave, multiDoc),
+            scenes = DocumentFeatureFlags(autoSync, autoSave, multiDoc),
+        )
+    }
 
     val pinkyAddress = JsPlatform.myAddress
     val fakeNetwork = FakeNetwork()
@@ -133,8 +136,8 @@ private fun launchSimulator(
             JsSimPinkyModule(
                 sceneMonitor, pinkySettings, Dispatchers.Main, simMappingManager, featureFlags
             ).getModule(),
-            JsUiWebClientModule().getModule(),
-            JsMonitorWebClientModule().getModule(),
+            JsUiWebClientModule(featureFlags).getModule(),
+            JsMonitorWebClientModule(featureFlags).getModule(),
         )
     }.koin
 

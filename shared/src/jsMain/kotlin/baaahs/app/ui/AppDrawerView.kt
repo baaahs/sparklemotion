@@ -25,6 +25,7 @@ private val AppDrawerView = xComponent<AppDrawerProps>("AppDrawer", isPure = tru
     val themeStyles = appContext.allStyles.appUi
     val documentManager = observe(props.documentManager)
     val openDocument = documentManager.openDocument
+    val featureFlags = documentManager.featureFlags
 
     val handleAppModeChange by handler(props.onAppModeChange) { _: SyntheticEvent<*, *>, value: Any ->
         props.onAppModeChange(AppMode.valueOf(value.toString()))
@@ -111,11 +112,13 @@ private val AppDrawerView = xComponent<AppDrawerProps>("AppDrawer", isPure = tru
         List {
             attrs.dense = isSmallScreen
 
-            documentMenu {
-                attrs.documentManager = documentManager
-            }
+            if (featureFlags.multiDoc) {
+                documentMenu {
+                    attrs.documentManager = documentManager
+                }
 
-            Divider {}
+                Divider {}
+            }
 
             ListItem {
                 attrs.disabled = !appContext.showManager.isLoaded
