@@ -2,6 +2,8 @@ package baaahs.di
 
 import baaahs.MediaDevices
 import baaahs.PinkySettings
+import baaahs.app.settings.DocumentFeatureFlags
+import baaahs.app.settings.FeatureFlags
 import baaahs.dmx.Dmx
 import baaahs.dmx.JvmFtdiDmxDriver
 import baaahs.io.Fs
@@ -82,6 +84,8 @@ class JvmPinkyModule(
         get() = MidiManager(listOf(JvmMidiSource(get())))
     override val Scope.pinkySettings: PinkySettings
         get() = PinkySettings()
+    override val Scope.featureFlags: FeatureFlags
+        get() = FeatureFlags.JVM
 }
 
 class ParserPinkyArgs(

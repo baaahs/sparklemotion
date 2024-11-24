@@ -1,6 +1,8 @@
 package baaahs.sm.server
 
 import baaahs.*
+import baaahs.app.settings.FeatureFlags
+import baaahs.app.settings.ObservableProvider
 import baaahs.client.EventManager
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureManager
@@ -65,7 +67,8 @@ class StageManagerSpec : DescribeSpec({
                 SceneMonitor(),
                 FsServerSideSerializer(),
                 PinkyConfigStore(plugins, fakeFs.rootFile),
-                ShowMonitor()
+                ShowMonitor(),
+                ObservableProvider(FeatureFlags.JVM)
             )
         }
 

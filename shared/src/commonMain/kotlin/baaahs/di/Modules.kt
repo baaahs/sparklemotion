@@ -2,6 +2,8 @@ package baaahs.di
 
 import baaahs.*
 import baaahs.app.settings.FeatureFlags
+import baaahs.app.settings.FeatureFlagsManager
+import baaahs.app.settings.Provider
 import baaahs.client.EventManager
 import baaahs.controller.ControllersManager
 import baaahs.controller.ControllersPublisher
@@ -95,7 +97,7 @@ interface PinkyModule : KModule {
     val Scope.pinkySettings: PinkySettings
     val Scope.sceneMonitor: SceneMonitor get() = SceneMonitor()
     val Scope.pinkyMapperHandlers: PinkyMapperHandlers get() = PinkyMapperHandlers(get())
-    val Scope.featureFlags: FeatureFlags get() = FeatureFlags()
+    val Scope.featureFlags: FeatureFlags
 
     object Named {
         val pinkyContext = named("PinkyContext")
@@ -145,20 +147,8 @@ interface PinkyModule : KModule {
             scoped { GadgetManager(get(), get(), get(Named.pinkyContext)) }
             scoped<Toolchain> { RootToolchain(get()) }
             scoped { PinkyConfigStore(get(), fs.resolve(".")) }
-            scoped { StageManager(
-                get(),
-                get(),
-                get(),
-                get(Named.dataDir),
-                get(),
-                get(),
-                get(),
-                get(),
-                get(),
-                get(),
-                get(),
-                get()
-            ) }
+            scoped<Provider<FeatureFlags>> { FeatureFlagsManager.Server(get(), get()) }
+            scoped { StageManager(get(), get(), get(), get(Named.dataDir), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
             scoped { Pinky.NetworkStats() }
             scoped { BrainManager(get(), get(), get(), get(), get(Named.pinkyContext)) }
             scoped { SacnManager(get(), get(Named.pinkyContext), get(), get()) }
