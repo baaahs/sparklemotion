@@ -25,14 +25,13 @@ class SceneManager(
     notifier: Notifier,
     fileDialog: IFileDialog,
     private val sceneMonitor: SceneMonitor
-) : DocumentManager<Scene, Unit>(
+) : DocumentManager<Scene, Unit, OpenScene>(
     SceneDocumentType, pubSub, Scene.createTopic(plugins.serialModule, remoteFsSerializer),
     remoteFsSerializer, plugins, notifier, fileDialog, Scene.serializer()
 ), IObservable by Observable() {
     override val facade = Facade()
     override val documentTitle get() = document?.title
 
-    private var openScene: OpenScene? = null
     private var mutableScene: MutableScene? = null
 
     override suspend fun onNew(dialogHolder: DialogHolder) {
@@ -108,9 +107,9 @@ class SceneManager(
 //        openScene = newOpenScene?.also { it.use() }
 
         update(newScene, newFile, newIsUnsaved)
-        openScene = newScene?.open()
+        openDocument = newScene?.open()
         if (!isLocalEdit) mutableScene = null
-        sceneMonitor.onChange(openScene)
+        sceneMonitor.onChange(openDocument)
         facade.notifyChanged()
     }
 
@@ -121,11 +120,9 @@ class SceneManager(
             }
         }
 
-    inner class Facade : DocumentManager<Scene, Unit>.Facade() {
-        override val openDocument: OpenDocument<Scene>?
-            get() = openScene
+    inner class Facade : DocumentManager<Scene, Unit, OpenScene>.Facade() {
         val scene get() = this@SceneManager.document
-        val openScene get() = this@SceneManager.openScene
+        val openScene get() = this@SceneManager.openDocument
         val mutableScene get() = this@SceneManager.edit()
 
         /** Ugh super janky. */

@@ -15,7 +15,7 @@ import baaahs.util.UndoStack
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.modules.SerializersModule
 
-abstract class DocumentManager<T, TState>(
+abstract class DocumentManager<T, TState, OpenT : OpenDocument<T>>(
     val documentType: DocumentType,
     pubSub: PubSub.Client,
     topic: PubSub.Topic<DocumentState<T, TState>?>,
@@ -44,6 +44,7 @@ abstract class DocumentManager<T, TState>(
     private val isSynced: Boolean
         get() = editState == localState
     val editMode = EditMode(EditMode.Mode.Never)
+    protected var openDocument: OpenT? = null
 
     protected val undoStack = object : UndoStack<DocumentState<T, TState>>() {
         override fun undo(): DocumentState<T, TState> {
@@ -152,7 +153,7 @@ abstract class DocumentManager<T, TState>(
     }
 
     abstract inner class Facade : baaahs.ui.Facade(), EditHandler<T, TState> {
-        abstract val openDocument: OpenDocument<T>?
+        val openDocument: OpenDocument<T>? get() = this@DocumentManager.openDocument
         val documentType get() = this@DocumentManager.documentType
         val documentTypeTitle get() = this@DocumentManager.documentType.title
         val file get() = this@DocumentManager.file
