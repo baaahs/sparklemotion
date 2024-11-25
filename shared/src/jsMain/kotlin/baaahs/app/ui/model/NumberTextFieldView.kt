@@ -12,21 +12,29 @@ import react.*
 import web.events.Event
 import web.html.InputType
 
-private val NumberTextFieldView = xComponent<NumberTextFieldProps<Number?>>("NumberTextField") { props ->
+val NumberTextFieldView = xComponent<NumberTextFieldProps<Number?>>("NumberTextField") { props ->
     val appContext = useContext(appContext)
     val style = appContext.allStyles.modelEditor
+    val isNullable = props.isNullable == true
     var error: String? by state { null }
+    var errorValue by state<String?> { null }
 
     val cachedOnChange = props.onChange.asDynamic().cachedOnClick ?: run {
         { event: Event ->
             val numericValue = event.currentTarget.value
                 .ifBlank { null }
                 ?.toDouble()
-            try {
-                props.onChange(numericValue)
-                error = null
-            } catch (e: Exception) {
-                error = e.message
+            if (!isNullable && numericValue == null) {
+                error = "Must not be blank."
+                errorValue = ""
+            } else {
+                try {
+                    props.onChange(numericValue)
+                    error = null
+                    errorValue = null
+                } catch (e: Exception) {
+                    error = e.message
+                }
             }
         }.also { props.onChange.asDynamic().cachedOnClick = it }
     }
@@ -56,7 +64,8 @@ private val NumberTextFieldView = xComponent<NumberTextFieldProps<Number?>>("Num
         }
         attrs.disabled = props.disabled == true
         attrs.onChange = cachedOnChange
-        if (props.value != null) attrs.value = props.value
+        val inputValue = errorValue ?: props.value
+        if (inputValue != null) attrs.value = inputValue
         attrs.label = props.label.asTextNode()
         attrs.error = error != null
         attrs.helperText = error?.asTextNode()
@@ -67,6 +76,7 @@ external interface NumberTextFieldProps<T: Number?> : Props {
     var label: String
     var disabled: Boolean?
     var value: T
+    var isNullable: Boolean? // defaults to false
     var adornment: ReactNode?
     var placeholder: String?
     var onChange: (T) -> Unit
