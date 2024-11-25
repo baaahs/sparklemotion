@@ -3,7 +3,6 @@ package baaahs
 import baaahs.app.settings.UiSettings
 import baaahs.client.WebClient
 import baaahs.controller.ControllersManager
-import baaahs.midi.MIDIUi
 import baaahs.monitor.MonitorUi
 import baaahs.sim.*
 import baaahs.sim.FixturesSimulator
@@ -62,7 +61,6 @@ class SheepSimulator(
             it.facade.notifyChanged()
         }
     fun createMonitorApp(): MonitorUi = getKoin().createScope<MonitorUi>().get()
-    fun createMIDIApp(): MIDIUi = getKoin().createScope<MIDIUi>().get()
 
     private suspend fun cleanUpBrowserStorage() {
         val fs = BrowserSandboxFs("BrowserSandboxFs")
@@ -108,7 +106,6 @@ class SheepSimulator(
             listOf(
                 launchItem("Web UI") { createWebClientApp() },
                 launchItem("Monitor") { createMonitorApp() },
-                launchItem("MIDIUi") { createMIDIApp() }
             )
 
         val uiSettings: UiSettings
