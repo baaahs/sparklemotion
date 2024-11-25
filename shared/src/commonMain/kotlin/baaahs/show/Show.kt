@@ -40,6 +40,8 @@ data class Show(
         return json.encodeToJsonElement(serializer(), this)
     }
 
+    fun edit(): MutableShow = MutableShow(this)
+
     fun findImplicitControls(): Map<String, Control> = buildMap {
         val implicitControlsShowBuilder = ShowBuilder.forImplicitControls(controls, feeds)
         feeds
@@ -60,6 +62,9 @@ data class Show(
 
     companion object {
         val EmptyShow = Show("Empty Show")
+        val ShowTemplate = EmptyShow.edit().apply {
+            layouts.formats["default"] = MutableLayout(null, mutableListOf(MutableGridTab("Main")))
+        }.build()
 
         fun fromJson(plugins: Plugins, s: String): Show {
             val json = Json { serializersModule = plugins.serialModule }

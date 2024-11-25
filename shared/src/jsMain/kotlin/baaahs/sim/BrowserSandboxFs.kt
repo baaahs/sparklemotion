@@ -20,6 +20,14 @@ class BrowserSandboxFs(
         return listFiles(directory, prefix)
     }
 
+    override suspend fun exists(file: Fs.File): Boolean {
+        return super.exists(localFile(file))
+    }
+
+    override suspend fun isDirectory(file: Fs.File): Boolean {
+        return super.isDirectory(localFile(file))
+    }
+
     override suspend fun loadFile(file: Fs.File): String? {
         return storage.getItem(keyName(file))
     }
@@ -58,6 +66,8 @@ class BrowserSandboxFs(
     }
 
     private fun keyName(file: Fs.File): String = "$filePrefix$basePath${file.fullPath}"
+
+    fun localFile(file: Fs.File) = Fs.File(file.fs, "$basePath${file.fullPath}")
 
     private fun getFileList() =
         storage.getItem(keysKey)
