@@ -1,5 +1,6 @@
 package baaahs.net
 
+import baaahs.sm.server.ExceptionReporter
 import baaahs.util.Logger
 import io.ktor.http.*
 import kotlinx.coroutines.*
@@ -13,7 +14,8 @@ import kotlin.concurrent.thread
 
 
 class JvmNetwork(
-    val networkScope: CoroutineScope
+    private val networkScope: CoroutineScope,
+    private val exceptionReporter: ExceptionReporter
 ) : Network {
     private val link = RealLink()
 

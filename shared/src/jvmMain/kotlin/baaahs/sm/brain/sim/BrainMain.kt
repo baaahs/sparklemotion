@@ -7,6 +7,7 @@ import baaahs.model.Model
 import baaahs.net.JvmNetwork
 import baaahs.plugin.Plugins
 import baaahs.sm.brain.proto.Pixels
+import baaahs.sm.server.ExceptionReporter
 import baaahs.util.SystemClock
 import baaahs.util.globalLaunch
 import kotlinx.cli.ArgParser
@@ -41,7 +42,7 @@ class BrainMain(private val args: Args) {
             ?.open()?.model
             ?: error("No such scene file: \"$sceneFile\"")
 
-        val network = JvmNetwork(CoroutineScope(Dispatchers.IO))
+        val network = JvmNetwork(CoroutineScope(Dispatchers.IO), ExceptionReporter.RETHROW)
         val brainId = args.brainId ?: JvmNetwork.myAddress.toString()
         val brainSimulator = BrainSimulator(
             brainId, network, JvmPixelsDisplay(2000), SystemClock, CoroutineScope(Dispatchers.Default)

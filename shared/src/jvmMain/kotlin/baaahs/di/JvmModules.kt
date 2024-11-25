@@ -38,7 +38,7 @@ class JvmPlatformModule(
 ) : PlatformModule {
     override val networkDispatcher: CoroutineDispatcher = Dispatchers.IO
     override val Scope.network: Network
-        get() = JvmNetwork(get(PlatformModule.Named.networkScope))
+        get() = JvmNetwork(get(PlatformModule.Named.networkScope), exceptionReporter)
     override val Scope.clock: Clock
         get() = clock_
     override val Scope.mediaDevices: MediaDevices
