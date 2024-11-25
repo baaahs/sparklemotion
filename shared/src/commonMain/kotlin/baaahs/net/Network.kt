@@ -129,6 +129,7 @@ interface Network {
         fun listenWebSocket(path: String, onConnect: (incomingConnection: TcpConnection) -> WebSocketListener)
 
         fun start()
+        fun stop() {}
 
         interface HttpRequest {
             fun param(name: String): String?

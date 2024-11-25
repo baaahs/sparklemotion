@@ -43,15 +43,17 @@ import baaahs.sm.server.PinkyConfigStore
 import baaahs.sm.server.ServerNotices
 import baaahs.sm.server.StageManager
 import io.kotest.core.spec.style.DescribeSpec
-import io.kotest.matchers.*
-import io.kotest.matchers.collections.*
+import io.kotest.core.test.testCoroutineScheduler
+import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.InternalCoroutinesApi
 
 @Suppress("unused")
 @InternalCoroutinesApi
 class PinkySpec : DescribeSpec({
-    describe("Pinky") {
+    describe("Pinky").config(coroutineTestScope = true) {
         val fakeGlslContext by value { FakeGlContext() }
         val network by value { TestNetwork(1_000_000) }
         val clientAddress by value { TestNetwork.Address("client") }
@@ -127,7 +129,7 @@ class PinkySpec : DescribeSpec({
         beforeEach {
             pinky.switchTo(SampleData.sampleShow)
 
-            doRunBlocking {
+            val startup = CoroutineScope(testCoroutineScheduler).launch {
                 panelMappings.forEach { (brainId, surface) ->
                     val surfaceData = MappingSession.SurfaceData(
                         BrainManager.controllerTypeName, brainId.uuid, surface.name, null, null
@@ -142,8 +144,11 @@ class PinkySpec : DescribeSpec({
                     fakeFs.renameFile(mappingSessionPath, fakeFs.resolve("mapping/${model.name}/$mappingSessionPath"))
                 }
 
-                pinky.launchStartupJobs()
+                with(pinky) { launch { launchStartupJobs() } }
             }
+
+            testCoroutineScheduler.runCurrent()
+            startup.join()
         }
 
         describe("brains reporting to Pinky") {
