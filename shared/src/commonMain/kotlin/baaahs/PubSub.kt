@@ -13,6 +13,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.modules.SerializersModule
 import kotlin.js.JsName
+import kotlin.math.min
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -349,7 +350,13 @@ abstract class PubSub {
         fun sendTopicUpdate(topicInfo: TopicInfo<*>, data: JsonElement) {
             if (isConnected) {
                 if (verbose) {
-                    logger.debug { "$connectionInfo: update ${topicInfo.name} ${topicInfo.stringify(data)}" }
+                    logger.debug {
+                        val substring = topicInfo.stringify(data).let {
+                            it.substring(0 until min(it.length, 255)) +
+                                    if (it.length > 255) "..." else ""
+                        }
+                        "$connectionInfo: update ${topicInfo.name} $substring"
+                    }
                 }
 
                 val writer = ByteArrayWriter()
