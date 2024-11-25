@@ -46,16 +46,9 @@ import baaahs.sm.brain.BrainManager
 import baaahs.sm.brain.FirmwareDaddy
 import baaahs.sm.brain.ProdBrainSimulator
 import baaahs.sm.brain.proto.Ports
-import baaahs.sm.server.GadgetManager
-import baaahs.sm.server.PinkyConfigStore
-import baaahs.sm.server.ServerNotices
-import baaahs.sm.server.StageManager
+import baaahs.sm.server.*
 import baaahs.util.Clock
-import baaahs.util.coroutineExceptionHandler
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.*
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
@@ -72,15 +65,31 @@ class PluginsModule(private val plugins: List<Plugin>) : KModule {
 }
 
 interface PlatformModule : KModule {
-    val network: Network
+    val exceptionReporter: ExceptionReporter
+    val networkDispatcher: CoroutineDispatcher
+    val Scope.network: Network
     val Scope.clock: Clock
     val Scope.mediaDevices: MediaDevices
 
+    object Named {
+        val networkScope = named("NetworkScope")
+        val fallback = named("Fallback")
+    }
+
     override fun getModule(): Module = module {
+        single(Named.networkScope) {
+            CoroutineScope(
+                networkDispatcher +
+                        CoroutineName("Network") +
+                        CoroutineExceptionHandler { context, throwable ->
+                            exceptionReporter.reportException(context, throwable)
+                        })
+        }
+        single { exceptionReporter }
         single { network }
         single { clock }
         single { mediaDevices }
-        single(named("Fallback")) { FakeDmxUniverse() }
+        single(Named.fallback) { FakeDmxUniverse() }
     }
 }
 
@@ -100,9 +109,9 @@ interface PinkyModule : KModule {
     val Scope.featureFlags: FeatureFlags
 
     object Named {
-        val pinkyContext = named("PinkyContext")
+        val pinkyScope = named("PinkyScope")
         val pinkyJob = named("PinkyJob")
-        val fallbackDmxUniverse = named("Fallback")
+        val fallbackDmxUniverse = PlatformModule.Named.fallback
         val dataDir = named("dataDir")
         val firmwareDir = named("firmwareDir")
     }
@@ -120,12 +129,18 @@ interface PinkyModule : KModule {
             scoped { pinkyLink }
             scoped(pinkyMainDispatcher) { this.pinkyMainDispatcher }
             scoped<Job>(Named.pinkyJob) { SupervisorJob() }
-            scoped(Named.pinkyContext) {
-                get<CoroutineDispatcher>(PinkyModule.pinkyMainDispatcher) +
-                        get<Job>(Named.pinkyJob) +
-                        coroutineExceptionHandler
+            scoped(Named.pinkyScope) {
+                val exceptionReporter = get<ExceptionReporter>()
+                CoroutineScope(
+                    get<CoroutineDispatcher>(PinkyModule.pinkyMainDispatcher) +
+                            CoroutineName("Pinky Main Scope") +
+                            get<Job>(Named.pinkyJob) +
+                            CoroutineExceptionHandler { context, throwable ->
+                                exceptionReporter.reportException(context, throwable)
+                            }
+                )
             }
-            scoped { PubSub.Server(get(), CoroutineScope(get(Named.pinkyContext))) }
+            scoped { PubSub.Server(get(), get(Named.pinkyScope)) }
             scoped<PubSub.Endpoint> { get<PubSub.Server>() }
             scoped<PubSub.IServer> { get<PubSub.Server>() }
             scoped { dmxDriver }
@@ -144,18 +159,18 @@ interface PinkyModule : KModule {
             scoped { FsServerSideSerializer() }
             scoped { MappingStore(get(Named.dataDir), get(), get()) }
             scoped<FixtureManager> { FixtureManagerImpl(get(), get()) }
-            scoped { GadgetManager(get(), get(), get(Named.pinkyContext)) }
+            scoped { GadgetManager(get(), get(), get(Named.pinkyScope)) }
             scoped<Toolchain> { RootToolchain(get()) }
             scoped { PinkyConfigStore(get(), fs.resolve(".")) }
             scoped<Provider<FeatureFlags>> { FeatureFlagsManager.Server(get(), get()) }
-            scoped { StageManager(get(), get(), get(), get(Named.dataDir), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+            scoped { StageManager(get(), get(), get(), get(Named.dataDir), get(),get(), get(), get(), get(), get(), get(), get(), get()) }
             scoped { Pinky.NetworkStats() }
-            scoped { BrainManager(get(), get(), get(), get(), get(Named.pinkyContext)) }
-            scoped { SacnManager(get(), get(Named.pinkyContext), get(), get()) }
+            scoped { BrainManager(get(), get(), get(), get(), get(Named.pinkyScope)) }
+            scoped { SacnManager(get(), get(), get(), get(Named.pinkyScope), get(PlatformModule.Named.networkScope)) }
             scoped { sceneMonitor }
             scoped<SceneProvider> { get<SceneMonitor>() }
             scoped<MappingManager> {
-                MappingManagerImpl(get(), get(), CoroutineScope(get(Named.pinkyContext)), backupMappingManager)
+                MappingManagerImpl(get(), get(), get(Named.pinkyScope), backupMappingManager)
             }
             scoped<ModelManager> { ModelManagerImpl() }
             scoped(named("ControllerManagers")) {
@@ -180,13 +195,13 @@ interface PinkyModule : KModule {
             scoped { ProdBrainSimulator(get(), get()) }
             scoped { ShaderLibraryManager(get(), get(), get(), get()) }
             scoped { pinkySettings }
-            scoped { ServerNotices(get(), get(Named.pinkyContext)) }
+            scoped { ServerNotices(get(), get<CoroutineScope>(Named.pinkyScope).coroutineContext) }
             scoped { PinkyMapperHandlers(get()) }
             scoped { featureFlags }
             scoped {
                 Pinky(
                     get(), get(), get(), get(Named.dataDir), get(), get(),
-                    get(), get(), get(), get(), get(Named.pinkyContext), get(), get(),
+                    get(), get(), get(), get(), get(Named.pinkyScope), get(), get(),
                     get(), get(), get(), get(), get(), get(),
                     pinkyMapperHandlers, get(), get(), get()
                 )

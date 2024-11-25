@@ -3,17 +3,17 @@ package baaahs.net
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.net.JvmNetwork.Companion.msgId
-import baaahs.net.JvmNetwork.Companion.networkScope
 import baaahs.util.Logger
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
 import java.nio.ByteBuffer
 
-class JvmUdpProxy {
+class JvmUdpProxy(private val networkScope: CoroutineScope) {
     companion object {
         val logger = Logger<JvmUdpProxy>()
 

@@ -2,6 +2,7 @@ package baaahs.di
 
 import baaahs.MediaDevices
 import baaahs.PubSub
+import baaahs.SparkleMotion
 import baaahs.app.settings.FeatureFlags
 import baaahs.app.settings.FeatureFlagsManager
 import baaahs.app.settings.Provider
@@ -31,20 +32,35 @@ import baaahs.sim.BrowserSandboxFs
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.SimulationEnv
 import baaahs.sm.brain.proto.Ports
+import baaahs.sm.server.ExceptionReporter
 import baaahs.util.Clock
 import baaahs.util.JsClock
 import baaahs.visualizer.Visualizer
 import baaahs.visualizer.remote.RemoteVisualizerClient
 import baaahs.visualizer.sim.PixelArranger
 import baaahs.visualizer.sim.SwirlyPixelArranger
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 import org.koin.dsl.module
+import web.prompts.alert
 
 open class JsPlatformModule(
-    override val network: Network
+    private val network_: Network
 ) : PlatformModule {
+    override val exceptionReporter: ExceptionReporter
+        get() = object : ExceptionReporter {
+            override fun reportException(context: String, throwable: Throwable) {
+                SparkleMotion.logger.error(throwable) { throwable.message ?: "Unknown error." }
+                alert(throwable.message ?: "Unknown error.")
+            }
+        }
+    override val networkDispatcher: CoroutineDispatcher
+        get() = Dispatchers.Default
+    override val Scope.network: Network
+        get() = network_
     override val Scope.clock: Clock
         get() = JsClock
     override val Scope.mediaDevices: MediaDevices

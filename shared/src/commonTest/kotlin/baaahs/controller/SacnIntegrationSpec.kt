@@ -23,6 +23,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
 
 @Suppress("unused")
@@ -37,7 +38,9 @@ class SacnIntegrationSpec : DescribeSpec({
         val scene by value { sceneDataForTest(bar1, bar2) {
             controllers.putAll(controllerConfigs)
         } }
-        val sacnManager by value { SacnManager(link, ImmediateDispatcher, FakeClock()) }
+        val pinkyScope by value { CoroutineScope(ImmediateDispatcher) }
+        val networkScope by value { CoroutineScope(ImmediateDispatcher) }
+        val sacnManager by value { SacnManager(link, FakeClock(), pinkyMainScope = pinkyScope, networkScope = networkScope) }
         val listener by value { SpyFixtureListener() }
         val sacn1Fixtures by value { emptyList<MutableFixtureMapping>() }
         val mappingManager by value { FakeMappingManager(emptyMap()) }

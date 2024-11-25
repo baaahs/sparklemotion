@@ -27,9 +27,9 @@ import java.io.File
 class JvmKtorHttpServer(
     link: Network.Link,
     port: Int,
-    networkScope: CoroutineScope
+    private val networkScope: CoroutineScope
 ) : AbstractKtorHttpServer(
-    embeddedServer(CIO, port, configure = {
+    networkScope.embeddedServer(CIO, port, configure = {
         // Let's give brains lots of time for OTA download:
 //                responseWriteTimeoutSeconds = 3000
     }) {
@@ -55,7 +55,7 @@ class JvmKtorHttpServer(
     }
 
     override suspend fun DefaultWebSocketServerSession.handleUdpProxy() {
-        JvmUdpProxy().handle(this)
+        JvmUdpProxy(networkScope).handle(this)
     }
 
     class KtorHttpRouting(

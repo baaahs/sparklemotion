@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalCoroutinesApi::class)
+
 package baaahs
 
 import baaahs.app.settings.FeatureFlags
@@ -27,6 +29,7 @@ import io.kotest.matchers.*
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlin.test.BeforeTest
 import kotlin.test.Ignore
@@ -66,7 +69,7 @@ class ShowRunnerTest {
         val showMonitor = ShowMonitor()
         stageManager = StageManager(
             testToolchain, renderManager, server, fs.rootFile, fixtureManager,
-            FakeClock(), GadgetManager(server, FakeClock(), dispatcher),
+            FakeClock(), GadgetManager(server, FakeClock(), CoroutineScope(dispatcher)),
             ServerNotices(server, dispatcher), SceneMonitor(), FsServerSideSerializer(),
             PinkyConfigStore(plugins, fs.rootFile), showMonitor, ObservableProvider(FeatureFlags.JVM)
         )

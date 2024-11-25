@@ -73,9 +73,9 @@ class PinkySpec : DescribeSpec({
         val coroutineScope by value { CoroutineScope(ImmediateDispatcher) }
         val pubSub by value { PubSub.Server(httpServer, coroutineScope) }
         val clock by value { FakeClock() }
-        val gadgetManager by value { GadgetManager(pubSub, clock, ImmediateDispatcher) }
+        val gadgetManager by value { GadgetManager(pubSub, clock, CoroutineScope(ImmediateDispatcher)) }
         val brainManager by value {
-            BrainManager(PermissiveFirmwareDaddy(), link, Pinky.NetworkStats(), clock, ImmediateDispatcher)
+            BrainManager(PermissiveFirmwareDaddy(), link, Pinky.NetworkStats(), clock, CoroutineScope(ImmediateDispatcher))
         }
         val serverNotices by value { ServerNotices(pubSub, ImmediateDispatcher) }
         val sceneMonitor by value { SceneMonitor(OpenScene(model)) }
@@ -107,7 +107,7 @@ class PinkySpec : DescribeSpec({
 
             Pinky(
                 clock, PermissiveFirmwareDaddy(), plugins, fakeFs.rootFile, link, httpServer, pubSub,
-                dmxManager, mappingManager, fixtureManager, ImmediateDispatcher, toolchain,
+                dmxManager, mappingManager, fixtureManager, CoroutineScope(ImmediateDispatcher), toolchain,
                 stageManager, controllersManager, brainManager,
                 ShaderLibraryManager(plugins, fakeFs, FsServerSideSerializer(), pubSub),
                 Pinky.NetworkStats(), PinkySettings(), serverNotices, PinkyMapperHandlers(mappingStore),
