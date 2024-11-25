@@ -15,20 +15,19 @@ import baaahs.scene.MutableSacnControllerConfig
 import baaahs.scene.PreviewBuilder
 import baaahs.util.Clock
 import baaahs.util.Logger
-import baaahs.util.coroutineExceptionHandler
 import kotlinx.coroutines.*
 import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonPrimitive
-import kotlin.coroutines.CoroutineContext
 
 class SacnManager(
     private val link: Network.Link,
-    private val coroutineContext: CoroutineContext,
     private val clock: Clock,
-    private val universeListener: Dmx.UniverseListener? = null
+    private val universeListener: Dmx.UniverseListener? = null,
+    private val pinkyMainScope: CoroutineScope,
+    private val networkScope: CoroutineScope
 ) : BaseControllerManager<SacnController, SacnControllerConfig, SacnState>(controllerTypeName) {
     private val senderCid = "SparkleMotion000".encodeToByteArray()
     private val sacnLink = SacnLink(link, senderCid, "SparkleMotion", clock)
@@ -96,7 +95,7 @@ class SacnManager(
                 logger.debug { "Resolved ${service.type} at $id — $wledAddress:$wledPort" }
 
                 if (wledAddress != null) {
-                    CoroutineScope(Dispatchers.Default + coroutineExceptionHandler).launch {
+                    networkScope.launch(CoroutineName("sACN Handler for ${wledAddress.asString()}")) {
                         val wledJsonStr = link.httpGetRequest(wledAddress, wledPort, "json")
                         val wledJson = try {
                             json.decodeFromString(WledJson.serializer(), wledJsonStr)
@@ -105,7 +104,7 @@ class SacnManager(
                             return@launch
                         }
 
-                        withContext(this@SacnManager.coroutineContext) {
+                        withContext(pinkyMainScope.coroutineContext) {
                             val pixelCount = wledJson.info.leds.count
                             val isRgbw = wledJson.info.leds.rgbw
 

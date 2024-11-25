@@ -51,7 +51,7 @@ class StageManagerSpec : DescribeSpec({
         val fakeGlslContext by value { FakeGlContext() }
         val renderManager by value { RenderManager(fakeGlslContext) }
         val fixtureManager by value<FixtureManager> { FixtureManagerImpl(renderManager, plugins) }
-        val gadgetManager by value { GadgetManager(pubSub.server, FakeClock(), dispatcher) }
+        val gadgetManager by value { GadgetManager(pubSub.server, FakeClock(), CoroutineScope(dispatcher)) }
         val eventManager by value { EventManager(MidiManager(emptyList()), ShowMonitor(), FakeClock()) }
 
         val stageManager by value {

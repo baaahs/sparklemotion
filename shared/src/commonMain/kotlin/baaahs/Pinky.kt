@@ -46,7 +46,7 @@ class Pinky(
     private val dmxManager: DmxManager,
     private val mappingManager: MappingManager,
     internal val fixtureManager: FixtureManager,
-    private val pinkyMainContext: CoroutineContext,
+    private val pinkyMainScope: CoroutineScope,
     val toolchain: Toolchain,
     val stageManager: StageManager,
     private val controllersManager: ControllersManager,
@@ -80,7 +80,7 @@ class Pinky(
 
     init {
         httpServer.listenWebSocket("/ws/api") {
-            WebSocketRouter(plugins, pinkyMainContext) { pinkyMapperHandlers.register(this) }
+            WebSocketRouter(plugins, pinkyMainScope) { pinkyMapperHandlers.register(this) }
         }
 
         httpServer.listenWebSocket("/ws/visualizer") {
@@ -93,22 +93,20 @@ class Pinky(
     private var keepRunning = true
 
     suspend fun startAndRun(beforeRun: suspend CoroutineScope.() -> Unit = {}) {
-        withContext(pinkyMainContext) {
-            val startupJobs = launch(CoroutineName("Pinky Startup Jobs")) {
-                launchStartupJobs()
-            }
-
-            val daemonJobs = launch(CoroutineName("Pinky Daemon Jobs")) {
-                launchDaemonJobs()
-            }.also { this@Pinky.daemonJobs = it }
-
-            startupJobs.join()
-
-            beforeRun()
-
-            run()
-            daemonJobs.cancelAndJoin()
+        val startupJobs = pinkyMainScope.launch(CoroutineName("Pinky Startup Jobs")) {
+            launchStartupJobs()
         }
+
+        val daemonJobs = pinkyMainScope.launch(CoroutineName("Pinky Daemon Jobs")) {
+            launchDaemonJobs()
+        }.also { this@Pinky.daemonJobs = it }
+
+        startupJobs.join()
+
+        pinkyMainScope.beforeRun()
+
+        run()
+        daemonJobs.cancelAndJoin()
     }
 
     private suspend fun run() {
