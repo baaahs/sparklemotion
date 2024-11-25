@@ -1,17 +1,12 @@
 package baaahs.net
 
 import baaahs.util.Logger
-import io.ktor.server.application.Application
-import io.ktor.server.engine.ApplicationEngine
-import io.ktor.server.request.host
-import io.ktor.server.routing.Routing
-import io.ktor.server.routing.routing
-import io.ktor.server.websocket.DefaultWebSocketServerSession
-import io.ktor.server.websocket.webSocket
-import io.ktor.websocket.CloseReason
-import io.ktor.websocket.Frame
-import io.ktor.websocket.close
-import io.ktor.websocket.readBytes
+import io.ktor.server.application.*
+import io.ktor.server.engine.*
+import io.ktor.server.request.*
+import io.ktor.server.routing.*
+import io.ktor.server.websocket.*
+import io.ktor.websocket.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.launch
@@ -101,6 +96,10 @@ abstract class AbstractKtorHttpServer(
 
     override fun start() {
         applicationEngine.start()
+    }
+
+    override fun stop() {
+        applicationEngine.stop(10, 10)
     }
 
     companion object {

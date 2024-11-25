@@ -13,6 +13,7 @@ import baaahs.util.KoinLogger
 import baaahs.util.Logger
 import baaahs.util.SystemClock
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.koin.core.qualifier.named
@@ -56,7 +57,7 @@ class PinkyMain(private val args: Array<String>) {
 
         try {
             val pinkyArgs = pinkyScope.get<PinkyArgs>()
-            runBlocking(pinkyScope.get<CoroutineDispatcher>(named("PinkyMainDispatcher"))) {
+            runBlocking(pinkyScope.get<CoroutineDispatcher>(named("PinkyMainDispatcher")) + CoroutineName("Pinky Launcher")) {
                 pinky.startAndRun {
                     if (pinkyArgs.simulateBrains) {
                         pinkyScope.get<ProdBrainSimulator>().enableSimulation()
