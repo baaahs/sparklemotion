@@ -12,7 +12,9 @@ import javax.jmdns.ServiceListener
 import kotlin.concurrent.thread
 
 
-class JvmNetwork : Network {
+class JvmNetwork(
+    val networkScope: CoroutineScope
+) : Network {
     private val link = RealLink()
 
     companion object {
@@ -23,8 +25,6 @@ class JvmNetwork : Network {
 //        val myAddress = InetAddress.getLocalHost()
         val myAddress = InetAddress.getByName("127.0.0.1")
         val broadcastAddress = InetAddress.getByName("255.255.255.255")
-
-        val networkScope = CoroutineScope(Dispatchers.IO)
 
         fun msgId(data: ByteArray): String {
             return "msgId=${((data[0].toInt() and 0xff) * 256) or (data[1].toInt() and 0xff)}"

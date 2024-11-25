@@ -32,7 +32,6 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration.Companion.seconds
 
 class BrainManager(
@@ -40,7 +39,7 @@ class BrainManager(
     private val link: Network.Link,
     private val networkStats: Pinky.NetworkStats,
     private val clock: Clock,
-    coroutineContext: CoroutineContext
+    coroutineScope: CoroutineScope
 ) : BaseControllerManager<BrainManager.BrainController, BrainControllerConfig, BrainManager.BrainState>(controllerTypeName) {
     private var isStartedUp = false
     private var mapperMessageCallback: ((MapperHelloMessage) -> Unit)? = null
@@ -50,7 +49,7 @@ class BrainManager(
             if (!isStartedUp) return
 
             val message = parse(bytes)
-            CoroutineScope(coroutineContext + CoroutineName("BrainManager Message Handler")).launch {
+            coroutineScope.launch(CoroutineName("BrainManager Message Handler")) {
                 when (message) {
                     is BrainHelloMessage -> foundBrain(fromAddress, message)
                     is PingMessage -> receivedPing(fromAddress, message)

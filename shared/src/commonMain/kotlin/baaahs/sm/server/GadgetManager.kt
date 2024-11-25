@@ -9,12 +9,11 @@ import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.concurrent.Volatile
-import kotlin.coroutines.CoroutineContext
 
 class GadgetManager(
     private val pubSub: PubSub.Server,
     private val clock: Clock,
-    private val pinkyMainContext: CoroutineContext
+    private val pinkyMainScope: CoroutineScope
 ) {
     private val gadgets: MutableMap<String, Gadget> = mutableMapOf()
 
@@ -25,7 +24,7 @@ class GadgetManager(
         val topic =
             PubSub.Topic("/gadgets/$id", GadgetDataSerializer)
         val channel = pubSub.publish(topic, gadget.state) { updated ->
-            CoroutineScope(pinkyMainContext + CoroutineName("Gadget Update Handler")).launch {
+            pinkyMainScope.launch(CoroutineName("Gadget Update Handler")) {
                 lastUserInteraction = clock.now()
 
                 logger.debug { "Gadget \"$id\" updated to: $updated" }

@@ -39,12 +39,17 @@ class PinkyMain(private val args: Array<String>) {
 
         val programName = PinkyMain::class.simpleName ?: "Pinky"
         val clock = SystemClock
+        val exceptionReporter = object : ExceptionReporter {
+            override fun reportException(context: String, throwable: Throwable) {
+                Logger(context).error(throwable) { throwable.message ?: "Unknown error." }
+            }
+        }
         val pinkyInjector = koinApplication {
             logger(KoinLogger())
 
             modules(
                 PluginsModule(Pluggables.plugins).getModule(),
-                JvmPlatformModule(clock).getModule(),
+                JvmPlatformModule(exceptionReporter, clock).getModule(),
                 JvmPinkyModule(programName, args).getModule()
             )
         }

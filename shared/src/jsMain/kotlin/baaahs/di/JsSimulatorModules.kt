@@ -72,7 +72,7 @@ class JsSimulatorModule(
             single { WledsSimulator(get()) }
             single { (controllersManager: ControllersManager) ->
                 FixturesSimulator(
-                    get(), get(), get(), get(named("Fallback")),
+                    get(), get(), get(), get(PlatformModule.Named.fallback),
                     get(), get(), get(), controllersManager, get(), get()
                 )
             }
@@ -104,7 +104,7 @@ class JsSimPinkyModule(
     override val Scope.backupMappingManager: MappingManager
         get() = simMappingManager
     override val Scope.dmxDriver: Dmx.Driver
-        get() = SimDmxDriver(get(named("Fallback")))
+        get() = SimDmxDriver(get(PlatformModule.Named.fallback))
     override val Scope.midiManager: MidiManager
         get() = MidiManager(listOf(JsMidiSource(get())))
     override val Scope.pinkySettings: PinkySettings

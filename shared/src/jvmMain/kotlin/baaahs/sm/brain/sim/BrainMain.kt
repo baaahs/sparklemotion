@@ -29,7 +29,7 @@ class BrainMain(private val args: Args) {
 //            ?.open()?.model
 //            ?: error("No such scene file: \"$sceneFile\"")
 
-        val network = JvmNetwork()
+        val network = JvmNetwork(CoroutineScope(Dispatchers.IO))
         val brainId = args.brainId ?: JvmNetwork.myAddress.toString()
         val startingPixelLayout = PixelLayout(20, 20)
         val brainSimulator = BrainSimulator(
