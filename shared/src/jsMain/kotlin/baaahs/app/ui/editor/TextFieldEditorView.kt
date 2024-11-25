@@ -29,8 +29,19 @@ private val TextFieldEditor = xComponent<TextFieldEditorProps>("TextFieldEditor"
         } else error("TextFieldEditor needs either onChange or editableManager.")
     }
 
+    var isError by state { false }
+    var errorValue by state<String?> { null }
+
     val handleChange by formEventHandler(props.setValue, notifyOfChange) { event: FormEvent<*> ->
-        props.setValue(event.target.value)
+        val value = event.target.value
+        try {
+            props.setValue(value)
+            isError = false
+            errorValue = null
+        } catch (e: Exception) {
+            isError = true
+            errorValue = value
+        }
         notifyOfChange(false)
     }
 
@@ -56,7 +67,8 @@ private val TextFieldEditor = xComponent<TextFieldEditorProps>("TextFieldEditor"
             attrs.size = Size.small
             attrs.disabled = props.disabled == true
             attrs.label = buildElement { +props.label }
-            attrs.value = props.getValue()
+            attrs.error = isError
+            attrs.value = errorValue ?: props.getValue()
 
             // Notify EditableManager of changes as we type, but don't push them to the undo stack...
             attrs.onChange = handleChange

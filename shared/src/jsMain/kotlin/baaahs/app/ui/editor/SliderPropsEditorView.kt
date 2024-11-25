@@ -68,6 +68,7 @@ private val SliderPropsEditorView = xComponent<SliderPropsEditorProps>("SliderPr
 
                 numberTextField<Float?> {
                     attrs.label = "Step Value"
+                    attrs.isNullable = true
                     attrs.value = mutableSliderControl.stepValue
                     attrs.onChange = { v: Float? ->
                         mutableSliderControl.stepValue = v
@@ -85,6 +86,7 @@ private val SliderPropsEditorView = xComponent<SliderPropsEditorProps>("SliderPr
                 numberTextField<Int?> {
                     attrs.label = "MIDI channel"
                     val eventBinding = mutableSliderControl.eventBindings.firstOrNull() as? MidiChannelEventBinding
+                    attrs.isNullable = true
                     attrs.value = eventBinding?.channel
                     attrs.onChange = { v: Int? ->
                         mutableSliderControl.eventBindings =

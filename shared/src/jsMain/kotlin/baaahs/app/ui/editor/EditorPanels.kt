@@ -162,6 +162,7 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
         div(+EditableStyles.propertiesSection) {
             numberTextField<Float> {
                 attrs.label = "Initial Viewing Angle (in radians)"
+                attrs.isNullable = true
                 attrs.value = mutableScene.model.initialViewingAngle
                 attrs.onChange = { value ->
                     mutableScene.model.initialViewingAngle = value
