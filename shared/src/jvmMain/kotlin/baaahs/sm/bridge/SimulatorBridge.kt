@@ -6,6 +6,7 @@ import baaahs.net.JvmNetwork
 import baaahs.plugin.PluginContext
 import baaahs.plugin.SimulatorPlugin
 import baaahs.sm.brain.proto.Ports
+import baaahs.sm.server.ExceptionReporter
 import baaahs.util.SystemClock
 import io.ktor.server.websocket.*
 import kotlinx.coroutines.CoroutineScope
@@ -20,7 +21,7 @@ class SimulatorBridge {
 
     init {
         val context = newSingleThreadContext("Bridge Main")
-        val network = JvmNetwork(CoroutineScope(Dispatchers.IO))
+        val network = JvmNetwork(CoroutineScope(Dispatchers.IO), ExceptionReporter.RETHROW)
         val link = network.link("bridge")
         val httpServer = link.createHttpServer(Ports.SIMULATOR_BRIDGE_TCP)
         val handlerScope = CoroutineScope(context)

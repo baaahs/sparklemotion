@@ -1,18 +1,22 @@
 package baaahs.net
 
+import baaahs.sm.server.ExceptionReporter
 import baaahs.util.Logger
 import io.ktor.server.application.*
+import io.ktor.server.cio.*
 import io.ktor.server.engine.*
 import io.ktor.server.request.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.launch
 
 abstract class AbstractKtorHttpServer(
-    val applicationEngine: ApplicationEngine,
+    private val applicationEngine: ApplicationEngine,
     private val link: Network.Link,
     private val port: Int,
     private val networkScope: CoroutineScope
