@@ -3,6 +3,7 @@ package baaahs.model.importers
 import baaahs.geom.EulerAngle
 import baaahs.geom.Vector3F
 import baaahs.io.getResource
+import baaahs.model.EntityLocator
 import baaahs.model.EntityMetadata
 import baaahs.model.Importer
 import baaahs.model.Model
@@ -14,7 +15,7 @@ object ObjImporter : Importer {
     fun import(
         objText: String,
         objName: String = "OBJ file",
-        idPrefix: String,
+        parentLocator: EntityLocator,
         getEntityMetadata: (name: String) -> EntityMetadata? = { null }
     ): Importer.Results {
         val allVertices: MutableList<Vector3F> = mutableListOf()
@@ -60,7 +61,7 @@ object ObjImporter : Importer {
                     }
                     "g", "o" -> {
                         buildSurface()
-                        objBuilder = ObjBuilder(name = args.joinToString(" "), geometry, idPrefix, getEntityMetadata)
+                        objBuilder = ObjBuilder(name = args.joinToString(" "), geometry, parentLocator, getEntityMetadata)
                     }
                     "f" -> {
                         val vertIs = try {
@@ -116,7 +117,7 @@ object ObjImporter : Importer {
     private class ObjBuilder(
         val name: String,
         val geometry: Model.Geometry,
-        val idPrefix: String,
+        val parentLocator: EntityLocator,
         val getEntityMetadata: (name: String) -> EntityMetadata?
     ) {
         val faces = mutableListOf<Model.Face>()
@@ -131,7 +132,7 @@ object ObjImporter : Importer {
                 entityMetadata?.position ?: Vector3F.origin,
                 entityMetadata?.rotation ?: EulerAngle.identity,
                 entityMetadata?.scale ?: Vector3F.unit3d,
-                id = "$idPrefix:$name"
+                locator = parentLocator.append(name)
             )
         }
     }
@@ -147,11 +148,11 @@ object ObjImporter : Importer {
         objData: String,
         objDataIsFileRef: Boolean,
         title: String,
-        idPrefix: String,
+        parentLocator: EntityLocator,
         getEntityMetadata: (name: String) -> EntityMetadata? = { null }
     ): Importer.Results {
         val data = if (objDataIsFileRef) getResource(objData) else objData
         val name = if (objDataIsFileRef) objData else title
-        return import(data, name, idPrefix, getEntityMetadata)
+        return import(data, name, parentLocator, getEntityMetadata)
     }
 }

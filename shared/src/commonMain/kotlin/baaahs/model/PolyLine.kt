@@ -25,7 +25,7 @@ class Grid(
     direction: GridData.Direction,
     zigZag: Boolean,
     stagger: Int = 1,
-    id: EntityId = Model.Entity.nextId()
+    id: EntityLocator = EntityLocator.next()
 ): PolyLine(
     name, description,
     calcSegments(rows, columns, rowGap, columnGap, direction, zigZag, stagger),
@@ -82,7 +82,7 @@ open class PolyLine(
     override val scale: Vector3F = Vector3F.unit3d,
     val xPadding: Float,
     val yPadding: Float,
-    @Transient override val id: EntityId = Model.Entity.nextId()
+    @Transient override val locator: EntityLocator = EntityLocator.next()
 ) : Model.BaseEntity(), PlacedPixelArray {
     override val defaultFixtureOptions: FixtureOptions?
         get() = PixelArrayDevice.Options(pixelCount, pixelArrangement = LinearSurfacePixelStrategy())

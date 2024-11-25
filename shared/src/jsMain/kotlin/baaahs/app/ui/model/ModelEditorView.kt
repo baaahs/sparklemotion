@@ -110,14 +110,14 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
     val handleSearchRequest by handler { value: String -> }
     val handleSearchCancel by handler { entityMatcher = MutableEntityMatcher() }
 
-    val selectedMutableEntity = visualizer.selectedEntity?.let { mutableModel.findById(it.id) }
+    val selectedMutableEntity = visualizer.selectedEntity?.let { mutableModel.findByLocator(it.locator) }
     nestedList.select(selectedMutableEntity)
-    lastSelectedEntity.current = selectedMutableEntity?.let { visualizer.model.findEntityById(it.id) }
+    lastSelectedEntity.current = selectedMutableEntity?.let { visualizer.model.findEntityByLocator(it.locator) }
 
     val handleListItemSelect by handler(visualizer) { mutableEntity: MutableEntity? ->
         visualizer.selectedEntity =
-            mutableEntity?.let { visualizer.findById(it.id)?.modelEntity }
-        lastSelectedEntity.current = mutableEntity?.id?.let { visualizer.model.findEntityById(it) }
+            mutableEntity?.let { visualizer.findByLocator(it.locator)?.modelEntity }
+        lastSelectedEntity.current = mutableEntity?.locator?.let { visualizer.model.findEntityByLocator(it) }
         forceRender()
     }
 

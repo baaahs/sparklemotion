@@ -1,7 +1,7 @@
 package baaahs.visualizer
 
 import baaahs.geom.toEulerAngle
-import baaahs.model.EntityId
+import baaahs.model.EntityLocator
 import baaahs.model.Model
 import baaahs.scene.EditingEntity
 import baaahs.scene.MutableScene
@@ -104,10 +104,10 @@ class ModelVisualEditor(
         selectedObject?.dispatchEvent(EventType.Transform)
     }
 
-    fun findById(id: EntityId): Object3D? {
+    fun findByLocator(locator: EntityLocator): Object3D? {
         var entity: Object3D? = null
         scene.traverse { obj ->
-            if (obj.modelEntity?.id == id) {
+            if (obj.modelEntity?.locator == locator) {
                 entity = obj
             }
         }
@@ -115,7 +115,7 @@ class ModelVisualEditor(
     }
 
     private fun findVisualizer(entity: Model.Entity) =
-        groupVisualizer.find { (it as? Model.Entity)?.id == entity.id }
+        groupVisualizer.find { (it as? Model.Entity)?.locator == entity.locator }
 
     override fun onObjectClick(obj: Object3D?) {
         super.onObjectClick(findParentEntity(obj))
@@ -128,7 +128,7 @@ class ModelVisualEditor(
 
         val itemVisualizer = obj?.itemVisualizer
         val modelEntity = obj?.modelEntity
-        val mutableEntity = modelEntity?.let { mutableScene.model.findById(it.id) }
+        val mutableEntity = modelEntity?.let { mutableScene.model.findByLocator(it.locator) }
 
         itemVisualizer?.selected = true
         selectedEntity = modelEntity

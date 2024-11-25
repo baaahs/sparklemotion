@@ -19,7 +19,7 @@ class FakeModelEntity(
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,
-    override val id: EntityId = Model.Entity.nextId()
+    override val locator: EntityLocator = EntityLocator.next()
 ) : Model.BaseEntity() {
     override val bounds: Pair<Vector3F, Vector3F>
         get() = Vector3F.origin to Vector3F.origin
@@ -37,13 +37,13 @@ class FakeModelEntityData(
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,
-    override val id: EntityId = Model.Entity.nextId()
+    override val locator: EntityLocator = EntityLocator.next()
 ) : EntityData {
     override fun edit(): MutableEntity =
-        MutableFakeModelEntity(title, fixtureType, description, position, rotation, scale, id)
+        MutableFakeModelEntity(title, fixtureType, description, position, rotation, scale, locator)
 
     override fun open(parentTransformation: Matrix4F): Model.Entity =
-        FakeModelEntity(title, fixtureType, description, position, rotation, scale, id)
+        FakeModelEntity(title, fixtureType, description, position, rotation, scale, locator)
 
     override fun open(
         position: Vector3F,
@@ -61,12 +61,12 @@ class MutableFakeModelEntity(
     position: Vector3F = Vector3F.origin,
     rotation: EulerAngle = EulerAngle.identity,
     scale: Vector3F = Vector3F.unit3d,
-    id: EntityId = Model.Entity.nextId()
+    id: EntityLocator = EntityLocator.next()
 ) : MutableEntity(
     name, description, position, rotation, scale, id
 ) {
     override fun build(): EntityData =
-        FakeModelEntityData(title, fixtureType, description, position, rotation, scale, id)
+        FakeModelEntityData(title, fixtureType, description, position, rotation, scale, locator)
 
     override fun getEditorPanels(): List<EntityEditorPanel<out MutableEntity>> = TODO("not implemented")
 }
