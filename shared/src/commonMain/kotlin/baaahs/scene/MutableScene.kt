@@ -168,8 +168,8 @@ class MutableModel(
         entities.forEach { it.visit(callback) }
     }
 
-    fun findById(id: EntityId): MutableEntity? =
-        entities.firstNotNullOfOrNull { it.findById(id) }
+    fun findByLocator(locator: EntityLocator): MutableEntity? =
+        entities.firstNotNullOfOrNull { it.findByLocator(locator) }
 
     /** @return `true` if `mutableEntity` was found and deleted. */
     fun delete(mutableEntity: MutableEntity): Boolean =
@@ -184,10 +184,10 @@ abstract class MutableEntity(
     var position: Vector3F,
     var rotation: EulerAngle,
     var scale: Vector3F,
-    val id: EntityId
+    val locator: EntityLocator
 ) : MutableEditable {
     constructor(baseEntity: EntityData) : this(
-        baseEntity.title, baseEntity.description, baseEntity.position, baseEntity.rotation, baseEntity.scale, baseEntity.id
+        baseEntity.title, baseEntity.description, baseEntity.position, baseEntity.rotation, baseEntity.scale, baseEntity.locator
     )
 
     abstract fun build(): EntityData
@@ -195,8 +195,8 @@ abstract class MutableEntity(
     open fun visit(callback: (MutableEntity) -> Unit) =
         callback(this)
 
-    open fun findById(id: EntityId): MutableEntity? =
-        if (this.id == id) this else null
+    open fun findByLocator(locator: EntityLocator): MutableEntity? =
+        if (this.locator == locator) this else null
 
     fun matches(mutableEntityMatcher: MutableEntityMatcher): Boolean =
         mutableEntityMatcher.matches(title, description)
@@ -220,9 +220,9 @@ abstract class MutableEntityGroup(
         children.forEach { it.visit(callback) }
     }
 
-    override fun findById(id: EntityId): MutableEntity? =
-        super.findById(id)
-            ?: children.firstNotNullOfOrNull { it.findById(id) }
+    override fun findByLocator(locator: EntityLocator): MutableEntity? =
+        super.findByLocator(locator)
+            ?: children.firstNotNullOfOrNull { it.findByLocator(locator) }
 
     override fun delete(mutableEntity: MutableEntity): Boolean =
         if (children.remove(mutableEntity)) true else {
@@ -252,7 +252,7 @@ class MutableImportedEntityGroup(
     private fun getImporterResults(): Importer.Results? =
         importerResults ?: try {
             importFail = null
-            ObjImporter.doImport(objData, objDataIsFileRef, title, id) { childName ->
+            ObjImporter.doImport(objData, objDataIsFileRef, title, locator) { childName ->
                 val fromProvider = metadata?.getMetadataFor(childName)
                 baseEntityMetadata[childName]?.plus(fromProvider)
                     ?: fromProvider
@@ -279,7 +279,7 @@ class MutableImportedEntityGroup(
     override fun build(): ImportedEntityData =
         ImportedEntityData(
             title, description,
-            position, rotation, scale, id,
+            position, rotation, scale, locator,
             objData, objDataIsFileRef, metadata,
             buildMap {
                 children.forEach { child ->
@@ -308,12 +308,12 @@ class MutableImportedEntityGroup(
         rotation: EulerAngle,
         scale: Vector3F
     ) : MutableEntity(
-        childEntity.title, null, position, rotation, scale, childEntity.id
+        childEntity.title, null, position, rotation, scale, childEntity.locator
     ) {
         val childId = nextChildId++
 
         init {
-            println("New MutableChildMeta(parent=${this@MutableImportedEntityGroup.id}).child for ${childEntity.title}, id=${childEntity.id} childId=$childId")
+            println("New MutableChildMeta(parent=${this@MutableImportedEntityGroup.locator}).child for ${childEntity.title}, id=${childEntity.locator} childId=$childId")
             if (childEntity.title == "F3P") {
                 Exception().printStackTrace()
             }
@@ -322,7 +322,7 @@ class MutableImportedEntityGroup(
         override fun build(): EntityData =
             SurfaceDataForTest(
                 childEntity.title, childEntity.description,
-                position, rotation, scale, id
+                position, rotation, scale, locator
             )
 
         override fun getEditorPanels(): List<EntityEditorPanel<in MutableEntity>> =
@@ -344,7 +344,7 @@ class MutableMovingHeadData(
     var adapter: MovingHeadAdapter = baseMovingHeadData.adapter
 
     override fun build(): EntityData =
-        MovingHeadData(title, description, position, rotation, scale, id, baseDmxChannel, adapter)
+        MovingHeadData(title, description, position, rotation, scale, locator, baseDmxChannel, adapter)
 
     override fun getEditorPanels() =
         listOf(
@@ -361,7 +361,7 @@ class MutableLightBarData(
     var endVertex = baseLightBar.endVertex
 
     override fun build(): EntityData =
-        LightBarData(title, description, position, rotation, scale, id, startVertex, endVertex)
+        LightBarData(title, description, position, rotation, scale, locator, startVertex, endVertex)
 
     override fun getEditorPanels() =
         listOf(
@@ -377,7 +377,7 @@ class MutablePolyLineData(
     var segments = basePolyLine.segments
 
     override fun build(): EntityData =
-        PolyLineData(title, description, position, rotation, scale, id, segments)
+        PolyLineData(title, description, position, rotation, scale, locator, segments)
 
     override fun getEditorPanels() =
         listOf(
@@ -399,7 +399,7 @@ class MutableGridData(
     var stagger = baseGridData.stagger
 
     override fun build(): EntityData =
-        GridData(title, description, position, rotation, scale, id, rows, columns, rowGap, columnGap, direction, zigZag, stagger)
+        GridData(title, description, position, rotation, scale, locator, rows, columns, rowGap, columnGap, direction, zigZag, stagger)
 
     override fun getEditorPanels() =
         listOf(
@@ -418,7 +418,7 @@ class MutableLightRingData(
 
     override fun build(): EntityData =
         LightRingData(
-            title, description, position, rotation, scale, id,
+            title, description, position, rotation, scale, locator,
             radius, firstPixelRadians, pixelDirection
         )
 

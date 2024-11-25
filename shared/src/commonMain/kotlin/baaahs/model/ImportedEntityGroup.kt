@@ -22,7 +22,7 @@ class ImportedEntityGroup(
     private var importerResults: Importer.Results?,
     private var importerError: Exception?,
     @Transient
-    override val id: EntityId = Model.Entity.nextId()
+    override val locator: EntityLocator = EntityLocator.next()
 ) : Model.BaseEntity(), Model.EntityGroup {
     override val fixtureType: FixtureType get() = PixelArrayDevice // TODO
 
