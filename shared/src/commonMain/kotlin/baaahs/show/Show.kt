@@ -6,9 +6,11 @@ import baaahs.app.ui.editor.Editable
 import baaahs.camelize
 import baaahs.control.MutableVisualizerControl
 import baaahs.device.FixtureType
+import baaahs.device.PixelLocationFeed
 import baaahs.fixtures.Fixture
 import baaahs.getBang
 import baaahs.plugin.Plugins
+import baaahs.plugin.core.feed.ModelInfoFeed
 import baaahs.show.mutable.*
 import kotlinx.serialization.*
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -63,7 +65,30 @@ data class Show(
     companion object {
         val EmptyShow = Show("Empty Show")
         val ShowTemplate = EmptyShow.edit().apply {
-            layouts.formats["default"] = MutableLayout(null, mutableListOf(MutableGridTab("Main")))
+            layouts.formats["default"] = MutableLayout(null, mutableListOf(
+                MutableGridTab("Main", columns = 6, rows = 6)
+            ))
+            addPatch(Shader("XY Projection", """
+                // XY Projection
+
+                struct ModelInfo {
+                    vec3 center;
+                    vec3 extents;
+                };
+                uniform ModelInfo modelInfo; // @@ModelInfo
+                
+                // @return uv-coordinate
+                // @param pixelLocation xyz-coordinate
+                vec2 main(vec3 pixelLocation) {
+                    vec3 extents = modelInfo.extents;
+                    vec3 pixelOffset = (pixelLocation - modelInfo.center) / extents + .5;
+                    return vec2(pixelOffset.x, pixelOffset.y);
+                }
+            """.trimIndent()
+            )) {
+                link("pixelLocation", PixelLocationFeed())
+                link("modelInfo", ModelInfoFeed())
+            }
         }.build()
 
         fun fromJson(plugins: Plugins, s: String): Show {
