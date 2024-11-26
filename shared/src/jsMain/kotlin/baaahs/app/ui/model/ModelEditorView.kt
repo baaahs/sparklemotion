@@ -25,20 +25,26 @@ import baaahs.visualizer.*
 import baaahs.visualizer.sim.PixelArranger
 import baaahs.visualizer.sim.SwirlyPixelArranger
 import baaahs.window
+import emotion.styled.styled
 import materialui.icon
 import mui.icons.material.Delete
+import mui.icons.material.ExpandMore
 import mui.material.*
 import mui.material.styles.Theme
 import mui.material.styles.useTheme
+import mui.system.sx
 import mui.system.useMediaQuery
 import react.Props
 import react.RBuilder
 import react.RHandler
 import react.buildElement
+import react.create
 import react.dom.div
 import react.dom.header
 import react.dom.span
 import react.useContext
+import web.cssom.pct
+import web.cssom.px
 import web.dom.Element
 import web.dom.document
 import web.html.HTMLDivElement
@@ -174,6 +180,10 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
         visualizer.resize()
     }
 
+    val MyAccordionDetails = AccordionDetails.styled { x ->
+        x.sx { padding = 0.px }
+    }
+
     div(styleIf(isPortraitScreen, styles.editorPanesPortrait, styles.editorPanesLandscape)) {
         div(+styles.visualizerPane) {
             div(+styles.visualizer) {
@@ -217,19 +227,60 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
                 attrs.detailRenderer = ListAndDetail.DetailRenderer { editingEntity ->
                     FormControl {
                         attrs.margin = FormControlMargin.dense
+                        attrs.sx { width = 100.pct }
 
-                        editingEntity.getEditorPanelViews().forEach {
-                            it.render(this)
+                        // Additional entity-specific views:
+                        editingEntity.getEditorPanels().forEachIndexed { i, editorPanel ->
+                            Accordion {
+                                attrs.elevation = 4
+                                attrs.defaultExpanded = i == 0
+
+                                AccordionSummary {
+                                    attrs.expandIcon = ExpandMore.create()
+                                    editorPanel.title?.let {
+                                        Typography { +it }
+                                    }
+                                }
+                                MyAccordionDetails {
+                                    editingEntity.getView(editorPanel).render(this)
+                                }
+                            }
                         }
 
-                        header { +"Actions" }
+                        Accordion {
+                            attrs.elevation = 4
 
-                        if (editMode.isOn) {
-                            IconButton {
-                                attrs.onClick = handleDeleteEntity.withMouseEvent()
-                                attrs.color = IconButtonColor.secondary
-                                icon(Delete)
-                                +"Delete Entity"
+                            AccordionSummary {
+                                attrs.expandIcon = ExpandMore.create()
+                                Typography { +"Transformation" }
+                            }
+                            MyAccordionDetails {
+                                transformationEditor {
+                                    attrs.editingEntity = editingEntity
+                                }
+                            }
+                        }
+
+                        titleAndDescriptionEditor {
+                            attrs.editingEntity = editingEntity
+                        }
+
+                        Accordion {
+                            attrs.elevation = 4
+                            attrs.defaultExpanded = true
+
+                            AccordionSummary {
+                                attrs.expandIcon = ExpandMore.create()
+                                Typography { +"Actions" }
+                            }
+                            MyAccordionDetails {
+                                IconButton {
+                                    attrs.onClick = handleDeleteEntity.withMouseEvent()
+                                    attrs.color = IconButtonColor.secondary
+                                    attrs.disabled = editMode.isOff
+                                    icon(Delete)
+                                    +"Delete Entity"
+                                }
                             }
                         }
                     }

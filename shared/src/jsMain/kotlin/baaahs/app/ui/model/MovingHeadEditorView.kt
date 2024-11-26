@@ -14,6 +14,7 @@ import react.dom.header
 private val MovingHeadEditorView = xComponent<MovingHeadEditorProps>("MovingHeadEditor") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.modelEditor
+    val editMode = observe(appContext.sceneManager.editMode)
 
     observe(props.editingEntity)
     val mutableEntity = props.editingEntity.mutableEntity
@@ -23,17 +24,13 @@ private val MovingHeadEditorView = xComponent<MovingHeadEditorProps>("MovingHead
         props.editingEntity.onChange()
     }
 
-    header { +"Moving Head" }
-
-    Container {
-        attrs.className = -styles.transformEditSection
-        betterSelect<MovingHeadAdapter> {
-            attrs.label = "Adapter"
-            attrs.values = MovingHeadAdapter.all
-            attrs.renderValueOption = { adapter -> buildElement { +adapter.id } }
-            attrs.value = mutableEntity.adapter
-            attrs.onChange = handleAdapterChange
-        }
+    betterSelect<MovingHeadAdapter> {
+        attrs.label = "Adapter"
+        attrs.disabled = editMode.isOff
+        attrs.values = MovingHeadAdapter.all
+        attrs.renderValueOption = { adapter -> buildElement { +adapter.id } }
+        attrs.value = mutableEntity.adapter
+        attrs.onChange = handleAdapterChange
     }
 }
 
