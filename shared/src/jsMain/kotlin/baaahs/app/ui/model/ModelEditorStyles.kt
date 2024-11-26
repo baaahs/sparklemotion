@@ -40,7 +40,8 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
     }
 
     val newEntityButton by css {
-        paddingLeft = 2.em
+        paddingLeft = 1.em
+        justifyContent = JustifyContent.start
     }
 
     val visualizerPane by css {
