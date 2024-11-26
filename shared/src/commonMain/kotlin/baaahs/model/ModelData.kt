@@ -53,7 +53,7 @@ interface EntityData {
     val position: Vector3F
     val rotation: EulerAngle
     val scale: Vector3F
-    @Transient val locator: EntityLocator
+    val locator: EntityLocator
 
     val transformation: Matrix4F
         get() = Matrix4F.compose(position, rotation, scale)
@@ -78,7 +78,7 @@ data class ImportedEntityData(
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,
-    @Transient override val locator: EntityLocator = EntityLocator.next(),
+    override val locator: EntityLocator = EntityLocator.next(),
     val objData: String,
     val objDataIsFileRef: Boolean,
     @Polymorphic
@@ -170,7 +170,7 @@ data class GridData(
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,
-    @Transient override val locator: EntityLocator = EntityLocator.next(),
+    override val locator: EntityLocator = EntityLocator.next(),
     val rows: Int,
     val columns: Int,
     val rowGap: Float,
