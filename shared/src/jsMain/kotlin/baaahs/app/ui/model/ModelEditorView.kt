@@ -10,13 +10,14 @@ import baaahs.sim.SimulationEnv
 import baaahs.ui.*
 import baaahs.ui.components.*
 import baaahs.ui.components.ListAndDetail.Orientation.*
+import baaahs.util.CacheBuilder
 import baaahs.util.globalLaunch
 import baaahs.util.useResizeListener
 import baaahs.visualizer.*
 import baaahs.visualizer.sim.PixelArranger
 import baaahs.visualizer.sim.SwirlyPixelArranger
 import baaahs.window
-import emotion.styled.styled
+import js.objects.jso
 import materialui.icon
 import mui.icons.material.Delete
 import mui.icons.material.ExpandMore
@@ -25,8 +26,10 @@ import mui.material.styles.Theme
 import mui.material.styles.useTheme
 import mui.system.sx
 import mui.system.useMediaQuery
+import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
+import react.dom.events.MouseEvent
 import react.dom.span
 import web.cssom.pct
 import web.cssom.px
@@ -148,6 +151,19 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
         props.onEdit()
     }
 
+    var newEntityMenuAnchor by state<Element?> { null }
+    val handleNewEntityClick by mouseEventHandler { newEntityMenuAnchor = it.currentTarget as Element? }
+    val hideNewEntityMenu by handler { _: Event, _: String -> newEntityMenuAnchor = null }
+
+    val addNewEntityTypeHandlers = memo(EntityTypes, handleAddEntity) {
+        CacheBuilder<EntityType, (MouseEvent<*, *>) -> Unit> {
+            { _: MouseEvent<*, *> ->
+                handleAddEntity(it.createNew())
+                newEntityMenuAnchor = null
+            }
+        }
+    }
+
     val visualizerParentEl = ref<Element>()
     onMount(visualizer) {
         val domElement = domOverlayExtension.domElement
@@ -210,6 +226,34 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
                             attrs.onSelect = handleListItemSelect
                             attrs.searchMatcher = entityMatcher::matches
                         }
+
+                            if (editMode.isOn) {
+                                Button {
+                                    attrs.className = -styles.newEntityButton
+                                    attrs.color = ButtonColor.primary
+                                    attrs.onClick = handleNewEntityClick
+
+                                    attrs.startIcon = buildElement { icon(mui.icons.material.AddCircleOutline) }
+                                    +"New…"
+                                }
+
+                                Menu {
+                                    attrs.anchorEl = newEntityMenuAnchor.asDynamic()
+                                    attrs.anchorOrigin = jso {
+                                        horizontal = "left"
+                                        vertical = "bottom"
+                                    }
+                                    attrs.open = newEntityMenuAnchor != null
+                                    attrs.onClose = hideNewEntityMenu
+
+                                    EntityTypes.forEach { entityType ->
+                                        MenuItem {
+                                            attrs.onClick = addNewEntityTypeHandlers[entityType]
+                                            ListItemText { +entityType.addNewTitle }
+                                        }
+                                    }
+                                }
+                            }
                     }
                 }
                 attrs.selection = selectedEditingEntity
@@ -272,7 +316,7 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
 
                                 IconButton {
                                     attrs.onClick = handleDeleteEntity.withMouseEvent()
-                                    attrs.color = IconButtonColor.secondary
+                                    attrs.color = IconButtonColor.primary
                                     attrs.disabled = editMode.isOff
                                     icon(Delete)
                                     +"Delete Entity"
