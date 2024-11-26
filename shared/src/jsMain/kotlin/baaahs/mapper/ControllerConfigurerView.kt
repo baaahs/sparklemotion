@@ -163,7 +163,7 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                                 div(+styles.navigatorPaneActions) {
                                     Button {
                                         attrs.className = -styles.button
-                                        attrs.color = ButtonColor.secondary
+                                        attrs.color = ButtonColor.primary
                                         attrs.onClick = handleNewControllerClick
 
                                         attrs.startIcon = buildElement { icon(mui.icons.material.AddCircleOutline) }

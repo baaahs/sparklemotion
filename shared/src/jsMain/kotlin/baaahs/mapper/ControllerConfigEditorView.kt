@@ -142,7 +142,7 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
                     Box {
                         Button {
                             attrs.className = -styles.button
-                            attrs.color = ButtonColor.secondary
+                            attrs.color = ButtonColor.primary
                             attrs.fullWidth = true
                             attrs.onClick = handleNewFixtureMappingClick
 
