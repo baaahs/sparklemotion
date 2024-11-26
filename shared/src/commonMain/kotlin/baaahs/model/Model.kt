@@ -150,7 +150,7 @@ class Model(
         override val position: Vector3F = Vector3F.origin,
         override val rotation: EulerAngle = EulerAngle.identity,
         override val scale: Vector3F = Vector3F.unit3d,
-        @Transient override val locator: EntityLocator = EntityLocator.next()
+        override val locator: EntityLocator = EntityLocator.next()
     ) : BaseEntity(), EntityWithGeometry {
         override val defaultFixtureOptions: PixelArrayDevice.Options?
             get() = PixelArrayDevice.Options(pixelCount = expectedPixelCount)

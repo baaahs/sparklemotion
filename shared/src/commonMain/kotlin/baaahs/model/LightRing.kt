@@ -23,7 +23,7 @@ class LightRing(
     val radius: Float,
     val firstPixelRadians: Float = 0f,
     val pixelDirection: PixelDirection = PixelDirection.Clockwise,
-    @Transient override val locator: EntityLocator = EntityLocator.next()
+    override val locator: EntityLocator = EntityLocator.next()
 ) : Model.BaseEntity(), LinearPixelArray {
     override val fixtureType: FixtureType
         get() = PixelArrayDevice

@@ -17,7 +17,7 @@ class LightBar(
     override val scale: Vector3F = Vector3F.unit3d,
     val startVertex: Vector3F,
     val endVertex: Vector3F,
-    @Transient override val locator: EntityLocator = EntityLocator.next()
+    override val locator: EntityLocator = EntityLocator.next()
 ) : Model.BaseEntity(), LinearPixelArray {
     override val fixtureType: FixtureType
         get() = PixelArrayDevice
