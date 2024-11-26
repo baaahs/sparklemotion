@@ -290,11 +290,7 @@ class MutableImportedEntityGroup(
             }
         )
 
-    override fun getEditorPanels() = listOf(
-        TitleAndDescEntityEditorPanel,
-        TransformEntityEditorPanel,
-        ImportedEntityEditorPanel
-    )
+    override fun getEditorPanels() = listOf(ImportedEntityEditorPanel)
 
     fun reloadFile() {
         importerResults = null
@@ -346,12 +342,7 @@ class MutableMovingHeadData(
     override fun build(): EntityData =
         MovingHeadData(title, description, position, rotation, scale, locator, baseDmxChannel, adapter)
 
-    override fun getEditorPanels() =
-        listOf(
-            TitleAndDescEntityEditorPanel,
-            TransformEntityEditorPanel,
-            MovingHeadEditorPanel
-        )
+    override fun getEditorPanels() = listOf(MovingHeadEditorPanel)
 }
 
 class MutableLightBarData(
@@ -363,12 +354,7 @@ class MutableLightBarData(
     override fun build(): EntityData =
         LightBarData(title, description, position, rotation, scale, locator, startVertex, endVertex)
 
-    override fun getEditorPanels() =
-        listOf(
-            TitleAndDescEntityEditorPanel,
-            TransformEntityEditorPanel,
-            LightBarEditorPanel
-        )
+    override fun getEditorPanels() = listOf(LightBarEditorPanel)
 }
 
 class MutablePolyLineData(
@@ -380,11 +366,10 @@ class MutablePolyLineData(
         PolyLineData(title, description, position, rotation, scale, locator, segments)
 
     override fun getEditorPanels() =
-        listOf(
-            TitleAndDescEntityEditorPanel,
-            TransformEntityEditorPanel
+        emptyList<EntityEditorPanel<MutablePolyLineData>>()
+//        listOf(
 //            custom EditorPanel(this)
-        )
+//        )
 }
 
 class MutableGridData(
@@ -401,12 +386,7 @@ class MutableGridData(
     override fun build(): EntityData =
         GridData(title, description, position, rotation, scale, locator, rows, columns, rowGap, columnGap, direction, zigZag, stagger)
 
-    override fun getEditorPanels() =
-        listOf(
-            TitleAndDescEntityEditorPanel,
-            TransformEntityEditorPanel,
-            GridEditorPanel
-        )
+    override fun getEditorPanels() = listOf(GridEditorPanel)
 }
 
 class MutableLightRingData(
@@ -422,12 +402,7 @@ class MutableLightRingData(
             radius, firstPixelRadians, pixelDirection
         )
 
-    override fun getEditorPanels() =
-        listOf(
-            TitleAndDescEntityEditorPanel,
-            TransformEntityEditorPanel,
-            LightRingEditorPanel
-        )
+    override fun getEditorPanels() = listOf(LightRingEditorPanel)
 }
 
 interface MutableFixtureOptions {

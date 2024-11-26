@@ -49,13 +49,10 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
     }
 
     Container {
+        attrs.disableGutters = true
         attrs.sx {
             paddingTop = 1.em
         }
-//        typographyH5 {
-//            +mutableControllerConfig.title.ifBlank { "Untitled" }
-//            +" — ${mutableControllerConfig.controllerMeta.controllerTypeName}"
-//        }
 
         val controllerState = sceneEditorClient.controllerStates[props.controllerId]
 

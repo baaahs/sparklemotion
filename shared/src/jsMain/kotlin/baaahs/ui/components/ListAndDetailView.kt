@@ -134,6 +134,8 @@ private val ListAndDetailView = xComponent<ListAndDetailProps<*>>("ListAndDetail
                                 attrs.sx {
                                     float = web.cssom.Float.right
                                     marginTop = 5.px
+                                    paddingRight = 0.px
+                                    marginRight = (-10).px
                                 }
                                 attrs.onClick = handleDeselect
                                 icon(Close)
