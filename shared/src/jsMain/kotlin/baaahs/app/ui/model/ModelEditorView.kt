@@ -19,6 +19,7 @@ import baaahs.ui.components.Renderer
 import baaahs.ui.components.collapsibleSearchBox
 import baaahs.ui.components.listAndDetail
 import baaahs.ui.components.nestedList
+import baaahs.util.globalLaunch
 import baaahs.util.useResizeListener
 import baaahs.visualizer.*
 import baaahs.visualizer.sim.PixelArranger
@@ -111,7 +112,15 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
     val handleSearchCancel by handler { entityMatcher = MutableEntityMatcher() }
 
     val selectedMutableEntity = visualizer.selectedEntity?.let { mutableModel.findByLocator(it.locator) }
-    nestedList.select(selectedMutableEntity)
+
+    globalLaunch {
+        // This has to happen *after* render or React complains:
+        //     Cannot update a component (`NestedListItem`) while rendering a different component
+        //     (`ModelEditor`). To locate the bad setState() call inside `ModelEditor`, follow
+        //     the stack trace as described in https://reactjs.org/link/setstate-in-render
+        //     Error Component Stack
+        nestedList.select(selectedMutableEntity)
+    }
     lastSelectedEntity.current = selectedMutableEntity?.let { visualizer.model.findEntityByLocator(it.locator) }
 
     val handleListItemSelect by handler(visualizer) { mutableEntity: MutableEntity? ->
@@ -194,14 +203,12 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
                 }
                 attrs.listHeaderText = "Model Entities".asTextNode()
                 attrs.listRenderer = ListAndDetail.ListRenderer {
-                    div(+styles.navigatorPane) {
-                        div(+styles.navigatorPaneContent) {
-                            nestedList<MutableEntity> {
-                                attrs.nestedList = nestedList
-                                attrs.renderer = Renderer { item -> +item.item.title }
-                                attrs.onSelect = handleListItemSelect
-                                attrs.searchMatcher = entityMatcher::matches
-                            }
+                    div(+styles.navigatorPaneContent) {
+                        nestedList<MutableEntity> {
+                            attrs.nestedList = nestedList
+                            attrs.renderer = Renderer { item -> +item.item.title }
+                            attrs.onSelect = handleListItemSelect
+                            attrs.searchMatcher = entityMatcher::matches
                         }
                     }
                 }

@@ -82,7 +82,7 @@ open class PolyLine(
     override val scale: Vector3F = Vector3F.unit3d,
     val xPadding: Float,
     val yPadding: Float,
-    @Transient override val locator: EntityLocator = EntityLocator.next()
+    override val locator: EntityLocator = EntityLocator.next()
 ) : Model.BaseEntity(), PlacedPixelArray {
     override val defaultFixtureOptions: FixtureOptions?
         get() = PixelArrayDevice.Options(pixelCount, pixelArrangement = LinearSurfacePixelStrategy())

@@ -99,6 +99,10 @@ class ShowManager(
     override fun openDocument(newDocument: Show, newDocumentState: ShowState?): OpenShow =
         stageManager.openShow(newDocument, newDocumentState)
 
+    override fun updateState(t: Show?, state: ShowState?) {
+        state?.let { openShow?.applyState(it) }
+    }
+
     override fun onSwitch(isRemoteChange: Boolean) {
         showMonitor.onChange(openDocument)
     }

@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalSerializationApi::class)
+
 package baaahs.model
 
 import baaahs.camelize
@@ -11,10 +13,7 @@ import baaahs.io.getResource
 import baaahs.model.importers.ObjImporter
 import baaahs.scene.*
 import baaahs.util.Logger
-import kotlinx.serialization.Polymorphic
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
+import kotlinx.serialization.*
 
 @Serializable
 data class ModelData(
@@ -53,6 +52,9 @@ interface EntityData {
     val position: Vector3F
     val rotation: EulerAngle
     val scale: Vector3F
+
+    /** Implementing classes should include this annotation too. */
+    @EncodeDefault(EncodeDefault.Mode.ALWAYS)
     val locator: EntityLocator
 
     val transformation: Matrix4F
@@ -78,6 +80,7 @@ data class ImportedEntityData(
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,
+    @EncodeDefault(EncodeDefault.Mode.ALWAYS)
     override val locator: EntityLocator = EntityLocator.next(),
     val objData: String,
     val objDataIsFileRef: Boolean,
@@ -113,7 +116,8 @@ data class MovingHeadData(
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,
-    @Transient override val locator: EntityLocator = EntityLocator.next(),
+    @EncodeDefault(EncodeDefault.Mode.ALWAYS)
+    override val locator: EntityLocator = EntityLocator.next(),
     val baseDmxChannel: Int, // TODO: Remove this! Should come from mapping data.
     @Polymorphic
     val adapter: MovingHeadAdapter = Shenzarpy
@@ -133,7 +137,8 @@ data class LightBarData(
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,
-    @Transient override val locator: EntityLocator = EntityLocator.next(),
+    @EncodeDefault(EncodeDefault.Mode.ALWAYS)
+    override val locator: EntityLocator = EntityLocator.next(),
     val startVertex: Vector3F,
     val endVertex: Vector3F
 ) : EntityData {
@@ -151,7 +156,8 @@ data class PolyLineData(
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,
-    @Transient override val locator: EntityLocator = EntityLocator.next(),
+    @EncodeDefault(EncodeDefault.Mode.ALWAYS)
+    override val locator: EntityLocator = EntityLocator.next(),
     val segments: List<SegmentData>
 ) : EntityData {
     override fun edit(): MutableEntity =
@@ -170,6 +176,7 @@ data class GridData(
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,
+    @EncodeDefault(EncodeDefault.Mode.ALWAYS)
     override val locator: EntityLocator = EntityLocator.next(),
     val rows: Int,
     val columns: Int,
@@ -207,7 +214,8 @@ data class LightRingData(
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,
-    @Transient override val locator: EntityLocator = EntityLocator.next(),
+    @EncodeDefault(EncodeDefault.Mode.ALWAYS)
+    override val locator: EntityLocator = EntityLocator.next(),
     val radius: Float = 1f,
     val firstPixelRadians: Float = 0f,
     val pixelDirection: LightRing.PixelDirection = LightRing.PixelDirection.Clockwise
@@ -230,7 +238,8 @@ data class SurfaceDataForTest(
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,
-    @Transient override val locator: EntityLocator = EntityLocator.next(),
+    @EncodeDefault(EncodeDefault.Mode.ALWAYS)
+    override val locator: EntityLocator = EntityLocator.next(),
     val expectedPixelCount: Int? = null,
     val vertices: List<Vector3F> = emptyList()
 ) : EntityData {

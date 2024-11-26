@@ -140,16 +140,21 @@ abstract class DocumentManager<T, TState, OpenT : OpenDocument<T>>(
         val newDocumentState = incomingDocumentState?.state
         val newIsUnsaved = incomingDocumentState?.isUnsaved == true
         val newFile = incomingDocumentState?.file
-        val newOpenDocument = newDocument?.let {
-            openDocument(newDocument, newDocumentState)
-        }
 
         file = newFile
+        val docChanged = document != newDocument
         document = newDocument
         isUnsaved = newIsUnsaved
         if (!newIsUnsaved) documentAsSaved = newDocument
-        (openDocument as? RefCounted)?.disuse()
-        openDocument = newOpenDocument.also { (it as? RefCounted)?.use() }
+        if (docChanged) {
+            val newOpenDocument = newDocument?.let {
+                openDocument(newDocument, newDocumentState)
+            }
+            (openDocument as? RefCounted)?.disuse()
+            openDocument = newOpenDocument.also { (it as? RefCounted)?.use() }
+        } else if (oldLocalState?.state != newDocumentState) {
+            updateState(newDocument, newDocumentState)
+        }
         everSynced = true
 
         onSwitch(isRemoteChange)
@@ -174,6 +179,8 @@ abstract class DocumentManager<T, TState, OpenT : OpenDocument<T>>(
             globalLaunch { serverCommands.save() }
         }
     }
+
+    protected open fun updateState(t: T?, state: TState?) {}
 
     open fun onSwitch(isRemoteChange: Boolean) {}
 
