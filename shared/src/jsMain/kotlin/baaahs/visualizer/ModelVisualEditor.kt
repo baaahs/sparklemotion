@@ -4,6 +4,7 @@ import baaahs.geom.toEulerAngle
 import baaahs.model.EntityLocator
 import baaahs.model.Model
 import baaahs.scene.EditingEntity
+import baaahs.scene.MutableEntity
 import baaahs.scene.MutableScene
 import baaahs.scene.Scene
 import baaahs.util.Clock
@@ -18,7 +19,7 @@ import web.dom.observers.IntersectionObserver
 import kotlin.reflect.KClass
 
 class ModelVisualEditor(
-    var mutableScene: MutableScene,
+    mutableScene: MutableScene,
     clock: Clock,
     adapter: EntityAdapter,
     elements: List<Pair<KClass<out Extension>, () -> Extension>> = emptyList(),
@@ -31,6 +32,8 @@ class ModelVisualEditor(
     )
 ) {
     override val facade = Facade()
+
+    var mutableScene: MutableScene = mutableScene
 
     private var sceneData: Scene = mutableScene.build()
     var model: Model = sceneData.open().model
@@ -136,12 +139,7 @@ class ModelVisualEditor(
         allExtensions { this.onSelectionChange(itemVisualizer, priorObj?.itemVisualizer) }
 
         editingEntity = obj?.let {
-            EditingEntity(
-                mutableEntity ?: error("No mutable entity for selection?"),
-                mutableScene.model.units,
-                itemVisualizer ?: error("No visualizer for selection?"),
-                onChange
-            )
+            buildEditingEntity(mutableEntity, itemVisualizer)
         }
 
         super.onSelectionChange(obj, priorObj)
@@ -167,7 +165,33 @@ class ModelVisualEditor(
             scene.add(groupVisualizer.groupObj)
             groupVisualizer.updateChildren(model.entities)
         }
+        selectedEntity = selectedEntity?.let { previouslySelectedEntity ->
+            model.findEntityByLocator(previouslySelectedEntity.locator)
+        }
+        editingEntity = selectedEntity?.let {
+            buildEditingEntityForRefresh(it)
+        }
     }
+
+    private fun buildEditingEntityForRefresh(entity: Model.Entity): EditingEntity<MutableEntity> =
+        EditingEntity(
+            mutableScene.model.findByLocator(entity.locator)
+                ?: error("No mutable entity for selection?"),
+            mutableScene.model.units,
+            findVisualizer(entity)
+                ?: error("No visualizer for selection?"),
+            onChange
+        )
+
+    private fun buildEditingEntity(mutableEntity: MutableEntity?, itemVisualizer: ItemVisualizer<*>?): EditingEntity<MutableEntity> =
+        EditingEntity(
+            mutableEntity
+                ?: error("No mutable entity for selection?"),
+            mutableScene.model.units,
+            itemVisualizer
+                ?: error("No visualizer for selection?"),
+            onChange
+        )
 
     override fun release() {
         transformControls.dispose()

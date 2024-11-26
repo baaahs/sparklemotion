@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalSerializationApi::class)
+
 package baaahs.model
 
 import baaahs.device.FixtureType
@@ -11,6 +13,8 @@ import baaahs.sim.FakeFixtureSimulation
 import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.FakeItemVisualizer
 import baaahs.visualizer.entity.ItemVisualizer
+import kotlinx.serialization.EncodeDefault
+import kotlinx.serialization.ExperimentalSerializationApi
 
 class FakeModelEntity(
     override val name: String,
@@ -37,6 +41,7 @@ class FakeModelEntityData(
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,
+    @EncodeDefault(EncodeDefault.Mode.ALWAYS)
     override val locator: EntityLocator = EntityLocator.next()
 ) : EntityData {
     override fun edit(): MutableEntity =
