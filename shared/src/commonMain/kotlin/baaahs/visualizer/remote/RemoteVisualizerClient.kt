@@ -14,6 +14,7 @@ import baaahs.ui.addObserver
 import baaahs.util.Logger
 import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.IVisualizer
+import baaahs.visualizer.createEntityAdapter
 import baaahs.visualizer.remote.RemoteVisualizerServer.Opcode.FixtureInfo
 import baaahs.visualizer.remote.RemoteVisualizerServer.Opcode.FrameData
 import kotlinx.coroutines.CoroutineScope
@@ -43,7 +44,7 @@ class RemoteVisualizerClient(
 
             fixtureSimulations = buildMap {
                 openScene?.let { scene ->
-                    val entityAdapter = EntityAdapter(simulationEnv, scene.model.units)
+                    val entityAdapter = createEntityAdapter(simulationEnv, scene.model.units)
 
                     scene.model.visit { entity ->
                         createFixtureSimulation(entity, entityAdapter)?.let { simulation ->

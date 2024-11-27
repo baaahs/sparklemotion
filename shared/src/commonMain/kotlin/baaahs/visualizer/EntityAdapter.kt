@@ -4,11 +4,11 @@ import baaahs.model.*
 import baaahs.sim.SimulationEnv
 import baaahs.visualizer.entity.ItemVisualizer
 
-expect class EntityAdapter(
-    simulationEnv: SimulationEnv,
-    units: ModelUnit,
-    isEditing: Boolean = false
-) : Adapter<Model.Entity> {
+interface EntityAdapter : Adapter<Model.Entity> {
+    val simulationEnv: SimulationEnv
+    val units: ModelUnit
+    val isEditing: Boolean
+
     override fun createVisualizer(entity: Model.Entity): ItemVisualizer<Model.Entity>
     fun createEntityGroupVisualizer(objGroup: Model.EntityGroup): ItemVisualizer<Model.EntityGroup>
     fun createLightBarVisualizer(lightBar: LightBar): ItemVisualizer<LightBar>
@@ -17,3 +17,5 @@ expect class EntityAdapter(
     fun createPolyLineVisualizer(polyLine: PolyLine): ItemVisualizer<PolyLine>
     fun createSurfaceVisualizer(surface: Model.Surface): ItemVisualizer<Model.Surface>
 }
+
+expect fun createEntityAdapter(simulationEnv: SimulationEnv, modelUnit: ModelUnit): EntityAdapter

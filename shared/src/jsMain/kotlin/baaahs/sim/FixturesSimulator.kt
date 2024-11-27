@@ -11,7 +11,7 @@ import baaahs.scene.SceneProvider
 import baaahs.sm.brain.sim.BrainSimulatorManager
 import baaahs.util.Clock
 import baaahs.util.globalLaunch
-import baaahs.visualizer.EntityAdapter
+import baaahs.visualizer.JsEntityAdapter
 import baaahs.visualizer.Visualizer
 import baaahs.visualizer.sim.PixelArranger
 import kotlinx.coroutines.launch
@@ -90,7 +90,7 @@ class FixturesSimulator(
                     }
                 }
 
-                val entityAdapter = EntityAdapter(simulationEnv, newOpenScene.model.units)
+                val entityAdapter = JsEntityAdapter(simulationEnv, newOpenScene.model.units)
                 visualizer.facade.units = entityAdapter.units
                 visualizer.initialViewingAngle = newOpenScene.model.initialViewingAngle
                 buildMap {
