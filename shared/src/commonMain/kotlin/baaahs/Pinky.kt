@@ -1,6 +1,9 @@
 package baaahs
 
 import baaahs.api.ws.WebSocketRouter
+import baaahs.app.settings.DocumentFeatureFlags
+import baaahs.app.settings.FeatureFlags
+import baaahs.app.settings.Provider
 import baaahs.client.EventManager
 import baaahs.controller.ControllersManager
 import baaahs.dmx.DmxManager
@@ -26,6 +29,7 @@ import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.Logger
 import kotlinx.coroutines.*
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlin.coroutines.CoroutineContext
 
@@ -54,6 +58,7 @@ class Pinky(
     private val pinkyMapperHandlers: PinkyMapperHandlers,
     private val pinkyConfigStore: PinkyConfigStore,
     private val eventManager: EventManager,
+    private val featureFlagsProvider: Provider<FeatureFlags>
 ) : CoroutineScope {
     val facade = Facade()
 
@@ -138,14 +143,21 @@ class Pinky(
 
                 launch {
                     val config = pinkyConfigStore.load()
+                val featureFlags = featureFlagsProvider.get()
 
-                    config?.runningScenePath?.let { path ->
-                        launch { stageManager.sceneDocumentService.load(path) }
-                    }
+                loadDocument(
+                    stageManager.sceneDocumentService,
+                    featureFlags.scenes,
+                    "SparkleMotion.scene",
+                    config?.runningScenePath
+                ) { Scene.Empty }
 
-                    config?.runningShowPath?.let { path ->
-                        launch { stageManager.showDocumentService.load(path) }
-                    }
+                loadDocument(
+                    stageManager.showDocumentService,
+                    featureFlags.shows,
+                    "SparkleMotion.show",
+                    config?.runningShowPath
+                ) { Show.ShowTemplate }
                 }
 
                 launch { eventManager.start() }
@@ -171,8 +183,28 @@ class Pinky(
         }
     }
 
-    private suspend fun <T : Any> DocumentService<T, *>.load(path: String) {
-        val file = dataDir.resolve(path)
+    private suspend fun <T : Any> loadDocument(
+        documentService: DocumentService<T, *>,
+        documentFeatureFlags: DocumentFeatureFlags,
+        solitaryFileName: String,
+        runningPath: String?,
+        solitaryTemplate: () -> T
+    ) {
+        if (documentFeatureFlags.multiDoc) {
+            runningPath?.let { path ->
+                val file = dataDir.resolve(path)
+                documentService.loadAndSwitchTo(file)
+            }
+        } else {
+            val singleFile = dataDir.resolve(solitaryFileName)
+            if (!singleFile.exists()) {
+                documentService.save(singleFile, solitaryTemplate())
+            }
+            documentService.loadAndSwitchTo(singleFile)
+        }
+    }
+
+    private suspend fun <T : Any> DocumentService<T, *>.loadAndSwitchTo(file: Fs.File) {
         try {
             val doc = load(file)
             if (doc == null) {

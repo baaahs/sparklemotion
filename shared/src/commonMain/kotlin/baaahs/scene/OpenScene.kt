@@ -16,7 +16,7 @@ class OpenScene(
     val model: Model,
     val controllers: Map<ControllerId, OpenControllerConfig<*>> = emptyMap(),
     val isFallback: Boolean = false
-) : OpenDocument {
+) : OpenDocument<Scene> {
     override val title: String
         get() = model.name
 

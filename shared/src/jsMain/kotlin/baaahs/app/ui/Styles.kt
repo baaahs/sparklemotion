@@ -155,9 +155,18 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
     }
 
     val title by css {
+        position = Position.relative
         display = Display.flex
         userSelect = UserSelect.none
         color = theme.palette.text.primary.asColor().important
+    }
+    val multiDoc by css {}
+    val monoDoc by css {
+        marginTop = 1.em.important
+    }
+
+    val docTitle by css {
+        fontWeight = FontWeight.bold
     }
 
     val unsaved by css {
@@ -170,13 +179,13 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
 
     val titleHeader by css {
         position = Position.absolute
-        top = 0.em
+        top = (-1).em
         fontSize = .7.em
         opacity = .6
     }
     val titleFooter by css {
         position = Position.absolute
-        bottom = 4.px
+        top = 2.2.em
         fontSize = .6.em
         opacity = .6
         textWrap = TextWrap.nowrap

@@ -2,6 +2,8 @@ package baaahs.sm.server
 
 import baaahs.DocumentState
 import baaahs.PubSub
+import baaahs.app.settings.FeatureFlags
+import baaahs.app.settings.Provider
 import baaahs.client.document.DataStore
 import baaahs.doc.DocumentType
 import baaahs.io.Fs
@@ -21,6 +23,8 @@ abstract class DocumentService<T : Any, TState>(
     serializersModule: SerializersModule,
     val documentType: DocumentType
 ) : Observable() {
+    internal abstract val featureFlagsProvider: Provider<FeatureFlags>
+
     var document: T? = null
         private set
     var file: Fs.File? = null

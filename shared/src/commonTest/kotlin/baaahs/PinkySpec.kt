@@ -1,5 +1,7 @@
 package baaahs
 
+import baaahs.app.settings.FeatureFlags
+import baaahs.app.settings.ObservableProvider
 import baaahs.client.EventManager
 import baaahs.controller.ControllersManager
 import baaahs.dmx.Dmx
@@ -81,7 +83,7 @@ class PinkySpec : DescribeSpec({
             StageManager(
                 toolchain, renderManager, pubSub, fakeFs.rootFile, fixtureManager, clock,
                 gadgetManager, serverNotices, sceneMonitor, FsServerSideSerializer(),
-                PinkyConfigStore(plugins, fakeFs.rootFile), showMonitor
+                PinkyConfigStore(plugins, fakeFs.rootFile), showMonitor, ObservableProvider(FeatureFlags.JVM)
             )
         }
         val mappingManager by value { MappingManagerImpl(mappingStore, sceneMonitor, coroutineScope) }
@@ -107,7 +109,8 @@ class PinkySpec : DescribeSpec({
                 stageManager, controllersManager, brainManager,
                 ShaderLibraryManager(plugins, fakeFs, FsServerSideSerializer(), pubSub),
                 Pinky.NetworkStats(), PinkySettings(), serverNotices, PinkyMapperHandlers(mappingStore),
-                PinkyConfigStore(plugins, fakeFs.rootFile), eventManager
+                PinkyConfigStore(plugins, fakeFs.rootFile), eventManager,
+                ObservableProvider(FeatureFlags.JVM)
             )
         }
         val pinkyLink by value { network.links.only() }

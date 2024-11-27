@@ -34,7 +34,7 @@ private val ListAndDetailView = xComponent<ListAndDetailProps<*>>("ListAndDetail
         props.onDeselect?.invoke()
     }
 
-    val speedMs = 300
+    val speedMs = styles.transitionSpeedMs
 
     var cachedSelection by state<Any?> { props.selection }
     var cachedDetailHeader by state<String?> { props.detailHeader }
@@ -113,17 +113,19 @@ private val ListAndDetailView = xComponent<ListAndDetailProps<*>>("ListAndDetail
                     styleIf(orientation == xStacked, styles.containerXStacked, styles.containerYStacked)
             ) {
                 Paper {
-                    attrs.className = -styles.listLarge
+                    attrs.className = -styles.listLarge and
+                            styleIf(orientation == yStacked, styles.listLargeYStacked)
 
                     header { span { child(props.listHeader) } }
 
-                    Paper { with (props.listRenderer) { render() } }
+                    with (props.listRenderer) { render() }
                 }
 
                 Paper {
-                    attrs.className = -styles.detailLarge
+                    attrs.className = -styles.detailLarge and
+                            styleIf(orientation == yStacked && props.selection == null, styles.detailYStackedNoSelection)
 
-                    if (props.selection != null) {
+                    if (cachedSelection != null) {
                         header {
                             attrs.className = -styles.detailHeader
                             +(cachedDetailHeader ?: "")
@@ -132,6 +134,8 @@ private val ListAndDetailView = xComponent<ListAndDetailProps<*>>("ListAndDetail
                                 attrs.sx {
                                     float = web.cssom.Float.right
                                     marginTop = 5.px
+                                    paddingRight = 0.px
+                                    marginRight = (-10).px
                                 }
                                 attrs.onClick = handleDeselect
                                 icon(Close)

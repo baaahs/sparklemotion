@@ -62,7 +62,7 @@ class OpenShow(
     private val openContext: OpenContext,
     internal val implicitControls: List<OpenControl>,
     upstreamActivePatchSetMonitor: Observable
-) : OpenPatchHolder(show, openContext), RefCounted by RefCounter(), OpenDocument {
+) : OpenPatchHolder(show, openContext), RefCounted by RefCounter(), OpenDocument<Show> {
     val id = randomId("show")
     val layouts get() = show.layouts
     val openLayouts = show.layouts.open(openContext)

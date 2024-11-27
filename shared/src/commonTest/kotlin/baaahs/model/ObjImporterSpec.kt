@@ -30,7 +30,7 @@ class ObjImporterSpec : DescribeSpec({
                 l 4 1
             """.trimIndent()
         }
-        val results by value { ObjImporter.import(objData, idPrefix = "") }
+        val results by value { ObjImporter.import(objData, parentLocator = EntityLocator.next()) }
 
         it("imports simple OBJ data") {
             results.entities.size.shouldBe(1)

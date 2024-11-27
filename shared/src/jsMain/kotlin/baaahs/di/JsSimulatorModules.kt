@@ -3,6 +3,7 @@ package baaahs.di
 import baaahs.MediaDevices
 import baaahs.PinkySettings
 import baaahs.SheepSimulator
+import baaahs.app.settings.FeatureFlags
 import baaahs.browser.RealMediaDevices
 import baaahs.controller.ControllersManager
 import baaahs.dmx.Dmx
@@ -85,7 +86,8 @@ class JsSimPinkyModule(
     private val sceneMonitor_: SceneMonitor,
     private val pinkySettings_: PinkySettings,
     private val pinkyMainDispatcher_: CoroutineDispatcher,
-    private val simMappingManager: SimMappingManager
+    private val simMappingManager: SimMappingManager,
+    private val featureFlags_: FeatureFlags
 ) : PinkyModule {
     override val Scope.serverPlugins: ServerPlugins
         get() = get<SimulatorPlugins>().openServerPlugins(get())
@@ -116,6 +118,8 @@ class JsSimPinkyModule(
                 return "data:image/webp;base64,$imageData"
             }
         }
+    override val Scope.featureFlags: FeatureFlags
+        get() = featureFlags_
 
     override fun getModule(): Module {
         return super.getModule()

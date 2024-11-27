@@ -109,6 +109,8 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
     val transformEditSection by css(propertiesEditSection) {
         paddingTop = 1.em
         paddingBottom = 1.em
+        paddingLeft = 0.em
+        paddingRight = 0.em
 
         input {
             width = 5.em
@@ -122,7 +124,10 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
         gap = 1.em
 
         "> label" {
-            left = (-1).em.important
+            left = (-.9).rem.important
+            fontSize = 1.15.em
+            fontWeight = FontWeight.bolder
+            lineHeight = 1.1.em.lh
         }
     }
 

@@ -80,7 +80,7 @@ class MovingHead(
     override val scale: Vector3F = Vector3F.unit3d,
     val baseDmxChannel: Int,
     val adapter: MovingHeadAdapter,
-    @Transient override val id: EntityId = Model.Entity.nextId(),
+    override val locator: EntityLocator = EntityLocator.next(),
 ) : Model.BaseEntity() {
     override val bounds: Pair<Vector3F, Vector3F>
         get() = transformation.position.let { it to it }

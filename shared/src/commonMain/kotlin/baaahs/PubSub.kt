@@ -564,13 +564,22 @@ abstract class PubSub {
             }
         }
 
-        fun <T> state(topic: Topic<T>, initialValue: T, callback: (T) -> Unit = {}): ReadWriteProperty<Any, T> {
+        fun <T> state(
+            topic: Topic<T>,
+            initialValue: T,
+            allowClientUpdates: Boolean = true,
+            callback: (T) -> Unit = {}
+        ): ReadWriteProperty<Any, T> {
             return object : ReadWriteProperty<Any, T> {
                 private var value: T = initialValue
 
                 private val channel = publish(topic, initialValue) {
-                    value = it
-                    callback(it)
+                    if (allowClientUpdates) {
+                        value = it
+                        callback(it)
+                    } else {
+                        logger.warn { "Ignoring client attempt to update topic ${topic.name}: $it" }
+                    }
                 }
 
                 override fun getValue(thisRef: Any, property: KProperty<*>): T {

@@ -3,8 +3,10 @@ package baaahs.ui.components
 import baaahs.app.ui.StyleConstants
 import baaahs.ui.asColor
 import baaahs.ui.important
+import baaahs.ui.transition
 import kotlinx.css.*
 import kotlinx.css.properties.TextDecoration
+import kotlinx.css.properties.ms
 import mui.material.styles.Theme
 import styled.StyleSheet
 
@@ -22,6 +24,8 @@ class CollapsibleSearchBoxStyles(val theme: Theme) : StyleSheet("ui-components-c
 }
 
 class ListAndDetailStyles(val theme: Theme) : StyleSheet("ui-components-list-and-detail", isStatic = true) {
+    val transitionSpeedMs = 300
+
     val listSheetSmall by css {
         position = Position.relative
         display = Display.flex
@@ -54,8 +58,8 @@ class ListAndDetailStyles(val theme: Theme) : StyleSheet("ui-components-list-and
     }
 
     val containerYStacked by css {
-        gridTemplateRows = GridTemplateRows("1fr 2fr")
-        gridTemplateColumns = GridTemplateColumns(GridAutoRows.auto)
+        display = Display.flex
+        flexDirection = FlexDirection.column
         width = 100.pct
     }
 
@@ -64,11 +68,23 @@ class ListAndDetailStyles(val theme: Theme) : StyleSheet("ui-components-list-and
         display = Display.flex
         flexDirection = FlexDirection.column
         overflow = Overflow.auto
+        minHeight = 10.em
+    }
+
+    val listLargeYStacked by css {
+        flex = Flex(1)
+        overflow = Overflow.hidden
     }
 
     val detailLarge by css {
         display = Display.flex
         flexDirection = FlexDirection.column
+        height = 80.pct
+        transition(::height, transitionSpeedMs.ms)
+    }
+
+    val detailYStackedNoSelection by css {
+        height = 0.pct
     }
 
     val detailContent by css {

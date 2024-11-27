@@ -43,6 +43,12 @@ class EditingEntity<T : MutableEntity>(
         }
     }
 
+    fun getEditorPanels(): List<EntityEditorPanel<T>> =
+        mutableEntity.getEditorPanels().filterIsInstance<EntityEditorPanel<T>>()
+
+    fun getView(editorPanel: EntityEditorPanel<*>): View =
+        editorPanel.getView(this as EditingEntity<Nothing>)
+
     fun getEditorPanelViews(): List<View> =
-        mutableEntity.getEditorPanels().map { it.getView(this as EditingEntity<Nothing>) }
+        mutableEntity.getEditorPanels().map { getView(it) }
 }

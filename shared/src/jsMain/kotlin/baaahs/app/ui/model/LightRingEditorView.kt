@@ -32,8 +32,6 @@ private val LightRingEditorView = xComponent<LightRingEditorProps>("LightRingEdi
     }
 
 
-    header { +"Light Ring" }
-
     Container {
         attrs.className = -styles.transformEditSection
         header { +"Radius:" }

@@ -1,5 +1,7 @@
 package baaahs
 
+import baaahs.app.settings.FeatureFlags
+import baaahs.app.settings.ObservableProvider
 import baaahs.controller.Controller
 import baaahs.fixtures.*
 import baaahs.gadgets.Slider
@@ -66,7 +68,7 @@ class ShowRunnerTest {
             testToolchain, renderManager, server, fs.rootFile, fixtureManager,
             FakeClock(), GadgetManager(server, FakeClock(), dispatcher),
             ServerNotices(server, dispatcher), SceneMonitor(), FsServerSideSerializer(),
-            PinkyConfigStore(plugins, fs.rootFile), showMonitor
+            PinkyConfigStore(plugins, fs.rootFile), showMonitor, ObservableProvider(FeatureFlags.JVM)
         )
         stageManager.switchTo(SampleData.sampleShow)
         stageManager.switchToScene(TestSceneData)

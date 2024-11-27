@@ -32,7 +32,7 @@ private val BetterSelectView = xComponent<BetterSelectProps<Any?>>("BetterSelect
 
     FormControl {
         attrs.margin = FormControlMargin.dense
-        attrs.fullWidth = props.fullWidth ?: false
+        attrs.fullWidth = props.fullWidth == true
 
         props.label?.let { label ->
             InputLabel {
@@ -48,6 +48,7 @@ private val BetterSelectView = xComponent<BetterSelectProps<Any?>>("BetterSelect
             attrs.displayEmpty = true
             attrs.margin = InputBaseMargin.dense
             attrs.size = Size.small
+            attrs.disabled = props.disabled == true
             attrs.value = props.values.indexOf(props.value).let {
                 if (it == -1) {
                     fun Any.render() = props.renderValueOption?.invoke(this) ?: this.toString()
@@ -80,6 +81,7 @@ private val BetterSelectView = xComponent<BetterSelectProps<Any?>>("BetterSelect
 external interface BetterSelectProps<T: Any?> : Props {
     var label: String?
     var values: List<T>
+    var disabled: Boolean?
     var renderValueOption: ((T) -> ReactNode)?
     var renderValueSelected: ((T) -> ReactNode)?
     var value: T

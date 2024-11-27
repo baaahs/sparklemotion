@@ -1,7 +1,9 @@
 package baaahs.client.document
 
-import baaahs.DocumentState
 import baaahs.PubSub
+import baaahs.app.settings.DocumentFeatureFlags
+import baaahs.app.settings.FeatureFlags
+import baaahs.app.settings.Provider
 import baaahs.app.ui.UiActions
 import baaahs.client.Notifier
 import baaahs.doc.SceneDocumentType
@@ -17,6 +19,7 @@ import baaahs.ui.DialogMenuItem.Divider
 import baaahs.ui.DialogMenuItem.Option
 import baaahs.ui.IObservable
 import baaahs.ui.Observable
+import baaahs.util.globalLaunch
 
 class SceneManager(
     pubSub: PubSub.Client,
@@ -24,15 +27,17 @@ class SceneManager(
     private val plugins: Plugins,
     notifier: Notifier,
     fileDialog: IFileDialog,
-    private val sceneMonitor: SceneMonitor
-) : DocumentManager<Scene, Unit>(
+    private val sceneMonitor: SceneMonitor,
+    private val featureFlagsProvider: Provider<FeatureFlags>
+) : DocumentManager<Scene, Unit, OpenScene>(
     SceneDocumentType, pubSub, Scene.createTopic(plugins.serialModule, remoteFsSerializer),
     remoteFsSerializer, plugins, notifier, fileDialog, Scene.serializer()
 ), IObservable by Observable() {
     override val facade = Facade()
     override val documentTitle get() = document?.title
+    override val featureFlags: DocumentFeatureFlags
+        get() = featureFlagsProvider.get().scenes
 
-    private var openScene: OpenScene? = null
     private var mutableScene: MutableScene? = null
 
     override suspend fun onNew(dialogHolder: DialogHolder) {
@@ -94,24 +99,16 @@ class SceneManager(
         onNew(scene)
     }
 
-    override fun switchTo(documentState: DocumentState<Scene, Unit>?, isLocalEdit: Boolean) {
-        localState = documentState
+    override fun openDocument(newDocument: Scene, newDocumentState: Unit?): OpenScene =
+        newDocument.open()
 
-        val newScene = documentState?.document
-        val newSceneState = documentState?.state
-        val newIsUnsaved = documentState?.isUnsaved ?: false
-        val newFile = documentState?.file
-        val newOpenScene = newScene?.let {
-//            stageManager.openScene(newScene, newSceneState)
+    override fun onSwitch(isRemoteChange: Boolean) {
+        if (isRemoteChange) mutableScene = null
+        sceneMonitor.onChange(openDocument)
+
+        if (featureFlags.autoSave) {
+            globalLaunch { onSave() }
         }
-//        openScene?.disuse()
-//        openScene = newOpenScene?.also { it.use() }
-
-        update(newScene, newFile, newIsUnsaved)
-        openScene = newScene?.open()
-        if (!isLocalEdit) mutableScene = null
-        sceneMonitor.onChange(openScene)
-        facade.notifyChanged()
     }
 
     private fun edit(): MutableScene =
@@ -121,21 +118,19 @@ class SceneManager(
             }
         }
 
-    inner class Facade : DocumentManager<Scene, Unit>.Facade() {
-        override val openDocument: OpenDocument?
-            get() = openScene
+    inner class Facade : DocumentManager<Scene, Unit, OpenScene>.Facade() {
         val scene get() = this@SceneManager.document
-        val openScene get() = this@SceneManager.openScene
+        val openScene get() = this@SceneManager.openDocument
         val mutableScene get() = this@SceneManager.edit()
 
         /** Ugh super janky. */
         private var retainMutableDocument = false
 
-        override fun onEdit(document: Scene, documentState: Unit, pushToUndoStack: Boolean, syncToServer: Boolean) {
+        override fun onEdit(document: Scene, documentState: Unit, pushToUndoStack: Boolean) {
             if (!retainMutableDocument)
                 this@SceneManager.mutableScene = null
 
-            super.onEdit(document, documentState, pushToUndoStack, AUTO_SYNC)
+            super.onEdit(document, documentState, pushToUndoStack)
         }
 
         override fun onEdit(mutableDocument: MutableDocument<Scene>, pushToUndoStack: Boolean) {
@@ -155,9 +150,5 @@ class SceneManager(
         fun onEdit(pushToUndoStack: Boolean = true) {
             onEdit(mutableScene, pushToUndoStack)
         }
-    }
-
-    companion object {
-        const val AUTO_SYNC = true
     }
 }

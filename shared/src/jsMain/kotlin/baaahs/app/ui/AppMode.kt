@@ -17,5 +17,5 @@ enum class AppMode {
     };
 
     abstract val otherOne: AppMode
-    abstract fun getDocumentManager(appContext: AppContext): DocumentManager<*, *>.Facade
+    abstract fun getDocumentManager(appContext: AppContext): DocumentManager<*, *, *>.Facade
 }

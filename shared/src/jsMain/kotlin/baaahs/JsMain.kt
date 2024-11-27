@@ -1,5 +1,7 @@
 package baaahs
 
+import baaahs.app.settings.DocumentFeatureFlags
+import baaahs.app.settings.FeatureFlags
 import baaahs.app.ui.PatchEditorApp
 import baaahs.client.WebClient
 import baaahs.di.*
@@ -101,8 +103,18 @@ private fun launchUi(appName: String?) {
 private fun launchSimulator(
     queryParams: Map<String, String>
 ) {
-    val pixelDensity = queryParams.getOrElse("pixelDensity") { "0.2" }.toFloat()
-    val pixelSpacing = queryParams.getOrElse("pixelSpacing") { "3" }.toFloat()
+    val pixelDensity = queryParams["pixelDensity"]?.toFloat() ?: 0.2f
+    val pixelSpacing = queryParams["pixelSpacing"]?.toFloat() ?: 3f
+    val featureFlags = run {
+        val defaults = DocumentFeatureFlags()
+        val autoSync = queryParams["autoSync"]?.toBoolean() ?: defaults.autoSync
+        val autoSave = queryParams["autoSave"]?.toBoolean() ?: defaults.autoSave
+        val multiDoc = queryParams["multiDoc"]?.toBoolean() ?: defaults.multiDoc
+        FeatureFlags(
+            shows = DocumentFeatureFlags(autoSync, autoSave, multiDoc),
+            scenes = DocumentFeatureFlags(autoSync, autoSave, multiDoc),
+        )
+    }
 
     val pinkyAddress = JsPlatform.myAddress
     val fakeNetwork = FakeNetwork()
@@ -121,7 +133,9 @@ private fun launchSimulator(
                 sceneMonitor, fakeNetwork, bridgeNetwork,
                 pinkyAddress, pixelDensity, pixelSpacing, simMappingManager
             ).getModule(),
-            JsSimPinkyModule(sceneMonitor, pinkySettings, Dispatchers.Main, simMappingManager).getModule(),
+            JsSimPinkyModule(
+                sceneMonitor, pinkySettings, Dispatchers.Main, simMappingManager, featureFlags
+            ).getModule(),
             JsUiWebClientModule().getModule(),
             JsMonitorWebClientModule().getModule(),
         )
