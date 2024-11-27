@@ -15,6 +15,7 @@ import react.dom.div
 import react.dom.events.MouseEvent
 import react.dom.onClick
 import react.dom.onMouseDown
+import react.dom.onTouchEnd
 
 private val GridItemView = xComponent<GridItemProps>("GridItem") { props ->
     val appContext = useContext(appContext)
@@ -54,6 +55,8 @@ private val GridItemView = xComponent<GridItemProps>("GridItem") { props ->
         div(+styles.deleteButton and styles.deleteModeControl) {
             attrs.onMouseDown = handleDeleteMouseDown
             attrs.onClick = handleDeleteButtonClick
+            // onClick doesn't work on iOS but onTouchEnd does.
+            attrs.onTouchEnd = handleEditButtonClick.asDynamic()
 
             icon(mui.icons.material.Delete)
         }
@@ -61,6 +64,8 @@ private val GridItemView = xComponent<GridItemProps>("GridItem") { props ->
         div(+styles.editButton and styles.editModeControl) {
             attrs.onMouseDown = handleEditMouseDown
             attrs.onClick = handleEditButtonClick
+            // onClick doesn't work on iOS but onTouchEnd does.
+            attrs.onTouchEnd = handleEditButtonClick.asDynamic()
 
             icon(mui.icons.material.Edit)
         }
