@@ -4,21 +4,12 @@ import baaahs.app.ui.appContext
 import baaahs.mapper.styleIf
 import baaahs.model.EntityData
 import baaahs.model.Model
-import baaahs.scene.EditingEntity
-import baaahs.scene.MutableEntity
-import baaahs.scene.MutableEntityGroup
-import baaahs.scene.MutableEntityMatcher
-import baaahs.scene.MutableScene
+import baaahs.scene.*
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.SimulationEnv
 import baaahs.ui.*
-import baaahs.ui.components.ListAndDetail
+import baaahs.ui.components.*
 import baaahs.ui.components.ListAndDetail.Orientation.*
-import baaahs.ui.components.NestedList
-import baaahs.ui.components.Renderer
-import baaahs.ui.components.collapsibleSearchBox
-import baaahs.ui.components.listAndDetail
-import baaahs.ui.components.nestedList
 import baaahs.util.globalLaunch
 import baaahs.util.useResizeListener
 import baaahs.visualizer.*
@@ -34,15 +25,9 @@ import mui.material.styles.Theme
 import mui.material.styles.useTheme
 import mui.system.sx
 import mui.system.useMediaQuery
-import react.Props
-import react.RBuilder
-import react.RHandler
-import react.buildElement
-import react.create
+import react.*
 import react.dom.div
-import react.dom.header
 import react.dom.span
-import react.useContext
 import web.cssom.pct
 import web.cssom.px
 import web.dom.Element
@@ -76,10 +61,11 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
             },
             mutableModel.units,
             true
-        )
+        ) as EntityAdapter
     }
 
     val lastSelectedEntity = ref<Model.Entity>(null)
+    val nextSelectedMutableEntity = ref<MutableEntity>(null)
 
     val visualizer = memo(entityAdapter, props.onEdit) {
         ModelVisualEditor(
@@ -95,6 +81,13 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
     }
     if (visualizer.mutableScene !== mutableScene) {
         visualizer.mutableScene = mutableScene
+    }
+    nextSelectedMutableEntity.current?.let { newMutableEntity ->
+        visualizer.refresh()
+        val newEntity = visualizer.model.findEntityByLocator(newMutableEntity.locator)
+        console.log("nextSelectedMutableEntity: found ", newEntity, " from ", newMutableEntity)
+        visualizer.selectedEntity = newEntity
+        nextSelectedMutableEntity.current = null
     }
     visualizer.refresh()
 
@@ -145,6 +138,7 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
     val handleAddEntity by handler(mutableScene, props.onEdit) { newEntityData: EntityData ->
         val newMutableEntity = newEntityData.edit()
         mutableModel.entities.add(newMutableEntity)
+        nextSelectedMutableEntity.current = newMutableEntity
         props.onEdit()
     }
 
