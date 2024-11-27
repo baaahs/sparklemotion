@@ -174,10 +174,6 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
         visualizer.resize()
     }
 
-    val MyAccordionDetails = AccordionDetails.styled { x ->
-        x.sx { padding = 0.px }
-    }
-
     div(styleIf(isPortraitScreen, styles.editorPanesPortrait, styles.editorPanesLandscape)) {
         div(+styles.visualizerPane) {
             div(+styles.visualizer) {
@@ -235,7 +231,9 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
                                         Typography { +it }
                                     }
                                 }
-                                MyAccordionDetails {
+                                AccordionDetails {
+                                    attrs.sx { padding = 0.px }
+
                                     editingEntity.getView(editorPanel).render(this)
                                 }
                             }
@@ -248,7 +246,9 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
                                 attrs.expandIcon = ExpandMore.create()
                                 Typography { +"Transformation" }
                             }
-                            MyAccordionDetails {
+                            AccordionDetails {
+                                attrs.sx { padding = 0.px }
+
                                 transformationEditor {
                                     attrs.editingEntity = editingEntity
                                 }
@@ -267,7 +267,9 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
                                 attrs.expandIcon = ExpandMore.create()
                                 Typography { +"Actions" }
                             }
-                            MyAccordionDetails {
+                            AccordionDetails {
+                                attrs.sx { padding = 0.px }
+
                                 IconButton {
                                     attrs.onClick = handleDeleteEntity.withMouseEvent()
                                     attrs.color = IconButtonColor.secondary
