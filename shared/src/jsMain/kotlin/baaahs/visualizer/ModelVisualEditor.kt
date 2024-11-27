@@ -154,6 +154,7 @@ class ModelVisualEditor(
     }
 
     fun refresh() {
+        println("refreshing!")
         val newSceneData = mutableScene.build()
         if (sceneData != newSceneData) {
             sceneData = newSceneData
@@ -165,11 +166,19 @@ class ModelVisualEditor(
             scene.add(groupVisualizer.groupObj)
             groupVisualizer.updateChildren(model.entities)
         }
-        selectedEntity = selectedEntity?.let { previouslySelectedEntity ->
-            model.findEntityByLocator(previouslySelectedEntity.locator)
+        selectedEntity = selectedEntity?.let { previousSelectedEntity ->
+            model.findEntityByLocator(previousSelectedEntity.locator)
+                .also {
+                    console.log("Previous selectedEntity:", previousSelectedEntity)
+                    console.log("New selectedEntity:", it)
+                }
         }
-        editingEntity = selectedEntity?.let {
-            buildEditingEntityForRefresh(it)
+        editingEntity = selectedEntity?.let { previousEditingEntity ->
+            buildEditingEntityForRefresh(previousEditingEntity)
+                .also {
+                    console.log("Previous editingEntity:", previousEditingEntity)
+                    console.log("New editingEntity:", it)
+                }
         }
     }
 
@@ -262,6 +271,11 @@ class GroupVisualizer(
             entities.forEachIndexed { index, newChild ->
                 val oldVisualizer = oldChildren.getOrNull(index)
                 val visualizer = adapter.createOrUpdateVisualizer(oldVisualizer, newChild)
+                    .also {
+                        it.obj.itemVisualizer = it
+                        it.obj.modelEntity = newChild
+                        groupObj.add(it.obj)
+                    }
 
                 itemVisualizers.add(visualizer)
                 groupObj.add(visualizer.obj)
