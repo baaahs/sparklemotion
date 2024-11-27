@@ -45,7 +45,6 @@ private val TransformationEditorView = xComponent<TransformationEditorProps>("Tr
     }
 
 
-    header { +"Transformation" }
     Container {
         attrs.className = -styles.transformEditSection
 

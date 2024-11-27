@@ -82,8 +82,6 @@ private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor
         forceRender()
     }
 
-    header { +"OBJ Import" }
-
     Container {
         attrs.className = -styles.propertiesEditSection
         FormControlLabel {

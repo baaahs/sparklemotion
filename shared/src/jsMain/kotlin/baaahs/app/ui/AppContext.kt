@@ -1,5 +1,6 @@
 package baaahs.app.ui
 
+import baaahs.app.settings.FeatureFlags
 import baaahs.app.settings.UiSettings
 import baaahs.app.ui.dialog.FileDialog
 import baaahs.app.ui.editor.EditIntent
@@ -43,6 +44,7 @@ external interface AppContext {
     var fileDialog: FileDialog
     var notifier: Notifier.Facade
     var gridLayoutContext: GridLayoutContext
+    var featureFlags: FeatureFlags
 
     var openEditor: (EditIntent) -> Unit
     var openSceneEditor: (EditIntent) -> Unit

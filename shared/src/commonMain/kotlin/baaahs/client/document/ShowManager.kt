@@ -1,7 +1,9 @@
 package baaahs.client.document
 
-import baaahs.DocumentState
 import baaahs.PubSub
+import baaahs.app.settings.DocumentFeatureFlags
+import baaahs.app.settings.FeatureFlags
+import baaahs.app.settings.Provider
 import baaahs.app.ui.UiActions
 import baaahs.client.ClientStageManager
 import baaahs.client.Notifier
@@ -30,13 +32,17 @@ class ShowManager(
     notifier: Notifier,
     fileDialog: IFileDialog,
     private val showMonitor: ShowMonitor,
-    private val stageManager: ClientStageManager
-) : DocumentManager<Show, ShowState>(
+    private val stageManager: ClientStageManager,
+    private val featureFlagsProvider: Provider<FeatureFlags>
+) : DocumentManager<Show, ShowState, OpenShow>(
     ShowDocumentType, pubSub, ShowState.createTopic(plugins.serialModule, remoteFsSerializer),
     remoteFsSerializer, plugins, notifier, fileDialog, Show.serializer()
 ) {
     override val facade = Facade()
     override val documentTitle get() = document?.title
+    override val featureFlags: DocumentFeatureFlags
+        get() = featureFlagsProvider.get().scenes
+
     private var openShow: OpenShow? = null
 
     private val problems = arrayListOf<Problem>().apply {
@@ -90,29 +96,20 @@ class ShowManager(
         onNew(show)
     }
 
-    override fun switchTo(documentState: DocumentState<Show, ShowState>?, isLocalEdit: Boolean) {
-        localState = documentState
+    override fun openDocument(newDocument: Show, newDocumentState: ShowState?): OpenShow =
+        stageManager.openShow(newDocument, newDocumentState)
 
-        val newShow = documentState?.document
-        val newShowState = documentState?.state
-        val newIsUnsaved = documentState?.isUnsaved ?: false
-        val newFile = documentState?.file
-        val newOpenShow = newShow?.let {
-            stageManager.openShow(newShow, newShowState)
-        }
-        openShow?.disuse()
-        openShow = newOpenShow?.also { it.use() }
-
-        update(newShow, newFile, newIsUnsaved)
-
-        showMonitor.onChange(newOpenShow)
+    override fun updateState(t: Show?, state: ShowState?) {
+        state?.let { openShow?.applyState(it) }
     }
 
-    inner class Facade : DocumentManager<Show, ShowState>.Facade() {
-        override val openDocument: OpenDocument?
-            get() = openShow
+    override fun onSwitch(isRemoteChange: Boolean) {
+        showMonitor.onChange(openDocument)
+    }
+
+    inner class Facade : DocumentManager<Show, ShowState, OpenShow>.Facade() {
         val show get() = this@ShowManager.document
-        val openShow get() = this@ShowManager.openShow
+        val openShow get() = this@ShowManager.openDocument
         val showProblems get() = this@ShowManager.problems
 
         override fun onEdit(mutableDocument: MutableDocument<Show>, pushToUndoStack: Boolean) {

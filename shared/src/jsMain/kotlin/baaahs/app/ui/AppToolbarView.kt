@@ -6,7 +6,6 @@ import baaahs.app.ui.editor.ShowEditIntent
 import baaahs.app.ui.settings.displaySettings
 import baaahs.app.ui.settings.fullScreenToggleButton
 import baaahs.client.document.DocumentManager
-import baaahs.client.document.SceneManager
 import baaahs.sm.webapi.Severity
 import baaahs.ui.*
 import js.objects.jso
@@ -43,9 +42,9 @@ private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props -
 
     val sceneManager = appContext.sceneManager
     observe(sceneManager)
-    val scene = sceneManager.scene
 
     val documentManager = props.documentManager
+    val featureFlags = documentManager.featureFlags
 
     val handleShowEditButtonClick = callback {
         appContext.openEditor(ShowEditIntent())
@@ -174,7 +173,7 @@ private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props -
                             +"Redo"
                         }
 
-                        if (!SceneManager.AUTO_SYNC && props.appMode == AppMode.Scene) {
+                        if (!featureFlags.autoSync && props.appMode == AppMode.Scene) {
                             Button {
                                 attrs.startIcon = +Sync
                                 attrs.disabled = documentManager.isSynced
@@ -186,22 +185,24 @@ private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props -
                             }
                         }
 
-                        if (!documentManager.isLoaded) {
-                            Button {
-                                attrs.startIcon = +FileCopy
-                                attrs.variant = ButtonVariant.contained
-                                attrs.size = Size.small
-                                attrs.onClick = handleSaveAs
-                                +"Save As…"
-                            }
-                        } else {
-                            Button {
-                                attrs.startIcon = +Save
-                                attrs.disabled = !documentManager.isUnsaved
-                                attrs.variant = ButtonVariant.contained
-                                attrs.size = Size.small
-                                attrs.onClick = handleSave
-                                +"Save"
+                        if (!featureFlags.autoSave) {
+                            if (!documentManager.isLoaded) {
+                                Button {
+                                    attrs.startIcon = +FileCopy
+                                    attrs.variant = ButtonVariant.contained
+                                    attrs.size = Size.small
+                                    attrs.onClick = handleSaveAs
+                                    +"Save As…"
+                                }
+                            } else {
+                                Button {
+                                    attrs.startIcon = +Save
+                                    attrs.disabled = !documentManager.isUnsaved
+                                    attrs.variant = ButtonVariant.contained
+                                    attrs.size = Size.small
+                                    attrs.onClick = handleSave
+                                    +"Save"
+                                }
                             }
                         }
                     }
@@ -294,7 +295,7 @@ private val Severity.cssClass get() = name.lowercase() + "Severity"
 
 external interface AppToolbarProps : Props {
     var appMode: AppMode
-    var documentManager: DocumentManager<*, *>.Facade
+    var documentManager: DocumentManager<*, *, *>.Facade
     var onMenuButtonClick: () -> Unit
     var onAppModeChange: (AppMode) -> Unit
 }

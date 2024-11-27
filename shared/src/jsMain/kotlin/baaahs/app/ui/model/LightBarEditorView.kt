@@ -36,8 +36,6 @@ private val LightBarEditorView = xComponent<LightBarEditorProps>("LightBarEditor
         props.editingEntity.onChange()
     }
 
-    header { +"Light Bar" }
-
     Container {
         attrs.className = -styles.transformEditSection
         header { +"Start:" }

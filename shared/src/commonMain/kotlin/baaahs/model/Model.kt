@@ -36,8 +36,8 @@ class Model(
         findEntityByNameOrNull(name)
             ?: error("Unknown model entity \"$name\".")
 
-    fun findEntityById(id: EntityId) =
-        entities.firstNotNullOfOrNull { it.findById(id) }
+    fun findEntityByLocator(locator: EntityLocator) =
+        entities.firstNotNullOfOrNull { it.findByLocator(locator) }
 
     val modelBounds by lazy {
         boundingBox(entities.flatMap { entity ->
@@ -78,24 +78,18 @@ class Model(
         }
         val containedEntities: List<Entity> get() = listOf(this)
         val problems: Collection<Problem>
-        val id: EntityId
+        val locator: EntityLocator
 
         fun createFixtureSimulation(adapter: EntityAdapter): FixtureSimulation?
         fun createVisualizer(adapter: EntityAdapter): ItemVisualizer<out Entity>
 
-        fun findById(id: EntityId): Entity? =
-            if (id == this.id) this else null
+        fun findByLocator(locator: EntityLocator): Entity? =
+            if (locator == this.locator) this else null
 
         fun findByNameOrNull(name: String): Entity? =
             if (name == this.name) this else null
 
         fun visit(callback: (Entity) -> Unit) = callback(this)
-
-        companion object {
-            private var _nextId = 1
-
-            fun nextId(): EntityId = _nextId++.toString()
-        }
     }
 
     abstract class BaseEntity : Entity {
@@ -112,9 +106,9 @@ class Model(
         override val containedEntities: List<Entity>
             get() = super.containedEntities + entities.flatMap { it.containedEntities }
 
-        override fun findById(id: EntityId): Entity? =
-            super.findById(id)
-                ?: entities.firstNotNullOfOrNull { it.findById(id) }
+        override fun findByLocator(locator: EntityLocator): Entity? =
+            super.findByLocator(locator)
+                ?: entities.firstNotNullOfOrNull { it.findByLocator(locator) }
 
         override fun findByNameOrNull(name: String): Entity? =
             super.findByNameOrNull(name)
@@ -156,7 +150,7 @@ class Model(
         override val position: Vector3F = Vector3F.origin,
         override val rotation: EulerAngle = EulerAngle.identity,
         override val scale: Vector3F = Vector3F.unit3d,
-        @Transient override val id: EntityId = Entity.nextId()
+        override val locator: EntityLocator = EntityLocator.next()
     ) : BaseEntity(), EntityWithGeometry {
         override val defaultFixtureOptions: PixelArrayDevice.Options?
             get() = PixelArrayDevice.Options(pixelCount = expectedPixelCount)

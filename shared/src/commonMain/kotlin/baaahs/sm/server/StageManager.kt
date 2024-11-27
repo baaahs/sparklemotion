@@ -1,6 +1,8 @@
 package baaahs.sm.server
 
 import baaahs.*
+import baaahs.app.settings.FeatureFlags
+import baaahs.app.settings.Provider
 import baaahs.client.document.sceneStore
 import baaahs.client.document.showStore
 import baaahs.control.OpenSliderControl
@@ -36,7 +38,8 @@ class StageManager(
     private val sceneMonitor: SceneMonitor,
     private val fsSerializer: FsServerSideSerializer,
     private val pinkyConfigStore: PinkyConfigStore,
-    private val showMonitor: ShowMonitor
+    private val showMonitor: ShowMonitor,
+    private val featureFlagsProvider: Provider<FeatureFlags>
 ) : BaseShowPlayer(toolchain, sceneMonitor) {
     val facade = Facade()
     private var showRunner: ShowRunner? = null
@@ -159,6 +162,9 @@ class StageManager(
         toolchain.plugins.serialModule,
         ShowDocumentType
     ) {
+        override val featureFlagsProvider: Provider<FeatureFlags>
+            get() = this@StageManager.featureFlagsProvider
+
         private val showProblems = pubSub.publish(Topics.showProblems, emptyList()) {}
 
         override fun createDocument(): Show = buildEmptyShow()
@@ -216,6 +222,9 @@ class StageManager(
         toolchain.plugins.serialModule,
         SceneDocumentType
     ) {
+        override val featureFlagsProvider: Provider<FeatureFlags>
+            get() = this@StageManager.featureFlagsProvider
+
         override fun createDocument(): Scene = Scene.Empty
 
         override fun onFileChanged(saveAsFile: Fs.File) {

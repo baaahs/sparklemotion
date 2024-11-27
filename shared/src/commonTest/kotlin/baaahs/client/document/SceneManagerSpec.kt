@@ -2,6 +2,8 @@ package baaahs.client.document
 
 import baaahs.DocumentState
 import baaahs.TestRig
+import baaahs.app.settings.FeatureFlags
+import baaahs.app.settings.ObservableProvider
 import baaahs.client.Notifier
 import baaahs.describe
 import baaahs.doc.FileType
@@ -13,9 +15,9 @@ import baaahs.kotest.value
 import baaahs.scene.Scene
 import baaahs.scene.SceneMonitor
 import io.kotest.core.spec.style.DescribeSpec
-import io.kotest.matchers.*
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 import kotlinx.coroutines.InternalCoroutinesApi
 
@@ -28,7 +30,8 @@ class SceneManagerSpec : DescribeSpec({
         val sceneManager by value {
             SceneManager(
                 pubSubRig.client1, PubSubRemoteFsClientBackend(pubSubRig.client1),
-                plugins, Notifier(pubSubRig.client1), FakeFileDialog(), sceneMonitor
+                plugins, Notifier(pubSubRig.client1), FakeFileDialog(), sceneMonitor,
+                ObservableProvider(FeatureFlags())
             )
         }
         val initialScene by value<Scene?> { null }
