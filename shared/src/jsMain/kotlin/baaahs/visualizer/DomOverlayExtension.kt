@@ -90,7 +90,7 @@ class DomOverlayExtension(
         simulationEnv: SimulationEnv,
         units: ModelUnit,
         isEditing: Boolean
-    ) : EntityAdapter(simulationEnv, units, isEditing) {
+    ) : JsEntityAdapter(simulationEnv, units, isEditing) {
         override fun createVisualizer(entity: Model.Entity): ItemVisualizer<Model.Entity> =
             super.createVisualizer(entity).also {
                 createDomElement(it)

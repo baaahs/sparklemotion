@@ -6,31 +6,34 @@ import baaahs.visualizer.entity.*
 import baaahs.visualizer.geometry.SurfaceGeometry
 import baaahs.visualizer.movers.MovingHeadVisualizer
 
-actual open class EntityAdapter actual constructor(
-    val simulationEnv: SimulationEnv,
-    val units: ModelUnit,
-    private val isEditing: Boolean
-) : Adapter<Model.Entity> {
-    actual override fun createVisualizer(entity: Model.Entity): ItemVisualizer<Model.Entity> {
+open class JsEntityAdapter(
+    override val simulationEnv: SimulationEnv,
+    override val units: ModelUnit,
+    override val isEditing: Boolean = false
+) : EntityAdapter {
+    override fun createVisualizer(entity: Model.Entity): ItemVisualizer<Model.Entity> {
         return (entity.createVisualizer(this) as ItemVisualizer<Model.Entity>)
-            .apply { this.isEditing = this@EntityAdapter.isEditing }
+            .apply { this.isEditing = this@JsEntityAdapter.isEditing }
     }
 
-    actual fun createEntityGroupVisualizer(objGroup: Model.EntityGroup): ItemVisualizer<Model.EntityGroup> =
+    override fun createEntityGroupVisualizer(objGroup: Model.EntityGroup): ItemVisualizer<Model.EntityGroup> =
         EntityGroupVisualizer(objGroup, this)
 
-    actual fun createLightBarVisualizer(lightBar: LightBar): ItemVisualizer<LightBar> =
+    override fun createLightBarVisualizer(lightBar: LightBar): ItemVisualizer<LightBar> =
         LightBarVisualizer(lightBar, this)
 
-    actual fun createLightRingVisualizer(lightRing: LightRing): ItemVisualizer<LightRing> =
+    override fun createLightRingVisualizer(lightRing: LightRing): ItemVisualizer<LightRing> =
         LightRingVisualizer(lightRing, this, null)
 
-    actual fun createMovingHeadVisualizer(movingHead: MovingHead): ItemVisualizer<MovingHead> =
+    override fun createMovingHeadVisualizer(movingHead: MovingHead): ItemVisualizer<MovingHead> =
         MovingHeadVisualizer(movingHead, this)
 
-    actual fun createPolyLineVisualizer(polyLine: PolyLine): ItemVisualizer<PolyLine> =
+    override fun createPolyLineVisualizer(polyLine: PolyLine): ItemVisualizer<PolyLine> =
         PolyLineVisualizer(polyLine, this, null)
 
-    actual fun createSurfaceVisualizer(surface: Model.Surface): ItemVisualizer<Model.Surface> =
+    override fun createSurfaceVisualizer(surface: Model.Surface): ItemVisualizer<Model.Surface> =
         SurfaceVisualizer(surface, this, SurfaceGeometry(surface))
 }
+
+actual fun createEntityAdapter(simulationEnv: SimulationEnv, modelUnit: ModelUnit): EntityAdapter =
+    JsEntityAdapter(simulationEnv, modelUnit)
