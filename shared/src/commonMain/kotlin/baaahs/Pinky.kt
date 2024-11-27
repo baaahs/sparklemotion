@@ -5,12 +5,14 @@ import baaahs.app.settings.DocumentFeatureFlags
 import baaahs.app.settings.FeatureFlags
 import baaahs.app.settings.Provider
 import baaahs.client.EventManager
+import baaahs.client.document.showStore
 import baaahs.controller.ControllersManager
 import baaahs.dmx.DmxManager
 import baaahs.fixtures.FixtureManager
 import baaahs.gl.Toolchain
 import baaahs.gl.glsl.CompilationException
 import baaahs.io.Fs
+import baaahs.io.resourcesFs
 import baaahs.libraries.ShaderLibraryManager
 import baaahs.mapper.PinkyMapperHandlers
 import baaahs.mapping.MappingManager
@@ -29,9 +31,7 @@ import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.Logger
 import kotlinx.coroutines.*
-import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
-import kotlin.coroutines.CoroutineContext
 
 class Pinky(
     val clock: Clock,
@@ -159,9 +159,12 @@ class Pinky(
                 loadDocument(
                     stageManager.showDocumentService,
                     featureFlags.shows,
-                    "SparkleMotion.show",
+                    "SparkleMotion.sparkle",
                     config?.runningShowPath
-                ) { Show.ShowTemplate }
+                ) {
+                    val template = resourcesFs.resolve("htdocs", "templates", "shows", "Default for iPad.sparkle")
+                    plugins.showStore.load(template) ?: error("Failed to load template $template.")
+                }
             }
 
             launch { eventManager.start() }
@@ -191,7 +194,7 @@ class Pinky(
         documentFeatureFlags: DocumentFeatureFlags,
         solitaryFileName: String,
         runningPath: String?,
-        solitaryTemplate: () -> T
+        solitaryTemplate: suspend () -> T
     ) {
         if (documentFeatureFlags.multiDoc) {
             runningPath?.let { path ->
