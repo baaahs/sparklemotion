@@ -6,6 +6,7 @@ import baaahs.model.Model
 import baaahs.model.ModelUnit
 import baaahs.sim.SimulationEnv
 import baaahs.visualizer.entity.ItemVisualizer
+import baaahs.visualizer.entity.itemVisualizer
 import three.*
 import three.addons.CSS3DObject
 import three.addons.CSS3DRenderer
@@ -101,6 +102,9 @@ class DomOverlayExtension(
             entity: Model.Entity
         ): ItemVisualizer<Model.Entity> {
             return super.createOrUpdateVisualizer(oldVisualizer, entity).also {
+                it.obj.itemVisualizer = it
+                it.obj.modelEntity = entity
+
                 if (it === oldVisualizer) {
                     createDomElement(it)
                 }
