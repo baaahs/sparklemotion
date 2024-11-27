@@ -18,4 +18,3 @@ interface EntityAdapter : Adapter<Model.Entity> {
     fun createSurfaceVisualizer(surface: Model.Surface): ItemVisualizer<Model.Surface>
 }
 
-expect fun createEntityAdapter(simulationEnv: SimulationEnv, modelUnit: ModelUnit): EntityAdapter
