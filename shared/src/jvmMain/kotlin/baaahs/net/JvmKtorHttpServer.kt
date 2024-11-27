@@ -29,7 +29,7 @@ class JvmKtorHttpServer(
     port: Int,
     private val networkScope: CoroutineScope
 ) : AbstractKtorHttpServer(
-    networkScope.embeddedServer(CIO, port, configure = {
+    embeddedServer(CIO, port, configure = {
         // Let's give brains lots of time for OTA download:
 //                responseWriteTimeoutSeconds = 3000
     }) {
