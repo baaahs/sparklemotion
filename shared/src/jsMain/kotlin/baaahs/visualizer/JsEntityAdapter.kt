@@ -35,5 +35,3 @@ open class JsEntityAdapter(
         SurfaceVisualizer(surface, this, SurfaceGeometry(surface))
 }
 
-actual fun createEntityAdapter(simulationEnv: SimulationEnv, modelUnit: ModelUnit): EntityAdapter =
-    JsEntityAdapter(simulationEnv, modelUnit)
