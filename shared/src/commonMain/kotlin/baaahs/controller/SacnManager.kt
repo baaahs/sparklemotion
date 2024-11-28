@@ -25,6 +25,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonPrimitive
 import kotlin.coroutines.CoroutineContext
 
 class SacnManager(
@@ -130,7 +131,12 @@ class SacnManager(
                 if (wledAddress != null) {
                     CoroutineScope(Dispatchers.Default + coroutineExceptionHandler).launch {
                         val wledJsonStr = link.httpGetRequest(wledAddress, wledPort, "json")
-                        val wledJson = json.decodeFromString(WledJson.serializer(), wledJsonStr)
+                        val wledJson = try {
+                            json.decodeFromString(WledJson.serializer(), wledJsonStr)
+                        } catch (e: Exception) {
+                            logger.error(e) { "Failed to deserialize WLED packet: $wledJsonStr" }
+                            return@launch
+                        }
 
                         withContext(this@SacnManager.coroutineContext) {
                             val pixelCount = wledJson.info.leds.count
@@ -260,7 +266,7 @@ data class WledJson(
         data class Leds(
             val count: Int,
             val rgbw: Boolean,
-            val wv: Boolean,
+            val wv: JsonPrimitive, // Protocol claims this is a boolean, but WLED sends 0.
             val fps: Int,
             val pwr: Int,
             val maxpwr: Int
