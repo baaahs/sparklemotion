@@ -48,15 +48,17 @@ interface Network {
         fun unregister(inst: MdnsRegisteredService)
         fun listen(type: String, proto: String, domain: String, handler: MdnsListenHandler)
 
-        fun String.normalizeMdnsDomain(): String {
-            var dom = this
-            if (dom.startsWith(".")) {
-                dom = dom.substring(1)
+        companion object {
+            fun String.normalizeMdnsDomain(): String {
+                var dom = this
+                if (dom.startsWith(".")) {
+                    dom = dom.substring(1)
+                }
+                if (!dom.endsWith(".")) {
+                    dom += "."
+                }
+                return dom
             }
-            if (!dom.endsWith(".")) {
-                dom += "."
-            }
-            return dom
         }
     }
 
