@@ -12,7 +12,7 @@ import baaahs.throttle
 import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.coroutineExceptionHandler
-import baaahs.visualizer.EntityAdapter
+import baaahs.visualizer.JsEntityAdapter
 import baaahs.visualizer.Visualizer
 import baaahs.visualizer.sim.PixelArranger
 import baaahs.visualizer.sim.SwirlyPixelArranger
@@ -53,7 +53,7 @@ class ClientPreview(
             component(dmxUniverse)
             component<PixelArranger>(pixelArranger)
         }
-        val adapter = EntityAdapter(simulationEnv, model.units)
+        val adapter = JsEntityAdapter(simulationEnv, model.units)
         theVisualizer.clear()
         theVisualizer.units = model.units
         theVisualizer.initialViewingAngle = model.initialViewingAngle
