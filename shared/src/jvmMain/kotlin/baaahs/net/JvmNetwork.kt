@@ -1,5 +1,6 @@
 package baaahs.net
 
+import baaahs.net.Network.Mdns.Companion.normalizeMdnsDomain
 import baaahs.sm.server.ExceptionReporter
 import baaahs.util.Logger
 import io.ktor.http.*

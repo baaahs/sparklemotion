@@ -248,6 +248,8 @@ kotlin {
             dependencies {
                 implementation(libs.kglIos)
                 implementation(libs.koinCore)
+                implementation(libs.ktorClientCore)
+                implementation(libs.ktorClientIos)
                 implementation(libs.ktorServerCore)
                 implementation(libs.ktorServerCio)
                 implementation(libs.ktorServerHostCommon)

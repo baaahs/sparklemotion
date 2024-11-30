@@ -51,6 +51,8 @@ kglJs = { group = "com.danielgergely.kgl", name = "kgl-js", version.ref = "kgl" 
 kglAndroid = { group = "com.danielgergely.kgl", name = "kgl-android", version.ref = "kgl" }
 kglIos = { group = "com.danielgergely.kgl", name = "kgl-ios", version.ref = "kgl" }
 jmdns = { group = "org.jmdns", name = "jmdns", version = "3.5.7" }
+ktorClientCore = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
+ktorClientIos = { group = "io.ktor", name = "ktor-client-ios", version.ref = "ktor" }
 ktorServerCore = { group = "io.ktor", name = "ktor-server-core", version.ref = "ktor" }
 ktorServerNetty = { group = "io.ktor", name = "ktor-server-netty", version.ref = "ktor" }
 ktorServerCio = { group = "io.ktor", name = "ktor-server-cio", version.ref = "ktor" }
