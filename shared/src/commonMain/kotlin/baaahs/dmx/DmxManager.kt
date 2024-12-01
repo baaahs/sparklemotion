@@ -33,7 +33,7 @@ interface DmxManager {
         ): MutableControllerConfig =
             MutableDirectDmxControllerConfig(
                 state?.title ?: controllerId?.id ?: "Direct DMX",
-                mutableListOf(), null, null
+                null, null
             )
     }
 }

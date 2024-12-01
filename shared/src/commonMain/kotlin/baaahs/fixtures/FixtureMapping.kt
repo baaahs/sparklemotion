@@ -1,7 +1,9 @@
 package baaahs.fixtures
 
 import baaahs.controller.Controller
+import baaahs.controller.FixtureResolver
 import baaahs.model.Model
+import baaahs.scene.ControllerConfig
 import kotlinx.serialization.SerialName
 
 data class FixtureMapping(
@@ -24,21 +26,31 @@ data class FixtureMapping(
             .reduce { acc, config -> acc.plus(config) }
     }
 
-    fun resolveTransportConfig(default: TransportConfig, controllerDefault: TransportConfig?): TransportConfig =
-        default + listOfNotNull(
-            controllerDefault,
-            transportConfig
-        ).reduceOrNull { acc, config -> acc.plus(config) }
+    fun resolveTransportConfig(controller: ControllerConfig): TransportConfig {
+        val transportDefault = controller.emptyTransportConfig
+        val controllerDefault = controller.defaultTransportConfig
+        return reduce(transportDefault, controllerDefault, this@FixtureMapping.transportConfig)
+    }
 
-    fun buildFixture(controller: Controller, model: Model): Fixture {
+    fun resolveTransportConfig(controller: Controller): TransportConfig {
+        val transportDefault = controller.transportType.emptyConfig
+        val controllerDefault = controller.defaultTransportConfig
+        return reduce(transportDefault, controllerDefault, transportConfig)
+    }
+
+    private fun reduce(vararg transportConfigs: TransportConfig?): TransportConfig {
+        return transportConfigs.toList().filterNotNull()
+            .reduce { acc, config -> acc + config }
+    }
+
+    fun buildFixture(controller: Controller, fixtureResolver: FixtureResolver, model: Model): Fixture {
         val fixtureOptions = resolveFixtureOptions(controller.defaultFixtureOptions)
         val fixtureConfig = fixtureOptions.toConfig(entity, model, defaultComponentCount = 1)
 
         val name = "${entity?.name ?: "???"}@${controller.controllerId.name()}"
 
-        val transportConfig = resolveTransportConfig(
-            controller.transportType.emptyConfig, controller.defaultTransportConfig)
-        val transport = controller.createTransport(entity, fixtureConfig, transportConfig)
+        val transportConfig = resolveTransportConfig(controller)
+        val transport = fixtureResolver.createTransport(entity, fixtureConfig, transportConfig)
 
         return Fixture(entity, fixtureConfig.componentCount, name, transport, fixtureConfig.fixtureType, fixtureConfig)
     }

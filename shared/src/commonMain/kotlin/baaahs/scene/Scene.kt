@@ -20,7 +20,8 @@ import kotlinx.serialization.modules.SerializersModule
 data class Scene(
     val model: ModelData,
     val entities: Map<EntityId, EntityData> = emptyMap(),
-    val controllers: Map<ControllerId, ControllerConfig> = emptyMap()
+    val controllers: Map<ControllerId, ControllerConfig> = emptyMap(),
+    val fixtureMappings: Map<ControllerId, List<FixtureMappingData>> = emptyMap()
 ) {
     val title get() = model.title
 
@@ -34,8 +35,7 @@ data class Scene(
             ModelData("Fallback Scene", listOf("grid"), ModelUnit.Centimeters),
             mapOf(
                 "grid" to GridData("Grid", columns = 320, rows = 240, columnGap = 1.25f, rowGap = 1.25f, zigZag = true)
-            ),
-            emptyMap()
+            )
         )
 
         fun createTopic(
@@ -58,26 +58,16 @@ data class Scene(
 interface ControllerConfig {
     val controllerType: String
     val title: String
-    val fixtures: List<FixtureMappingData>
     val defaultFixtureOptions: FixtureOptions?
     val emptyTransportConfig: TransportConfig
     val defaultTransportConfig: TransportConfig?
 
-    fun edit(fixtureMappings: MutableList<MutableFixtureMapping>): MutableControllerConfig
+    fun edit(): MutableControllerConfig
 
-    fun buildFixturePreviews(sceneOpener: SceneOpener): List<FixturePreview> {
-        return fixtures.map { fixtureMappingData ->
-            try {
-                val fixtureMapping = with (sceneOpener) { fixtureMappingData.open() }
-                val fixtureOptions = fixtureMapping.resolveFixtureOptions(defaultFixtureOptions)
-                val transportConfig = fixtureMapping.resolveTransportConfig(emptyTransportConfig, defaultTransportConfig)
-                createFixturePreview(fixtureOptions, transportConfig)
-            } catch (e: Exception) {
-                FixturePreviewError(e)
-            }
-        }
-    }
+    fun createPreviewBuilder(): PreviewBuilder
+}
 
+fun interface PreviewBuilder {
     fun createFixturePreview(fixtureOptions: FixtureOptions, transportConfig: TransportConfig): FixturePreview
 }
 

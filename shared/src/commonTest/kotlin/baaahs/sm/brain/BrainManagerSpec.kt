@@ -25,9 +25,11 @@ class BrainManagerSpec : DescribeSpec({
         val link by value { TestNetwork().link("brainlink") }
         val surface1 by value { entityDataForTest("surface1") }
         val controllerConfigs by value { mapOf<ControllerId, MutableControllerConfig>() }
+        val fixtureMappings by value { mapOf<ControllerId, MutableList<MutableFixtureMapping>>() }
         val brain1Id by value { ControllerId(BrainManager.controllerTypeName, "brain1") }
         val scene by value { sceneDataForTest(surface1) {
             controllers.putAll(controllerConfigs)
+            this.fixtureMappings.putAll(fixtureMappings)
         } }
         val openScene by value { scene.open() }
         val brainManager by value {
@@ -63,11 +65,13 @@ class BrainManagerSpec : DescribeSpec({
                     brain1Id to MutableBrainControllerConfig(
                         "Brain 1",
                         null,
-                        fixtures = brain1Fixtures.toMutableList(),
                         defaultFixtureOptions = PixelArrayDevice.MutableOptions(123, null, null, null),
                         null
                     )
                 )
+            }
+            override(fixtureMappings) {
+                mapOf(brain1Id to brain1Fixtures.toMutableList())
             }
 
             val surface1Mapping by value {

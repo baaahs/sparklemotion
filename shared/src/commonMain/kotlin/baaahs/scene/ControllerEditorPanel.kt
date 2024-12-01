@@ -15,6 +15,7 @@ abstract class ControllerEditorPanel<T: MutableControllerConfig>(
 class EditingController<T: MutableControllerConfig>(
     val controllerId: ControllerId,
     val config: T,
+    val fixtureMappings: MutableList<MutableFixtureMapping>,
     val onChange: () -> Unit
 ) {
     fun getEditorPanelViews(): List<View> =

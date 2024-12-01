@@ -118,6 +118,7 @@ val TestModelSurfaceData = testModelSurfaceData("Panel")
 val TestSceneData = Scene(
     ModelData("Test Model", listOf("panel1")),
     mapOf("panel1" to TestModelSurfaceData),
+    emptyMap(),
     emptyMap()
 )
 val TestModel = TestSceneData.open().model
@@ -127,10 +128,15 @@ fun modelForTest(entities: List<Model.Entity>) = Model("Test Model", entities)
 @Deprecated("Use sceneDataForTest().", ReplaceWith("sceneDataForTest(entities).model"))
 fun modelForTest(vararg entities: Model.Entity) = Model("Test Model", entities.toList())
 
-fun sceneDataForTest(vararg entities: EntityData, callback: MutableScene.() -> Unit = {}) = MutableScene(
-    MutableModel("Test Model", entities.map { it.edit() }.toMutableList(), ModelUnit.Centimeters, 0f),
-    mutableMapOf()
-).apply(callback).build(SceneBuilder())
+fun sceneDataForTest(vararg entities: EntityData, callback: MutableScene.() -> Unit = {}) =
+    sceneDataForTest(entities.toList(), callback)
+
+fun sceneDataForTest(entities: List<EntityData>, callback: MutableScene.() -> Unit = {}) =
+    MutableScene(
+        MutableModel("Test Model", entities.map { it.edit() }.toMutableList(), ModelUnit.Centimeters, 0f),
+        mutableMapOf(),
+        mutableMapOf()
+    ).apply(callback).build(SceneBuilder())
 
 class TestRenderContext(
     vararg val modelEntities: Model.Entity = arrayOf(FakeModelEntity("device1"))

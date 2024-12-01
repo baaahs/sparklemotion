@@ -15,6 +15,7 @@ import baaahs.util.Logger
 class OpenScene(
     val model: Model,
     val controllers: Map<ControllerId, OpenControllerConfig<*>> = emptyMap(),
+    val fixtureMappings: Map<ControllerId, List<FixtureMapping>> = emptyMap(),
     val isFallback: Boolean = false
 ) : OpenDocument<Scene> {
     override val title: String
@@ -23,45 +24,29 @@ class OpenScene(
     val allProblems: List<Problem>
         get() = buildList {
             model.visit { entity -> addAll(entity.problems) }
-
-            controllers.forEach { (controllerId, openControllerConfig) ->
-                openControllerConfig.controllerConfig.fixtures.forEach { data ->
-                    val entity = data.entityId?.let { model.findEntityByNameOrNull(it) }
-
-                    if (data.entityId != null && entity == null) {
-                        add(
-                            Problem(
-                                "No such entity \"${data.entityId}\".",
-                                "No such entity \"${data.entityId}\" found in model, " +
-                                        "but there's a fixture mapping from \"${controllerId.name()}\" for it."
-                            )
-                        )
-                    }
-                }
-            }
 //            controllers.values.visit { controller -> addAll(controller.problems) }
 //            fixtures.visit { fixture -> addAll(fixture.problems) }
         }
 
     fun resolveFixtures(controller: Controller, mappingManager: MappingManager): List<Fixture> {
-        controller.beforeFixtureResolution()
-        try {
-            return relevantFixtureMappings(controller, mappingManager).map { mapping ->
-                mapping.buildFixture(controller, model)
-            }
-        } finally {
-            controller.afterFixtureResolution()
+        val fixtureMappings = relevantFixtureMappings(controller.controllerId, mappingManager, getAnonymousFixtureMappings = {
+            controller.getAnonymousFixtureMappings()
+        })
+        val fixtureResolver = controller.createFixtureResolver()
+        return fixtureMappings.map { mapping ->
+            mapping.buildFixture(controller, fixtureResolver, model)
         }
     }
 
-    fun relevantFixtureMappings(controller: Controller, mappingManager: MappingManager): List<FixtureMapping> {
-        val openConfig = controllers[controller.controllerId]
-        val mappingsFromScene = openConfig?.fixtureMappings
-            ?: emptyList()
-
-        val mappingsFromLegacy = mappingManager.findMappings(controller.controllerId)
+    fun relevantFixtureMappings(
+        controllerId: ControllerId,
+        mappingManager: MappingManager,
+        getAnonymousFixtureMappings: () -> List<FixtureMapping>
+    ): List<FixtureMapping> {
+        val mappingsFromScene = fixtureMappings[controllerId] ?: emptyList()
+        val mappingsFromLegacy = mappingManager.findMappings(controllerId)
         return (mappingsFromScene + mappingsFromLegacy)
-            .ifEmpty { controller.getAnonymousFixtureMappings() }
+            .ifEmpty { getAnonymousFixtureMappings() }
     }
 
     companion object {
@@ -71,8 +56,7 @@ class OpenScene(
 
 class OpenControllerConfig<T : ControllerConfig>(
     val id: ControllerId,
-    val controllerConfig: T,
-    val fixtureMappings: List<FixtureMapping>
+    val controllerConfig: T
 ) {
     val controllerType: String
         get() = controllerConfig.controllerType
@@ -86,6 +70,6 @@ class OpenControllerConfig<T : ControllerConfig>(
         get() = controllerConfig.defaultTransportConfig
 
     override fun toString(): String {
-        return "OpenControllerConfig(id=$id, controllerConfig=$controllerConfig, fixtureMappings=$fixtureMappings)"
+        return "OpenControllerConfig(id=$id, controllerConfig=$controllerConfig)"
     }
 }

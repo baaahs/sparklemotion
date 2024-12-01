@@ -28,11 +28,14 @@ class FakeController(
 
     lateinit var transport: FakeTransport
     override val controllerId: ControllerId = ControllerId(type, name)
-    override fun createTransport(
-        entity: Model.Entity?,
-        fixtureConfig: FixtureConfig,
-        transportConfig: TransportConfig?
-    ): Transport = FakeTransport(transportConfig).also { transport = it }
+
+    override fun createFixtureResolver(): FixtureResolver = object : FixtureResolver {
+        override fun createTransport(
+            entity: Model.Entity?,
+            fixtureConfig: FixtureConfig,
+            transportConfig: TransportConfig?
+        ): Transport = FakeTransport(transportConfig).also { transport = it }
+    }
 
     override fun getAnonymousFixtureMappings(): List<FixtureMapping> = listOfNotNull(anonymousFixtureMapping)
 
@@ -113,7 +116,6 @@ object FakeTransportType : TransportType {
 
 class FakeControllerConfig(
     override val title: String = "fake controller",
-    override val fixtures: List<FixtureMappingData> = emptyList(),
     override val defaultFixtureOptions: FixtureOptions? = null,
     override val defaultTransportConfig: TransportConfig? = null,
     val anonymousFixtureMapping: FixtureMapping? = null
@@ -125,20 +127,16 @@ class FakeControllerConfig(
 
     val controllerId = ControllerId(controllerType, title)
 
-    override fun edit(fixtureMappings: MutableList<MutableFixtureMapping>): MutableControllerConfig =
+    override fun edit(): MutableControllerConfig =
         MutableFakeControllerConfig(
-            title, fixtureMappings, defaultFixtureOptions?.edit(), defaultTransportConfig?.edit()
+            title, defaultFixtureOptions?.edit(), defaultTransportConfig?.edit()
         )
 
-    override fun createFixturePreview(
-        fixtureOptions: FixtureOptions,
-        transportConfig: TransportConfig
-    ): FixturePreview = TODO("not implemented")
+    override fun createPreviewBuilder(): PreviewBuilder = TODO("not implemented")
 }
 
 class MutableFakeControllerConfig(
     override var title: String,
-    override val fixtures: MutableList<MutableFixtureMapping>,
     override var defaultFixtureOptions: MutableFixtureOptions?,
     override var defaultTransportConfig: MutableTransportConfig?,
     val anonymousFixtureMapping: FixtureMapping? = null
@@ -152,7 +150,7 @@ class MutableFakeControllerConfig(
 
     override fun build(sceneBuilder: SceneBuilder): FakeControllerConfig =
         FakeControllerConfig(
-            title, fixtures.map { it.build(sceneBuilder) },
+            title,
             defaultFixtureOptions?.build(),
             defaultTransportConfig?.build(),
             anonymousFixtureMapping
@@ -207,7 +205,7 @@ class FakeControllerManager(
             state: ControllerState?
         ): MutableControllerConfig {
             val title = state?.title ?: controllerId?.id ?: "Fake"
-            return MutableFakeControllerConfig(title, mutableListOf(), null, null)
+            return MutableFakeControllerConfig(title, null, null)
         }
     }
 }

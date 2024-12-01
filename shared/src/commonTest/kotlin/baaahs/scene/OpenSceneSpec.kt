@@ -23,7 +23,7 @@ class OpenSceneSpec : DescribeSpec({
             val transportConfig by value<TransportConfig?> { DmxTransportConfig(0) }
             val controllerFixtureMappingData by value<MutableFixtureMapping?> { null }
             val controllerFixtures by value { listOfNotNull(controllerFixtureMappingData) }
-            val controllerConfig by value { MutableFakeControllerConfig("fake", controllerFixtures.toMutableList(), null, null) }
+            val controllerConfig by value { MutableFakeControllerConfig("fake", null, null) }
             val legacyMappingData by value<FixtureMapping?> { null }
             val mappingManager by value {
                 FakeMappingManager(mapOf(controllerConfig.likelyControllerId to listOfNotNull(legacyMappingData)))
@@ -31,12 +31,15 @@ class OpenSceneSpec : DescribeSpec({
             val openScene by value {
                 sceneDataForTest(surface123) {
                     controllers.put(controllerConfig.likelyControllerId, controllerConfig)
+                    fixtureMappings.put(controllerConfig.likelyControllerId, controllerFixtures.toMutableList())
                 }.open()
             }
             val controller by value { FakeController(controllerConfig.likelyControllerId.id) }
 
             val relevantMappings by value {
-                openScene.relevantFixtureMappings(controller, mappingManager)
+                openScene.relevantFixtureMappings(controller.controllerId, mappingManager, getAnonymousFixtureMappings = {
+                    controller.getAnonymousFixtureMappings()
+                })
             }
 
             context("with no mappings anywhere") {

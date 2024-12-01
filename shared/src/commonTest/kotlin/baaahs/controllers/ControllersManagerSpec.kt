@@ -34,7 +34,7 @@ class ControllersManagerSpec : DescribeSpec({
     describe<ControllersManager> {
         val modelFixtureType by value { FixtureTypeForTest() }
         val modelEntity by value { FakeModelEntityData("panel", modelFixtureType) }
-        val fakeControllerConfig by value { MutableFakeControllerConfig("controller1", mutableListOf(), null, null) }
+        val fakeControllerConfig by value { MutableFakeControllerConfig("controller1", null, null) }
         val fakeControllerId by value { fakeControllerConfig.likelyControllerId }
         val scene by value { sceneDataForTest(modelEntity) {
             controllers.putAll(mapOf(fakeControllerId to fakeControllerConfig))
@@ -129,7 +129,7 @@ class ControllersManagerSpec : DescribeSpec({
                 context("and the controller specifies an anonymous fixture") {
                     override(fakeControllerConfig) {
                         MutableFakeControllerConfig(
-                            "controller1", mutableListOf(), null, null,
+                            "controller1", null, null,
                             anonymousFixtureMapping = FixtureMapping(
                                 null, PixelArrayDevice.Options(
                                     pixelCount = 3,
