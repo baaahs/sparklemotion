@@ -28,13 +28,11 @@ class SceneOpener(
         return OpenScene(
             scene.model.open(),
             scene.controllers.mapValues { (controllerId, controllerConfig) ->
-                OpenControllerConfig(
-                    controllerId,
-                    controllerConfig,
-                    controllerConfig.fixtures.map { fixtureMappingData ->
-                        fixtureMappingData.open()
-                    })
+                OpenControllerConfig(controllerId, controllerConfig)
             },
+            scene.fixtureMappings.mapValues { (_, fixtureMappings) ->
+                fixtureMappings.map { it.open() }
+                                            },
             isFallback = scene == Scene.Fallback
         )
     }

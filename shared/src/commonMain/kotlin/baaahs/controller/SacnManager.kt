@@ -23,7 +23,6 @@ import kotlinx.coroutines.withContext
 import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonPrimitive
 import kotlin.coroutines.CoroutineContext
@@ -187,7 +186,7 @@ class SacnManager(
             MutableSacnControllerConfig(
                 state?.title ?: controllerId?.id ?: "New sACN Controller",
                 (state as? State)?.address ?: "",
-                1, mutableListOf(), null, null
+                1, null, null
             )
     }
 }
@@ -195,10 +194,8 @@ class SacnManager(
 @Serializable @SerialName("SACN")
 data class SacnControllerConfig(
     override val title: String,
-    val address: String,
-    val universes: Int,
-    override val fixtures: List<FixtureMappingData> = emptyList(),
-    @SerialName("defaultFixtureConfig")
+    val address: String, // TODO: Should be optional.
+    val universes: Int, // TODO: Should be optional.
     override val defaultFixtureOptions: FixtureOptions? = null,
     override val defaultTransportConfig: TransportConfig? = null
 ) : ControllerConfig {
@@ -206,38 +203,29 @@ data class SacnControllerConfig(
     override val emptyTransportConfig: TransportConfig
         get() = DmxTransportConfig()
 
-    @Transient
-    private var dmxAllocator: DynamicDmxAllocator? = null
-
-    override fun edit(fixtureMappings: MutableList<MutableFixtureMapping>): MutableControllerConfig =
+    override fun edit(): MutableControllerConfig =
         MutableSacnControllerConfig(
-            title, address, universes, fixtureMappings, defaultFixtureOptions?.edit(), defaultTransportConfig?.edit()
+            title, address, universes, defaultFixtureOptions?.edit(), defaultTransportConfig?.edit()
         )
 
-    // TODO: This is pretty dumb, find a better way to do this.
-    override fun buildFixturePreviews(sceneOpener: SceneOpener): List<FixturePreview> {
-        dmxAllocator = DynamicDmxAllocator()
-        try {
-            return super.buildFixturePreviews(sceneOpener)
-        } finally {
-            dmxAllocator = null
-        }
-    }
+    override fun createPreviewBuilder(): PreviewBuilder = object : PreviewBuilder {
+        val dmxAllocator = DynamicDmxAllocator()
 
-    override fun createFixturePreview(fixtureOptions: FixtureOptions, transportConfig: TransportConfig): FixturePreview {
-        val staticDmxMapping = dmxAllocator!!.allocate(
-            fixtureOptions.componentCount!!,
-            fixtureOptions.bytesPerComponent,
-            transportConfig as DmxTransportConfig
-        )
-        val dmxUniverses = DmxUniverses(universes)
-        val dmxPreview = staticDmxMapping.preview(dmxUniverses)
+        override fun createFixturePreview(fixtureOptions: FixtureOptions, transportConfig: TransportConfig): FixturePreview {
+            val staticDmxMapping = dmxAllocator.allocate(
+                fixtureOptions.componentCount ?: error("No component count."),
+                fixtureOptions.bytesPerComponent,
+                transportConfig as DmxTransportConfig
+            )
+            val dmxUniverses = DmxUniverses(universes)
+            val dmxPreview = staticDmxMapping.preview(dmxUniverses)
 
-        return object : FixturePreview {
-            override val fixtureOptions: ConfigPreview
-                get() = fixtureOptions.preview()
-            override val transportConfig: ConfigPreview
-                get() = dmxPreview
+            return object : FixturePreview {
+                override val fixtureOptions: ConfigPreview
+                    get() = fixtureOptions.preview()
+                override val transportConfig: ConfigPreview
+                    get() = dmxPreview
+            }
         }
     }
 }

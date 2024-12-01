@@ -31,11 +31,13 @@ class SacnIntegrationSpec : DescribeSpec({
     describe("SACN integration") {
         val link by value { TestNetwork().link("sacn") }
         val controllerConfigs by value { mapOf<ControllerId, MutableControllerConfig>() }
+        val fixtureMappings by value { mapOf<ControllerId, MutableList<MutableFixtureMapping>>() }
         val sacn1Id by value { ControllerId(SacnManager.controllerTypeName, "sacn1") }
         val bar1 by value { entityData("bar1") }
         val bar2 by value { entityData("bar2") }
         val scene by value { sceneDataForTest(bar1, bar2) {
-            controllers.putAll(controllerConfigs)
+            this.controllers.putAll(controllerConfigs)
+            this.fixtureMappings.putAll(fixtureMappings)
         } }
         val sacnManager by value { SacnManager(link, ImmediateDispatcher, FakeClock()) }
         val listener by value { SpyFixtureListener() }
@@ -60,8 +62,11 @@ class SacnIntegrationSpec : DescribeSpec({
         context("with a controller which has two fixtures") {
             override(controllerConfigs) {
                 mapOf(sacn1Id to MutableSacnControllerConfig
-                    ("SACN Controller", "192.168.1.150", 1, sacn1Fixtures.toMutableList(), null, null)
+                    ("SACN Controller", "192.168.1.150", 1, null, null)
                 )
+            }
+            override(fixtureMappings) {
+                mapOf(sacn1Id to sacn1Fixtures.toMutableList())
             }
 
             val bar1Mapping by value { fixtureMappingData(bar1.edit(), 0, 2, false) }
@@ -104,8 +109,11 @@ class SacnIntegrationSpec : DescribeSpec({
                     override(bar2Bytes) { PixelColors(602, 2) }
                     override(controllerConfigs) {
                         mapOf(sacn1Id to MutableSacnControllerConfig(
-                            "SACN Controller", "192.168.1.150", 2, sacn1Fixtures.toMutableList(), null, null
+                            "SACN Controller", "192.168.1.150", 2, null, null
                         ))
+                    }
+                    override(fixtureMappings) {
+                        mapOf(sacn1Id to sacn1Fixtures.toMutableList())
                     }
 
                     it("sends a DMX frame to multiple universes") {

@@ -20,12 +20,14 @@ class MutableSceneBuilder(
 
     fun build(): MutableScene {
         val model = scene.model.edit()
-        val controllers = scene.controllers.mapValues { (_, controllerConfig) ->
-            val fixtureMappings = controllerConfig.fixtures.map { it.edit() }.toMutableList()
-            controllerConfig.edit(fixtureMappings)
-        }.toMutableMap()
+        val controllers = scene.controllers
+            .mapValues { (_, controllerConfig) -> controllerConfig.edit() }
+            .toMutableMap()
+        val fixtureMappings = scene.fixtureMappings
+            .mapValues { (_, fixtureMappings) -> fixtureMappings.map { it.edit() }.toMutableList() }
+            .toMutableMap()
 
-        return MutableScene(model, controllers)
+        return MutableScene(model, controllers, fixtureMappings)
     }
 
     fun ModelData.edit(): MutableModel {

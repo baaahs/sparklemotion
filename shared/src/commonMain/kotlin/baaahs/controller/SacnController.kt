@@ -28,31 +28,26 @@ class SacnController(
         get() = DmxTransportType
 
     private val dmxUniverses = DmxUniverses(universeCount)
-    private var dynamicDmxAllocator: DynamicDmxAllocator? = null
 
     private val node = sacnLink.deviceAt(address)
     val stats get() = node.stats
     private var sequenceNumber = 0
 
-    override fun beforeFixtureResolution() {
-        dynamicDmxAllocator = DynamicDmxAllocator(dmxUniverses.channelsPerUniverse)
-    }
+    override fun createFixtureResolver(): FixtureResolver = object : FixtureResolver {
+        val dynamicDmxAllocator = DynamicDmxAllocator(dmxUniverses.channelsPerUniverse)
 
-    override fun afterFixtureResolution() {
-        dynamicDmxAllocator = null
-    }
-
-    override fun createTransport(
-        entity: Model.Entity?,
-        fixtureConfig: FixtureConfig,
-        transportConfig: TransportConfig?
-    ): Transport {
-        val staticDmxMapping = dynamicDmxAllocator!!.allocate(
-            fixtureConfig.componentCount, fixtureConfig.bytesPerComponent,
-            transportConfig as DmxTransportConfig?
-        )
+        override fun createTransport(
+            entity: Model.Entity?,
+            fixtureConfig: FixtureConfig,
+            transportConfig: TransportConfig?
+        ): Transport {
+            val staticDmxMapping = dynamicDmxAllocator!!.allocate(
+                fixtureConfig.componentCount, fixtureConfig.bytesPerComponent,
+                transportConfig as DmxTransportConfig?
+            )
         return SacnTransport(transportConfig, staticDmxMapping)
             .also { dmxUniverses.validate(staticDmxMapping) }
+        }
     }
 
     override fun getAnonymousFixtureMappings(): List<FixtureMapping> = emptyList()

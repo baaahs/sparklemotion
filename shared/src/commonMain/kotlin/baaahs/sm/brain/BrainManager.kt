@@ -134,7 +134,7 @@ class BrainManager(
     }
 
     inner class BrainController(
-        public val brainAddress: Network.Address,
+        val brainAddress: Network.Address,
         private val brainId: BrainId,
         private val helloMessage: BrainHelloMessage,
         override val defaultFixtureOptions: FixtureOptions?,
@@ -158,14 +158,16 @@ class BrainManager(
         override val transportType: TransportType
             get() = BrainTransportType
 
-        override fun createTransport(
-            entity: Model.Entity?,
-            fixtureConfig: FixtureConfig,
-            transportConfig: TransportConfig?
-        ): Transport = BrainTransport(
-            this, brainAddress, brainId, isSimulatedBrain,
-            transportConfig = transportConfig
-        )
+        override fun createFixtureResolver(): FixtureResolver = object : FixtureResolver {
+            override fun createTransport(
+                entity: Model.Entity?,
+                fixtureConfig: FixtureConfig,
+                transportConfig: TransportConfig?
+            ): Transport = BrainTransport(
+                this@BrainController, brainAddress, brainId, isSimulatedBrain,
+                transportConfig = transportConfig
+            )
+        }
 
         override fun getAnonymousFixtureMappings(): List<FixtureMapping> {
             return listOf(FixtureMapping(
@@ -312,7 +314,7 @@ class BrainManager(
                 state?.title
                     ?: controllerId?.id
                     ?: "brainXXXX",
-                null, mutableListOf(), null, null
+                null, null, null
             )
     }
 }
@@ -337,8 +339,6 @@ data class BrainInfo(
 data class BrainControllerConfig(
     override val title: String,
     val address: String? = null,
-    override val fixtures: List<FixtureMappingData> = emptyList(),
-    @SerialName("defaultFixtureConfig")
     override val defaultFixtureOptions: FixtureOptions? = null,
     override val defaultTransportConfig: TransportConfig? = null
 ) : ControllerConfig {
@@ -347,17 +347,19 @@ data class BrainControllerConfig(
     override val emptyTransportConfig: TransportConfig
         get() = BrainTransportConfig()
 
-    override fun edit(fixtureMappings: MutableList<MutableFixtureMapping>): MutableControllerConfig =
+    override fun edit(): MutableControllerConfig =
         MutableBrainControllerConfig(
-            title, address, fixtureMappings, defaultFixtureOptions?.edit(), defaultTransportConfig?.edit()
+            title, address, defaultFixtureOptions?.edit(), defaultTransportConfig?.edit()
         )
 
-    override fun createFixturePreview(fixtureOptions: FixtureOptions, transportConfig: TransportConfig): FixturePreview {
-        return object : FixturePreview {
-            override val fixtureOptions: ConfigPreview
-                get() = fixtureOptions.preview()
-            override val transportConfig: ConfigPreview
-                get() = transportConfig.preview()
+    override fun createPreviewBuilder(): PreviewBuilder = object : PreviewBuilder {
+        override fun createFixturePreview(fixtureOptions: FixtureOptions, transportConfig: TransportConfig): FixturePreview {
+            return object : FixturePreview {
+                override val fixtureOptions: ConfigPreview
+                    get() = fixtureOptions.preview()
+                override val transportConfig: ConfigPreview
+                    get() = transportConfig.preview()
+            }
         }
     }
 }

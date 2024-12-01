@@ -8,6 +8,7 @@ import baaahs.dmx.Boryli
 import baaahs.dmx.Dmx
 import baaahs.dmx.LixadaMiniMovingHead
 import baaahs.dmx.Shenzarpy
+import baaahs.fixtures.FixtureOptions
 import baaahs.geom.EulerAngle
 import baaahs.geom.Vector3F
 import baaahs.scale
@@ -82,6 +83,8 @@ class MovingHead(
     val adapter: MovingHeadAdapter,
     override val locator: EntityLocator = EntityLocator.next(),
 ) : Model.BaseEntity() {
+    override val defaultFixtureOptions: FixtureOptions?
+        get() = MovingHeadDevice.Options(adapter)
     override val bounds: Pair<Vector3F, Vector3F>
         get() = transformation.position.let { it to it }
 
