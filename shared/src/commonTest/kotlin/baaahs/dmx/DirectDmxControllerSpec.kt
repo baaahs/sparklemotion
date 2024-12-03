@@ -37,7 +37,7 @@ class DirectDmxControllerSpec : DescribeSpec({
 //        val mappingFixtureOptions by value<FixtureOptions> { MovingHeadDevice.Options(testAdapter) }
 //        val mappingTransportConfig by value<TransportConfig?> { DmxTransportConfig() }
 //        val fixtureMapping by value { openScene.fixtureMappings.getBang(controllerId, "fixture mapping") }
-        val controller by value { DirectDmxController(dmxDevice, FakeClock()) }
+        val controller by value { DirectDmxController(dmxDevice) }
         val fixtures by value {
             openScene.resolveFixtures(controller, FakeMappingManager())
         }

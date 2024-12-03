@@ -1,25 +1,22 @@
 package baaahs.controller
 
+import baaahs.controller.SacnManager.SacnState
 import baaahs.device.PixelArrayDevice
 import baaahs.dmx.Dmx
 import baaahs.dmx.Dmx.Companion.channelsPerUniverse
 import baaahs.dmx.DmxTransportConfig
 import baaahs.dmx.DmxUniverses
 import baaahs.dmx.DynamicDmxAllocator
-import baaahs.fixtures.ConfigPreview
-import baaahs.fixtures.FixtureOptions
-import baaahs.fixtures.FixturePreview
-import baaahs.fixtures.TransportConfig
+import baaahs.fixtures.*
 import baaahs.net.Network
-import baaahs.scene.*
+import baaahs.scene.ControllerConfig
+import baaahs.scene.MutableControllerConfig
+import baaahs.scene.MutableSacnControllerConfig
+import baaahs.scene.PreviewBuilder
 import baaahs.util.Clock
-import baaahs.util.Delta
 import baaahs.util.Logger
 import baaahs.util.coroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -32,80 +29,51 @@ class SacnManager(
     private val coroutineContext: CoroutineContext,
     private val clock: Clock,
     private val universeListener: Dmx.UniverseListener? = null
-) : BaseControllerManager(controllerTypeName) {
+) : BaseControllerManager<SacnController, SacnControllerConfig, SacnState>(controllerTypeName) {
     private val senderCid = "SparkleMotion000".encodeToByteArray()
     private val sacnLink = SacnLink(link, senderCid, "SparkleMotion", clock)
-    private var lastConfig: Map<ControllerId, OpenControllerConfig<SacnControllerConfig>> = emptyMap()
-    private var controllers: Map<ControllerId, SacnController> = emptyMap()
-    private var discoveredControllers: MutableMap<ControllerId, SacnController> = hashMapOf()
+    private var wledDiscoveryJob: Job? = null
 
     override fun start() {
-        startWledDiscovery()
+        wledDiscoveryJob = CoroutineScope(Dispatchers.Default + CoroutineName("WLED Discovery"))
+            .launch {
+                listenForWleds(link)
+            }
     }
 
-    override fun onConfigChange(controllerConfigs: Map<ControllerId, OpenControllerConfig<*>>) {
-        handleConfigs(controllerConfigs.values
-            .filterIsInstance<OpenControllerConfig<SacnControllerConfig>>()
+    override fun onChange(
+        controllerId: ControllerId,
+        oldController: SacnController?,
+        controllerConfig: Change<SacnControllerConfig?>,
+        controllerState: Change<SacnState?>,
+        fixtureMappings: Change<List<FixtureMapping>>
+    ): SacnController? {
+        val newConfig = controllerConfig.newValue
+        val newState = controllerState.newValue
+
+        val address = newState?.address
+            ?: newConfig?.address
+            ?: return null
+
+        val pixelCount = newState?.pixelCount
+        val bytesPerPixel = if (newState?.isRgbw == true) 4 else 3
+        val universeCount = DynamicDmxAllocator()
+            .allocate(pixelCount ?: 0, bytesPerPixel)
+            .calculateEndUniverse(channelsPerUniverse)
+        return SacnController(
+            controllerId.id, sacnLink, link.createAddress(address),
+            newConfig?.defaultFixtureOptions.merge(PixelArrayDevice.Options(pixelCount)),
+            newConfig?.defaultTransportConfig,
+            newConfig?.universes ?: universeCount,
+            universeListener
         )
     }
 
-    inline fun <reified T : ControllerConfig> Map<ControllerId, ControllerConfig>.filterByType(): Map<ControllerId, T> =
-        buildMap {
-            this@filterByType.forEach { (k, v) ->
-                if (v is T) put(k, v)
-            }
-        }
-
     override fun reset() {
-        discoveredControllers.forEach { (_, controller) ->
-            controller.release()
-            notifyListeners { onRemove(controller) }
-        }
-        discoveredControllers.clear()
     }
 
     override fun stop() {
-        TODO("not implemented")
-    }
-
-    private fun handleConfigs(configs: List<OpenControllerConfig<SacnControllerConfig>>) {
-        val configMap = configs.associateBy { it.id }
-        controllers = buildMap {
-            Delta.diff(
-                lastConfig,
-                configMap,
-                object : Delta.MapChangeListener<ControllerId, OpenControllerConfig<SacnControllerConfig>> {
-                    override fun onAdd(key: ControllerId, value: OpenControllerConfig<SacnControllerConfig>) {
-                        val controllerConfig = value.controllerConfig
-                        val controller = SacnController(
-                            key.id, sacnLink, link.createAddress(controllerConfig.address),
-                            value.defaultFixtureOptions, value.defaultTransportConfig,
-                            controllerConfig.universes, clock.now(),
-                            universeListener
-                        )
-                        put(controller.controllerId, controller)
-                        notifyListeners { onAdd(controller) }
-                    }
-
-                    override fun onRemove(key: ControllerId, value: OpenControllerConfig<SacnControllerConfig>) {
-                        val oldController = controllers[key]
-                        if (oldController == null) {
-                            logger.warn { "Unknown controller \"$key\" removed." }
-                        } else {
-                            oldController.release()
-                            notifyListeners { onRemove(oldController) }
-                        }
-                    }
-                }
-            )
-        }
-        lastConfig = configMap
-    }
-
-    private fun startWledDiscovery() {
-        CoroutineScope(Dispatchers.Default).launch {
-            listenForWleds(link)
-        }
+        wledDiscoveryJob?.cancel()
     }
 
     private fun listenForWleds(link: Network.Link) {
@@ -139,19 +107,15 @@ class SacnManager(
 
                         withContext(this@SacnManager.coroutineContext) {
                             val pixelCount = wledJson.info.leds.count
-                            val bytesPerPixel = if (wledJson.info.leds.rgbw) 4 else 3
+                            val isRgbw = wledJson.info.leds.rgbw
 
-                            val universeCount = DynamicDmxAllocator()
-                                .allocate(pixelCount, bytesPerPixel)
-                                .calculateEndUniverse(channelsPerUniverse)
-                            val sacnController = SacnController(
-                                id, sacnLink, wledAddress,
-                                PixelArrayDevice.Options(pixelCount),
-                                null, universeCount, onlineSince,
-                                universeListener
-                            )
-                            discoveredControllers[sacnController.controllerId] = sacnController
-                            notifyListeners { onAdd(sacnController) }
+                            val controllerId = ControllerId(controllerTypeName, id)
+                            onStateChange(controllerId) {
+                                SacnState(
+                                    id, wledAddress.asString(), onlineSince, "WLED ver ${wledJson.info.ver}",
+                                    pixelCount = pixelCount, isRgbw = isRgbw
+                                )
+                            }
                         }
                     }
                 }
@@ -160,13 +124,15 @@ class SacnManager(
     }
 
     @Serializable
-    data class State(
+    data class SacnState(
         override val title: String,
         override val address: String,
         override val onlineSince: Instant?,
         override val firmwareVersion: String? = null,
         override val lastErrorMessage: String? = null,
-        override val lastErrorAt: Instant? = null
+        override val lastErrorAt: Instant? = null,
+        val pixelCount: Int,
+        val isRgbw: Boolean
     ) : ControllerState()
 
     companion object : ControllerManager.Meta {
@@ -185,7 +151,7 @@ class SacnManager(
         ): MutableControllerConfig =
             MutableSacnControllerConfig(
                 state?.title ?: controllerId?.id ?: "New sACN Controller",
-                (state as? State)?.address ?: "",
+                (state as? SacnState)?.address ?: "",
                 1, null, null
             )
     }

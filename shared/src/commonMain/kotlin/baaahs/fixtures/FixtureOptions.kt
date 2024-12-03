@@ -25,6 +25,13 @@ interface FixtureOptions {
     fun toConfig(entity: Model.Entity?, model: Model, defaultComponentCount: Int? = null): FixtureConfig
 }
 
+fun FixtureOptions?.merge(options: FixtureOptions): FixtureOptions? =
+    when {
+        this == null -> options
+        this::class == options::class -> this + options
+        else -> this
+    }
+
 /** Finalized configuration for a fixture. */
 interface FixtureConfig {
     val componentCount: Int

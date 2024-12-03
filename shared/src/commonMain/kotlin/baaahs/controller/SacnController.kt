@@ -6,24 +6,17 @@ import baaahs.io.ByteArrayWriter
 import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.util.Logger
-import kotlinx.datetime.Instant
 
 class SacnController(
     val id: String,
-    private val sacnLink: SacnLink,
-    private val address: Network.Address,
+    sacnLink: SacnLink,
+    address: Network.Address,
     override val defaultFixtureOptions: FixtureOptions?,
     override val defaultTransportConfig: TransportConfig?,
     private val universeCount: Int,
-    private val onlineSince: Instant?,
     private val universeListener: Dmx.UniverseListener? = null
 ) : Controller {
     override val controllerId: ControllerId = ControllerId(SacnManager.controllerTypeName, id)
-    override val state: ControllerState get() = SacnManager.State(
-        controllerId.name(), address.asString(), onlineSince, null,
-        sacnLink.lastError?.message,
-        sacnLink.lastErrorAt
-    )
     override val transportType: TransportType
         get() = DmxTransportType
 
@@ -41,7 +34,7 @@ class SacnController(
             fixtureConfig: FixtureConfig,
             transportConfig: TransportConfig?
         ): Transport {
-            val staticDmxMapping = dynamicDmxAllocator!!.allocate(
+            val staticDmxMapping = dynamicDmxAllocator.allocate(
                 fixtureConfig.componentCount, fixtureConfig.bytesPerComponent,
                 transportConfig as DmxTransportConfig?
             )
@@ -93,7 +86,7 @@ class SacnController(
         universeListener?.onSend(controllerId.name(), dmxUniverses.channels)
     }
 
-    fun release() {
+    override fun release() {
         logger.debug { "Releasing SacnController $id." }
     }
 

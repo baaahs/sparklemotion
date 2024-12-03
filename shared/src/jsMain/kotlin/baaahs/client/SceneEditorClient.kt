@@ -7,7 +7,6 @@ import baaahs.fixtures.FixtureInfo
 import baaahs.plugin.ClientPlugins
 import baaahs.scene.MutableControllerConfig
 import baaahs.sm.webapi.Topics
-import baaahs.subscribeProperty
 
 class SceneEditorClient(
     private val plugins: ClientPlugins,
@@ -19,8 +18,12 @@ class SceneEditorClient(
         pubSub.addStateChangeListener(it)
     }
 
-    private val controllerStates by subscribeProperty(pubSub, Topics.createControllerStates(plugins), emptyMap()) { facade.notifyChanged() }
-    private val fixtures by subscribeProperty(pubSub, Topics.createFixtures(plugins), emptyList()) { facade.notifyChanged() }
+    private val controllerStates by pubSub.state(Topics.createControllerStates(plugins), emptyMap()) {
+        facade.notifyChanged()
+    }
+    private val fixtures by pubSub.state(Topics.createFixtures(plugins), emptyList()) {
+        facade.notifyChanged()
+    }
 
     inner class Facade : baaahs.ui.Facade() {
         val plugins: ClientPlugins

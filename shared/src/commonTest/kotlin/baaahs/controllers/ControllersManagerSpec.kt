@@ -1,5 +1,8 @@
+@file:OptIn(InternalCoroutinesApi::class, ExperimentalCoroutinesApi::class)
+
 package baaahs.controllers
 
+import baaahs.FakePubSub
 import baaahs.controller.ControllersManager
 import baaahs.describe
 import baaahs.device.EnumeratedPixelLocations
@@ -13,6 +16,7 @@ import baaahs.fixtures.FixtureMapping
 import baaahs.geom.Vector3F
 import baaahs.gl.override
 import baaahs.gl.render.FixtureTypeForTest
+import baaahs.gl.testPlugins
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.kotest.value
 import baaahs.model.EntityData
@@ -29,11 +33,14 @@ import io.kotest.matchers.properties.shouldHaveValue
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 import io.kotest.matchers.types.shouldBeTypeOf
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.InternalCoroutinesApi
 import kotlin.random.Random
 
 @Suppress("unused")
 class ControllersManagerSpec : DescribeSpec({
     describe<ControllersManager> {
+        val pubSub by value { FakePubSub().server }
         val modelFixtureType by value { FixtureTypeForTest() }
         val modelEntityData by value<EntityData> { FakeModelEntityData("panel", modelFixtureType) }
         val defaultFixtureOptions by value<MutableFixtureOptions?> { null }
@@ -48,7 +55,7 @@ class ControllersManagerSpec : DescribeSpec({
         val legacyMappings by value {
             mapOf(fakeControllerId to listOf(
                 FixtureMapping(
-                    modelEntity,
+                    model.findEntityByName(modelEntityData.title),
                     modelEntity.fixtureType.emptyOptions
                 ))
             )
@@ -60,7 +67,8 @@ class ControllersManagerSpec : DescribeSpec({
         val changes by value { fixtureListener.changes }
         val sceneMonitor by value { SceneMonitor(openScene) }
         val controllersManager by value {
-            ControllersManager(controllerManagers, mappingManager, sceneMonitor, listOf(fixtureListener))
+            ControllersManager(controllerManagers, mappingManager, sceneMonitor,
+                listOf(fixtureListener), pubSub, testPlugins())
         }
         val fakeController by value { fakeControllerMgr.controllers.only("controller") }
 
@@ -293,7 +301,9 @@ class ControllersManagerSpec : DescribeSpec({
             }
 
             context("when the scene is closed") {
+                val firstController by value { fakeController }
                 beforeEach {
+                    firstController.run {}
                     sceneMonitor.onChange(null)
                 }
 
@@ -305,6 +315,7 @@ class ControllersManagerSpec : DescribeSpec({
                     removedFixture.shouldBeSameInstanceAs(previouslyAddedFixture)
 
                     fakeControllerMgr.controllers.shouldBeEmpty()
+                    firstController.released.shouldBeTrue()
                 }
             }
         }

@@ -15,19 +15,12 @@ class FakeController(
     override val defaultTransportConfig: TransportConfig? = null,
     private val anonymousFixtureMapping: FixtureMapping? = null
 ) : Controller {
-    override val state: ControllerState = object : ControllerState() {
-        override val title: String get() = TODO("not implemented")
-        override val address: String get() = TODO("not implemented")
-        override val onlineSince: Instant? get() = TODO("not implemented")
-        override val firmwareVersion: String get() = TODO("not implemented")
-        override val lastErrorMessage: String get() = TODO("Not yet implemented")
-        override val lastErrorAt: Instant? get() = TODO("Not yet implemented")
-    }
     override val transportType: TransportType
         get() = FakeTransportType
 
     lateinit var transport: FakeTransport
     override val controllerId: ControllerId = ControllerId(type, name)
+    var released = false
 
     override fun createFixtureResolver(): FixtureResolver = object : FixtureResolver {
         override fun createTransport(
@@ -35,6 +28,10 @@ class FakeController(
             fixtureConfig: FixtureConfig,
             transportConfig: TransportConfig?
         ): Transport = FakeTransport(transportConfig).also { transport = it }
+    }
+
+    override fun release() {
+        released = true
     }
 
     override fun getAnonymousFixtureMappings(): List<FixtureMapping> = listOfNotNull(anonymousFixtureMapping)
@@ -54,6 +51,15 @@ class FakeController(
             fn: (componentIndex: Int, buf: ByteArrayWriter) -> Unit
         ) {
         }
+    }
+
+    class FakeControllerState : ControllerState() {
+        override val title: String get() = TODO("not implemented")
+        override val address: String get() = TODO("not implemented")
+        override val onlineSince: Instant? get() = TODO("not implemented")
+        override val firmwareVersion: String get() = TODO("not implemented")
+        override val lastErrorMessage: String get() = TODO("Not yet implemented")
+        override val lastErrorAt: Instant? get() = TODO("Not yet implemented")
     }
 
     companion object {
@@ -163,30 +169,31 @@ class MutableFakeControllerConfig(
 
 class FakeControllerManager(
     startingControllers: List<FakeController> = emptyList()
-) : BaseControllerManager("FAKE") {
+) : BaseControllerManager<FakeController, FakeControllerConfig, ControllerState>("FAKE") {
     var hasStarted: Boolean = false
     val controllers = startingControllers.toMutableList()
 
     override fun start() {
         if (hasStarted) error("Already started!")
         hasStarted = true
-        controllers.forEach { notifyListeners { onAdd(it) } }
     }
 
-    override fun onConfigChange(controllerConfigs: Map<ControllerId, OpenControllerConfig<*>>) {
-        if (hasStarted) {
-            controllers.forEach { notifyListeners { onRemove(it) } }
-        }
+    override fun onChange(
+        controllerId: ControllerId,
+        oldController: FakeController?,
+        controllerConfig: Change<FakeControllerConfig?>,
+        controllerState: Change<ControllerState?>,
+        fixtureMappings: Change<List<FixtureMapping>>
+    ): FakeController? {
+        if (!controllerConfig.changed) return oldController
 
-        controllers.clear()
+        oldController?.let { controllers.remove(it) }
 
-        controllers.addAll(controllerConfigs.values.map { config ->
-            with (config.controllerConfig as FakeControllerConfig) {
+        return controllerConfig.newValue?.let {
+            with(it) {
                 FakeController(title, defaultFixtureOptions, defaultTransportConfig, anonymousFixtureMapping)
+                    .also { controllers.add(it) }
             }
-        })
-        if (hasStarted) {
-            controllers.forEach { notifyListeners { onAdd(it) } }
         }
     }
 

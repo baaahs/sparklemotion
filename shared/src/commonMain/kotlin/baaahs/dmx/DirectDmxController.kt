@@ -11,21 +11,16 @@ import baaahs.scene.ControllerConfig
 import baaahs.scene.MutableControllerConfig
 import baaahs.scene.MutableDirectDmxControllerConfig
 import baaahs.scene.PreviewBuilder
-import baaahs.util.Clock
 import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 class DirectDmxController(
     private val device: Dmx.Device,
-    clock: Clock,
     universeListener: Dmx.UniverseListener? = null
 ) : Controller {
     override val controllerId: ControllerId
         get() = ControllerId(controllerType, device.id)
-    private val startedAt = clock.now()
-    override val state: ControllerState =
-        State(device.name, "N/A", startedAt)
     override val defaultFixtureOptions: FixtureOptions?
         get() = null
     override val transportType: TransportType
@@ -42,7 +37,7 @@ class DirectDmxController(
             fixtureConfig: FixtureConfig,
             transportConfig: TransportConfig?
         ): Transport {
-            val staticDmxMapping = dynamicDmxAllocator!!.allocate(
+            val staticDmxMapping = dynamicDmxAllocator.allocate(
                 fixtureConfig.componentCount, fixtureConfig.bytesPerComponent,
                 transportConfig as DmxTransportConfig
             )
@@ -51,7 +46,7 @@ class DirectDmxController(
     }
 
     @Serializable
-    data class State(
+    data class DirectDmxState(
         override val title: String,
         override val address: String?,
         override val onlineSince: Instant?,

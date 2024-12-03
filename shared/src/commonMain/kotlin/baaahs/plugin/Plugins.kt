@@ -553,10 +553,10 @@ sealed class Plugins(
             }
 
             polymorphic(ControllerState::class) {
-                subclass(BrainManager.State::class, BrainManager.State.serializer())
-                subclass(DirectDmxController.State::class, DirectDmxController.State.serializer())
-                subclass(SacnManager.State::class, SacnManager.State.serializer())
-                subclass(NullController.State::class, NullController.State.serializer())
+                subclass(BrainManager.BrainState::class, BrainManager.BrainState.serializer())
+                subclass(DirectDmxController.DirectDmxState::class, DirectDmxController.DirectDmxState.serializer())
+                subclass(SacnManager.SacnState::class, SacnManager.SacnState.serializer())
+                subclass(NullController.NullState::class, NullController.NullState.serializer())
             }
         }
     }
