@@ -290,6 +290,9 @@ tasks.withType(Test::class) {
     useJUnitPlatform {
         excludeTags("glsl")
     }
+
+    // Copy in system properties.
+    systemProperties = System.getProperties().asIterable().associate { it.key.toString() to it.value }
 }
 
 tasks.named<Test>("jvmTest") {

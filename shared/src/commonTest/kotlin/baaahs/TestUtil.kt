@@ -27,6 +27,8 @@ import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
 import baaahs.util.Clock
 import baaahs.util.asInstant
+import io.kotest.core.NamedTag
+import io.kotest.core.spec.style.scopes.TestWithConfigBuilder
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
 import kotlinx.coroutines.CoroutineDispatcher
@@ -202,3 +204,7 @@ fun expectEmptyMap(block: () -> Map<*, *>) {
     val collection = block()
     assertEquals(0, collection.size, "Expected 0 items but have: ${collection.keys}")
 }
+
+val focused = NamedTag("Focused")
+suspend fun TestWithConfigBuilder.focused(test: suspend io.kotest.core.test.TestScope.() -> kotlin.Unit): Unit =
+    config(tags = setOf(focused), test = test)
