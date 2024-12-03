@@ -1,7 +1,6 @@
 package baaahs.controller
 
-import baaahs.FakeClock
-import baaahs.ImmediateDispatcher
+import baaahs.*
 import baaahs.controllers.FakeMappingManager
 import baaahs.device.PixelArrayDevice
 import baaahs.device.PixelFormat
@@ -11,14 +10,13 @@ import baaahs.fixtures.FixtureListener
 import baaahs.fixtures.Transport
 import baaahs.geom.Vector3F
 import baaahs.gl.override
+import baaahs.gl.testPlugins
 import baaahs.kotest.value
 import baaahs.mapper.MappingSession
 import baaahs.mapper.SessionMappingResults
 import baaahs.model.LightBarData
 import baaahs.net.TestNetwork
-import baaahs.only
 import baaahs.scene.*
-import baaahs.sceneDataForTest
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
@@ -30,6 +28,7 @@ import kotlinx.coroutines.InternalCoroutinesApi
 class SacnIntegrationSpec : DescribeSpec({
     describe("SACN integration") {
         val link by value { TestNetwork().link("sacn") }
+        val pubSub by value { FakePubSub().server }
         val controllerConfigs by value { mapOf<ControllerId, MutableControllerConfig>() }
         val fixtureMappings by value { mapOf<ControllerId, MutableList<MutableFixtureMapping>>() }
         val sacn1Id by value { ControllerId(SacnManager.controllerTypeName, "sacn1") }
@@ -44,13 +43,15 @@ class SacnIntegrationSpec : DescribeSpec({
         val sacn1Fixtures by value { emptyList<MutableFixtureMapping>() }
         val mappingManager by value { FakeMappingManager(emptyMap()) }
         val openScene by value { scene.open() }
+        val sceneProvider by value { SceneMonitor(openScene) }
         val controllersManager by value {
-            ControllersManager(listOf(sacnManager), mappingManager, SceneMonitor(openScene), listOf(listener))
+            ControllersManager(
+                listOf(generify(sacnManager)), mappingManager, sceneProvider,
+                listOf(listener), pubSub, testPlugins())
         }
 
         beforeEach {
             controllersManager.start()
-            sacnManager.onConfigChange(openScene.controllers)
         }
 
         context("with no declared controllers") {

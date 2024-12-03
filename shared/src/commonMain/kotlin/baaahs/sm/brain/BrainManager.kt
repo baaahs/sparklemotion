@@ -36,12 +36,11 @@ import kotlin.time.Duration.Companion.seconds
 
 class BrainManager(
     private val firmwareDaddy: FirmwareDaddy,
-    link: Network.Link,
+    private val link: Network.Link,
     private val networkStats: Pinky.NetworkStats,
     private val clock: Clock,
     coroutineContext: CoroutineContext
-) : BaseControllerManager(controllerTypeName) {
-    private val controllerConfigs: MutableMap<ControllerId, OpenControllerConfig<*>> = mutableMapOf()
+) : BaseControllerManager<BrainManager.BrainController, BrainControllerConfig, BrainManager.BrainState>(controllerTypeName) {
     private var isStartedUp = false
     private var mapperMessageCallback: ((MapperHelloMessage) -> Unit)? = null
 
@@ -49,8 +48,9 @@ class BrainManager(
         override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
             if (!isStartedUp) return
 
+            val message = parse(bytes)
             CoroutineScope(coroutineContext).launch {
-                when (val message = parse(bytes)) {
+                when (message) {
                     is BrainHelloMessage -> foundBrain(fromAddress, message)
                     is PingMessage -> receivedPing(fromAddress, message)
                     is MapperHelloMessage -> mapperMessageCallback?.invoke(message)
@@ -68,9 +68,31 @@ class BrainManager(
         mapperMessageCallback = handler
     }
 
-    override fun onConfigChange(controllerConfigs: Map<ControllerId, OpenControllerConfig<*>>) {
-        this.controllerConfigs.clear() // TODO: should apply any changes.
-        this.controllerConfigs.putAll(controllerConfigs)
+    override fun onChange(
+        controllerId: ControllerId,
+        oldController: BrainController?,
+        controllerConfig: Change<BrainControllerConfig?>,
+        controllerState: Change<BrainState?>,
+        fixtureMappings: Change<List<FixtureMapping>>
+    ): BrainController? {
+        val newConfig = controllerConfig.newValue
+        val newState = controllerState.newValue
+
+        val brainId = BrainId(controllerId.id)
+        val address = newState?.address ?: newConfig?.address ?: return null
+
+        if (newState?.isGoingOffline == true) {
+            activeBrains.remove(brainId)
+            return null
+        }
+
+        return BrainController(
+            link.createAddress(address), brainId,
+            newState?.firmwareVersion,
+            newConfig?.defaultFixtureOptions,
+            newConfig?.defaultTransportConfig,
+            newState?.isSimulatedBrain == true
+        ).also { activeBrains[brainId] = it }
     }
 
     override fun start() {
@@ -93,7 +115,7 @@ class BrainManager(
                     "at $brainAddress [firmware=${msg.firmwareVersion}]"
         }
 
-        // Decide whether or not to tell this brain it should use a different firmware
+        // Decide whether to tell this brain it should use a different firmware
         if (firmwareDaddy.doesntLikeThisVersion(msg.firmwareVersion)) {
             // You need the new hotness bro
             logger.warn {
@@ -116,31 +138,27 @@ class BrainManager(
             removeBrain(brainId)
         }
 
-        val config = controllerConfigs[brainId.asControllerId()]
-        val controller = BrainController(
-            brainAddress, brainId, msg,
-            config?.defaultFixtureOptions,
-            config?.defaultTransportConfig,
-            isSimulatedBrain
-        )
-        activeBrains[brainId] = controller
-        notifyListeners { onAdd(controller) }
+        onStateChange(brainId.asControllerId()) { fromState ->
+            BrainState(
+                brainId.uuid, brainAddress.asString(), clock.now(),
+                msg.firmwareVersion, null, null, isSimulatedBrain
+            )
+        }
     }
 
     fun removeBrain(brainId: BrainId) {
-        activeBrains.remove(brainId)?.let {
-            notifyListeners { onRemove(it) }
+        onStateChange(brainId.asControllerId()) { fromState ->
+            fromState?.copy(isGoingOffline = true)
         }
     }
 
     inner class BrainController(
         val brainAddress: Network.Address,
         private val brainId: BrainId,
-        private val helloMessage: BrainHelloMessage,
+        val firmwareVersion: String?,
         override val defaultFixtureOptions: FixtureOptions?,
         override val defaultTransportConfig: TransportConfig?,
-        private val isSimulatedBrain: Boolean,
-        private val startedAt: Instant = clock.now()
+        private val isSimulatedBrain: Boolean
     ) : Controller {
         override val controllerId: ControllerId
             get() = brainId.asControllerId()
@@ -149,11 +167,6 @@ class BrainManager(
             internal set
         var lastErrorAt: Instant? = null
             internal set
-
-        override val state: ControllerState get() = State(
-            brainId.uuid, brainAddress.asString(), startedAt, helloMessage.firmwareVersion,
-            lastError?.message, lastErrorAt
-        )
 
         override val transportType: TransportType
             get() = BrainTransportType
@@ -181,13 +194,15 @@ class BrainManager(
     }
 
     @Serializable
-    data class State(
+    data class BrainState(
         override val title: String,
         override val address: String?,
         override val onlineSince: Instant?,
         override val firmwareVersion: String?,
         override val lastErrorMessage: String? = null,
-        override val lastErrorAt: Instant? = null
+        override val lastErrorAt: Instant? = null,
+        val isSimulatedBrain: Boolean = false,
+        val isGoingOffline: Boolean = false,
     ) : ControllerState()
 
     inner class BrainTransport(
@@ -259,9 +274,12 @@ class BrainManager(
                         udpSocket.sendUdp(brainAddress, Ports.BRAIN, message)
                 } catch (e: Exception) {
                     // Couldn't send to Brain? Schedule to remove it.
-                    brainController.lastError = e
-                    brainController.lastErrorAt = now
-                    notifyListeners { onError(brainController) }
+                    onStateChange(brainId.asControllerId()) { fromState ->
+                        fromState?.copy(
+                            lastErrorMessage = e.message,
+                            lastErrorAt = now
+                        )
+                    }
                     //                pendingBrains[brainId] = this
 
                     logger.error(e) { "Error sending to $brainId, will take offline" }

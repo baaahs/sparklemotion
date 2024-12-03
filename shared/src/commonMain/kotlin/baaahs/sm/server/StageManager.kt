@@ -302,6 +302,9 @@ class StageManager(
 }
 
 interface FrameListener {
+    /** Called before each frame is rendered. */
     fun beforeFrame()
+
+    /** Called after each frame has been rendered and [baaahs.gl.render.RenderTarget.sendFrame] has been called. */
     fun afterFrame()
 }

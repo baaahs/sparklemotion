@@ -134,6 +134,14 @@ class ComponentRenderEngine(
         if (renderTargetsToRemove.isNotEmpty()) {
 //            TODO(question for xian): ("remove TBD"), how do we do this?
 //            renderTargets.removeAll(renderTargetsToRemove)
+            // ^^ doing this breaks rendering for some reason.
+
+            // Let's just mark them as zombies for now.
+            for (renderTarget in renderTargetsToRemove) {
+                renderTarget.isZombie = true
+            }
+
+            // TODO: We should reclaim dead buffer space at some point too.
 //            context: https://github.com/baaahs/sparklemotion/pull/613/files#r1748974029
         }
 
@@ -162,7 +170,12 @@ class ComponentRenderEngine(
     }
 
     fun logStatus() {
-        logger.info { "Rendering $componentCount components for ${renderTargets.size} ${fixtureType.title} fixtures."}
+        val actuallyRenderedComponentCount =
+            renderTargets.filter { !it.isZombie }.sumOf { it.componentCount }
+        logger.info {
+            "Rendering $actuallyRenderedComponentCount components for ${renderTargets.size} ${fixtureType.title} fixtures" +
+                " (with ${componentCount - actuallyRenderedComponentCount} zombie components)."
+        }
     }
 
     val Int.bufWidth: Int get() = max(minTextureWidth, min(this, maxFramebufferWidth))
