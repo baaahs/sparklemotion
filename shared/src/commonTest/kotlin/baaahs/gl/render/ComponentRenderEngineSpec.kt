@@ -19,12 +19,14 @@ import baaahs.kotest.value
 import baaahs.model.Model
 import baaahs.only
 import baaahs.plugin.SerializerRegistrar
+import baaahs.scene.EditingController
 import baaahs.scene.MutableFixtureOptions
 import baaahs.show.*
 import baaahs.show.Shader
 import baaahs.show.live.LinkedPatch
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
+import baaahs.ui.View
 import com.danielgergely.kgl.*
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.booleans.shouldBeFalse
@@ -403,6 +405,21 @@ class FixtureTypeForTest(
 
     override fun toString(): String = id
 
+    inner class MutableOptions(
+        var componentCount: Int?,
+        var bytesPerComponent: Int,
+        var pixelLocations: List<Vector3F>?
+    ) : MutableFixtureOptions {
+        override val fixtureType: FixtureType
+            get() = this@FixtureTypeForTest
+
+        override fun build(): FixtureOptions =
+            Options(componentCount, bytesPerComponent, pixelLocations)
+
+        override fun getEditorView(editingController: EditingController<*>): View =
+            TODO("not implemented")
+    }
+
     inner class Options(
         override val componentCount: Int? = null,
         override val bytesPerComponent: Int,
@@ -411,7 +428,8 @@ class FixtureTypeForTest(
         override val fixtureType: FixtureType
             get() = this@FixtureTypeForTest
 
-        override fun edit(): MutableFixtureOptions = TODO("not implemented")
+        override fun edit(): MutableFixtureOptions =
+            MutableOptions(componentCount, bytesPerComponent, pixelLocations)
 
         override fun plus(other: FixtureOptions?): FixtureOptions =
             if (other == null) this
