@@ -37,6 +37,20 @@ fun MutableMap<String, JsonElement>.replaceJsonObj(name: String, block: (JsonObj
     this[name] = block(origEl)
 }
 
+fun MutableMap<String, JsonElement>.editJsonObj(name: String, block: (MutableMap<String, JsonElement>) -> Unit) {
+    val origEl = this[name] ?: buildJsonObject { }
+    if (origEl !is JsonObject) error("\"$name\" entry is a ${origEl::class.simpleName}, not an object.")
+    val mutableObj = origEl.toMutableMap()
+    block(mutableObj)
+    this[name] = mutableObj.toJsonObj()
+}
+
+fun MutableMap<String, JsonElement>.editEachJsonObj(block: (key: String, value: MutableMap<String, JsonElement>) -> Unit) {
+    entries.toList().forEach { (key, value) ->
+        this[key] = value.jsonObject.edit { block(key, this) }
+    }
+}
+
 val JsonElement.type get(): String? =
     this.jsonObject["type"]?.jsonPrimitive?.contentOrNull
 

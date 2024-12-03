@@ -3,6 +3,7 @@ package baaahs.mapper
 import baaahs.app.ui.StyleConstants
 import baaahs.ui.asColor
 import baaahs.ui.important
+import baaahs.ui.inset
 import baaahs.ui.selector
 import kotlinx.css.*
 import kotlinx.css.FlexDirection.column
@@ -56,7 +57,8 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
     val statusDot by css {
         width = 10.px
         height = 10.px
-        backgroundColor = Color.red
+        backgroundColor = Color.grey
+        border = Border(1.px, inset, Color.lightGrey)
         borderRadius = 50.pct
         display = Display.inlineBlock
     }

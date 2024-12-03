@@ -65,10 +65,11 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
                     val fixturePreview = props.fixturePreview
                     if (fixturePreview is FixturePreviewError) {
                         Chip {
-                            attrs.color = ChipColor.secondary
+                            attrs.color = ChipColor.error
                             attrs.variant = ChipVariant.outlined
                             attrs.label = buildElement { +"Error: ${fixturePreview.e.message}" }
                         }
+                        this@xComponent.logger.warn(fixturePreview.e) { "Fixture preview error." }
                     } else {
                         configPreview {
                             attrs.configPreview = fixturePreview.fixtureOptions

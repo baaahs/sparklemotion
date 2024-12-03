@@ -4,6 +4,7 @@ import baaahs.app.settings.FeatureFlags
 import baaahs.app.settings.ObservableProvider
 import baaahs.client.EventManager
 import baaahs.controller.ControllersManager
+import baaahs.controller.generify
 import baaahs.dmx.Dmx
 import baaahs.dmx.DmxManager
 import baaahs.fixtures.FixtureManagerImpl
@@ -47,8 +48,8 @@ import io.kotest.core.test.testCoroutineScheduler
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.*
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.launch
 
 @Suppress("unused")
 @InternalCoroutinesApi
@@ -90,7 +91,7 @@ class PinkySpec : DescribeSpec({
         }
         val mappingManager by value { MappingManagerImpl(mappingStore, sceneMonitor, coroutineScope) }
         val controllersManager by value {
-            ControllersManager(listOf(brainManager), mappingManager, sceneMonitor, listOf(fixtureManager))
+            ControllersManager(listOf(generify(brainManager)), mappingManager, sceneMonitor, listOf(fixtureManager), pubSub, plugins)
         }
 
         val renderAndSendFrame by value {

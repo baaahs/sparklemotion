@@ -30,6 +30,8 @@ import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
 import baaahs.util.Clock
 import baaahs.util.asInstant
+import io.kotest.core.NamedTag
+import io.kotest.core.spec.style.scopes.TestWithConfigBuilder
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
 import kotlinx.coroutines.CoroutineDispatcher
@@ -120,6 +122,7 @@ val TestModelSurfaceData = testModelSurfaceData("Panel")
 val TestSceneData = Scene(
     ModelData("Test Model", listOf("panel1")),
     mapOf("panel1" to TestModelSurfaceData),
+    emptyMap(),
     emptyMap()
 )
 val TestModel = TestSceneData.open().model
@@ -129,10 +132,15 @@ fun modelForTest(entities: List<Model.Entity>) = Model("Test Model", entities)
 @Deprecated("Use sceneDataForTest().", ReplaceWith("sceneDataForTest(entities).model"))
 fun modelForTest(vararg entities: Model.Entity) = Model("Test Model", entities.toList())
 
-fun sceneDataForTest(vararg entities: EntityData, callback: MutableScene.() -> Unit = {}) = MutableScene(
-    MutableModel("Test Model", entities.map { it.edit() }.toMutableList(), ModelUnit.Centimeters, 0f),
-    mutableMapOf()
-).apply(callback).build(SceneBuilder())
+fun sceneDataForTest(vararg entities: EntityData, callback: MutableScene.() -> Unit = {}) =
+    sceneDataForTest(entities.toList(), callback)
+
+fun sceneDataForTest(entities: List<EntityData>, callback: MutableScene.() -> Unit = {}) =
+    MutableScene(
+        MutableModel("Test Model", entities.map { it.edit() }.toMutableList(), ModelUnit.Centimeters, 0f),
+        mutableMapOf(),
+        mutableMapOf()
+    ).apply(callback).build(SceneBuilder())
 
 class TestRenderContext(
     vararg val modelEntities: Model.Entity = arrayOf(FakeModelEntity("device1"))
@@ -198,3 +206,7 @@ fun expectEmptyMap(block: () -> Map<*, *>) {
     val collection = block()
     assertEquals(0, collection.size, "Expected 0 items but have: ${collection.keys}")
 }
+
+val focused = NamedTag("Focused")
+suspend fun TestWithConfigBuilder.focused(test: suspend io.kotest.core.test.TestScope.() -> kotlin.Unit): Unit =
+    config(tags = setOf(focused), test = test)

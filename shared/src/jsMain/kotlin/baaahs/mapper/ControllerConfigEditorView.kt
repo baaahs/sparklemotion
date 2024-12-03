@@ -2,6 +2,7 @@ package baaahs.mapper
 
 import baaahs.app.ui.appContext
 import baaahs.controller.ControllerId
+import baaahs.fixtures.FixturePreviewError
 import baaahs.scene.EditingController
 import baaahs.scene.MutableFixtureMapping
 import baaahs.scene.MutableScene
@@ -33,20 +34,44 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
                 .also { props.mutableScene.controllers[props.controllerId] = it }
     }
 
-    val editingController = EditingController(props.controllerId, mutableControllerConfig, props.onEdit)
+    val mutableFixtureMappings = memo(props.mutableScene, props.controllerId) {
+        props.mutableScene.fixtureMappings[props.controllerId]
+            ?: mutableListOf<MutableFixtureMapping>()
+    }
+
+    val editingController = EditingController(props.controllerId, mutableControllerConfig, mutableFixtureMappings, props.onEdit)
 
     val recentlyAddedFixtureMappingRef = ref<MutableFixtureMapping>(null)
-    val handleNewFixtureMappingClick by mouseEventHandler(mutableControllerConfig, props.onEdit) {
+    val handleNewFixtureMappingClick by mouseEventHandler(mutableFixtureMappings, props.onEdit) {
         val newMapping = MutableFixtureMapping(null, null, null)
-        mutableControllerConfig.fixtures.add(newMapping)
+        mutableFixtureMappings.add(newMapping)
         recentlyAddedFixtureMappingRef.current = newMapping
         props.onEdit()
     }
 
     val handleDeleteFixtureMapping by handler(mutableControllerConfig, props.onEdit) { fixtureMapping: MutableFixtureMapping ->
-        mutableControllerConfig.fixtures.remove(fixtureMapping)
+        mutableFixtureMappings.remove(fixtureMapping)
         props.onEdit()
     }
+
+    val sceneBuilder = SceneBuilder()
+    val tempScene = props.mutableScene.build(sceneBuilder)
+    val tempController = mutableControllerConfig.build(sceneBuilder)
+    val previewBuilder = tempController.createPreviewBuilder()
+    val sceneOpener = SceneOpener(tempScene)
+        .also { it.open() }
+    val fixturePreviews = mutableFixtureMappings.map { mapping ->
+        try {
+            val fixtureMappingData = mapping.build(sceneBuilder)
+            val fixtureMapping = with (sceneOpener) { fixtureMappingData.open() }
+            val fixtureOptions = fixtureMapping.resolveFixtureOptions(tempController.defaultFixtureOptions)
+            val transportConfig = fixtureMapping.resolveTransportConfig(tempController)
+            previewBuilder.createFixturePreview(fixtureOptions, transportConfig)
+        } catch (e: Exception) {
+            FixturePreviewError(e)
+        }
+    }
+    val mutableFixtureMappingToPreview = mutableFixtureMappings.zip(fixturePreviews)
 
     Container {
         attrs.disableGutters = true
@@ -111,7 +136,7 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
 
                 Typography {
                     attrs.className = -styles.accordionPreview
-                    +mutableControllerConfig.fixtures.joinToString(", ") {
+                    +mutableFixtureMappings.joinToString(", ") {
                         it.entity?.title ?: "Anonymous"
                     }
                 }
@@ -119,13 +144,7 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
 
             AccordionDetails {
                 attrs.className = -styles.accordionDetails
-                val sceneBuilder = SceneBuilder()
-                val tempScene = props.mutableScene.build(sceneBuilder)
-                val tempController = mutableControllerConfig.build(sceneBuilder)
-                val sceneOpener = SceneOpener(tempScene)
-                    .also { it.open() }
-                val fixturePreviews = tempController.buildFixturePreviews(sceneOpener)
-                mutableControllerConfig.fixtures.zip(fixturePreviews).forEach { (mutableFixtureMapping, fixturePreview) ->
+                mutableFixtureMappingToPreview.forEach { (mutableFixtureMapping, fixturePreview) ->
                     fixtureMappingEditor {
                         attrs.mutableScene = props.mutableScene
                         attrs.editingController = editingController

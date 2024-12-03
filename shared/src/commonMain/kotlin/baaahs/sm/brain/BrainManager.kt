@@ -36,12 +36,11 @@ import kotlin.time.Duration.Companion.seconds
 
 class BrainManager(
     private val firmwareDaddy: FirmwareDaddy,
-    link: Network.Link,
+    private val link: Network.Link,
     private val networkStats: Pinky.NetworkStats,
     private val clock: Clock,
     coroutineScope: CoroutineScope
-) : BaseControllerManager(controllerTypeName) {
-    private val controllerConfigs: MutableMap<ControllerId, OpenControllerConfig<*>> = mutableMapOf()
+) : BaseControllerManager<BrainManager.BrainController, BrainControllerConfig, BrainManager.BrainState>(controllerTypeName) {
     private var isStartedUp = false
     private var mapperMessageCallback: ((MapperHelloMessage) -> Unit)? = null
 
@@ -49,8 +48,9 @@ class BrainManager(
         override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
             if (!isStartedUp) return
 
+            val message = parse(bytes)
             coroutineScope.launch(CoroutineName("BrainManager Message Handler")) {
-                when (val message = parse(bytes)) {
+                when (message) {
                     is BrainHelloMessage -> foundBrain(fromAddress, message)
                     is PingMessage -> receivedPing(fromAddress, message)
                     is MapperHelloMessage -> mapperMessageCallback?.invoke(message)
@@ -68,9 +68,31 @@ class BrainManager(
         mapperMessageCallback = handler
     }
 
-    override fun onConfigChange(controllerConfigs: Map<ControllerId, OpenControllerConfig<*>>) {
-        this.controllerConfigs.clear() // TODO: should apply any changes.
-        this.controllerConfigs.putAll(controllerConfigs)
+    override fun onChange(
+        controllerId: ControllerId,
+        oldController: BrainController?,
+        controllerConfig: Change<BrainControllerConfig?>,
+        controllerState: Change<BrainState?>,
+        fixtureMappings: Change<List<FixtureMapping>>
+    ): BrainController? {
+        val newConfig = controllerConfig.newValue
+        val newState = controllerState.newValue
+
+        val brainId = BrainId(controllerId.id)
+        val address = newState?.address ?: newConfig?.address ?: return null
+
+        if (newState?.isGoingOffline == true) {
+            activeBrains.remove(brainId)
+            return null
+        }
+
+        return BrainController(
+            link.createAddress(address), brainId,
+            newState?.firmwareVersion,
+            newConfig?.defaultFixtureOptions,
+            newConfig?.defaultTransportConfig,
+            newState?.isSimulatedBrain == true
+        ).also { activeBrains[brainId] = it }
     }
 
     override fun start() {
@@ -93,7 +115,7 @@ class BrainManager(
                     "at $brainAddress [firmware=${msg.firmwareVersion}]"
         }
 
-        // Decide whether or not to tell this brain it should use a different firmware
+        // Decide whether to tell this brain it should use a different firmware
         if (firmwareDaddy.doesntLikeThisVersion(msg.firmwareVersion)) {
             // You need the new hotness bro
             logger.warn {
@@ -116,31 +138,27 @@ class BrainManager(
             removeBrain(brainId)
         }
 
-        val config = controllerConfigs[brainId.asControllerId()]
-        val controller = BrainController(
-            brainAddress, brainId, msg,
-            config?.defaultFixtureOptions,
-            config?.defaultTransportConfig,
-            isSimulatedBrain
-        )
-        activeBrains[brainId] = controller
-        notifyListeners { onAdd(controller) }
+        onStateChange(brainId.asControllerId()) { fromState ->
+            BrainState(
+                brainId.uuid, brainAddress.asString(), clock.now(),
+                msg.firmwareVersion, null, null, isSimulatedBrain
+            )
+        }
     }
 
     fun removeBrain(brainId: BrainId) {
-        activeBrains.remove(brainId)?.let {
-            notifyListeners { onRemove(it) }
+        onStateChange(brainId.asControllerId()) { fromState ->
+            fromState?.copy(isGoingOffline = true)
         }
     }
 
     inner class BrainController(
-        public val brainAddress: Network.Address,
+        val brainAddress: Network.Address,
         private val brainId: BrainId,
-        private val helloMessage: BrainHelloMessage,
+        val firmwareVersion: String?,
         override val defaultFixtureOptions: FixtureOptions?,
         override val defaultTransportConfig: TransportConfig?,
-        private val isSimulatedBrain: Boolean,
-        private val startedAt: Instant = clock.now()
+        private val isSimulatedBrain: Boolean
     ) : Controller {
         override val controllerId: ControllerId
             get() = brainId.asControllerId()
@@ -150,22 +168,19 @@ class BrainManager(
         var lastErrorAt: Instant? = null
             internal set
 
-        override val state: ControllerState get() = State(
-            brainId.uuid, brainAddress.asString(), startedAt, helloMessage.firmwareVersion,
-            lastError?.message, lastErrorAt
-        )
-
         override val transportType: TransportType
             get() = BrainTransportType
 
-        override fun createTransport(
-            entity: Model.Entity?,
-            fixtureConfig: FixtureConfig,
-            transportConfig: TransportConfig?
-        ): Transport = BrainTransport(
-            this, brainAddress, brainId, isSimulatedBrain,
-            transportConfig = transportConfig
-        )
+        override fun createFixtureResolver(): FixtureResolver = object : FixtureResolver {
+            override fun createTransport(
+                entity: Model.Entity?,
+                fixtureConfig: FixtureConfig,
+                transportConfig: TransportConfig?
+            ): Transport = BrainTransport(
+                this@BrainController, brainAddress, brainId, isSimulatedBrain,
+                transportConfig = transportConfig
+            )
+        }
 
         override fun getAnonymousFixtureMappings(): List<FixtureMapping> {
             return listOf(FixtureMapping(
@@ -179,13 +194,15 @@ class BrainManager(
     }
 
     @Serializable
-    data class State(
+    data class BrainState(
         override val title: String,
         override val address: String?,
         override val onlineSince: Instant?,
         override val firmwareVersion: String?,
         override val lastErrorMessage: String? = null,
-        override val lastErrorAt: Instant? = null
+        override val lastErrorAt: Instant? = null,
+        val isSimulatedBrain: Boolean = false,
+        val isGoingOffline: Boolean = false,
     ) : ControllerState()
 
     inner class BrainTransport(
@@ -257,9 +274,12 @@ class BrainManager(
                         udpSocket.sendUdp(brainAddress, Ports.BRAIN, message)
                 } catch (e: Exception) {
                     // Couldn't send to Brain? Schedule to remove it.
-                    brainController.lastError = e
-                    brainController.lastErrorAt = now
-                    notifyListeners { onError(brainController) }
+                    onStateChange(brainId.asControllerId()) { fromState ->
+                        fromState?.copy(
+                            lastErrorMessage = e.message,
+                            lastErrorAt = now
+                        )
+                    }
                     //                pendingBrains[brainId] = this
 
                     logger.error(e) { "Error sending to $brainId, will take offline" }
@@ -312,7 +332,7 @@ class BrainManager(
                 state?.title
                     ?: controllerId?.id
                     ?: "brainXXXX",
-                null, mutableListOf(), null, null
+                null, null, null
             )
     }
 }
@@ -337,8 +357,6 @@ data class BrainInfo(
 data class BrainControllerConfig(
     override val title: String,
     val address: String? = null,
-    override val fixtures: List<FixtureMappingData> = emptyList(),
-    @SerialName("defaultFixtureConfig")
     override val defaultFixtureOptions: FixtureOptions? = null,
     override val defaultTransportConfig: TransportConfig? = null
 ) : ControllerConfig {
@@ -347,17 +365,19 @@ data class BrainControllerConfig(
     override val emptyTransportConfig: TransportConfig
         get() = BrainTransportConfig()
 
-    override fun edit(fixtureMappings: MutableList<MutableFixtureMapping>): MutableControllerConfig =
+    override fun edit(): MutableControllerConfig =
         MutableBrainControllerConfig(
-            title, address, fixtureMappings, defaultFixtureOptions?.edit(), defaultTransportConfig?.edit()
+            title, address, defaultFixtureOptions?.edit(), defaultTransportConfig?.edit()
         )
 
-    override fun createFixturePreview(fixtureOptions: FixtureOptions, transportConfig: TransportConfig): FixturePreview {
-        return object : FixturePreview {
-            override val fixtureOptions: ConfigPreview
-                get() = fixtureOptions.preview()
-            override val transportConfig: ConfigPreview
-                get() = transportConfig.preview()
+    override fun createPreviewBuilder(): PreviewBuilder = object : PreviewBuilder {
+        override fun createFixturePreview(fixtureOptions: FixtureOptions, transportConfig: TransportConfig): FixturePreview {
+            return object : FixturePreview {
+                override val fixtureOptions: ConfigPreview
+                    get() = fixtureOptions.preview()
+                override val transportConfig: ConfigPreview
+                    get() = transportConfig.preview()
+            }
         }
     }
 }

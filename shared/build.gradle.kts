@@ -425,6 +425,9 @@ tasks.withType(Test::class) {
         excludeTags("glsl")
     }
 
+    // Copy in system properties.
+    systemProperties = System.getProperties().asIterable().associate { it.key.toString() to it.value }
+
     val outputDir = reports.junitXml.outputLocation
     reports.junitXml.required.set(false)
     jvmArgumentProviders += CommandLineArgumentProvider {

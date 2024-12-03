@@ -14,6 +14,7 @@ import baaahs.ui.components.collapsibleSearchBox
 import baaahs.ui.components.listAndDetail
 import kotlinx.css.Color
 import kotlinx.css.RuleSet
+import kotlinx.css.backgroundColor
 import kotlinx.css.color
 import materialui.icon
 import mui.material.*
@@ -121,7 +122,7 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
 
                                         div(+styles.statusDot) {
                                             inlineStyles {
-                                                color = when {
+                                                backgroundColor = when {
                                                     state?.lastErrorAt != null -> Color.red
                                                     state?.onlineSince != null -> Color.green
                                                     else -> Color.grey

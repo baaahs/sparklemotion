@@ -6,57 +6,45 @@ import baaahs.io.ByteArrayWriter
 import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.util.Logger
-import kotlinx.datetime.Instant
 
 class SacnController(
     val id: String,
-    private val sacnLink: SacnLink,
-    private val address: Network.Address,
+    sacnLink: SacnLink,
+    address: Network.Address,
     override val defaultFixtureOptions: FixtureOptions?,
     override val defaultTransportConfig: TransportConfig?,
     private val universeCount: Int,
-    private val onlineSince: Instant?,
     private val universeListener: Dmx.UniverseListener? = null
 ) : Controller {
     override val controllerId: ControllerId = ControllerId(SacnManager.controllerTypeName, id)
-    override val state: ControllerState get() = SacnManager.State(
-        controllerId.name(), address.asString(), onlineSince, null,
-        sacnLink.lastError?.message,
-        sacnLink.lastErrorAt
-    )
     override val transportType: TransportType
         get() = DmxTransportType
 
     private val dmxUniverses = DmxUniverses(universeCount)
-    private var dynamicDmxAllocator: DynamicDmxAllocator? = null
 
     private val node = sacnLink.deviceAt(address)
     val stats get() = node.stats
     private var sequenceNumber = 0
 
-    override fun beforeFixtureResolution() {
-        dynamicDmxAllocator = DynamicDmxAllocator(dmxUniverses.channelsPerUniverse)
-    }
+    override fun createFixtureResolver(): FixtureResolver = object : FixtureResolver {
+        val dynamicDmxAllocator = DynamicDmxAllocator(dmxUniverses.channelsPerUniverse)
 
-    override fun afterFixtureResolution() {
-        dynamicDmxAllocator = null
-    }
-
-    override fun createTransport(
-        entity: Model.Entity?,
-        fixtureConfig: FixtureConfig,
-        transportConfig: TransportConfig?
-    ): Transport {
-        val staticDmxMapping = dynamicDmxAllocator!!.allocate(
-            fixtureConfig.componentCount, fixtureConfig.bytesPerComponent,
-            transportConfig as DmxTransportConfig?
-        )
+        override fun createTransport(
+            entity: Model.Entity?,
+            fixtureConfig: FixtureConfig,
+            transportConfig: TransportConfig?
+        ): Transport {
+            val staticDmxMapping = dynamicDmxAllocator.allocate(
+                fixtureConfig.componentCount, fixtureConfig.bytesPerComponent,
+                transportConfig as DmxTransportConfig?
+            )
         return try {
             dmxUniverses.validate(staticDmxMapping)
             SacnTransport(transportConfig, staticDmxMapping)
         } catch (e: Exception) {
             logger.error(e) { "Failed to allocate DMX for $entity." }
             NullTransport
+        }
         }
     }
 
@@ -103,7 +91,7 @@ class SacnController(
         universeListener?.onSend(controllerId.name(), dmxUniverses.channels)
     }
 
-    fun release() {
+    override fun release() {
         logger.debug { "Releasing SacnController $id." }
     }
 
