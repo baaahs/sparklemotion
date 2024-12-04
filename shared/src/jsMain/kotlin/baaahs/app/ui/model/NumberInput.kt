@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalEncodingApi::class)
+
 package baaahs.app.ui.model
 
 import baaahs.app.ui.appContext
@@ -27,6 +29,8 @@ import web.events.EventHandler
 import web.html.HTMLDivElement
 import web.html.HTMLElement
 import web.html.HTMLInputElement
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 
 external interface NumberInputProps : BaseNumberInputProps {
     var autoFocusOnTouch: Boolean?
@@ -42,14 +46,7 @@ val NumberInput = forwardRef<dynamic, NumberInputProps> { props, ref ->
             root = jso {
                 error = props.error
             }
-            incrementButton = jso {
-                children = "▴"
-            }
-            decrementButton = jso {
-                children = "▾"
-            }
         }
-        Object.assign(attrs, props)
         Object.getOwnPropertyNames(props).forEach { key ->
             if (key != "children") {
                 attrs.asDynamic()[key] = props.asDynamic()[key]
@@ -130,25 +127,36 @@ class NumberInputStyles(val theme: Theme) : StyleSheet("app-ui-numberinput", isS
         alignContent = Align.center
 //        backgroundColor = Color.transparent
 
+        val buttonColor = theme.palette.text.primary.asColor().withAlpha(.6)
+
         button {
             backgroundColor = Color.transparent
-            color = theme.palette.text.primary.asColor().withAlpha(.6)
+            color = buttonColor
             border = Border.none
             paddingRight = 2.px
         }
+        "button:disabled" {
+            opacity = .3
+        }
+        // Down arrow.
         "button:nth-of-type(1)" {
             gridColumn = GridColumn("3")
             gridRow = GridRow("2")
+            backgroundImage = Image("url('data:image/svg+xml;base64,${downArrowSvg(buttonColor)}')")
+            marginLeft = 6.px
+            display = Display.inlineBlock
+            backgroundSize = "contain"
+            backgroundRepeat = BackgroundRepeat.noRepeat
         }
-        "button:nth-of-type(1)::after" {
-            content = QuotedString("⬇")
-        }
+        // Up arrow.
         "button:nth-of-type(2)" {
             gridColumn = GridColumn("3")
             gridRow = GridRow("1")
-        }
-        "button:nth-of-type(2)::after" {
-            content = QuotedString("⬆")
+            backgroundImage = Image("url('data:image/svg+xml;base64,${upArrowSvg(buttonColor)}')")
+            marginLeft = 6.px
+            display = Display.inlineBlock
+            backgroundSize = "contain"
+            backgroundRepeat = BackgroundRepeat.noRepeat
         }
         ".MuiInputAdornment-root" {
             gridColumn = GridColumn("2")
@@ -159,6 +167,9 @@ class NumberInputStyles(val theme: Theme) : StyleSheet("app-ui-numberinput", isS
         }
         input {
             gridRow = GridRow("1 / 3")
+        }
+        "input:disabled" {
+            borderColor = theme.palette.text.primary.asColor().withAlpha(.1)
         }
     }
 
@@ -212,8 +223,29 @@ val StyledInputElement = fc<NumberInputProps> { props ->
             gridColumn = GridColumn("1")
             gridRow = GridRow("1")
         }
-        Object.getOwnPropertyNames(props).forEach { key ->
+        attrs.disabled = props.disabled == true
+        for (key in Object.getOwnPropertyNames(props)) {
+            if (key in noCopyKeys) continue
             attrs[key] = props.asDynamic()[key]
         }
     }
 }
+
+private fun upArrowSvg(color: Color) = Base64.encode(
+    /** language=svg */
+    """
+        <svg height="1024" width="640" xmlns="http://www.w3.org/2000/svg">
+            <path fill="$color" d="M320 192L0 576h192v256h256V576h192L320 192z" />
+        </svg>
+    """.trimIndent().encodeToByteArray()
+)
+private fun downArrowSvg(color: Color) = Base64.encode(
+    /** language=svg */
+    """
+        <svg height="1024" width="640" xmlns="http://www.w3.org/2000/svg">
+            <path fill="$color" d="M320 192L0 576h192v256h256V576h192L320 192z" transform="rotate(180, 320, 512)" />
+        </svg>
+    """.trimIndent().encodeToByteArray()
+)
+
+private val noCopyKeys = setOf("ownerState", "helperText", "shrink")
