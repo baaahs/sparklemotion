@@ -121,7 +121,7 @@ class ModelVisualEditor(
         groupVisualizer.find { (it as? Model.Entity)?.locator == entity.locator }
 
     override fun onObjectClick(obj: Object3D?) {
-        super.onObjectClick(findParentEntity(obj))
+        super.onObjectClick(obj.findParentEntity())
     }
 
     override fun onSelectionChange(obj: Object3D?, priorObj: Object3D?) {
@@ -143,14 +143,6 @@ class ModelVisualEditor(
         }
 
         super.onSelectionChange(obj, priorObj)
-    }
-
-    private fun findParentEntity(obj: Object3D?): Object3D? {
-        var curObj = obj
-        while (curObj != null && curObj.modelEntity == null) {
-            curObj = curObj.parent
-        }
-        return curObj
     }
 
     fun refresh() {
