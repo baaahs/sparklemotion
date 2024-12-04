@@ -90,6 +90,10 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
         overflow = Overflow.scroll
     }
 
+    val headerEditor by css {
+        display = Display.inlineFlex
+    }
+
     val propertiesEditSection by css {
         whiteSpace = WhiteSpace.nowrap
 //        color = theme.palette.primary.contrastText
