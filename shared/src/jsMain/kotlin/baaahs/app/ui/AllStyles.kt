@@ -10,6 +10,7 @@ import baaahs.app.ui.gadgets.color.ColorWheelStyles
 import baaahs.app.ui.gadgets.slider.ThemedStyles
 import baaahs.app.ui.layout.LayoutStyles
 import baaahs.app.ui.model.ModelEditorStyles
+import baaahs.app.ui.model.NumberInputStyles
 import baaahs.app.ui.patchmod.PatchModStyles
 import baaahs.mapper.ControllerEditorStyles
 import baaahs.mapper.MapperStyles
@@ -40,6 +41,7 @@ class AllStyles(val theme: Theme) {
     val fileUploadStyles by lazy { inject(FileUploadStyles(theme)) }
     val diagnosticsStyles by lazy { inject(DiagnosticsStyles(theme)) }
     val patchModStyles by lazy { inject(PatchModStyles(theme)) }
+    val numberInput by lazy { inject(NumberInputStyles(theme)) }
 
     fun injectGlobals() {
         injectGlobal(Styles.global)

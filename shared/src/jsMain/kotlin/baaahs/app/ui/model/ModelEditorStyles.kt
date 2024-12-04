@@ -115,13 +115,13 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
     }
 
     val transformEditSection by css(propertiesEditSection) {
-        paddingTop = 1.em
-        paddingBottom = 1.em
-        paddingLeft = 0.em
-        paddingRight = 0.em
+        paddingTop = 0.em
+        paddingBottom = 0.em
+        paddingLeft = 1.em
+        paddingRight = 1.em
 
         input {
-            width = 5.em
+            width = 4.em
             textAlign = TextAlign.right
         }
     }
