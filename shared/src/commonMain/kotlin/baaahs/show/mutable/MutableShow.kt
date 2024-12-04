@@ -151,10 +151,6 @@ class MutableShow(
         return item!!
     }
 
-    fun commit(editHandler: EditHandler<Show, ShowState>) {
-        editHandler.onEdit(this)
-    }
-
     override fun accept(visitor: MutableShowVisitor, log: VisitationLog) {
         super.accept(visitor, log)
 

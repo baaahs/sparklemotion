@@ -1,6 +1,7 @@
 package baaahs.app.ui.model
 
 import baaahs.app.ui.appContext
+import baaahs.app.ui.editor.textFieldEditor
 import baaahs.mapper.styleIf
 import baaahs.model.EntityData
 import baaahs.model.Model
@@ -23,8 +24,6 @@ import materialui.icon
 import mui.icons.material.Delete
 import mui.icons.material.ExpandMore
 import mui.material.*
-import mui.material.styles.Theme
-import mui.material.styles.useTheme
 import mui.system.sx
 import mui.system.useMediaQuery
 import org.w3c.dom.events.Event
@@ -37,11 +36,13 @@ import web.cssom.px
 import web.dom.Element
 import web.dom.document
 import web.html.HTMLDivElement
+import web.html.InputType
+
+private val EDIT_TITLE_IN_HEADER = true
 
 private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.modelEditor
-    val theme = useTheme<Theme>()
     val isPortraitScreen = useMediaQuery("(orientation: portrait)")
 
     val editMode = observe(appContext.sceneManager.editMode)
@@ -196,6 +197,12 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
     }
 
     val selectedEditingEntity = visualizer.editingEntity
+    val handleEntityNameGetValue by handler<() -> String>(selectedEditingEntity) {
+        selectedMutableEntity?.title ?: ""
+    }
+    val handleEntityNameSetValue by handler<(String) -> Unit>(selectedEditingEntity, props.onEdit) { value ->
+        selectedMutableEntity?.title = value
+    }
 
     useResizeListener(visualizerParentEl) {  _, _ ->
         visualizer.resize()
@@ -244,37 +251,53 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
                             attrs.searchMatcher = entityMatcher::matches
                         }
 
-                            if (editMode.isOn) {
-                                Button {
-                                    attrs.className = -styles.newEntityButton
-                                    attrs.color = ButtonColor.primary
-                                    attrs.onClick = handleNewEntityClick
+                        if (editMode.isOn) {
+                            Button {
+                                attrs.className = -styles.newEntityButton
+                                attrs.color = ButtonColor.primary
+                                attrs.onClick = handleNewEntityClick
 
-                                    attrs.startIcon = buildElement { icon(mui.icons.material.AddCircleOutline) }
-                                    +"New…"
+                                attrs.startIcon = buildElement { icon(mui.icons.material.AddCircleOutline) }
+                                +"New…"
+                            }
+
+                            Menu {
+                                attrs.anchorEl = newEntityMenuAnchor.asDynamic()
+                                attrs.anchorOrigin = jso {
+                                    horizontal = "left"
+                                    vertical = "bottom"
                                 }
+                                attrs.open = newEntityMenuAnchor != null
+                                attrs.onClose = hideNewEntityMenu
 
-                                Menu {
-                                    attrs.anchorEl = newEntityMenuAnchor.asDynamic()
-                                    attrs.anchorOrigin = jso {
-                                        horizontal = "left"
-                                        vertical = "bottom"
-                                    }
-                                    attrs.open = newEntityMenuAnchor != null
-                                    attrs.onClose = hideNewEntityMenu
-
-                                    EntityTypes.forEach { entityType ->
-                                        MenuItem {
-                                            attrs.onClick = addNewEntityTypeHandlers[entityType]
-                                            ListItemText { +entityType.addNewTitle }
-                                        }
+                                EntityTypes.forEach { entityType ->
+                                    MenuItem {
+                                        attrs.onClick = addNewEntityTypeHandlers[entityType]
+                                        ListItemText { +entityType.addNewTitle }
                                     }
                                 }
                             }
+                        }
                     }
                 }
                 attrs.selection = selectedEditingEntity
-                attrs.detailHeader = selectedMutableEntity?.title
+                if (editMode.isOn && EDIT_TITLE_IN_HEADER) {
+                    attrs.detailHeader =
+                        buildElement {
+                            div(+styles.headerEditor) {
+                                textFieldEditor {
+                                    attrs.type = InputType.text
+                                    attrs.getValue = handleEntityNameGetValue
+                                    attrs.setValue = handleEntityNameSetValue
+                                    attrs.onChange = props.onEdit.unsafeCast<(Boolean) -> Unit>()
+                                    attrs.noIntermediateUpdates = true
+                                }
+                            }
+                        }
+                } else {
+                    attrs.detailHeader = selectedMutableEntity?.title?.asTextNode()
+                }
+
                 attrs.detailRenderer = ListAndDetail.DetailRenderer { editingEntity ->
                     FormControl {
                         attrs.margin = FormControlMargin.dense
@@ -312,8 +335,10 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
                             }
                         }
 
-                        titleAndDescriptionEditor {
-                            attrs.editingEntity = editingEntity
+                        if (!EDIT_TITLE_IN_HEADER) {
+                            titleAndDescriptionEditor {
+                                attrs.editingEntity = editingEntity
+                            }
                         }
 
                         Accordion {

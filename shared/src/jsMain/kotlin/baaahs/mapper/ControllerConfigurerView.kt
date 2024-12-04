@@ -15,7 +15,6 @@ import baaahs.ui.components.listAndDetail
 import kotlinx.css.Color
 import kotlinx.css.RuleSet
 import kotlinx.css.backgroundColor
-import kotlinx.css.color
 import materialui.icon
 import mui.material.*
 import mui.system.sx
@@ -179,7 +178,7 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
             }
         }
         attrs.selection = selectedController
-        attrs.detailHeader = selectedController?.name()
+        attrs.detailHeader = selectedController?.name()?.asTextNode()
         attrs.detailRenderer = ListAndDetail.DetailRenderer { controller ->
             controllerConfigEditor {
                 attrs.mutableScene = props.mutableScene
