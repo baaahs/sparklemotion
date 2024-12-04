@@ -124,6 +124,7 @@ private val ListAndDetailView = xComponent<ListAndDetailProps<*>>("ListAndDetail
 
                 Paper {
                     attrs.className = -styles.detailLarge and
+                            styleIf(orientation == xStacked, styles.detailLargeXStacked)
                             styleIf(orientation == yStacked && props.selection == null, styles.detailYStackedNoSelection)
 
                     if (cachedSelection != null) {
