@@ -102,6 +102,11 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
         }
     }
 
+    val mainPanelForEntityType by css {
+        paddingLeft = 1.em
+        paddingRight = 1.em
+        marginBottom = 1.em
+    }
     val propertiesEditSection by css {
         whiteSpace = WhiteSpace.nowrap
 //        color = theme.palette.primary.contrastText
