@@ -4,7 +4,10 @@ import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.appContext
 import baaahs.model.EntityData
 import baaahs.model.ModelUnit
-import baaahs.ui.*
+import baaahs.ui.checked
+import baaahs.ui.typographyBody2
+import baaahs.ui.unaryMinus
+import baaahs.ui.xComponent
 import baaahs.util.CacheBuilder
 import baaahs.visualizer.ModelVisualEditor
 import baaahs.visualizer.TransformMode
@@ -16,10 +19,7 @@ import org.w3c.dom.events.Event
 import react.*
 import react.dom.events.MouseEvent
 import react.dom.header
-import react.dom.onChange
 import web.dom.Element
-import web.html.InputType
-import kotlin.collections.set
 
 private val ModelEditorToolbarView = xComponent<ModelEditorToolbarProps>("ModelEditorToolbar", true) { props ->
     val appContext = useContext(appContext)
@@ -59,8 +59,8 @@ private val ModelEditorToolbarView = xComponent<ModelEditorToolbarProps>("ModelE
         forceRender()
     }
 
-    val handleGridSizeChange by formEventHandler(visualizer, transformMode) {
-        val newSize = transformMode.fromDisplayValue(it.target.value.toDouble())
+    val handleGridSizeChange by handler(visualizer, transformMode) { value: Double ->
+        val newSize = transformMode.fromDisplayValue(value)
         transformMode.setGridSize(visualizer, newSize)
         forceRender()
     }
@@ -123,6 +123,7 @@ private val ModelEditorToolbarView = xComponent<ModelEditorToolbarProps>("ModelE
             }
 
             Container {
+                attrs.className = -styles.visualizerSnapToGrid
                 FormControlLabel {
                     attrs.control = buildElement {
                         Switch {
@@ -133,21 +134,11 @@ private val ModelEditorToolbarView = xComponent<ModelEditorToolbarProps>("ModelE
                     attrs.label = buildElement { typographyBody2 { +"Snap to Grid" } }
                 }
 
-                TextField {
-                    attrs.type = InputType.number
-                    attrs.inputProps = jso {}
-                    buildElement {
-                        Input {
-                            attrs.classes = muiClasses {
-                                input = -styles.gridSizeInput
-                                underline = -styles.partialUnderline
-                            }
-                            attrs.endAdornment = buildElement {
-                                InputAdornment {
-                                    attrs.position = InputAdornmentPosition.end
-                                    +transformMode.getGridUnitAdornment(props.modelUnit)
-                                }
-                            }
+                numberTextField<Double> {
+                    attrs.adornment = buildElement {
+                        InputAdornment {
+                            attrs.position = InputAdornmentPosition.end
+                            +transformMode.getGridUnitAdornment(props.modelUnit)
                         }
                     }
                     attrs.disabled = !gridSnap
