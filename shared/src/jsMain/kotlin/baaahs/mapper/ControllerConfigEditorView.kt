@@ -35,8 +35,9 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
     }
 
     val mutableFixtureMappings = memo(props.mutableScene, props.controllerId) {
-        props.mutableScene.fixtureMappings[props.controllerId]
-            ?: mutableListOf<MutableFixtureMapping>()
+        props.mutableScene.fixtureMappings.getOrPut(props.controllerId) {
+            mutableListOf<MutableFixtureMapping>()
+        }
     }
 
     val editingController = EditingController(props.controllerId, mutableControllerConfig, mutableFixtureMappings, props.onEdit)
