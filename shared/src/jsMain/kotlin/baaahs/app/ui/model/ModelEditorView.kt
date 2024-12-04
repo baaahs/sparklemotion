@@ -17,6 +17,7 @@ import baaahs.visualizer.*
 import baaahs.visualizer.sim.PixelArranger
 import baaahs.visualizer.sim.SwirlyPixelArranger
 import baaahs.window
+import emotion.styled.styled
 import js.objects.jso
 import materialui.icon
 import mui.icons.material.Delete
@@ -200,6 +201,12 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
         visualizer.resize()
     }
 
+    val MyAccordionDetails = memo {
+        AccordionDetails.styled { x ->
+            x.sx { padding = 0.px }
+        }
+    }
+
     div(styleIf(isPortraitScreen, styles.editorPanesPortrait, styles.editorPanesLandscape)) {
         div(+styles.visualizerPane) {
             div(+styles.visualizer) {
@@ -285,9 +292,7 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
                                         Typography { +it }
                                     }
                                 }
-                                AccordionDetails {
-                                    attrs.sx { padding = 0.px }
-
+                                MyAccordionDetails {
                                     editingEntity.getView(editorPanel).render(this)
                                 }
                             }
@@ -300,9 +305,7 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
                                 attrs.expandIcon = ExpandMore.create()
                                 Typography { +"Transformation" }
                             }
-                            AccordionDetails {
-                                attrs.sx { padding = 0.px }
-
+                            MyAccordionDetails {
                                 transformationEditor {
                                     attrs.editingEntity = editingEntity
                                 }
@@ -321,9 +324,7 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
                                 attrs.expandIcon = ExpandMore.create()
                                 Typography { +"Actions" }
                             }
-                            AccordionDetails {
-                                attrs.sx { padding = 0.px }
-
+                            MyAccordionDetails {
                                 IconButton {
                                     attrs.onClick = handleDeleteEntity.withMouseEvent()
                                     attrs.color = IconButtonColor.primary
