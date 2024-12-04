@@ -63,7 +63,7 @@ class Visualizer(
     }
 
     override fun onSelectionChange(obj: Object3D?, priorObj: Object3D?) {
-        val vizObj = findParentEntityVisualizer(obj)
+        val vizObj = obj.findParentEntityVisualizer()
 
         if (vizObj == null) {
             selectionSpan.style.display = "none"
@@ -79,8 +79,8 @@ class Visualizer(
         super.onSelectionChange(obj, priorObj)
     }
 
-    private fun findParentEntityVisualizer(obj: Object3D?): Object3D? {
-        var curObj = obj
+    private fun Object3D?.findParentEntityVisualizer(): Object3D? {
+        var curObj = this
         while (curObj != null && curObj.itemVisualizer == null) {
             curObj = curObj.parent
         }
