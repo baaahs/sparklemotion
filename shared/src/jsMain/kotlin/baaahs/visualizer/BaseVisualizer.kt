@@ -187,8 +187,8 @@ open class BaseVisualizer(
     }
 
     open fun clear() {
-        scene.clear()
         allExtensions { context.clearScene() }
+        scene.clear()
         sceneNeedsUpdate = true
     }
 
@@ -382,6 +382,7 @@ open class BaseVisualizer(
     }
 
     open fun release() {
+        allExtensions { context.detach() }
         allExtensions { context.release() }
         window.removeEventListener(Event.RESIZE, ::onResize)
     }
