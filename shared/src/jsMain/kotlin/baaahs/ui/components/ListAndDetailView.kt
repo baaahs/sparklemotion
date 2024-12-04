@@ -3,6 +3,7 @@ package baaahs.ui.components
 import baaahs.app.ui.appContext
 import baaahs.mapper.styleIf
 import baaahs.ui.and
+import baaahs.ui.asTextNode
 import baaahs.ui.components.ListAndDetail.Orientation.*
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
@@ -37,7 +38,7 @@ private val ListAndDetailView = xComponent<ListAndDetailProps<*>>("ListAndDetail
     val speedMs = styles.transitionSpeedMs
 
     var cachedSelection by state<Any?> { props.selection }
-    var cachedDetailHeader by state<String?> { props.detailHeader }
+    var cachedDetailHeader by state<ReactNode?> { props.detailHeader }
     memo(props.selection, props.detailHeader) {
         if (props.selection == null && cachedSelection != null) {
             setTimeout(speedMs.milliseconds) {
@@ -94,7 +95,7 @@ private val ListAndDetailView = xComponent<ListAndDetailProps<*>>("ListAndDetail
                                 +props.listHeaderText
                             }
 
-                            +(cachedDetailHeader ?: "")
+                            child(cachedDetailHeader ?: "".asTextNode())
                         }
 
                         div(+styles.detailContent) {
@@ -128,7 +129,7 @@ private val ListAndDetailView = xComponent<ListAndDetailProps<*>>("ListAndDetail
                     if (cachedSelection != null) {
                         header {
                             attrs.className = -styles.detailHeader
-                            +(cachedDetailHeader ?: "")
+                            child(cachedDetailHeader ?: "".asTextNode())
 
                             Button {
                                 attrs.sx {
@@ -162,7 +163,7 @@ external interface ListAndDetailProps<T> : Props {
     var listRenderer: ListAndDetail.ListRenderer
     var selection: T?
 //    var showDetail: Boolean?
-    var detailHeader: String?
+    var detailHeader: ReactNode?
     var detailRenderer: ListAndDetail.DetailRenderer<T>
     var orientation: ListAndDetail.Orientation?
     var onDeselect: (() -> Unit)?
