@@ -6,7 +6,6 @@ import kotlinx.css.properties.LineHeight
 import kotlinx.css.properties.lh
 import mui.material.styles.Theme
 import styled.StyleSheet
-import web.cssom.PropertyName.Companion.backgroundColor
 import web.cssom.important
 
 class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", isStatic = true) {
@@ -65,6 +64,16 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
         top = 10.px
         left = 10.px
         backgroundColor = Color(theme.palette.background.paper).withAlpha(.8)
+        declarations["scale"] = .8
+    }
+
+    val visualizerSnapToGrid by css {
+        display = Display.flex
+
+        input {
+            width = 5.em
+            textAlign = TextAlign.right
+        }
     }
 
     val domOverlay by css {
@@ -125,11 +134,6 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
             lineHeight = 1.5.em.lh
             padding = Padding(.5.em, 0.px, 0.px, 0.px)
         }
-    }
-
-    val gridSizeInput by css(propertiesEditSection) {
-        width = 5.em
-        textAlign = TextAlign.right
     }
 
     val transformEditSection by css(propertiesEditSection) {
