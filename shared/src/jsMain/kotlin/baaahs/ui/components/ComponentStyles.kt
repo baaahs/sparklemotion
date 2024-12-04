@@ -95,6 +95,14 @@ class ListAndDetailStyles(val theme: Theme) : StyleSheet("ui-components-list-and
         display = Display.flex
         justifyContent = JustifyContent.center
         overflow = Overflow.auto
+
+        ".MuiFormControl-root:first-child" {
+            marginTop = 0.px
+
+            ".MuiPaper-root:first-child" {
+                paddingTop = 1.em
+            }
+        }
     }
 
     val detailHeader by css {
