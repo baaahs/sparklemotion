@@ -289,6 +289,14 @@ open class BaseVisualizer(
         onObjectClick(null)
     }
 
+    fun Object3D?.findParentEntity(): Object3D? {
+        var curObj = this
+        while (curObj != null && curObj.modelEntity == null) {
+            curObj = curObj.parent
+        }
+        return curObj
+    }
+
     protected open fun onObjectClick(obj: Object3D?) {
         selectedObject = obj
         obj?.dispatchEvent(EventType.Click)
