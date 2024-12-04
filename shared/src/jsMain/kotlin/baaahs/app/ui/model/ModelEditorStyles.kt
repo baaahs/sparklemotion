@@ -6,6 +6,7 @@ import kotlinx.css.properties.LineHeight
 import kotlinx.css.properties.lh
 import mui.material.styles.Theme
 import styled.StyleSheet
+import web.cssom.PropertyName.Companion.backgroundColor
 import web.cssom.important
 
 class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", isStatic = true) {
@@ -92,6 +93,13 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
 
     val headerEditor by css {
         display = Display.inlineFlex
+
+        "input" {
+            backgroundColor = Color(theme.palette.background.paper).withAlpha(.1)
+        }
+        "input:focus" {
+            backgroundColor = Color(theme.palette.background.paper).withAlpha(.5)
+        }
     }
 
     val propertiesEditSection by css {
@@ -120,10 +128,7 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
     }
 
     val transformEditSection by css(propertiesEditSection) {
-        paddingTop = 0.em
-        paddingBottom = 0.em
-        paddingLeft = 1.em
-        paddingRight = 1.em
+        padding = Padding(0.em)
 
         input {
             width = 4.em
@@ -135,6 +140,7 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
         display = important(Display.grid)
         gridTemplateColumns = GridTemplateColumns(1.fr, 1.fr, 1.fr)
         gap = 1.em
+        paddingTop = .5.em
 
         "> label" {
             left = (-.9).rem.important

@@ -83,6 +83,10 @@ class ListAndDetailStyles(val theme: Theme) : StyleSheet("ui-components-list-and
         transition(::height, transitionSpeedMs.ms)
     }
 
+    val detailLargeXStacked by css {
+        height = 100.pct
+    }
+
     val detailYStackedNoSelection by css {
         height = 0.pct
     }
