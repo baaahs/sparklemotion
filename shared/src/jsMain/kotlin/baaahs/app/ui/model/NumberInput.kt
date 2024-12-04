@@ -117,7 +117,7 @@ class NumberInputStyles(val theme: Theme) : StyleSheet("app-ui-numberinput", isS
     val root by css {
         position = Position.relative
         display = Display.inlineGrid
-        gridTemplateColumns = GridTemplateColumns(1.fr, 1.em, 19.px)
+        gridTemplateColumns = GridTemplateColumns(1.fr, LinearDimension.auto, 1.fr)
         gridTemplateRows = GridTemplateRows(1.fr, 1.fr)
         borderRadius = 8.px
         paddingTop = 1.1.em
@@ -161,7 +161,7 @@ class NumberInputStyles(val theme: Theme) : StyleSheet("app-ui-numberinput", isS
         ".MuiInputAdornment-root" {
             gridColumn = GridColumn("2")
             gridRow = GridRow("1 / 3")
-            marginTop = 1.3.em
+            marginTop = .8.em
             marginLeft = .3.em
             marginRight = .5.em
         }
