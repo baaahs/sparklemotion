@@ -36,14 +36,16 @@ private val LightBarEditorView = xComponent<LightBarEditorProps>("LightBarEditor
         props.editingEntity.onChange()
     }
 
-    Container {
-        attrs.className = -styles.transformEditSection
-        header { +"Start:" }
+    if (mutableEntity.startVertex != Vector3F.origin) {
+        Container {
+            attrs.className = -styles.transformEditSection
+            header { +"Start:" }
 
-        vectorEditor {
-            attrs.vector3F = mutableEntity.startVertex
-            attrs.adornment = buildElement { +props.editingEntity.modelUnit.display }
-            attrs.onChange = handleStartVertexChange
+            vectorEditor {
+                attrs.vector3F = mutableEntity.startVertex
+                attrs.adornment = buildElement { +props.editingEntity.modelUnit.display }
+                attrs.onChange = handleStartVertexChange
+            }
         }
     }
 
