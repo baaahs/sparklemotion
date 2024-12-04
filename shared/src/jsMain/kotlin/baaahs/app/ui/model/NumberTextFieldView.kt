@@ -1,6 +1,5 @@
 package baaahs.app.ui.model
 
-import baaahs.app.ui.appContext
 import baaahs.app.ui.controls.Styles
 import baaahs.ui.asTextNode
 import baaahs.ui.unaryMinus
