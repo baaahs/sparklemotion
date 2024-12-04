@@ -13,6 +13,7 @@ import react.dom.header
 
 private val LightBarEditorView = xComponent<LightBarEditorProps>("LightBarEditor") { props ->
     val appContext = useContext(appContext)
+    val editMode = observe(appContext.sceneManager.editMode)
     val styles = appContext.allStyles.modelEditor
 
     observe(props.editingEntity)
@@ -44,6 +45,7 @@ private val LightBarEditorView = xComponent<LightBarEditorProps>("LightBarEditor
             vectorEditor {
                 attrs.vector3F = mutableEntity.startVertex
                 attrs.adornment = buildElement { +props.editingEntity.modelUnit.display }
+                attrs.disabled = editMode.isOff
                 attrs.onChange = handleStartVertexChange
             }
         }
@@ -56,6 +58,7 @@ private val LightBarEditorView = xComponent<LightBarEditorProps>("LightBarEditor
         vectorEditor {
             attrs.vector3F = mutableEntity.endVertex
             attrs.adornment = buildElement { +props.editingEntity.modelUnit.display }
+            attrs.disabled = editMode.isOff
             attrs.onChange = handleEndVertexChange
         }
     }
@@ -67,10 +70,11 @@ private val LightBarEditorView = xComponent<LightBarEditorProps>("LightBarEditor
         with(styles) {
             val length = with (mutableEntity) { (endVertex - startVertex).length() }
             numberTextField<Float> {
-                this.attrs.label = ""
-                this.attrs.value = length
-                this.attrs.adornment = props.editingEntity.modelUnit.display.asTextNode()
-                this.attrs.onChange = handleLengthChange
+                attrs.label = ""
+                attrs.value = length
+                attrs.adornment = props.editingEntity.modelUnit.display.asTextNode()
+                attrs.onChange = handleLengthChange
+                attrs.disabled = editMode.isOff
             }
         }
     }

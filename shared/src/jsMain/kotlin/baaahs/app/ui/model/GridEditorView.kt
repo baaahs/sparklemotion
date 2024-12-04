@@ -12,6 +12,7 @@ import react.dom.br
 
 private val GridEditorView = xComponent<GridEditorProps>("GridEditor") { props ->
     val appContext = useContext(appContext)
+    val editMode = observe(appContext.sceneManager.editMode)
     val styles = appContext.allStyles.modelEditor
 
     observe(props.editingEntity)
@@ -30,6 +31,7 @@ private val GridEditorView = xComponent<GridEditorProps>("GridEditor") { props -
     with(styles) {
         betterSelect<GridData.Direction> {
             attrs.label = "Direction"
+            attrs.disabled = editMode.isOff
             attrs.value = mutableEntity.direction
             attrs.values = GridData.Direction.values().toList()
             attrs.renderValueOption = { it.title.asTextNode() }
@@ -48,6 +50,7 @@ private val GridEditorView = xComponent<GridEditorProps>("GridEditor") { props -
         FormControlLabel {
             attrs.control = buildElement {
                 Switch {
+                    attrs.disabled = editMode.isOff
                     attrs.checked = mutableEntity.zigZag
                     attrs.onChange = handleZigZagChange.withTChangeEvent()
                 }
@@ -59,6 +62,7 @@ private val GridEditorView = xComponent<GridEditorProps>("GridEditor") { props -
 
         numberTextField {
             this.attrs.label = "Columns"
+            this.attrs.disabled = editMode.isOff
             this.attrs.value = mutableEntity.columns
             this.attrs.onChange = this@xComponent.namedHandler("columns", mutableEntity) { v: Int ->
                 mutableEntity.columns = v
@@ -68,6 +72,7 @@ private val GridEditorView = xComponent<GridEditorProps>("GridEditor") { props -
 
         numberTextField {
             this.attrs.label = "Rows"
+            this.attrs.disabled = editMode.isOff
             this.attrs.value = mutableEntity.rows
             this.attrs.onChange = this@xComponent.namedHandler("rows", mutableEntity) { v: Int ->
                 mutableEntity.rows = v
@@ -79,6 +84,7 @@ private val GridEditorView = xComponent<GridEditorProps>("GridEditor") { props -
 
         numberTextField {
             this.attrs.label = "Column Gap"
+            this.attrs.disabled = editMode.isOff
             this.attrs.value = mutableEntity.columnGap
             this.attrs.adornment = props.editingEntity.modelUnit.display.asTextNode()
             this.attrs.onChange = this@xComponent.namedHandler("columnGap", mutableEntity) { v: Float ->
@@ -89,6 +95,7 @@ private val GridEditorView = xComponent<GridEditorProps>("GridEditor") { props -
 
         numberTextField {
             this.attrs.label = "Row Gap"
+            this.attrs.disabled = editMode.isOff
             this.attrs.value = mutableEntity.rowGap
             this.attrs.adornment = props.editingEntity.modelUnit.display.asTextNode()
             this.attrs.onChange = this@xComponent.namedHandler("rowGap", mutableEntity) { v: Float ->
@@ -101,6 +108,7 @@ private val GridEditorView = xComponent<GridEditorProps>("GridEditor") { props -
 
         numberTextField {
             this.attrs.label = "Stagger"
+            this.attrs.disabled = editMode.isOff
             this.attrs.value = mutableEntity.stagger
             this.attrs.onChange = this@xComponent.namedHandler("stagger", mutableEntity) { v: Int ->
                 if (v != v.toInt()) error("Must be an integer.")
