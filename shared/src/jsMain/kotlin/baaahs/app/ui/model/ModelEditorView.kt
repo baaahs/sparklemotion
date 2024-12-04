@@ -47,15 +47,25 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
 
     val mutableScene = props.mutableScene
     val mutableModel = mutableScene.model
-    val domOverlayExtension = memo {
+    val domOverlayExtension = memo(mutableModel.units) {
         DomOverlayExtension { itemVisualizer ->
+            val bounds = itemVisualizer.item.bounds
+            val size = bounds.second - bounds.first
+            val length = size.length()
             document.createElement("div").also {
                 it.classList.add(+styles.domOverlayItem)
-                it.innerText = itemVisualizer.title
+                it.appendChild(document.createElement("div").also {
+                    it.classList.add(+styles.domOverlayItemInnerDiv)
+                    it.innerText = itemVisualizer.title
+                    it.style.fontSize = "1em"
+                    it.style.scale = "${length * .007}"
+                })
             }
+        }.also {
+            withCleanup { it.clear() }
         }
     }
-    val entityAdapter = memo(mutableModel.units) {
+    val entityAdapter = memo(mutableModel.units, domOverlayExtension) {
         domOverlayExtension.DomOverlayEntityAdapter(
             SimulationEnv {
                 component(appContext.clock)

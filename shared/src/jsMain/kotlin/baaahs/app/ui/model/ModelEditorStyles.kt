@@ -76,8 +76,12 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
 
     val domOverlayItem by css {
         opacity = .7
-        fontSize = .8.em
         pointerEvents = important(PointerEvents.none)
+    }
+
+    val domOverlayItemInnerDiv by css {
+        whiteSpace = WhiteSpace.nowrap
+        backfaceVisibility = Visibility.hidden
     }
 
     val propertiesPane by css {
