@@ -54,8 +54,7 @@ class LightBarVisualizer(
     adapter: EntityAdapter,
     vizPixels: VizPixels? = null
 ) : PixelArrayVisualizer<LightBar>(lightBar, vizPixels) {
-    private val units = adapter.units
-    private val borderWidth = units.fromCm(1.25)
+    override val units = adapter.units
 
     init {
         update(item)
@@ -70,32 +69,8 @@ class LightBarVisualizer(
     override fun getSegments(): List<PolyLine.Segment> =
         listOf(PolyLine.Segment(item.startVertex, item.endVertex, pixelCount_UNKNOWN_BUSTED))
 
-    override fun addPadding(box: Box3) {
-        box.addPadding(.02)
-    }
-
-    override fun calculateContainer(pixelLocations: Array<Vector3>): Container {
-        val box = Box3()
-        val vector = item.endVertex - item.startVertex
-        val center = item.startVertex + vector / 2f
-        val length = vector.length()
-        val normal = vector.normalize()
-
-        box.setFromPoints(
-            arrayOf(
-                Vector3(-borderWidth, -borderWidth, -length / 2f + borderWidth),
-                Vector3(borderWidth, borderWidth, length / 2f + borderWidth)
-            )
-        )
-        box.translate(center.toVector3())
-        box.translate(Vector3(0, 0, -borderWidth))
-
-        val quaternion = Quaternion().setFromUnitVectors(
-            Vector3F.facingForward.toVector3(),
-            normal.toVector3()
-        )
-
-        return Container(box, units, center.toVector3(), quaternion)
+    override fun addPadding(box: Box3, amount: Double) {
+        box.addPadding(amount)
     }
 
     companion object {
@@ -107,7 +82,7 @@ class LightBarVisualizer(
 class PolyLineVisualizer(
     polyLine: PolyLine, adapter: EntityAdapter, vizPixels: VizPixels?
 ) : PixelArrayVisualizer<PolyLine>(polyLine, vizPixels) {
-    private val units = adapter.units
+    override val units = adapter.units
 
     init {
         update(item)
@@ -124,18 +99,11 @@ class PolyLineVisualizer(
     override fun getSegments(): List<PolyLine.Segment> =
         item.segments
 
-    override fun addPadding(box: Box3) {
+    override fun addPadding(box: Box3, amount: Double) {
         box.min.x -= abs(item.xPadding)
         box.max.x += abs(item.xPadding)
         box.min.y -= abs(item.yPadding)
         box.max.y += abs(item.yPadding)
-    }
-
-    override fun calculateContainer(pixelLocations: Array<Vector3>): Container {
-        val box = Box3()
-        box.setFromPoints(pixelLocations)
-        addPadding(box)
-        return Container(box, units, isCentered = true)
     }
 }
 
@@ -155,6 +123,8 @@ abstract class PixelArrayVisualizer<T : PixelArray>(
 
     override val obj = Group()
 
+    abstract val units: ModelUnit
+
     abstract fun getPixelLocations(): List<Vector3F>
     abstract fun getSegments(): List<PolyLine.Segment>
 
@@ -165,18 +135,24 @@ abstract class PixelArrayVisualizer<T : PixelArray>(
         entityStyle.applyToLine(strandMaterial, EntityStyle.Use.LightStrand)
         entityStyle.applyToMesh(strandHintMaterial, EntityStyle.Use.LightStrandHint)
 
-        pixelsPreview.applyStyle(entityStyle)
+        pixelsPreview.applyStyle(entityStyle, units)
     }
 
-    abstract fun addPadding(box: Box3)
+    abstract fun addPadding(box: Box3, d: Double)
 
-    abstract fun calculateContainer(pixelLocations: Array<Vector3>): Container
+    open fun calculateContainer(pixelLocations: Array<Vector3>, borderWidth: Double): Container {
+        val box = Box3()
+        box.setFromPoints(pixelLocations)
+        addPadding(box, borderWidth)
+        return Container(box, units, isCentered = true)
+    }
 
     override fun update(newItem: T) {
         super.update(newItem)
 
+        val borderWidth = units.fromCm(1.25)
         val pixelLocations = getPixelLocations().map { it.toVector3() }.toTypedArray()
-        val container = calculateContainer(pixelLocations)
+        val container = calculateContainer(pixelLocations, borderWidth)
         val containerOutline = container.createOutline(containerOutlineMaterial)
         val containerMesh = container.createMesh(containerMaterial)
 
