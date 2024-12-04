@@ -34,10 +34,11 @@ class SacnManager(
     private var wledDiscoveryJob: Job? = null
 
     override fun start() {
-        wledDiscoveryJob = CoroutineScope(Dispatchers.Default + CoroutineName("WLED Discovery"))
-            .launch {
-                listenForWleds(link)
-            }
+        logger.info { "Start WLED discovery..." }
+        wledDiscoveryJob = networkScope.launch(CoroutineName("sACN WLED Discovery")) {
+            // This might block while the mDNS service warms up.
+            listenForWleds(link)
+        }
     }
 
     override fun onChange(
