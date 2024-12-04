@@ -8,8 +8,9 @@ import baaahs.ui.asTextNode
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
 import mui.material.Container
+import mui.material.FormControl
+import mui.material.InputLabel
 import react.*
-import react.dom.header
 
 private val LightBarEditorView = xComponent<LightBarEditorProps>("LightBarEditor") { props ->
     val appContext = useContext(appContext)
@@ -40,41 +41,60 @@ private val LightBarEditorView = xComponent<LightBarEditorProps>("LightBarEditor
     if (mutableEntity.startVertex != Vector3F.origin) {
         Container {
             attrs.className = -styles.transformEditSection
-            header { +"Start:" }
 
-            vectorEditor {
-                attrs.vector3F = mutableEntity.startVertex
-                attrs.adornment = buildElement { +props.editingEntity.modelUnit.display }
-                attrs.disabled = editMode.isOff
-                attrs.onChange = handleStartVertexChange
+            FormControl {
+                attrs.className = -styles.transformThreeColumns
+                InputLabel {
+                    attrs.shrink = true
+                    +"Start"
+                }
+
+                vectorEditor {
+                    attrs.vector3F = mutableEntity.startVertex
+                    attrs.adornment = buildElement { +props.editingEntity.modelUnit.display }
+                    attrs.disabled = editMode.isOff
+                    attrs.onChange = handleStartVertexChange
+                }
             }
         }
     }
 
     Container {
         attrs.className = -styles.transformEditSection
-        header { +"End:" }
+        FormControl {
+            attrs.className = -styles.transformThreeColumns
+            InputLabel {
+                attrs.shrink = true
+                +"End"
+            }
 
-        vectorEditor {
-            attrs.vector3F = mutableEntity.endVertex
-            attrs.adornment = buildElement { +props.editingEntity.modelUnit.display }
-            attrs.disabled = editMode.isOff
-            attrs.onChange = handleEndVertexChange
+            vectorEditor {
+                attrs.vector3F = mutableEntity.endVertex
+                attrs.adornment = buildElement { +props.editingEntity.modelUnit.display }
+                attrs.disabled = editMode.isOff
+                attrs.onChange = handleEndVertexChange
+            }
         }
     }
 
     Container {
         attrs.className = -styles.transformEditSection
-        header { +"Length:" }
+        FormControl {
+            attrs.className = -styles.transformThreeColumns
+            InputLabel {
+                attrs.shrink = true
+                +"Length"
+            }
 
-        with(styles) {
-            val length = with (mutableEntity) { (endVertex - startVertex).length() }
-            numberTextField<Float> {
-                attrs.label = ""
-                attrs.value = length
-                attrs.adornment = props.editingEntity.modelUnit.display.asTextNode()
-                attrs.onChange = handleLengthChange
-                attrs.disabled = editMode.isOff
+            with(styles) {
+                val length = with(mutableEntity) { (endVertex - startVertex).length() }
+                numberTextField<Float> {
+                    attrs.label = ""
+                    attrs.value = length
+                    attrs.adornment = props.editingEntity.modelUnit.display.asTextNode()
+                    attrs.onChange = handleLengthChange
+                    attrs.disabled = editMode.isOff
+                }
             }
         }
     }
