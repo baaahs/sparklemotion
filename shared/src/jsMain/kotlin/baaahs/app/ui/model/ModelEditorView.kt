@@ -305,18 +305,26 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
 
                         // Additional entity-specific views:
                         editingEntity.getEditorPanels().forEachIndexed { i, editorPanel ->
-                            Accordion {
-                                attrs.elevation = 4
-                                attrs.defaultExpanded = i == 0
-
-                                AccordionSummary {
-                                    attrs.expandIcon = ExpandMore.create()
-                                    editorPanel.title?.let {
-                                        Typography { +it }
-                                    }
-                                }
-                                MyAccordionDetails {
+                            if (editorPanel.isMainPanelForEntityType) {
+                                Paper {
+                                    attrs.className = -styles.mainPanelForEntityType
+                                    attrs.elevation = 4
                                     editingEntity.getView(editorPanel).render(this)
+                                }
+                            } else {
+                                Accordion {
+                                    attrs.elevation = 4
+                                    attrs.defaultExpanded = i == 0
+
+                                    AccordionSummary {
+                                        attrs.expandIcon = ExpandMore.create()
+                                        editorPanel.title?.let {
+                                            Typography { +it }
+                                        }
+                                    }
+                                    MyAccordionDetails {
+                                        editingEntity.getView(editorPanel).render(this)
+                                    }
                                 }
                             }
                         }
