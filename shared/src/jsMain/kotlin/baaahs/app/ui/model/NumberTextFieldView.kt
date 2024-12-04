@@ -4,26 +4,25 @@ import baaahs.app.ui.appContext
 import baaahs.app.ui.controls.Styles
 import baaahs.ui.asTextNode
 import baaahs.ui.unaryMinus
-import baaahs.ui.value
 import baaahs.ui.xComponent
+import external.react.NumberInputSlotProps
 import js.objects.jso
-import mui.material.*
+import mui.material.InputAdornment
+import mui.material.InputAdornmentPosition
+import mui.material.Typography
+import mui.system.sx
 import react.*
+import web.cssom.em
 import web.events.Event
-import web.html.InputType
 
 val NumberTextFieldView = xComponent<NumberTextFieldProps<Number?>>("NumberTextField") { props ->
-    val appContext = useContext(appContext)
-    val style = appContext.allStyles.modelEditor
     val isNullable = props.isNullable == true
     var error: String? by state { null }
     var errorValue by state<String?> { null }
 
     val cachedOnChange = props.onChange.asDynamic().cachedOnClick ?: run {
-        { event: Event ->
-            val numericValue = event.currentTarget.value
-                .ifBlank { null }
-                ?.toDouble()
+        { event: Event, value: Number? ->
+            val numericValue = value
             if (!isNullable && numericValue == null) {
                 error = "Must not be blank."
                 errorValue = ""
@@ -39,37 +38,52 @@ val NumberTextFieldView = xComponent<NumberTextFieldProps<Number?>>("NumberTextF
         }.also { props.onChange.asDynamic().cachedOnClick = it }
     }
 
-    TextField<StandardTextFieldProps> {
-        attrs.type = InputType.number
-        attrs.margin = FormControlMargin.dense
-        attrs.size = Size.small
-        attrs.variant = "standard"
-        attrs.placeholder = props.placeholder
-        attrs.InputProps = jso {
-            classes = jso { this.asDynamic().underline = -style.partialUnderline }
-            size = Size.small
-            margin = InputBaseMargin.dense
-            props.adornment?.let { adornment ->
-                endAdornment = buildElement {
-                    InputAdornment {
-                        attrs.position = InputAdornmentPosition.end
+    val adornment = memo(props.adornment) {
+        props.adornment?.let { adornment ->
+            buildElement {
+                InputAdornment {
+                    // Styles come from app-ui-numberinput > .MuiInputAdornment-root
+                    attrs.position = InputAdornmentPosition.end
+                    attrs.disableTypography = true
+                    Typography {
+                        attrs.sx {
+                            userSelect = "none".asDynamic()
+                            fontSize = .8.em
+                        }
                         child(adornment)
                     }
                 }
             }
         }
-        attrs.InputLabelProps = jso {
-            this.classes = jso { this.asDynamic().root = -Styles.inputLabel }
-            this.shrink = true
+    }
+
+    val slotProps = memo<NumberInputSlotProps> {
+        jso {
+            input = jso<dynamic> {
+                this.className = -Styles.inputLabel
+                this.shrink = true
+            }
         }
+    }
+
+    NumberInput {
+        attrs.placeholder = props.placeholder?.asDynamic()
+
+        if (props.adornment != null) {
+            attrs.endAdornment = adornment
+        }
+
+        attrs.slotProps = slotProps
         attrs.disabled = props.disabled == true
         attrs.onChange = cachedOnChange
-        val inputValue = errorValue ?: props.value
-        if (inputValue != null) attrs.value = inputValue
+        attrs.onInputChange = cachedOnChange
+        attrs.value = props.value
         attrs.label = props.label.asTextNode()
         attrs.error = error != null
-        attrs.helperText = error?.asTextNode()
+        attrs.helperText = error
+//        attrs.helperText = error?.asTextNode()
     }
+
 }
 
 external interface NumberTextFieldProps<T: Number?> : Props {
