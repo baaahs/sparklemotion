@@ -104,6 +104,7 @@ class Pinky(
         startupJobs.join()
 
         pinkyMainScope.beforeRun()
+        logger.info { "Pinky is up!" }
 
         run()
         daemonJobs.cancelAndJoin()

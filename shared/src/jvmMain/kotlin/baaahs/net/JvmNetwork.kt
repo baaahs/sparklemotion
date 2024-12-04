@@ -82,7 +82,10 @@ class JvmNetwork(
             return socket
         }
 
-        override val mdns by lazy { JvmMdns() }
+        override val mdns by lazy {
+            // This blocks while mDNS warms up.
+            JvmMdns()
+        }
 
         inner class JvmUdpSocket(override val serverPort: Int) : Network.UdpSocket {
             internal var udpSocket = DatagramSocket(serverPort)
@@ -171,7 +174,7 @@ class JvmNetwork(
 
         inner class JvmMdns : Network.Mdns {
             private val svc = run {
-                logger.debug { "Initilizing JmmDNS." }
+                logger.info { "Initializing JvmMdns..." }
                 JmmDNS.Factory.getInstance() // Listens on all network interfaces.
             }
 
@@ -192,13 +195,13 @@ class JvmNetwork(
             }
 
             override fun unregister(inst: Network.MdnsRegisteredService) {
-                logger.info { "Unregistering mDNS service \"${inst.type}}\"." }
+                logger.info { "Unregistering mDNS service \"${inst.type}\"." }
                 inst.unregister()
             }
 
             override fun listen(type: String, proto: String, domain: String, handler: Network.MdnsListenHandler) {
                 val serviceType = "$type.$proto.${domain.normalizeMdnsDomain()}"
-                logger.info { "Listening for mDNS service \"$serviceType}\"" }
+                logger.info { "Listening for mDNS service \"$serviceType\"." }
 
                 svc.addServiceListener(serviceType, object : ServiceListener {
                     override fun serviceAdded(event: ServiceEvent) {
