@@ -28,11 +28,11 @@ import web.html.HTMLDivElement
 import web.html.HTMLElement
 import web.html.HTMLInputElement
 
-external interface NumberInputProps : BaseNumberInputProps
+external interface NumberInputProps : BaseNumberInputProps {
+    var autoFocusOnTouch: Boolean?
+}
 
 val NumberInput = forwardRef<dynamic, NumberInputProps> { props, ref ->
-    val fragRef = useRef<Any>()
-
     BaseNumberInput {
         attrs.slots = jso {
             root = StyledInputRoot
@@ -66,18 +66,21 @@ val StyledInputRoot = fc<NumberInputProps> { props ->
     val helperText = props.asDynamic().ownerState.helperText as? String
     val formControlDiv = useRef<HTMLDivElement>()
 
-    useEffectWithCleanup {
-        val div = formControlDiv.current
-        if (div != null) {
-            div.onpointerup = EventHandler { e: Event ->
-                (div.querySelector("input") as? HTMLElement)?.focus()
-            }
+    if (props.autoFocusOnTouch == true) {
+        useEffectWithCleanup {
+            val div = formControlDiv.current
+            if (div != null) {
+                div.onpointerup = EventHandler { e: Event ->
+                    (div.querySelector("input") as? HTMLElement)?.focus()
+                }
 
-            onCleanup {
-                div.onpointerup = null
+                onCleanup {
+                    div.onpointerup = null
+                }
             }
         }
     }
+
     FormControl {
         attrs.ref = formControlDiv
 
