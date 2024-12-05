@@ -12,6 +12,7 @@ import baaahs.ui.*
 import baaahs.ui.components.ListAndDetail
 import baaahs.ui.components.collapsibleSearchBox
 import baaahs.ui.components.listAndDetail
+import baaahs.util.JsPlatform
 import kotlinx.css.Color
 import kotlinx.css.RuleSet
 import kotlinx.css.backgroundColor
@@ -133,14 +134,14 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                                     TableCell {
                                         img {
                                             attrs.className = -styles.controllerIcon
-                                            attrs.src = "/assets/controllers/${
+                                            attrs.src = JsPlatform.imageUrl("/assets/controllers/${
                                                 when (controllerId.controllerType) {
                                                     BrainManager.controllerTypeName -> "baaahs-brain.svg"
                                                     DmxManager.controllerTypeName -> "dmx.svg"
                                                     SacnManager.controllerTypeName -> "sacn.svg"
                                                     else -> "unknown.svg"
                                                 }
-                                            }"
+                                            }")
                                         }
                                         +(state?.title ?: mutableController?.title ?: "Unnamed Controller")
                                     }

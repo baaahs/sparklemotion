@@ -4,6 +4,7 @@ import baaahs.app.ui.appContext
 import baaahs.ui.slider.*
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
+import baaahs.util.JsPlatform
 import kotlinx.css.pct
 import kotlinx.css.top
 import react.Props
@@ -66,11 +67,11 @@ private val handle = xComponent<HandleProps>("Handle") { props ->
 
         when (variant) {
             HandleVariant.FULL ->
-                img(src = "/assets/slider-handle-full.svg", classes = +styles.handleNormal) {}
+                img(src = JsPlatform.imageUrl("/assets/slider-handle-full.svg"), classes = +styles.handleNormal) {}
             HandleVariant.MIN ->
-                img(src = "/assets/slider-handle-min.svg", classes = +styles.handleNormal) {}
+                img(src = JsPlatform.imageUrl("/assets/slider-handle-min.svg"), classes = +styles.handleNormal) {}
             HandleVariant.MAX ->
-                img(src = "/assets/slider-handle-max.svg", classes = +styles.handleNormal) {}
+                img(src = JsPlatform.imageUrl("/assets/slider-handle-max.svg"), classes = +styles.handleNormal) {}
         }
     }
 }
