@@ -36,28 +36,28 @@ class BrainMain(private val args: Args) {
     fun run() = globalLaunch {
         val plugins = Plugins.safe(Plugins.dummyContext)
         val fs = RealFs("Files", File(".").toPath())
-        val sceneFile = fs.resolve(args.scene ?: error("No scene specified."))
-        val model = plugins.sceneStore.load(sceneFile)
-            ?.open()?.model
-            ?: error("No such scene file: \"$sceneFile\"")
+//        val sceneFile = fs.resolve(args.scene ?: error("No scene specified."))
+//        val model = plugins.sceneStore.load(sceneFile)
+//            ?.open()?.model
+//            ?: error("No such scene file: \"$sceneFile\"")
 
         val network = JvmNetwork()
         val brainId = args.brainId ?: JvmNetwork.myAddress.toString()
         val brainSimulator = BrainSimulator(
-            brainId, network, JvmPixelsDisplay(2000), SystemClock, CoroutineScope(Dispatchers.Main)
+            brainId, network, JvmPixelsDisplay(2000), SystemClock, CoroutineScope(Dispatchers.Default)
         )
 
-        val mySurface = if (args.anonymous) {
-            null
-        } else if (args.entityName == null) {
-            if (Random.nextBoolean())
-                model.allEntities.filterIsInstance<Model.Surface>().random()
-            else null
-        } else {
-            args.entityName?.let { model.findEntityByName(it) }
-        }
-        println("I'll be ${mySurface?.name ?: "anonymous"}!")
-        mySurface?.let { brainSimulator.forcedFixtureName(mySurface.name) }
+//        val mySurface = if (args.anonymous) {
+//            null
+//        } else if (args.entityName == null) {
+//            if (Random.nextBoolean())
+//                model.allEntities.filterIsInstance<Model.Surface>().random()
+//            else null
+//        } else {
+//            args.entityName?.let { model.findEntityByName(it) }
+//        }
+//        println("I'll be ${mySurface?.name ?: "anonymous"}!")
+//        mySurface?.let { brainSimulator.forcedFixtureName(mySurface.name) }
 
         brainSimulator.start()
     }
