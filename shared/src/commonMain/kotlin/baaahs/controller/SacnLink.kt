@@ -26,7 +26,7 @@ class SacnLink(
     }
 
     val udpSocket = link.listenUdp(0, object : Network.UdpListener {
-        override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
+        override suspend fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
             logger.warn { "Received UDP packet from $fromAddress:$fromPort ${bytes.size} bytes" }
         }
     })

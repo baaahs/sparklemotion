@@ -3,6 +3,9 @@ package baaahs.net
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.util.Logger
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlin.concurrent.Volatile
 import kotlin.math.min
 
 fun Network.Link.listenFragmentingUdp(port: Int, udpListener: Network.UdpListener): Network.UdpSocket {
@@ -24,8 +27,10 @@ class FragmentingUdpSocket(
         }
     }
 
+    @Volatile
     private var nextMessageId: Short = 0
     private val incoming = linkedMapOf<Number, MessageAssembler>()
+    private val incomingMutex = Mutex()
 
     class MessageAssembler(private val messageId: Short, val totalSize: Int) {
         private val fragments = hashMapOf<Int, Int>() // offset to size
@@ -92,7 +97,7 @@ class FragmentingUdpSocket(
         }
     }
 
-    override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
+    override suspend fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
         // reassemble fragmented payloads...
         val reader = ByteArrayReader(bytes)
         val messageId = reader.readShort()
@@ -111,29 +116,55 @@ class FragmentingUdpSocket(
             val frameBytes = reader.readBytes(size)
             udpListener.receive(fromAddress, fromPort, frameBytes)
         } else {
-            // Part of a frame.
-            val messageAssembler = incoming.getOrPut(messageId) { MessageAssembler(messageId, totalSize) }
-            messageAssembler.receive(offset, size, reader)
-
-            if (messageAssembler.isComplete()) {
-                incoming.remove(messageId)
-                udpListener.receive(fromAddress, fromPort, messageAssembler.bytes)
+            val messageAssembler = incomingMutex.withLock {
+                assembleSegments(messageId, totalSize, offset, size, reader)
             }
 
-            val incomingCount = incoming.size
-            if (incomingCount > incomingMessageWindow) {
-                val key = incoming.keys.first()
-                val value = incoming.remove(key)!!
+            if (messageAssembler != null) {
+                udpListener.receive(fromAddress, fromPort, messageAssembler.bytes)
+            }
+        }
+    }
+
+    private fun assembleSegments(
+        messageId: Short,
+        totalSize: Int,
+        offset: Int,
+        size: Int,
+        reader: ByteArrayReader
+    ): MessageAssembler? {
+        // Part of a frame.
+        val messageAssembler = incoming.getOrPut(messageId) { MessageAssembler(messageId, totalSize) }
+        messageAssembler.receive(offset, size, reader)
+
+        if (messageAssembler.isComplete()) {
+            incoming.remove(messageId)
+            return messageAssembler
+        }
+
+        val incomingCount = incoming.size
+        if (incomingCount > incomingMessageWindow) {
+            val key = incoming.keys.first()
+            val value = incoming.remove(key)
+            if (value != null) {
                 logger.debug {
                     "Dropped incomplete incoming message $key " +
                             "with ${value.bytesReceived()} of ${value.totalSize} bytes; " +
                             "window size is ${incomingMessageWindow}."
                 }
+            } else {
+                logger.debug {
+                    "Dropped incomplete incoming message $key " +
+                            "but no message segments matching; " +
+                            "window size is ${incomingMessageWindow}."
+                }
             }
         }
+
+        return null
     }
 
-    internal fun receiveBypassingFragmentation(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
+    internal suspend fun receiveBypassingFragmentation(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
         udpListener.receive(fromAddress, fromPort, bytes)
     }
 

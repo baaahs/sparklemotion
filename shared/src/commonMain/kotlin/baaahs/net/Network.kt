@@ -92,7 +92,7 @@ interface Network {
     }
 
     interface UdpListener {
-        fun receive(fromAddress: Address, fromPort: Int, bytes: ByteArray)
+        suspend fun receive(fromAddress: Address, fromPort: Int, bytes: ByteArray)
     }
 
     interface UdpSocket {

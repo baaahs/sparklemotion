@@ -1,8 +1,16 @@
+@file:OptIn(InternalCoroutinesApi::class)
+
 package baaahs.net
 
+import baaahs.ImmediateDispatcher
 import baaahs.sim.FakeMdns
+import kotlinx.coroutines.*
 
-class TestNetwork(var defaultMtu: Int = 1400) : Network {
+@ExperimentalCoroutinesApi
+class TestNetwork(
+    var defaultMtu: Int = 1400,
+    val dispatcher: CoroutineDispatcher = ImmediateDispatcher
+) : Network {
     val links = mutableListOf<Link>()
     private val mdns = FakeMdns()
 
@@ -27,8 +35,8 @@ class TestNetwork(var defaultMtu: Int = 1400) : Network {
 
         private fun receiveUdp(packet: Packet) {
             receviedPackets += packet
-            (udpListeners[packet.port] ?: error("No listener on port ${packet.port}."))
-                .receive(myAddress, 1234, packet.data)
+            val listener = udpListeners[packet.port] ?: error("No listener on port ${packet.port}.")
+            CoroutineScope(dispatcher).launch { listener.receive(myAddress, 1234, packet.data) }
         }
 
         override val udpMtu = mtu
