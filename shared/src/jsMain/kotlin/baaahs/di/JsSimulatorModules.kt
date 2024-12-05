@@ -9,6 +9,7 @@ import baaahs.controller.ControllersManager
 import baaahs.dmx.Dmx
 import baaahs.encodeBase64
 import baaahs.io.Fs
+import baaahs.io.ResourcesFs
 import baaahs.mapper.PinkyMapperHandlers
 import baaahs.mapping.MappingManager
 import baaahs.net.BrowserNetwork
@@ -120,6 +121,8 @@ class JsSimPinkyModule(
         }
     override val Scope.featureFlags: FeatureFlags
         get() = featureFlags_
+    override val Scope.resourcesFs: ResourcesFs
+        get() = ResourcesFs()
 
     override fun getModule(): Module {
         return super.getModule()
