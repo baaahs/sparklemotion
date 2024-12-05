@@ -9,6 +9,7 @@ import baaahs.ui.muiClasses
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
+import baaahs.util.JsPlatform
 import kotlinx.html.hidden
 import mui.material.Tab
 import mui.material.TabClasses
@@ -48,7 +49,10 @@ val SceneEditorView = xComponent<SceneEditorViewProps>("SceneEditorView") { prop
             attrs.value = selectedTab
             attrs.onChange = handleChangeTab
 
-            PageTabs.entries.forEach { tab ->
+            for (tab in PageTabs.entries) {
+                if (tab == PageTabs.Mapping && JsPlatform.isNative)
+                    continue
+
                 Tab {
                     attrs.classes = muiClasses<TabClasses> {
                         selected = -themeStyles.sceneEditorTabSelected
