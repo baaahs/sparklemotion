@@ -11,6 +11,18 @@ object JsPlatform {
     val container: SparkleMotionContainer?
         get() = js("window.SparkleMotionContainer")
 
+    val isBrowser: Boolean
+        get() = container == null
+
+    val isNative: Boolean
+        get() = container != null
+
+    val isAndoid: Boolean
+        get() = container?.platform == "Android"
+
+    val isIos: Boolean
+        get() = container?.platform == "iOS"
+
     val myAddress by lazy {
         if (location.protocol == "file:") {
             container?.urlBase?.let { urlBase ->
