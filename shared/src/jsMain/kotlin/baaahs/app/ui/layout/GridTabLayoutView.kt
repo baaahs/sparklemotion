@@ -194,15 +194,16 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
         }
     }
 
-    if (editMode.isAvailable) {
-        Portal {
-            controlsPalette {
-                attrs.controlsInfo = controlDisplay
-                attrs.controlProps = genericControlProps
-                attrs.show = openShow
-            }
-        }
-    }
+    // There's no such thing as unplaced controls anymore really.
+//    if (editMode.isAvailable) {
+//        Portal {
+//            controlsPalette {
+//                attrs.controlsInfo = controlDisplay
+//                attrs.controlProps = genericControlProps
+//                attrs.show = openShow
+//            }
+//        }
+//    }
 }
 
 class AddMenuContext(
