@@ -7,6 +7,7 @@ import baaahs.document
 import baaahs.ui.asTextNode
 import baaahs.ui.withTChangeEvent
 import baaahs.ui.xComponent
+import baaahs.util.JsPlatform
 import js.objects.jso
 import materialui.icon
 import mui.base.Orientation
@@ -86,15 +87,17 @@ private val DisplaySettingsView = xComponent<DisplaySettingsProps>("DisplaySetti
 
             Divider {}
 
-            MenuItem {
-                FormControlLabel {
-                    attrs.control = buildElement {
-                        Switch {
-                            attrs.checked = webClient.inFullScreenMode
-                            attrs.onChange = handleFullScreenChange.withTChangeEvent()
+            if (JsPlatform.isBrowser) {
+                MenuItem {
+                    FormControlLabel {
+                        attrs.control = buildElement {
+                            Switch {
+                                attrs.checked = webClient.inFullScreenMode
+                                attrs.onChange = handleFullScreenChange.withTChangeEvent()
+                            }
                         }
+                        attrs.label = "Full Screen".asTextNode()
                     }
-                    attrs.label = "Full Screen".asTextNode()
                 }
             }
 
