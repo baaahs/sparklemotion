@@ -20,6 +20,7 @@ import baaahs.gl.Toolchain
 import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
 import baaahs.io.FsServerSideSerializer
+import baaahs.io.ResourcesFs
 import baaahs.libraries.ShaderLibraryManager
 import baaahs.mapper.MappingStore
 import baaahs.mapper.PinkyMapperHandlers
@@ -106,6 +107,12 @@ interface PinkyModule : KModule {
     val Scope.sceneMonitor: SceneMonitor get() = SceneMonitor()
     val Scope.pinkyMapperHandlers: PinkyMapperHandlers get() = PinkyMapperHandlers(get())
     val Scope.featureFlags: FeatureFlags
+
+    /**
+     * On the server side, client resources are at htdocs/..., except
+     * for in the simulator (see [baaahs.di.JsSimulatorModules]).
+     */
+    val Scope.resourcesFs: ResourcesFs get() = ResourcesFs("htdocs/")
 
     object Named {
         val pinkyScope = named("PinkyScope")
@@ -194,12 +201,13 @@ interface PinkyModule : KModule {
             scoped { ServerNotices(get(), get<CoroutineScope>(Named.pinkyScope).coroutineContext) }
             scoped { PinkyMapperHandlers(get()) }
             scoped { featureFlags }
+            scoped { resourcesFs }
             scoped {
                 Pinky(
                     get(), get(), get(), get(Named.dataDir), get(), get(),
                     get(), get(), get(), get(), get(Named.pinkyScope), get(), get(),
                     get(), get(), get(), get(), get(), get(),
-                    pinkyMapperHandlers, get(), get(), get()
+                    pinkyMapperHandlers, get(), get(), get(), get()
                 )
             }
         }

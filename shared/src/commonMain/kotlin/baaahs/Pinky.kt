@@ -12,7 +12,7 @@ import baaahs.fixtures.FixtureManager
 import baaahs.gl.Toolchain
 import baaahs.gl.glsl.CompilationException
 import baaahs.io.Fs
-import baaahs.io.resourcesFs
+import baaahs.io.ResourcesFs
 import baaahs.libraries.ShaderLibraryManager
 import baaahs.mapper.PinkyMapperHandlers
 import baaahs.mapping.MappingManager
@@ -58,7 +58,8 @@ class Pinky(
     private val pinkyMapperHandlers: PinkyMapperHandlers,
     private val pinkyConfigStore: PinkyConfigStore,
     private val eventManager: EventManager,
-    private val featureFlagsProvider: Provider<FeatureFlags>
+    private val featureFlagsProvider: Provider<FeatureFlags>,
+    private val resourcesFs: ResourcesFs
 ) {
     private var daemonJobs: Job? = null
     val facade = Facade()
@@ -162,7 +163,7 @@ class Pinky(
                     "SparkleMotion.sparkle",
                     config?.runningShowPath
                 ) {
-                    val template = resourcesFs.resolve("htdocs", "templates", "shows", "Default for iPad.sparkle")
+                    val template = resourcesFs.resolve("templates", "shows", "Default for iPad.sparkle")
                     plugins.showStore.load(template) ?: error("Failed to load template $template.")
                 }
             }

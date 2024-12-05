@@ -2,7 +2,9 @@ package baaahs.io
 
 import baaahs.sim.BaseFakeFs
 
-class ResourcesFs : BaseFakeFs() {
+class ResourcesFs(
+    private val prefix: String = ""
+) : BaseFakeFs() {
     override val name: String
         get() = "Resources"
 
@@ -14,7 +16,7 @@ class ResourcesFs : BaseFakeFs() {
             }
 
     override suspend fun loadFile(file: Fs.File): String {
-        return getResourceAsync(file.fullPath)
+        return getResourceAsync(prefix + file.fullPath)
     }
 
     override suspend fun saveFile(file: Fs.File, content: ByteArray, allowOverwrite: Boolean) {
