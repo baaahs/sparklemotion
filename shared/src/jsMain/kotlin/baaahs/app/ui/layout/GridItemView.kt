@@ -10,12 +10,18 @@ import baaahs.ui.render
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import materialui.icon
+import mui.material.ListItemText
+import mui.material.Menu
+import mui.material.MenuItem
 import react.*
 import react.dom.div
 import react.dom.events.MouseEvent
 import react.dom.onClick
 import react.dom.onMouseDown
 import react.dom.onTouchEnd
+import web.dom.Element
+
+private val showItemControlsMenu = true
 
 private val GridItemView = xComponent<GridItemProps>("GridItem") { props ->
     val appContext = useContext(appContext)
@@ -27,15 +33,28 @@ private val GridItemView = xComponent<GridItemProps>("GridItem") { props ->
     val layoutEditor = props.controlProps.layoutEditor
     val editMode = observe(appContext.showManager.editMode)
 
+    var menuAnchor by state<Element?> { null }
+
     // We're inside a draggable; prevent the mousedown from starting a drag.
+    val handleItemControlsMouseDown by mouseEventHandler { e: MouseEvent<*, *> -> e.stopPropagation() }
     val handleEditMouseDown by mouseEventHandler { e: MouseEvent<*, *> -> e.stopPropagation() }
     val handleDeleteMouseDown by mouseEventHandler { e: MouseEvent<*, *> -> e.stopPropagation() }
+
+    val handleItemControlsButtonClick by mouseEventHandler(control, layout, layoutEditor) { event ->
+        menuAnchor = event.target as Element?
+        event.preventDefault()
+    }
+    val handleMenuClose by handler {
+        menuAnchor = null
+    }
 
     val handleEditButtonClick by mouseEventHandler(control, layout, layoutEditor) { event ->
         control.getEditIntent()
             ?.withLayout(layout, layoutEditor)
             ?.let { appContext.openEditor(it) }
+
         event.preventDefault()
+        menuAnchor = null
     }
 
     val handleDeleteButtonClick by mouseEventHandler(control, layoutEditor, showManager.show) { event ->
@@ -44,6 +63,7 @@ private val GridItemView = xComponent<GridItemProps>("GridItem") { props ->
         showManager.onEdit(mutableShow, true)
 
         event.preventDefault()
+        menuAnchor = null
     }
 
     control.getView(props.controlProps)
@@ -52,22 +72,51 @@ private val GridItemView = xComponent<GridItemProps>("GridItem") { props ->
     problemBadge(control)
 
     if (editMode.isAvailable) {
-        div(+styles.deleteButton and styles.deleteModeControl) {
-            attrs.onMouseDown = handleDeleteMouseDown
-            attrs.onClick = handleDeleteButtonClick
-            // onClick doesn't work on iOS but onTouchEnd does.
-            attrs.onTouchEnd = handleEditButtonClick.asDynamic()
+        if (showItemControlsMenu) {
+            div(+styles.itemControlsButton and styles.itemControlsModeControl) {
+                attrs.onMouseDown = handleItemControlsMouseDown
+                attrs.onClick = handleItemControlsButtonClick
+                // onClick doesn't work on iOS but onTouchEnd does.
+                attrs.onTouchEnd = handleItemControlsButtonClick.asDynamic()
 
-            icon(mui.icons.material.Delete)
+                icon(mui.icons.material.Settings)
+            }
+        } else {
+            div(+styles.deleteButton and styles.deleteModeControl) {
+                attrs.onMouseDown = handleDeleteMouseDown
+                attrs.onClick = handleDeleteButtonClick
+                // onClick doesn't work on iOS but onTouchEnd does.
+                attrs.onTouchEnd = handleDeleteButtonClick.asDynamic()
+
+                icon(mui.icons.material.Delete)
+            }
+
+            div(+styles.editButton and styles.editModeControl) {
+                attrs.onMouseDown = handleEditMouseDown
+                attrs.onClick = handleEditButtonClick
+                // onClick doesn't work on iOS but onTouchEnd does.
+                attrs.onTouchEnd = handleEditButtonClick.asDynamic()
+
+                icon(mui.icons.material.Edit)
+            }
         }
+    }
 
-        div(+styles.editButton and styles.editModeControl) {
-            attrs.onMouseDown = handleEditMouseDown
-            attrs.onClick = handleEditButtonClick
-            // onClick doesn't work on iOS but onTouchEnd does.
-            attrs.onTouchEnd = handleEditButtonClick.asDynamic()
+    if (menuAnchor != null) {
+        Menu {
+            attrs.anchorEl = menuAnchor.asDynamic()
+            attrs.open = true
+            attrs.onClose = handleMenuClose
 
-            icon(mui.icons.material.Edit)
+            MenuItem {
+                attrs.onClick = handleEditButtonClick
+                ListItemText { +"Edit" }
+            }
+
+            MenuItem {
+                attrs.onClick = handleDeleteButtonClick
+                ListItemText { +"Delete" }
+            }
         }
     }
 }
