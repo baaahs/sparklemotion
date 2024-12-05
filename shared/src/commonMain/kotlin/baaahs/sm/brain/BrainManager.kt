@@ -46,7 +46,7 @@ class BrainManager(
     private var mapperMessageCallback: ((MapperHelloMessage) -> Unit)? = null
 
     private val udpSocket = link.listenFragmentingUdp(Ports.PINKY, object : Network.UdpListener {
-        override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
+        override suspend fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
             if (!isStartedUp) return
 
             CoroutineScope(coroutineContext).launch {

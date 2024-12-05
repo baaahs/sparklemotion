@@ -4,8 +4,10 @@ import baaahs.describe
 import baaahs.kotest.value
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.*
+import kotlinx.coroutines.InternalCoroutinesApi
 import kotlin.random.Random
 
+@OptIn(InternalCoroutinesApi::class)
 class FragmentingUdpSocketSpec : DescribeSpec({
     describe<FragmentingUdpSocket> {
         val port by value { 1234 }
@@ -18,7 +20,7 @@ class FragmentingUdpSocketSpec : DescribeSpec({
 
         fun send(payload: ByteArray) {
             sendLink.listenFragmentingUdp(0, object : Network.UdpListener {
-                override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
+                override suspend fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
                 }
             }).sendUdp(recvLink.myAddress, port, payload)
             sendLink.sendTo(recvLink)
@@ -26,7 +28,7 @@ class FragmentingUdpSocketSpec : DescribeSpec({
 
         beforeEach {
             recvLink.listenFragmentingUdp(port, object : Network.UdpListener {
-                override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
+                override suspend fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
                     receivedPayloads += bytes
                 }
             })

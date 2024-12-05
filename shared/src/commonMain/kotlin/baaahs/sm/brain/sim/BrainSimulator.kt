@@ -116,7 +116,7 @@ class BrainSimulator(
         }
     }
 
-    override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
+    override suspend fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
         lastInstructionsReceivedAt = clock.now()
 
         val reader = ByteArrayReader(bytes)

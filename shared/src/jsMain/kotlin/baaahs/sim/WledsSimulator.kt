@@ -67,7 +67,7 @@ class FakeWledDevice(
             """.trimIndent().encodeToByteArray()
 
         udpSocket = link.listenUdp(SacnLink.sAcnPort, object : Network.UdpListener {
-            override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
+            override suspend fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
                 val dataFrame = SacnLink.readDataFrame(bytes)
 //                val usedChannelsPerUniverse = Dmx.channelsPerUniverse
                 val usedChannelsPerUniverse = 170 * 3 // Whole pixels only.

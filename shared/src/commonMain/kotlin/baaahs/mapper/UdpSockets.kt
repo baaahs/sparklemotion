@@ -41,7 +41,7 @@ class UdpSockets(
         udpSocket.broadcastUdp(Ports.BRAIN, BrainShaderMessage(brainShader.brainShader, brainShader))
     }
 
-    override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
+    override suspend fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
 //        logger.debug { "Mapper received message from $fromAddress:$fromPort ${bytes[0]}" }
         when (val message = parse(bytes)) {
             is BrainHelloMessage -> {

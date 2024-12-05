@@ -43,10 +43,11 @@ import baaahs.sm.server.PinkyConfigStore
 import baaahs.sm.server.ServerNotices
 import baaahs.sm.server.StageManager
 import io.kotest.core.spec.style.DescribeSpec
-import io.kotest.matchers.*
-import io.kotest.matchers.collections.*
+import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.launch
 
 @Suppress("unused")
 @InternalCoroutinesApi
@@ -120,7 +121,9 @@ class PinkySpec : DescribeSpec({
         val pinkyUdpReceive: ((Network.Address, Int, ByteArray) -> Unit) by value {
             val pinkyUdp = link.udpListeners[Ports.PINKY] as FragmentingUdpSocket
             { fromAddress, port, bytes ->
-                pinkyUdp.receiveBypassingFragmentation(fromAddress, port, bytes)
+                CoroutineScope(ImmediateDispatcher).launch {
+                    pinkyUdp.receiveBypassingFragmentation(fromAddress, port, bytes)
+                }
             }
         }
 
