@@ -8,16 +8,22 @@ external fun encodeURIComponent(uri: String): String
 external fun decodeURIComponent(encodedURI: String): String
 
 object JsPlatform {
+    val container: SparkleMotionContainer?
+        get() = js("window.SparkleMotionContainer")
+
     val myAddress by lazy {
         if (location.protocol == "file:") {
-            BrowserNetwork.BrowserAddress("http", "localhost", "8004")
-//            throw IllegalStateException("SparkleMotion cannot be run from a file:// URL. Please run it from a web server.")
+            container?.urlBase?.let { urlBase ->
+                BrowserNetwork.BrowserAddress(urlBase.protocol, urlBase.hostname, urlBase.port.toString())
+            } ?: throw IllegalStateException("SparkleMotion cannot be run from a file:// URL. Please run it from a web server.")
         } else
             with(location) { BrowserNetwork.BrowserAddress(protocol, hostname, port) }
     }
 
     fun imageUrl(path: String): String =
-        if (location.protocol == "file:") "http://localhost:8004$path" else path
+        container?.urlBase?.let { urlBase ->
+            with(urlBase) { "$protocol://$hostname:$port$path" }
+        } ?: path
 
     fun decodeQueryParams(location: Location): Map<String, String> {
         val query = location.search
@@ -38,10 +44,9 @@ object JsPlatform {
     }
 
     private fun String.decodeQueryParams(): Map<String, String> {
-        return replace('+', ' ').split("&").map {
+        return replace('+', ' ').split("&").associate {
             val (k, v) = it.split("=", limit = 2)
             decodeURIComponent(k) to decodeURIComponent(v)
-        }.toMap()
+        }
     }
-
 }
