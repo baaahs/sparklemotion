@@ -530,7 +530,7 @@
                     "feedId": "saturationSlider"
                 }
             },
-            "priority": 10.0
+            "priority": 10
         },
         "squarezzz-patch": {
             "shaderId": "squarezzz",
@@ -1246,14 +1246,6 @@
         "devilGlass-patch": {
             "shaderId": "devilGlass",
             "incomingLinks": {
-                "modelInfo": {
-                    "type": "feed",
-                    "feedId": "modelInfo"
-                },
-                "pixelLocation": {
-                    "type": "feed",
-                    "feedId": "pixelLocation"
-                },
                 "fragCoord": {
                     "type": "stream",
                     "stream": "main"
@@ -1313,7 +1305,7 @@
                     "feedId": "sparkleBrightnessSlider"
                 }
             },
-            "priority": 15.0
+            "priority": 15
         },
         "thatSAllFolks-patch": {
             "shaderId": "thatSAllFolks",
@@ -1389,7 +1381,7 @@
                     "feedId": "twistSlider2"
                 }
             },
-            "priority": 1.0
+            "priority": 1
         }
     },
     "controls": {
@@ -1727,7 +1719,7 @@
         "hueShift": {
             "type": "baaahs.Core:Slider",
             "title": "Hue Shift",
-            "maxValue": 2.0,
+            "maxValue": 2,
             "controlledFeedId": "hueShiftSlider"
         },
         "visualizer": {
@@ -1744,22 +1736,22 @@
         "hueShiftSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Hue Shift",
-            "initialValue": 1.0,
-            "minValue": 0.0,
-            "maxValue": 2.0
+            "initialValue": 1,
+            "minValue": 0,
+            "maxValue": 2
         },
         "brightnessSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Brightness",
             "initialValue": 0.15,
-            "minValue": 0.0,
+            "minValue": 0,
             "maxValue": 0.75
         },
         "saturationSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Saturation",
-            "initialValue": 1.0,
-            "minValue": 0.0,
+            "initialValue": 1,
+            "minValue": 0,
             "maxValue": 1.25
         },
         "time": {
@@ -1768,9 +1760,9 @@
         "speedSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Speed",
-            "initialValue": 3.0,
-            "minValue": 1.0,
-            "maxValue": 5.0
+            "initialValue": 3,
+            "minValue": 1,
+            "maxValue": 5
         },
         "resolution": {
             "type": "baaahs.Core:Resolution"
@@ -1781,16 +1773,16 @@
         "speedSlider2": {
             "type": "baaahs.Core:Slider",
             "title": "Speed",
-            "initialValue": 5.0,
-            "minValue": 0.0,
-            "maxValue": 10.0
+            "initialValue": 5,
+            "minValue": 0,
+            "maxValue": 10
         },
         "pulsinessSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Pulsiness",
-            "initialValue": 3.0,
-            "minValue": 1.0,
-            "maxValue": 5.0
+            "initialValue": 3,
+            "minValue": 1,
+            "maxValue": 5
         },
         "center": {
             "type": "baaahs.Core:XyPad",
@@ -1799,37 +1791,37 @@
         "conflagrationSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Conflagration",
-            "initialValue": 15.0,
-            "minValue": 5.0,
-            "maxValue": 20.0
+            "initialValue": 15,
+            "minValue": 5,
+            "maxValue": 20
         },
         "checkerboardSizeSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Checkerboard Size",
             "initialValue": 0.125,
             "minValue": 0.001,
-            "maxValue": 1.0
+            "maxValue": 1
         },
         "mysterNumberSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Myster Number",
-            "initialValue": 1.0,
-            "minValue": 0.0,
-            "maxValue": 1.0
+            "initialValue": 1,
+            "minValue": 0,
+            "maxValue": 1
         },
         "twistSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Twist",
             "initialValue": 0.2,
-            "minValue": -4.0,
-            "maxValue": 4.0
+            "minValue": -4,
+            "maxValue": 4
         },
         "frequencySlider": {
             "type": "baaahs.Core:Slider",
             "title": "Frequency",
-            "initialValue": 15.0,
+            "initialValue": 15,
             "minValue": 3.14,
-            "maxValue": 25.0
+            "maxValue": 25
         },
         "colorColorPicker": {
             "type": "baaahs.Core:ColorPicker",
@@ -1840,15 +1832,15 @@
             "type": "baaahs.Core:Slider",
             "title": "Sparkliness",
             "initialValue": 0.02,
-            "minValue": 0.0,
+            "minValue": 0,
             "maxValue": 0.5
         },
         "colorBrightnessSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Color Brightness",
             "initialValue": 0.75,
-            "minValue": 0.0,
-            "maxValue": 1.0
+            "minValue": 0,
+            "maxValue": 1
         },
         "pixelCoordsTexture": {
             "type": "baaahs.Core:PixelCoordsTexture"
@@ -1856,72 +1848,72 @@
         "rippleAmountSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Ripple Amount",
-            "initialValue": 1.0,
-            "minValue": 0.0,
-            "maxValue": 1.0
+            "initialValue": 1,
+            "minValue": 0,
+            "maxValue": 1
         },
         "sparkleIntensitySlider": {
             "type": "baaahs.Core:Slider",
             "title": "Sparkle Intensity",
-            "initialValue": 1.0,
-            "minValue": 0.0,
-            "maxValue": 2.0
+            "initialValue": 1,
+            "minValue": 0,
+            "maxValue": 2
         },
         "sparkleBrightnessSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Sparkle Brightness",
             "initialValue": 0.5,
-            "minValue": 0.0,
-            "maxValue": 4.0
+            "minValue": 0,
+            "maxValue": 4
         },
         "ringSpeedSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Ring Speed",
-            "initialValue": 10.0,
-            "minValue": -15.0,
-            "maxValue": 20.0
+            "initialValue": 10,
+            "minValue": -15,
+            "maxValue": 20
         },
         "ringDensitySlider": {
             "type": "baaahs.Core:Slider",
             "title": "Ring Density",
-            "initialValue": 60.0,
-            "minValue": 10.0,
-            "maxValue": 120.0
+            "initialValue": 60,
+            "minValue": 10,
+            "maxValue": 120
         },
         "ringFadeSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Ring Fade",
             "initialValue": 0.5,
-            "minValue": 0.0,
-            "maxValue": 1.0
+            "minValue": 0,
+            "maxValue": 1
         },
         "depthSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Depth",
             "initialValue": 0.1,
-            "minValue": 0.0,
+            "minValue": 0,
             "maxValue": 0.2
         },
         "frequencySlider2": {
             "type": "baaahs.Core:Slider",
             "title": "Frequency",
-            "initialValue": 10.0,
-            "minValue": 0.0,
-            "maxValue": 20.0
+            "initialValue": 10,
+            "minValue": 0,
+            "maxValue": 20
         },
         "rotationSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Rotation",
-            "initialValue": 0.0,
+            "initialValue": 0,
             "minValue": -6.28,
             "maxValue": 6.28
         },
         "twistSlider2": {
             "type": "baaahs.Core:Slider",
             "title": "Twist",
-            "initialValue": 0.0,
-            "minValue": -1.0,
-            "maxValue": 1.0
+            "initialValue": 0,
+            "minValue": -1,
+            "maxValue": 1
         },
         "fixtureInfo": {
             "type": "baaahs.Core:FixtureInfo"
