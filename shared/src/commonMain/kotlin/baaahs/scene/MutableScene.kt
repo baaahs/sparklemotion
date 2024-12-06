@@ -26,12 +26,13 @@ import baaahs.ui.View
 
 class MutableScene(
     val model: MutableModel,
-    val controllers: MutableMap<ControllerId, MutableControllerConfig>
+    val controllers: MutableMap<ControllerId, MutableControllerConfig>,
+    val fixtureMappings: MutableMap<ControllerId, MutableList<MutableFixtureMapping>>
 ) : MutableDocument<Scene> {
     constructor(
         title: String,
         block: MutableScene.() -> Unit = {}
-    ) : this(MutableModel(title, mutableListOf(), ModelUnit.default, 0f), mutableMapOf()) {
+    ) : this(MutableModel(title, mutableListOf(), ModelUnit.default, 0f), mutableMapOf(), mutableMapOf()) {
         this.block()
     }
 
@@ -51,7 +52,8 @@ class MutableScene(
         return Scene(
             model = model.build(sceneBuilder),
             entities = sceneBuilder.entityIds.all(),
-            controllers = controllers.mapValues { (_, v) -> v.build(sceneBuilder) }
+            controllers = controllers.mapValues { (_, v) -> v.build(sceneBuilder) },
+            fixtureMappings = fixtureMappings.mapValues { (_, v) -> v.map { it.build(sceneBuilder) } }
         )
     }
 
@@ -61,7 +63,6 @@ class MutableScene(
 interface MutableControllerConfig {
     val controllerMeta: ControllerManager.Meta
     var title: String
-    val fixtures: MutableList<MutableFixtureMapping>
     var defaultFixtureOptions: MutableFixtureOptions?
     var defaultTransportConfig: MutableTransportConfig?
     val supportedTransportTypes: List<TransportType>
@@ -78,7 +79,6 @@ interface MutableControllerConfig {
 class MutableBrainControllerConfig(
     override var title: String,
     var address: String?,
-    override val fixtures: MutableList<MutableFixtureMapping>,
     override var defaultFixtureOptions: MutableFixtureOptions?,
     override var defaultTransportConfig: MutableTransportConfig?
 ) : MutableControllerConfig {
@@ -88,9 +88,7 @@ class MutableBrainControllerConfig(
         get() = listOf(BrainTransportType)
 
     override fun build(sceneBuilder: SceneBuilder): ControllerConfig =
-        BrainControllerConfig(
-            title, address, fixtures.map { it.build(sceneBuilder) },
-            defaultFixtureOptions?.build(), defaultTransportConfig?.build()
+        BrainControllerConfig(title, address, defaultFixtureOptions?.build(), defaultTransportConfig?.build()
         )
 
     override fun getEditorPanels(editingController: EditingController<*>): List<ControllerEditorPanel<*>> =
@@ -99,7 +97,6 @@ class MutableBrainControllerConfig(
 
 class MutableDirectDmxControllerConfig(
     override var title: String,
-    override val fixtures: MutableList<MutableFixtureMapping>,
     override var defaultFixtureOptions: MutableFixtureOptions?,
     override var defaultTransportConfig: MutableTransportConfig?
 ) : MutableControllerConfig {
@@ -109,11 +106,7 @@ class MutableDirectDmxControllerConfig(
         get() = listOf(DmxTransportType)
 
     override fun build(sceneBuilder: SceneBuilder): ControllerConfig =
-        DirectDmxControllerConfig(
-            title, fixtures.map { it.build(sceneBuilder) },
-            defaultFixtureOptions?.build(),
-            defaultTransportConfig?.build()
-        )
+        DirectDmxControllerConfig(title, defaultFixtureOptions?.build(), defaultTransportConfig?.build())
 
     override fun getEditorPanels(editingController: EditingController<*>): List<ControllerEditorPanel<*>> =
         listOf(DirectDmxControllerEditorPanel)
@@ -123,7 +116,6 @@ class MutableSacnControllerConfig(
     override var title: String,
     var address: String,
     var universes: Int,
-    override val fixtures: MutableList<MutableFixtureMapping>,
     override var defaultFixtureOptions: MutableFixtureOptions?,
     override var defaultTransportConfig: MutableTransportConfig?,
 ) : MutableControllerConfig {
@@ -134,7 +126,7 @@ class MutableSacnControllerConfig(
 
     override fun build(sceneBuilder: SceneBuilder): ControllerConfig =
         SacnControllerConfig(
-            title, address, universes, fixtures.map { it.build(sceneBuilder) },
+            title, address, universes,
             defaultFixtureOptions?.build(),
             defaultTransportConfig?.build()
         )

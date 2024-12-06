@@ -1,5 +1,8 @@
+@file:OptIn(InternalCoroutinesApi::class, ExperimentalCoroutinesApi::class)
+
 package baaahs.controllers
 
+import baaahs.FakePubSub
 import baaahs.controller.ControllersManager
 import baaahs.describe
 import baaahs.device.EnumeratedPixelLocations
@@ -13,11 +16,14 @@ import baaahs.fixtures.FixtureMapping
 import baaahs.geom.Vector3F
 import baaahs.gl.override
 import baaahs.gl.render.FixtureTypeForTest
+import baaahs.gl.testPlugins
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.kotest.value
+import baaahs.model.EntityData
 import baaahs.model.FakeModelEntityData
-import baaahs.model.MovingHead
+import baaahs.model.MovingHeadData
 import baaahs.only
+import baaahs.scene.MutableFixtureOptions
 import baaahs.scene.SceneMonitor
 import baaahs.sceneDataForTest
 import io.kotest.core.spec.style.DescribeSpec
@@ -27,24 +33,29 @@ import io.kotest.matchers.properties.shouldHaveValue
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 import io.kotest.matchers.types.shouldBeTypeOf
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.InternalCoroutinesApi
 import kotlin.random.Random
 
 @Suppress("unused")
 class ControllersManagerSpec : DescribeSpec({
     describe<ControllersManager> {
+        val pubSub by value { FakePubSub().server }
         val modelFixtureType by value { FixtureTypeForTest() }
-        val modelEntity by value { FakeModelEntityData("panel", modelFixtureType) }
-        val fakeControllerConfig by value { MutableFakeControllerConfig("controller1", mutableListOf(), null, null) }
+        val modelEntityData by value<EntityData> { FakeModelEntityData("panel", modelFixtureType) }
+        val defaultFixtureOptions by value<MutableFixtureOptions?> { null }
+        val fakeControllerConfig by value { MutableFakeControllerConfig("controller1", defaultFixtureOptions, null) }
         val fakeControllerId by value { fakeControllerConfig.likelyControllerId }
-        val scene by value { sceneDataForTest(modelEntity) {
+        val scene by value { sceneDataForTest(modelEntityData) {
             controllers.putAll(mapOf(fakeControllerId to fakeControllerConfig))
         } }
         val openScene by value { scene.open() }
         val model by value { openScene.model }
+        val modelEntity by value { model.findEntityByName(modelEntityData.title) }
         val legacyMappings by value {
             mapOf(fakeControllerId to listOf(
                 FixtureMapping(
-                    model.findEntityByName(modelEntity.title),
+                    model.findEntityByName(modelEntityData.title),
                     modelEntity.fixtureType.emptyOptions
                 ))
             )
@@ -56,11 +67,12 @@ class ControllersManagerSpec : DescribeSpec({
         val changes by value { fixtureListener.changes }
         val sceneMonitor by value { SceneMonitor(openScene) }
         val controllersManager by value {
-            ControllersManager(controllerManagers, mappingManager, sceneMonitor, listOf(fixtureListener))
+            ControllersManager(controllerManagers, mappingManager, sceneMonitor,
+                listOf(fixtureListener), pubSub, testPlugins())
         }
         val fakeController by value { fakeControllerMgr.controllers.only("controller") }
 
-        xcontext("when model and mapping data haven't loaded yet") {
+        context("when model and mapping data haven't loaded yet") {
             override(sceneMonitor) { SceneMonitor() }
             beforeEach { controllersManager.start() }
 
@@ -97,7 +109,7 @@ class ControllersManagerSpec : DescribeSpec({
             }
         }
 
-        xcontext("when mapping data has loaded") {
+        context("when mapping data has loaded") {
             beforeEach {
                 mappingManager.dataHasLoaded = true
                 controllersManager.start()
@@ -122,14 +134,14 @@ class ControllersManagerSpec : DescribeSpec({
             context("with no mapping results") {
                 value(legacyMappings) { mapOf(fakeControllerId to emptyList()) }
 
-                xit("ignores the controller") {
+                it("ignores the controller") {
                     fixtureListener.changes.shouldBeEmpty()
                 }
 
                 context("and the controller specifies an anonymous fixture") {
                     override(fakeControllerConfig) {
                         MutableFakeControllerConfig(
-                            "controller1", mutableListOf(), null, null,
+                            "controller1", null, null,
                             anonymousFixtureMapping = FixtureMapping(
                                 null, PixelArrayDevice.Options(
                                     pixelCount = 3,
@@ -141,7 +153,7 @@ class ControllersManagerSpec : DescribeSpec({
                     }
 
                     val expectedPixelLocations by value {
-                        val locations = LinearSurfacePixelStrategy(Random(1)).forUnknownEntity(3, model!!)
+                        val locations = LinearSurfacePixelStrategy(Random(1)).forUnknownEntity(3, model)
                         EnumeratedPixelLocations(locations)
                     }
 
@@ -151,7 +163,7 @@ class ControllersManagerSpec : DescribeSpec({
                         addedFixture.transport.shouldBeSameInstanceAs(fakeController.transport)
                     }
 
-                    xit("generates pixel positions within the model bounds") {
+                    it("generates pixel positions within the model bounds") {
                         addedFixture::componentCount.shouldHaveValue(3)
                         addedFixture.fixtureConfig.shouldBeTypeOf<PixelArrayDevice.Config> {
                             it.pixelLocations.shouldBe(expectedPixelLocations)
@@ -160,12 +172,12 @@ class ControllersManagerSpec : DescribeSpec({
                 }
             }
 
-            xcontext("with a mapping result pointing to an entity") {
+            context("with a mapping result pointing to an entity") {
                 value(legacyMappings) {
                     mapOf(
                         fakeControllerId to listOf(
                             FixtureMapping(
-                                openScene.model.findEntityByName(modelEntity.title),
+                                modelEntity,
                                 PixelArrayDevice.Options(
                                     3, PixelFormat.RGB8,
                                     pixelArrangement = LinearSurfacePixelStrategy(Random(1))
@@ -200,7 +212,7 @@ class ControllersManagerSpec : DescribeSpec({
                         mapOf(
                             fakeControllerId to listOf(
                                 FixtureMapping(
-                                    openScene.model.findEntityByName(modelEntity.title),
+                                    openScene.model.findEntityByName(modelEntityData.title),
                                     PixelArrayDevice.Options(
                                         3,
                                         pixelLocations = listOf(
@@ -230,10 +242,8 @@ class ControllersManagerSpec : DescribeSpec({
                 }
             }
 
-            xcontext("when controller provides a default fixture config") {
-                value(fakeController) {
-                    FakeController("controller1", modelFixtureType.Options(59, 3))
-                }
+            context("when controller has a default fixture config") {
+                override(defaultFixtureOptions) { modelFixtureType.Options(59, 3).edit() }
 
                 it("finds model entity mapping for the controller and creates a fixture with options from the model") {
                     addedFixture.modelEntity.shouldBe(modelEntity)
@@ -264,7 +274,7 @@ class ControllersManagerSpec : DescribeSpec({
                 }
 
                 context("when controller provides a default fixture config for a different fixture type") {
-                    value(fakeController) { FakeController("controller1", PixelArrayDevice.Options(4321)) }
+                    override(defaultFixtureOptions) { PixelArrayDevice.Options(4321).edit() }
 
                     it("ignores it, because we use the most specific fixture type to filter out others") {
                         addedFixture.modelEntity.shouldBe(modelEntity)
@@ -278,8 +288,8 @@ class ControllersManagerSpec : DescribeSpec({
                 }
             }
 
-            xcontext("when the fixture type specifies defaultPixelCount") {
-                value(modelEntity) { MovingHead("mover", baseDmxChannel = 1, adapter = Shenzarpy) }
+            context("when the fixture type specifies defaultPixelCount") {
+                value(modelEntityData) { MovingHeadData("mover", baseDmxChannel = 1, adapter = Shenzarpy) }
 
                 it("creates an appropriate fixture") {
                     addedFixture.modelEntity.shouldBe(modelEntity)
@@ -290,8 +300,10 @@ class ControllersManagerSpec : DescribeSpec({
                 }
             }
 
-            xcontext("when the scene is closed") {
+            context("when the scene is closed") {
+                val firstController by value { fakeController }
                 beforeEach {
+                    firstController.run {}
                     sceneMonitor.onChange(null)
                 }
 
@@ -303,6 +315,7 @@ class ControllersManagerSpec : DescribeSpec({
                     removedFixture.shouldBeSameInstanceAs(previouslyAddedFixture)
 
                     fakeControllerMgr.controllers.shouldBeEmpty()
+                    firstController.released.shouldBeTrue()
                 }
             }
         }

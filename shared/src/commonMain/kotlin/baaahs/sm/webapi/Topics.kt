@@ -26,7 +26,7 @@ object Topics {
 
     fun createControllerStates(plugins: Plugins) =
         PubSub.Topic(
-            "controllers", MapSerializer(ControllerId.serializer(), ControllerState.serializer()),
+            "controllerStates", MapSerializer(ControllerId.serializer(), ControllerState.serializer()),
             plugins.serialModule
         )
 
