@@ -4,6 +4,7 @@ import baaahs.app.settings.FeatureFlags
 import baaahs.app.settings.ObservableProvider
 import baaahs.client.EventManager
 import baaahs.controller.ControllersManager
+import baaahs.controller.generify
 import baaahs.dmx.Dmx
 import baaahs.dmx.DmxManager
 import baaahs.fixtures.FixtureManagerImpl
@@ -89,7 +90,7 @@ class PinkySpec : DescribeSpec({
         }
         val mappingManager by value { MappingManagerImpl(mappingStore, sceneMonitor, coroutineScope) }
         val controllersManager by value {
-            ControllersManager(listOf(brainManager), mappingManager, sceneMonitor, listOf(fixtureManager))
+            ControllersManager(listOf(generify(brainManager)), mappingManager, sceneMonitor, listOf(fixtureManager), pubSub, plugins)
         }
 
         val renderAndSendFrame by value {

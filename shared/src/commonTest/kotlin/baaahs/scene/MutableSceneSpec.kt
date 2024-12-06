@@ -45,7 +45,7 @@ class MutableSceneSpec : DescribeSpec({
                     )
                 ) }
                 val sacn1Config by value {
-                    MutableSacnControllerConfig("SACN Controller", "192.168.1.150", 1, sacn1Fixtures.toMutableList(), null, null)
+                    MutableSacnControllerConfig("SACN Controller", "192.168.1.150", 1, null, null)
                 }
                 val sacn1Id by value { ControllerId(SacnManager.controllerTypeName, sacn1Config.suggestId()) }
                 override(controllerConfigs) { mapOf(sacn1Id to sacn1Config) }

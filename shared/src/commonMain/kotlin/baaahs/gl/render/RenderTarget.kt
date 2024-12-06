@@ -26,6 +26,7 @@ class FixtureRenderTarget(
 ) : RenderTarget {
     var program: GlslProgram? = null
         private set
+    var isZombie = false
 
     val fixtureResults = resultStorage.getFixtureResults(fixture, component0Index)
 

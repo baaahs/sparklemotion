@@ -6,7 +6,6 @@ import baaahs.app.settings.FeatureFlagsManager
 import baaahs.app.settings.Provider
 import baaahs.client.EventManager
 import baaahs.controller.ControllersManager
-import baaahs.controller.ControllersPublisher
 import baaahs.controller.SacnManager
 import baaahs.dmx.Dmx
 import baaahs.dmx.DmxManager
@@ -164,7 +163,6 @@ interface PinkyModule : KModule {
                 )
             }
             scoped { FixturePublisher(get(), get()) }
-            scoped { ControllersPublisher(get(), get()) }
             scoped {
                 ControllersManager(
                     get(named("ControllerManagers")), get(), get(),
@@ -172,9 +170,7 @@ interface PinkyModule : KModule {
                         get<FixtureManager>(),
                         get<FixturePublisher>(),
                     ),
-                    listOf(
-                        get<ControllersPublisher>()
-                    )
+                    get(), get()
                 )
             }
             scoped { ProdBrainSimulator(get(), get()) }

@@ -2,13 +2,14 @@ package baaahs.dmx
 
 import baaahs.PubSub
 import baaahs.controller.BaseControllerManager
+import baaahs.controller.Change
 import baaahs.controller.ControllerId
 import baaahs.controller.ControllerManager
 import baaahs.controller.ControllerState
+import baaahs.fixtures.FixtureMapping
 import baaahs.plugin.Plugins
 import baaahs.scene.MutableControllerConfig
 import baaahs.scene.MutableDirectDmxControllerConfig
-import baaahs.scene.OpenControllerConfig
 import baaahs.sim.FakeDmxUniverse
 import baaahs.util.Clock
 import baaahs.util.Logger
@@ -33,7 +34,7 @@ interface DmxManager {
         ): MutableControllerConfig =
             MutableDirectDmxControllerConfig(
                 state?.title ?: controllerId?.id ?: "Direct DMX",
-                mutableListOf(), null, null
+                null, null
             )
     }
 }
@@ -45,7 +46,7 @@ class DmxManagerImpl(
     pubSub: PubSub.Server,
     private val universeListener: DmxUniverseListener? = null,
     plugins: Plugins
-) : BaseControllerManager(DmxManager.controllerTypeName), DmxManager {
+) : BaseControllerManager<DirectDmxController, DirectDmxControllerConfig, DirectDmxController.DirectDmxState>(DmxManager.controllerTypeName), DmxManager {
     private val attachedDevices = findAttachedDevices()
     override val dmxUniverse = findDmxUniverse(attachedDevices)
 
@@ -56,17 +57,38 @@ class DmxManagerImpl(
         })
     }
 
+    override fun onChange(
+        controllerId: ControllerId,
+        oldController: DirectDmxController?,
+        controllerConfig: Change<DirectDmxControllerConfig?>,
+        controllerState: Change<DirectDmxController.DirectDmxState?>,
+        fixtureMappings: Change<List<FixtureMapping>>
+    ): DirectDmxController? {
+        if (controllerConfig.newValue == null && controllerState.newValue == null) return null
+
+        val device = attachedDevices.find { it.id == controllerId.id }
+            ?: run {
+                logger.error { "No such DMX device $controllerId." }
+                return null
+            }
+
+        return DirectDmxController(device, universeListener)
+    }
+
     override fun start() {
         if (attachedDevices.isNotEmpty()) {
             attachedDevices.forEach { device ->
-                notifyListeners {
-                    onAdd(DirectDmxController(device, clock, universeListener))
+                val controllerId = ControllerId(controllerType, device.id)
+                onStateChange(controllerId) { fromState ->
+                    DirectDmxController.DirectDmxState(
+                        "${device.name} (${device.id})",
+                        null,
+                        clock.now(),
+                        null, null
+                    )
                 }
             }
         }
-    }
-
-    override fun onConfigChange(controllerConfigs: Map<ControllerId, OpenControllerConfig<*>>) {
     }
 
     override fun stop() {

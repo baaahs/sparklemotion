@@ -1,18 +1,26 @@
 package baaahs.fixtures
 
+import baaahs.*
 import baaahs.controller.Controller
+import baaahs.controller.ControllerId
 import baaahs.controllers.FakeController
+import baaahs.controllers.FakeMappingManager
 import baaahs.controllers.FakeTransportConfig
-import baaahs.describe
 import baaahs.device.EnumeratedPixelLocations
 import baaahs.device.PixelArrayDevice
+import baaahs.dmx.DirectDmxController
 import baaahs.geom.Vector3F
 import baaahs.gl.override
 import baaahs.kotest.value
+import baaahs.model.EntityData
 import baaahs.model.LightBar
-import baaahs.model.Model
-import baaahs.modelForTest
-import baaahs.testModelSurface
+import baaahs.model.LightBarData
+import baaahs.scene.FixtureMappingData
+import baaahs.scene.MutableDirectDmxControllerConfig
+import baaahs.scene.MutableEntity
+import baaahs.scene.MutableFixtureMapping
+import baaahs.sim.FakeDmxUniverse
+import baaahs.sim.SimDmxDevice
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.properties.shouldHaveValue
 import io.kotest.matchers.shouldBe
@@ -22,21 +30,27 @@ import io.kotest.matchers.types.shouldBeTypeOf
 class FixtureMappingSpec : DescribeSpec({
     describe<FixtureMapping> {
         context("buildFixture") {
-            val entity by value<Model.Entity?> { testModelSurface("surface", expectedPixelCount = null) }
-            val model by value { modelForTest(listOfNotNull(entity)) }
+            val entity by value<EntityData?> { testModelSurfaceData("surface", expectedPixelCount = null) }
+            val controllerId by value { ControllerId(FakeController.type, "fake") }
             val mappingFixtureOptions by value<FixtureOptions> { PixelArrayDevice.Options() }
             val mappingTransportConfig by value<TransportConfig?> { FakeTransportConfig(777) }
-            val mapping by value { FixtureMapping(entity, mappingFixtureOptions, mappingTransportConfig) }
+            val mapping by value { MutableFixtureMapping(entity?.edit(), mappingFixtureOptions.edit(), mappingTransportConfig?.edit()) }
+            val scene by value { sceneDataForTest(listOfNotNull(entity)) {
+                controllers[controllerId] = MutableDirectDmxControllerConfig("uart1", null, null)
+                fixtureMappings[controllerId] = mutableListOf(mapping)
+            } }
+            val openScene by value { scene.open() }
             val controllerDefaultFixtureOptions by value<FixtureOptions?> { null }
             val controllerDefaultTransportConfig by value<TransportConfig?> { null }
             val controller by value<Controller> {
                 FakeController("fake", controllerDefaultFixtureOptions, controllerDefaultTransportConfig)
             }
-            val fixture by value { mapping.buildFixture(controller, model) }
+            val fixtures by value { openScene.resolveFixtures(controller, FakeMappingManager()) }
+            val fixture by value { fixtures.only("fixture") }
 
             context("with a mapped entity") {
                 it("creates a fixture for that entity") {
-                    fixture::modelEntity.shouldHaveValue(entity)
+                    fixture.modelEntity!!.title.shouldBe(entity!!.title)
                     fixture::componentCount.shouldHaveValue(1)
                     fixture.fixtureConfig.shouldBeTypeOf<PixelArrayDevice.Config> {
                         it::gammaCorrection.shouldHaveValue(1f)
@@ -49,7 +63,7 @@ class FixtureMappingSpec : DescribeSpec({
                 }
 
                 context("whose model entity specifies a surface fixture config") {
-                    override(entity) { testModelSurface("surface", expectedPixelCount = 123) }
+                    override(entity) { testModelSurfaceData("surface", expectedPixelCount = 123) }
 
                     it("creates a fixture with that config") {
                         fixture.componentCount shouldBe 123
@@ -82,7 +96,7 @@ class FixtureMappingSpec : DescribeSpec({
 
                 context("whose model entity is a pixel array") {
                     override(entity) {
-                        LightBar("light bar", startVertex = Vector3F.origin, endVertex = Vector3F.unit3d)
+                        LightBarData("light bar", startVertex = Vector3F.origin, endVertex = Vector3F.unit3d)
                     }
                     override(mappingFixtureOptions) { PixelArrayDevice.Options(pixelCount = 3) }
 
