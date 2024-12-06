@@ -13,6 +13,8 @@ import external.react.BaseNumberInputProps
 import js.objects.Object
 import js.objects.jso
 import kotlinx.css.*
+import kotlinx.css.properties.BoxShadow
+import kotlinx.css.properties.BoxShadows
 import kotlinx.css.properties.scale
 import kotlinx.css.properties.transform
 import kotlinx.css.properties.translate
@@ -24,6 +26,9 @@ import mui.material.styles.useTheme
 import react.*
 import styled.StyleSheet
 import styled.styledInput
+import web.cssom.PropertyName.Companion.border
+import web.cssom.PropertyName.Companion.borderColor
+import web.cssom.PropertyName.Companion.margin
 import web.events.Event
 import web.events.EventHandler
 import web.html.HTMLDivElement
@@ -167,6 +172,86 @@ class NumberInputStyles(val theme: Theme) : StyleSheet("app-ui-numberinput", isS
         }
         input {
             gridRow = GridRow("1 / 3")
+        }
+        "input:disabled" {
+            borderColor = theme.palette.text.primary.asColor().withAlpha(.1)
+        }
+    }
+
+    val newRoot by css {
+        position = Position.relative
+        display = Display.inlineGrid
+        gridTemplateColumns = GridTemplateColumns(1.fr, LinearDimension.auto, 1.fr)
+        gridTemplateRows = GridTemplateRows(1.fr, 1.fr)
+        borderRadius = 8.px
+        paddingTop = 1.1.em
+//        marginLeft = .25.em
+//        marginRight = 1.em
+        paddingBottom = 1.em
+        alignContent = Align.center
+//        backgroundColor = Color.transparent
+
+        val buttonColor = theme.palette.text.primary.asColor().withAlpha(.6)
+
+        button {
+            backgroundColor = Color.transparent
+            color = buttonColor
+            border = Border.none
+            paddingRight = 2.px
+            width = 1.em
+            height = 1.em
+        }
+        "button:disabled" {
+            opacity = .3
+        }
+        // Down arrow.
+        ".decrementButton" {
+            gridColumn = GridColumn("3")
+            gridRow = GridRow("2")
+            backgroundImage = Image("url('data:image/svg+xml;base64,${downArrowSvg(buttonColor)}')")
+            marginLeft = 6.px
+            display = Display.inlineBlock
+            backgroundSize = "contain"
+            backgroundRepeat = BackgroundRepeat.noRepeat
+        }
+
+        // Up arrow.
+        ".incrementButton" {
+            gridColumn = GridColumn("3")
+            gridRow = GridRow("1")
+            backgroundImage = Image("url('data:image/svg+xml;base64,${upArrowSvg(buttonColor)}')")
+            marginLeft = 6.px
+            display = Display.inlineBlock
+            backgroundSize = "contain"
+            backgroundRepeat = BackgroundRepeat.noRepeat
+        }
+
+
+        ".MuiInputAdornment-root" {
+            gridColumn = GridColumn("2")
+            gridRow = GridRow("1 / 3")
+
+            p {
+                fontSize = .8.em
+            }
+        }
+
+        input {
+            borderRadius = 4.px
+            border = Border(1.px, BorderStyle.solid, Color.white.withAlpha(.8))
+            gridRow = GridRow("1 / 3")
+            boxSizing = BoxSizing.borderBox
+            margin = Margin(4.px)
+            minHeight = 2.em
+            paddingRight = .5.em
+            paddingTop = 4.px
+            paddingBottom = 4.px
+        }
+        "input:focus-within" {
+            outlineOffset = 0.px
+            borderColor = theme.palette.primary.dark.asColor().saturate(50)
+            borderWidth = 2.px
+            boxShadow += BoxShadow(theme.palette.text.primary.asColor(), spreadRadius = 2.px)
         }
         "input:disabled" {
             borderColor = theme.palette.text.primary.asColor().withAlpha(.1)
