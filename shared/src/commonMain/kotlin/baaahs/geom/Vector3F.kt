@@ -5,6 +5,7 @@ import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import kotlinx.serialization.Serializable
 import kotlin.math.abs
+import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sqrt
@@ -57,7 +58,11 @@ data class Vector3F(val x: Float, val y: Float, val z: Float) {
     }
 
     fun length(): Float {
-        return sqrt(lengthSquared().toDouble()).toFloat()
+        return sqrt(lengthSquared().toDouble().absoluteValue).toFloat()
+    }
+
+    fun isNan(): Boolean {
+        return x.isNaN() || y.isNaN() || z.isNaN()
     }
 
     private fun lengthSquared(): Float {

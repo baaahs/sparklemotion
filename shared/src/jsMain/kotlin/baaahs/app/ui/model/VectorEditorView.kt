@@ -1,5 +1,6 @@
 package baaahs.app.ui.model
 
+import baaahs.app.ui.editor.numberFieldEditor
 import baaahs.geom.Vector3F
 import baaahs.ui.xComponent
 import react.Props
@@ -8,6 +9,10 @@ import react.RHandler
 import react.ReactElement
 
 private val VectorEditorView = xComponent<VectorEditorProps>("VectorEditor", true) { props ->
+    val getX by handler(props.vector3F) { props.vector3F.x}
+    val getY by handler(props.vector3F) { props.vector3F.y}
+    val getZ by handler(props.vector3F) { props.vector3F.z}
+
     val updateX by handler(props.vector3F, props.onChange) { v: Float ->
         props.onChange(props.vector3F.copy(x = v))
     }
@@ -20,27 +25,31 @@ private val VectorEditorView = xComponent<VectorEditorProps>("VectorEditor", tru
         props.onChange(props.vector3F.copy(z = v))
     }
 
+    val handleChange by handler { _: Boolean -> }
+
     val vector = props.vector3F
-    numberTextField<Float> {
+    numberFieldEditor<Float> {
         this.attrs.label = "X"
         this.attrs.disabled = props.disabled == true
-        this.attrs.value = vector.x
         this.attrs.adornment = props.adornment
-        this.attrs.onChange = updateX
+        this.attrs.getValue = getX
+        this.attrs.setValue = updateX
+        this.attrs.onChange = handleChange
     }
-    numberTextField<Float> {
+    numberFieldEditor<Float> {
         this.attrs.label = "Y"
         this.attrs.disabled = props.disabled == true
-        this.attrs.value = vector.y
         this.attrs.adornment = props.adornment
-        this.attrs.onChange = updateY
+        this.attrs.getValue = getY
+        this.attrs.setValue = updateY
+        this.attrs.onChange = handleChange
     }
-    numberTextField<Float> {
+    numberFieldEditor<Float> {
         this.attrs.label = "Z"
         this.attrs.disabled = props.disabled == true
-        this.attrs.value = vector.z
+        this.attrs.getValue = getZ
         this.attrs.adornment = props.adornment
-        this.attrs.onChange = updateZ
+        this.attrs.onChange = handleChange
     }
 }
 

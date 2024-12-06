@@ -1,6 +1,8 @@
 package baaahs.app.ui.model
 
 import baaahs.app.ui.appContext
+import baaahs.app.ui.editor.numberFieldEditor
+import baaahs.app.ui.editor.textFieldEditor
 import baaahs.geom.Vector3F
 import baaahs.scene.EditingEntity
 import baaahs.scene.MutableLightBarData
@@ -11,6 +13,7 @@ import mui.material.Container
 import mui.material.FormControl
 import mui.material.InputLabel
 import react.*
+import web.html.InputType
 
 private val LightBarEditorView = xComponent<LightBarEditorProps>("LightBarEditor") { props ->
     val appContext = useContext(appContext)
@@ -30,10 +33,15 @@ private val LightBarEditorView = xComponent<LightBarEditorProps>("LightBarEditor
         props.editingEntity.onChange()
     }
 
+    val handleGetLength by handler(mutableEntity) {
+        with(mutableEntity) { (endVertex - startVertex).length() }
+    }
     val handleLengthChange by handler(mutableEntity) { length: Float ->
         with (mutableEntity) {
             val normal = (endVertex - startVertex).normalize()
-            mutableEntity.endVertex = startVertex + normal * length
+            val newEndVertex = startVertex + normal * length
+            if (!newEndVertex.isNan())
+                mutableEntity.endVertex = newEndVertex
         }
         props.editingEntity.onChange()
     }
@@ -86,15 +94,15 @@ private val LightBarEditorView = xComponent<LightBarEditorProps>("LightBarEditor
                 +"Length"
             }
 
-            with(styles) {
-                val length = with(mutableEntity) { (endVertex - startVertex).length() }
-                numberTextField<Float> {
-                    attrs.label = ""
-                    attrs.value = length
-                    attrs.adornment = props.editingEntity.modelUnit.display.asTextNode()
-                    attrs.onChange = handleLengthChange
-                    attrs.disabled = editMode.isOff
-                }
+            numberFieldEditor {
+                attrs.isInteger = false
+                attrs.isNullable = false
+                attrs.label = ""
+                attrs.getValue = handleGetLength
+                attrs.setValue = handleLengthChange
+                attrs.adornment = props.editingEntity.modelUnit.display.asTextNode()
+                attrs.onChange = {}
+                attrs.disabled = editMode.isOff
             }
         }
     }
