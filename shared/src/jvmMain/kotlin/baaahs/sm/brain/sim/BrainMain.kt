@@ -3,7 +3,7 @@ package baaahs.sm.brain.sim
 import baaahs.io.RealFs
 import baaahs.net.JvmNetwork
 import baaahs.plugin.Plugins
-import baaahs.sm.brain.sim.JvmPixelsDisplay.Layout
+import baaahs.sm.brain.sim.JvmPixelsDisplay.PixelLayout
 import baaahs.util.SystemClock
 import baaahs.util.globalLaunch
 import kotlinx.cli.ArgParser
@@ -31,9 +31,9 @@ class BrainMain(private val args: Args) {
 
         val network = JvmNetwork()
         val brainId = args.brainId ?: JvmNetwork.myAddress.toString()
-        val startingLayout = Layout(20, 20)
+        val startingPixelLayout = PixelLayout(20, 20)
         val brainSimulator = BrainSimulator(
-            brainId, network, JvmPixelsDisplay(startingLayout).pixels, SystemClock, CoroutineScope(Dispatchers.Default)
+            brainId, network, JvmPixelsDisplay(startingPixelLayout).pixels, SystemClock, CoroutineScope(Dispatchers.Default)
         )
 
 //        val mySurface = if (args.anonymous) {
