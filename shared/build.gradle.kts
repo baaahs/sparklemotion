@@ -50,6 +50,8 @@ kotlin {
         }
     }
 
+    applyDefaultHierarchyTemplate()
+
     sourceSets {
         commonMain {
             kotlin.srcDirs(file(project.layout.buildDirectory.file("generated/ksp/metadata/commonMain/kotlin").get()))
@@ -202,47 +204,11 @@ kotlin {
             }
         }
 
-        androidMain {
-            dependsOn(serverCommonMain)
+    }
+}
 
-            dependencies {
-                implementation(libs.kglAndroid)
-                implementation(libs.koinCore)
-                implementation(libs.ktorServerCore)
-                implementation(libs.ktorServerCio)
-                implementation(libs.ktorServerHostCommon)
-                implementation(libs.ktorServerCallLogging)
-                implementation(libs.ktorServerWebsockets)
-                implementation(libs.jmdns)
-
-                // Java 3D maths
-                implementation(libs.joml)
-            }
-        }
-
-        iosMain {
-            dependsOn(serverCommonMain)
-
-            dependencies {
-                implementation(libs.kglIos)
-                implementation(libs.koinCore)
-                implementation(libs.ktorClientCore)
-                implementation(libs.ktorClientIos)
-                implementation(libs.ktorServerCore)
-                implementation(libs.ktorServerCio)
-                implementation(libs.ktorServerHostCommon)
-//                implementation(libs.ktorServerCallLogging)
-                implementation(libs.ktorServerWebsockets)
-            }
-
-            resources.srcDirs("src/iosMain/resources",
-//                rootProject.file("shared/src/jsMain/resources"),
-//                rootProject.file("shared/src/commonMain/resources"),
-                rootProject.file("shared/build/processedResources/js/main"),
-                rootProject.file("shared/build/kotlin-webpack/js/developmentExecutable")
-            )
-        }
-
+afterEvaluate {
+    kotlin {
         sourceSets.all {
             languageSettings.apply {
                 progressiveMode = true
