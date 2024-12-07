@@ -5,35 +5,10 @@ package three
 import org.w3c.xhr.ProgressEvent
 import kotlin.js.Promise
 
-external interface `T$91` {
-    @nativeGetter
-    operator fun get(key: String): dynamic /* InstancedBufferGeometry? | BufferGeometry<NormalBufferAttributes>? */
-    @nativeSetter
-    operator fun set(key: String, value: InstancedBufferGeometry)
-    @nativeSetter
-    operator fun set(key: String, value: BufferGeometry<NormalBufferAttributes>)
-}
-
-external interface `T$92` {
-    @nativeGetter
-    operator fun get(key: String): Material?
-    @nativeSetter
-    operator fun set(key: String, value: Material)
-}
-
-external interface `T$93` {
-    @nativeGetter
-    operator fun get(key: String): AnimationClip?
-    @nativeSetter
-    operator fun set(key: String, value: AnimationClip)
-}
-
-external interface `T$94` {
-    @nativeGetter
-    operator fun get(key: String): Source?
-    @nativeSetter
-    operator fun set(key: String, value: Source)
-}
+external interface `T$91`
+external interface `T$92`
+external interface `T$93`
+external interface `T$94`
 
 open external class ObjectLoader(manager: LoadingManager = definedExternally) : Loader__1<Object3D/*<Object3DEventMap>*/> {
     override fun load(url: String, onLoad: (data: Object3D/*<Object3DEventMap>*/) -> Unit, onProgress: (event: ProgressEvent) -> Unit, onError: (err: Any) -> Unit)

@@ -1,11 +1,10 @@
-@file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.addons
 
 import js.objects.Record
 import org.w3c.dom.XMLDocument
 import three.*
 
-external interface SVGResultPaths : ShapePath {
+external class SVGResultPaths : ShapePath {
     var userData: Record<String, Any>?
         get() = definedExternally
         set(value) = definedExternally

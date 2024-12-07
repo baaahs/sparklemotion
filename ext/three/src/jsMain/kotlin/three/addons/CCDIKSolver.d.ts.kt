@@ -1,7 +1,11 @@
-@file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.addons
 
-import three.*
+import three.LineBasicMaterial
+import three.MeshBasicMaterial
+import three.Object3D
+import three.SkinnedMesh
+import three.SphereGeometry
+import three.Vector3
 
 external interface `T$35` {
     var enabled: Boolean?

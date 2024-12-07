@@ -16,12 +16,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external interface `T$90` {
-    @nativeGetter
-    operator fun get(key: String): Texture?
-    @nativeSetter
-    operator fun set(key: String, value: Texture)
-}
+external interface `T$90`
 
 open external class MaterialLoader(manager: LoadingManager = definedExternally) : Loader__1<Material> {
     open var textures: `T$90`

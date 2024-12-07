@@ -2,12 +2,7 @@
 @file:JsNonModule
 package three
 
-external interface `T$88` {
-    @nativeGetter
-    operator fun get(id: String): Array<Number>?
-    @nativeSetter
-    operator fun set(id: String, value: Array<Number>)
-}
+external interface `T$88`
 
 open external class CameraHelper(camera: Camera) : LineSegments<BufferGeometry<NormalBufferAttributes>, dynamic> {
     override var override: Any

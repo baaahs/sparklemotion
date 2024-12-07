@@ -1,4 +1,3 @@
-@file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.addons
 
 import three.IUniform
@@ -31,15 +30,12 @@ external interface `T$150` {
     var thickness: IUniform<Number>
 }
 
-@Suppress("EXTERNAL_DELEGATION", "NESTED_CLASS_IN_EXTERNAL_INTERFACE")
-external interface SSRShader {
+external object SSRShader {
     var name: String
     var defines: `T$149`
     var uniforms: `T$150`
     var vertexShader: String
     var fragmentShader: String
-
-    companion object : SSRShader by definedExternally
 }
 
 external interface `T$151` {
@@ -48,15 +44,12 @@ external interface `T$151` {
     var cameraFar: IUniform<Number>
 }
 
-@Suppress("EXTERNAL_DELEGATION", "NESTED_CLASS_IN_EXTERNAL_INTERFACE")
-external interface SSRDepthShader {
+external object SSRDepthShader {
     var name: String
     var defines: `T$126`
     var uniforms: `T$151`
     var vertexShader: String
     var fragmentShader: String
-
-    companion object : SSRDepthShader by definedExternally
 }
 
 external interface `T$152` {
@@ -65,12 +58,9 @@ external interface `T$152` {
     var opacity: IUniform<Number>
 }
 
-@Suppress("EXTERNAL_DELEGATION", "NESTED_CLASS_IN_EXTERNAL_INTERFACE")
-external interface SSRBlurShader {
+external object SSRBlurShader {
     var name: String
     var uniforms: `T$152`
     var vertexShader: String
     var fragmentShader: String
-
-    companion object : SSRBlurShader by definedExternally
 }
