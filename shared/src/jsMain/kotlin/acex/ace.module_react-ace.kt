@@ -1,6 +1,5 @@
 @file:JsModule("react-ace")
 @file:JsNonModule
-@file:Suppress("INTERFACE_WITH_SUPERCLASS", "EXTERNAL_DELEGATION")
 
 package ReactAce.Ace
 
