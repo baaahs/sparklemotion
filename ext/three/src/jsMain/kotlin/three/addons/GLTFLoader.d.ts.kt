@@ -1,4 +1,3 @@
-@file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.addons
 
 import js.objects.Record
@@ -80,12 +79,7 @@ external interface `T$78` {
     var requestHeader: `T$73`
 }
 
-external interface `T$79` {
-    @nativeGetter
-    operator fun get(name: String): GLTFLoaderPlugin?
-    @nativeSetter
-    operator fun set(name: String, value: GLTFLoaderPlugin)
-}
+external interface `T$79`
 
 external interface `T$80` {
     var index: Number

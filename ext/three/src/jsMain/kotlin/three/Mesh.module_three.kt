@@ -10,12 +10,7 @@ external interface MeshJSON : Object3DJSON {
 //    override var `object`: MeshJSONObject
 }
 
-external interface `T$31` {
-    @nativeGetter
-    operator fun get(key: String): Number?
-    @nativeSetter
-    operator fun set(key: String, value: Number)
-}
+external interface `T$31`
 
 open external class Mesh<TGeometry : BufferGeometry<NormalBufferAttributes>, TMaterial/*, TEventMap : Object3DEventMap*/>(geometry: TGeometry = definedExternally, material: TMaterial = definedExternally) : Object3D/*<Object3DEventMap>*/ {
     open val isMesh: Boolean

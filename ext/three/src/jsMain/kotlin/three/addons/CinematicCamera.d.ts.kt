@@ -1,7 +1,11 @@
-@file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.addons
 
-import three.*
+import three.OrthographicCamera
+import three.PerspectiveCamera
+import three.Scene
+import three.ShaderMaterial
+import three.WebGLRenderTarget
+import three.WebGLRenderer
 
 external interface `T$43` {
     var enabled: Boolean

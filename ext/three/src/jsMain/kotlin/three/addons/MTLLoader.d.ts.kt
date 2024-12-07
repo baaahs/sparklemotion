@@ -1,4 +1,3 @@
-@file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.addons
 
 import org.khronos.webgl.*
@@ -39,18 +38,8 @@ open external class MTLLoader(manager: LoadingManager = definedExternally) : Loa
     open var materialOptions: MaterialCreatorOptions
     open fun parse(text: String, path: String): MaterialCreator
     open fun setMaterialOptions(value: MaterialCreatorOptions)
-    interface `T$82` {
-        @nativeGetter
-        operator fun get(key: String): MaterialInfo?
-        @nativeSetter
-        operator fun set(key: String, value: MaterialInfo)
-    }
-    interface `T$83` {
-        @nativeGetter
-        operator fun get(key: String): Material?
-        @nativeSetter
-        operator fun set(key: String, value: Material)
-    }
+    interface `T$82`
+    interface `T$83`
     open class MaterialCreator(baseUrl: String = definedExternally, options: MaterialCreatorOptions = definedExternally) {
         open var baseUrl: String
         open var options: MaterialCreatorOptions
