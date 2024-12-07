@@ -19,7 +19,7 @@ class ByteArrayReader(val bytes: ByteArray, offset: Int = 0) {
         (bytes[offset++].toInt() and 0xff shl 8)
             .or(bytes[offset++].toInt() and 0xff).toShort()
 
-    fun readChar(): Char = readShort().toChar()
+    fun readChar(): Char = readShort().toInt().toChar()
 
     fun readInt(): Int =
         (bytes[offset++].toInt() and 0xff shl 24)

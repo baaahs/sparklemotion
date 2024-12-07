@@ -6,6 +6,7 @@ import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.plugin.PluginRef
 import kotlinx.serialization.json.JsonObject
+import baaahs.decapitalize
 
 data class InputPort(
     val id: String,

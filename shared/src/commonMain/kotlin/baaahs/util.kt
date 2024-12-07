@@ -119,15 +119,16 @@ internal fun Clock.timeSync(function: () -> Unit): Int {
 fun String.camelize(): String =
     replace(Regex("([A-Z]+)"), " $1")
         .split(Regex("[^A-Za-z0-9]+"))
-        .joinToString("") { it.toLowerCase().capitalize() }
+        .joinToString("") { it.lowercase().capitalize() }
         .decapitalize()
 
-fun String.englishize(): String {
-    return Regex("([A-Z](?=[a-z]+)|[A-Z]+(?![a-z]))").replace(this) {
+fun String.englishize(): String =
+    Regex("([A-Z](?=[a-z]+)|[A-Z]+(?![a-z]))").replace(this) {
         " " + it.value
     }.capitalize()
-}
 
+fun String.capitalize() = replaceFirstChar { it.uppercase()}
+fun String.decapitalize() = replaceFirstChar { it.lowercase()}
 
 fun randomId(prefix: String): String {
     return prefix +

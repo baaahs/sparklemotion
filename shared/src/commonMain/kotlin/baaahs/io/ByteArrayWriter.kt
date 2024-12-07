@@ -26,7 +26,7 @@ class ByteArrayWriter(private var bytes: ByteArray = ByteArray(128), var offset:
         bytes[offset++] = s.toInt().and(0xff).toByte()
     }
 
-    fun writeChar(c: Char) = writeShort(c.toShort())
+    fun writeChar(c: Char) = writeShort(c.code.toShort())
 
     fun writeInt(i: Int) {
         growIfNecessary(4)
