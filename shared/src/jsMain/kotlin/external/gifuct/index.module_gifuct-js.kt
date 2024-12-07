@@ -1,5 +1,4 @@
 @file:JsModule("gifuct-js")
-@file:Suppress("INTERFACE_WITH_SUPERCLASS")
 
 package external.gifuct
 

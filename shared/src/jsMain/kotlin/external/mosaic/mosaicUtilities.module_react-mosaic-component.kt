@@ -1,12 +1,10 @@
-@file:Suppress("INTERFACE_WITH_SUPERCLASS", "EXTERNAL_DELEGATION")
-
 package external.mosaic
 
-external enum class Corner {
-    TOP_LEFT /* = 1 */,
-    TOP_RIGHT /* = 2 */,
-    BOTTOM_LEFT /* = 3 */,
-    BOTTOM_RIGHT /* = 4 */
+external object Corner {
+    val TOP_LEFT : Corner /* = 1 */
+    val TOP_RIGHT : Corner /* = 2 */
+    val BOTTOM_LEFT : Corner /* = 3 */
+    val BOTTOM_RIGHT : Corner /* = 4 */
 }
 
 external fun <T> isParent(node: MosaicParent<T>): Boolean

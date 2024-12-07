@@ -1,4 +1,3 @@
-@file:Suppress("INTERFACE_WITH_SUPERCLASS")
 @file:JsModule("d3-array")
 
 package external

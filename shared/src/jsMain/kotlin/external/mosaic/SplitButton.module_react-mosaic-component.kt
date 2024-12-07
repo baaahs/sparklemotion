@@ -1,5 +1,4 @@
-//@file:Suppress("INTERFACE_WITH_SUPERCLASS", "EXTERNAL_DELEGATION")
-//
+////
 //import kotlin.js.*
 //import kotlin.js.Json
 //import org.khronos.webgl.*

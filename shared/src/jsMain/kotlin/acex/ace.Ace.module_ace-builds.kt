@@ -614,12 +614,7 @@ external interface TokenIterator {
     fun stepForward(): Token
 }
 
-external interface `T$4` {
-    @nativeGetter
-    operator fun get(key: String): String?
-    @nativeSetter
-    operator fun set(key: String, value: String)
-}
+external interface `T$4`
 
 external interface SyntaxMode {
     fun getTokenizer(): Tokenizer
@@ -707,12 +702,7 @@ external interface `T$8` {
     var data: `T$7`
 }
 
-external interface `T$9` {
-    @nativeGetter
-    operator fun get(id: Number): MarkerLike?
-    @nativeSetter
-    operator fun set(id: Number, value: MarkerLike)
-}
+external interface `T$9`
 
 external interface `T$10` {
     var min: Number
@@ -725,8 +715,6 @@ external interface EditSession : EventEmitter, OptionsProvider {
     fun on(name: String /* "changeScrollLeft" | "changeScrollTop" */, callback: (scrollLeft: Number) -> Unit): Function<*>
     fun on(name: String /* "tokenizerUpdate" */, callback: (obj: `T$8`) -> Unit): Function<*>
     fun on(name: String /* "change" */, callback: () -> Unit): Function<*>
-    fun <T : String> setOption(name: T, value: Any)
-    fun <T : String> getOption(name: T): Any
     var doc: Document
     fun setDocument(doc: Document)
     fun getDocument(): Document
@@ -853,12 +841,7 @@ external interface `T$11` {
     var args: Array<Any>
 }
 
-external interface `T$12` {
-    @nativeGetter
-    operator fun get(s: String): Function<*>?
-    @nativeSetter
-    operator fun set(s: String, value: Function<*>)
-}
+external interface `T$12`
 
 external interface `T$13` {
     var key: String
@@ -931,8 +914,6 @@ external interface VirtualRenderer : OptionsProvider, EventEmitter {
     var scrollLeft: Number
     var scrollTop: Number
     var `$padding`: Number
-    fun <T : String> setOption(name: T, value: Any)
-    fun <T : String> getOption(name: T): Any
     fun setSession(session: EditSession)
     fun updateLines(firstRow: Number, lastRow: Number, force: Boolean = definedExternally)
     fun updateText()
@@ -1108,8 +1089,6 @@ external interface Editor : OptionsProvider, EventEmitter {
     fun on(name: String /* "copy" | "paste" */, callback: (obj: `T$19`) -> Unit)
     fun on(name: String /* "mousemove" | "mouseup" | "mousewheel" | "click" */, callback: (e: Any) -> Unit)
     fun onPaste(text: String, event: Any)
-    fun <T : String> setOption(name: T, value: Any)
-    fun <T : String> getOption(name: T): Any
     fun setKeyboardHandler(keyboardHandler: String, callback: () -> Unit = definedExternally)
     fun setKeyboardHandler(keyboardHandler: String)
     fun setKeyboardHandler(keyboardHandler: KeyboardHandler?)
