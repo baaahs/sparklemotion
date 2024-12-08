@@ -9,11 +9,6 @@ fun kotlinw(target: String): String =
     "org.jetbrains.kotlin-wrappers:kotlin-$target:${Versions.kotlinWrappers}"
 
 kotlin {
-    jvmToolchain {
-        languageVersion = JavaLanguageVersion.of(19)
-        vendor = JvmVendorSpec.ADOPTIUM
-    }
-
     js(IR) {
         browser()
     }
