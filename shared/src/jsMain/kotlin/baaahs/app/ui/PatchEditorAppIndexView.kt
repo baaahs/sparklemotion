@@ -14,7 +14,7 @@ import baaahs.scene.SceneMonitor
 import baaahs.show.SampleData
 import baaahs.sim.HostedWebApp
 import baaahs.ui.xComponent
-import baaahs.util.JsClock
+import baaahs.util.SystemClock
 import js.objects.jso
 import mui.material.CssBaseline
 import mui.material.Paper
@@ -67,7 +67,7 @@ val PatchEditorAppIndexView = xComponent<PatchEditorAppIndexProps>("PatchEditorA
         jso<AppContext> {
             this.plugins = props.plugins
             this.allStyles = allStyles
-            this.clock = JsClock
+            this.clock = SystemClock
             this.showManager = showManager
             this.sceneProvider = sceneMonitor
 

@@ -148,11 +148,28 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
         }
     }
 
-    val editModeControl by css {
+    val itemControlsModeControl by css {
         transition(::opacity, duration = Styles.editTransitionDuration, timing = Timing.linear)
     }
     val deleteModeControl by css {
         transition(::opacity, duration = Styles.editTransitionDuration, timing = Timing.linear)
+    }
+    val editModeControl by css {
+        transition(::opacity, duration = Styles.editTransitionDuration, timing = Timing.linear)
+    }
+
+    val itemControlsButton by css {
+        position = Position.absolute
+        right = 1.em
+        bottom = (-2).px + 1.em
+        zIndex = StyleConstants.Layers.aboveSharedGlCanvas
+        filter = "drop-shadow(1px 1px 2px rgba(0, 0, 0, .9))"
+        cursor = Cursor.default
+
+        child("svg") {
+            width = .75.em
+            height = .75.em
+        }
     }
 
     val deleteButton by css {

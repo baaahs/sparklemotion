@@ -5,12 +5,14 @@ import baaahs.app.settings.DocumentFeatureFlags
 import baaahs.app.settings.FeatureFlags
 import baaahs.app.settings.Provider
 import baaahs.client.EventManager
+import baaahs.client.document.showStore
 import baaahs.controller.ControllersManager
 import baaahs.dmx.DmxManager
 import baaahs.fixtures.FixtureManager
 import baaahs.gl.Toolchain
 import baaahs.gl.glsl.CompilationException
 import baaahs.io.Fs
+import baaahs.io.ResourcesFs
 import baaahs.libraries.ShaderLibraryManager
 import baaahs.mapper.PinkyMapperHandlers
 import baaahs.mapping.MappingManager
@@ -29,9 +31,7 @@ import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.Logger
 import kotlinx.coroutines.*
-import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
-import kotlin.coroutines.CoroutineContext
 
 class Pinky(
     val clock: Clock,
@@ -46,7 +46,7 @@ class Pinky(
     private val dmxManager: DmxManager,
     private val mappingManager: MappingManager,
     internal val fixtureManager: FixtureManager,
-    override val coroutineContext: CoroutineContext,
+    private val pinkyMainScope: CoroutineScope,
     val toolchain: Toolchain,
     val stageManager: StageManager,
     private val controllersManager: ControllersManager,
@@ -58,8 +58,10 @@ class Pinky(
     private val pinkyMapperHandlers: PinkyMapperHandlers,
     private val pinkyConfigStore: PinkyConfigStore,
     private val eventManager: EventManager,
-    private val featureFlagsProvider: Provider<FeatureFlags>
-) : CoroutineScope {
+    private val featureFlagsProvider: Provider<FeatureFlags>,
+    private val resourcesFs: ResourcesFs
+) {
+    private var daemonJobs: Job? = null
     val facade = Facade()
 
     fun switchTo(newShow: Show?, file: Fs.File? = null) {
@@ -79,7 +81,7 @@ class Pinky(
 
     init {
         httpServer.listenWebSocket("/ws/api") {
-            WebSocketRouter(plugins, coroutineContext) { pinkyMapperHandlers.register(this) }
+            WebSocketRouter(plugins, pinkyMainScope) { pinkyMapperHandlers.register(this) }
         }
 
         httpServer.listenWebSocket("/ws/visualizer") {
@@ -92,17 +94,21 @@ class Pinky(
     private var keepRunning = true
 
     suspend fun startAndRun(beforeRun: suspend CoroutineScope.() -> Unit = {}) {
-        withContext(coroutineContext) {
-            val startupJobs = launchStartupJobs()
-            val daemonJobs = launchDaemonJobs()
-
-            startupJobs.join()
-
-            beforeRun()
-
-            run()
-            daemonJobs.cancelAndJoin()
+        val startupJobs = pinkyMainScope.launch(CoroutineName("Pinky Startup Jobs")) {
+            launchStartupJobs()
         }
+
+        val daemonJobs = pinkyMainScope.launch(CoroutineName("Pinky Daemon Jobs")) {
+            launchDaemonJobs()
+        }.also { this@Pinky.daemonJobs = it }
+
+        startupJobs.join()
+
+        pinkyMainScope.beforeRun()
+        logger.info { "Pinky is up!" }
+
+        run()
+        daemonJobs.cancelAndJoin()
     }
 
     private suspend fun run() {
@@ -134,15 +140,14 @@ class Pinky(
 
     private var mappingResultsLoaderJob: Job? = null
 
-    internal suspend fun launchStartupJobs(): Job {
-        return CoroutineScope(coroutineContext).launch {
-            CoroutineScope(coroutineContext).launch {
-                launch { firmwareDaddy.start() }
+    internal suspend fun CoroutineScope.launchStartupJobs() {
+        launch(CoroutineName("Pre-Mapper Startup Jobs")) {
+            launch { firmwareDaddy.start() }
 
-                mappingResultsLoaderJob = launch { mappingManager.start() }
+            mappingResultsLoaderJob = launch { mappingManager.start() }
 
-                launch {
-                    val config = pinkyConfigStore.load()
+            launch {
+                val config = pinkyConfigStore.load()
                 val featureFlags = featureFlagsProvider.get()
 
                 loadDocument(
@@ -155,32 +160,34 @@ class Pinky(
                 loadDocument(
                     stageManager.showDocumentService,
                     featureFlags.shows,
-                    "SparkleMotion.show",
+                    "SparkleMotion.sparkle",
                     config?.runningShowPath
-                ) { Show.ShowTemplate }
-                }
-
-                launch { eventManager.start() }
-            }.join()
-
-            brainManager.listenForMapperMessages { message ->
-                logger.info { "Mapper isRunning=${message.isRunning}" }
-                if (pinkyState == PinkyState.Running && message.isRunning) {
-                    pinkyState = PinkyState.Mapping
-                    pinkyStateChannel.onChange(PinkyState.Mapping)
-                    mapperIsRunning = true
-                } else if (pinkyState == PinkyState.Mapping && !message.isRunning) {
-                    pinkyState = PinkyState.Running
-                    pinkyStateChannel.onChange(PinkyState.Running)
-                    mapperIsRunning = false
+                ) {
+                    val template = resourcesFs.resolve("templates", "shows", "Default for iPad.sparkle")
+                    plugins.showStore.load(template) ?: error("Failed to load template $template.")
                 }
             }
 
-            // This needs to go last-ish, otherwise we start getting network traffic too early.
-            controllersManager.start()
+            launch { eventManager.start() }
+        }.join()
 
-            updatePinkyState(PinkyState.Running)
+        brainManager.listenForMapperMessages { message ->
+            logger.info { "Mapper isRunning=${message.isRunning}" }
+            if (pinkyState == PinkyState.Running && message.isRunning) {
+                pinkyState = PinkyState.Mapping
+                pinkyStateChannel.onChange(PinkyState.Mapping)
+                mapperIsRunning = true
+            } else if (pinkyState == PinkyState.Mapping && !message.isRunning) {
+                pinkyState = PinkyState.Running
+                pinkyStateChannel.onChange(PinkyState.Running)
+                mapperIsRunning = false
+            }
         }
+
+        // This needs to go last-ish, otherwise we start getting network traffic too early.
+        controllersManager.start()
+
+        updatePinkyState(PinkyState.Running)
     }
 
     private suspend fun <T : Any> loadDocument(
@@ -188,7 +195,7 @@ class Pinky(
         documentFeatureFlags: DocumentFeatureFlags,
         solitaryFileName: String,
         runningPath: String?,
-        solitaryTemplate: () -> T
+        solitaryTemplate: suspend () -> T
     ) {
         if (documentFeatureFlags.multiDoc) {
             runningPath?.let { path ->
@@ -231,29 +238,35 @@ class Pinky(
         pinkyStateChannel.onChange(newState)
     }
 
-    private suspend fun launchDaemonJobs(): Job {
-        return CoroutineScope(coroutineContext).launch {
-            launch { shaderLibraryManager.start() }
+    private fun CoroutineScope.launchDaemonJobs() {
+        launch(CoroutineName("Shader Library Manager")) {
+            shaderLibraryManager.start()
+        }
 
-            launch {
-                while (true) {
-                    if (mapperIsRunning) {
-                        logger.info { "Mapping ${brainManager.brainCount} brains." }
-                    } else {
-                        stageManager.logStatus()
-                        controllersManager.logStatus()
-                    }
-                    delay(10000)
+        launch(CoroutineName("Periodic Logging")) {
+            while (true) {
+                if (mapperIsRunning) {
+                    logger.info { "Mapping ${brainManager.brainCount} brains." }
+                } else {
+                    stageManager.logStatus()
+                    controllersManager.logStatus()
                 }
-            }
-
-            launch {
-                while (keepRunning) {
-                    delay(10000)
-                    logger.info { "Framerate: ${facade.framerate.summarize()}" }
-                }
+                delay(10000)
             }
         }
+
+        launch(CoroutineName("Framerate Logging")) {
+            while (keepRunning) {
+                delay(10000)
+                logger.info { "Framerate: ${facade.framerate.summarize()}" }
+            }
+        }
+    }
+
+    suspend fun stop() {
+        keepRunning = false
+        daemonJobs?.cancelAndJoin()
+        httpServer.stop()
     }
 
     private fun maybeChangeThingsIfUsersAreIdle() {

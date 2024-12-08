@@ -29,6 +29,8 @@ abstract class ResultBuffer(
     }
 
     fun resize(width: Int, height: Int) {
+        if (width == curWidth && height == curHeight) return
+
         gpuBuffer.storage(storageFormat, width, height)
         curWidth = width
         curHeight = height

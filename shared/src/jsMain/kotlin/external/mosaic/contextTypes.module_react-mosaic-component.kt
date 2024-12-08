@@ -1,5 +1,3 @@
-@file:Suppress("INTERFACE_WITH_SUPERCLASS", "EXTERNAL_DELEGATION")
-
 package external.mosaic
 
 import kotlin.js.Promise

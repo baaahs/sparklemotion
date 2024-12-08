@@ -39,6 +39,11 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
         overflow = Overflow.scroll
     }
 
+    val newEntityButton by css {
+        paddingLeft = 1.em
+        justifyContent = JustifyContent.start
+    }
+
     val visualizerPane by css {
         position = Position.relative
         height = 100.pct
@@ -59,6 +64,16 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
         top = 10.px
         left = 10.px
         backgroundColor = Color(theme.palette.background.paper).withAlpha(.8)
+        declarations["scale"] = .8
+    }
+
+    val visualizerSnapToGrid by css {
+        display = Display.flex
+
+        input {
+            width = 5.em
+            textAlign = TextAlign.right
+        }
     }
 
     val domOverlay by css {
@@ -72,8 +87,12 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
 
     val domOverlayItem by css {
         opacity = .7
-        fontSize = .8.em
         pointerEvents = important(PointerEvents.none)
+    }
+
+    val domOverlayItemInnerDiv by css {
+        whiteSpace = WhiteSpace.nowrap
+        backfaceVisibility = Visibility.hidden
     }
 
     val propertiesPane by css {
@@ -81,6 +100,22 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
         overflow = Overflow.scroll
     }
 
+    val headerEditor by css {
+        display = Display.inlineFlex
+
+        "input" {
+            backgroundColor = Color(theme.palette.background.paper).withAlpha(.1)
+        }
+        "input:focus" {
+            backgroundColor = Color(theme.palette.background.paper).withAlpha(.5)
+        }
+    }
+
+    val mainPanelForEntityType by css {
+        paddingLeft = 1.em
+        paddingRight = 1.em
+        marginBottom = 1.em
+    }
     val propertiesEditSection by css {
         whiteSpace = WhiteSpace.nowrap
 //        color = theme.palette.primary.contrastText
@@ -101,19 +136,11 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
         }
     }
 
-    val gridSizeInput by css(propertiesEditSection) {
-        width = 5.em
-        textAlign = TextAlign.right
-    }
-
     val transformEditSection by css(propertiesEditSection) {
-        paddingTop = 1.em
-        paddingBottom = 1.em
-        paddingLeft = 0.em
-        paddingRight = 0.em
+        padding = Padding(0.em)
 
         input {
-            width = 5.em
+            width = 4.em
             textAlign = TextAlign.right
         }
     }
@@ -122,6 +149,7 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
         display = important(Display.grid)
         gridTemplateColumns = GridTemplateColumns(1.fr, 1.fr, 1.fr)
         gap = 1.em
+        paddingTop = .5.em
 
         "> label" {
             left = (-.9).rem.important

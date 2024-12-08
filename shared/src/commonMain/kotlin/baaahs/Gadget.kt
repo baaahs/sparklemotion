@@ -12,11 +12,13 @@ import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlin.collections.set
 import kotlin.js.JsName
 import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
 /**
@@ -128,19 +130,6 @@ abstract class Gadget {
     }
 
     private class Listener(val callback: GadgetListener, var enabled: Boolean = true)
-
-    companion object {
-        val serialModule = SerializersModule {
-            polymorphic(Gadget::class) {
-                subclass(ColorPicker::class, ColorPicker.serializer())
-                subclass(ImagePicker::class, ImagePicker.serializer())
-                subclass(PalettePicker::class, PalettePicker.serializer())
-                subclass(Slider::class, Slider.serializer())
-                subclass(Switch::class, Switch.serializer())
-                subclass(XyPad::class, XyPad.serializer())
-            }
-        }
-    }
 }
 
 typealias GadgetListener = (Gadget) -> Unit
@@ -169,3 +158,8 @@ private class GadgetValueObserver<T>(
 val GadgetDataSerializer = MapSerializer(String.serializer(), JsonElement.serializer())
 
 private val jsonParser = Json
+
+class GadgetType<T : Gadget>(
+    val klass: KClass<T>,
+    val serializer: KSerializer<T>
+)

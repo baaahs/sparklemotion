@@ -19,6 +19,7 @@ import react.dom.events.FormEvent
 
 private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor") { props ->
     val appContext = useContext(appContext)
+    val editMode = observe(appContext.sceneManager.editMode)
     val styles = appContext.allStyles.modelEditor
 
     val json = memo {
@@ -87,6 +88,7 @@ private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor
         FormControlLabel {
             attrs.control = buildElement {
                 Switch {
+                    attrs.disabled = editMode.isOff
                     attrs.checked = mutableEntity.objDataIsFileRef
                     attrs.onChange = handleIsFileClick.withTChangeEvent()
                 }
@@ -106,6 +108,7 @@ private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor
         if (mutableEntity.objDataIsFileRef) {
             TextField {
                 attrs.fullWidth = true
+                attrs.disabled = editMode.isOff
                 attrs.onChange = handleObjDataChange
                 attrs.value = mutableEntity.objData
                 attrs.label = buildElement { +"File" }
@@ -116,6 +119,7 @@ private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor
                 attrs.fullWidth = true
                 attrs.multiline = true
                 attrs.rows = 6
+                attrs.disabled = editMode.isOff
                 attrs.onChange = handleObjDataChange
                 attrs.value = mutableEntity.objData
                 attrs.label = buildElement { +"OBJ Data" }
@@ -142,6 +146,7 @@ private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor
     Container {
         betterSelect<String?> {
             attrs.label = "Adapter"
+            attrs.disabled = editMode.isOff
             attrs.values = listOf(null, "Constant", "Per Entity")
             attrs.renderValueOption = { adapter -> buildElement { +(adapter ?: "None" ) } }
             attrs.value = mutableEntity.metadata?.let {
@@ -158,6 +163,7 @@ private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor
                 with(styles) {
                     numberTextField<Int?> {
                         this.attrs.label = "Expected Pixels:"
+                        attrs.disabled = editMode.isOff
                         this.attrs.value = metadata.pixelCount
                         this.attrs.onChange = handleConstMetadataChange
                     }
@@ -169,6 +175,7 @@ private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor
                     attrs.fullWidth = true
                     attrs.multiline = true
                     attrs.rows = 6
+                    attrs.disabled = editMode.isOff
                     attrs.defaultValue =
                         json.encodeToString(
                             MapSerializer(String.serializer(), Int.serializer()),

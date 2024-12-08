@@ -46,21 +46,21 @@ class PubSubSpec : DescribeSpec({
 
             val client2TopicObserver =
                 testRig.client2.subscribe(topic1) { testRig.client2Log.add("topic1 changed: $it") }
-            testRig.dispatcher.runCurrent()
+            testRig.fakePinkyDispatcher.runCurrent()
 
             testRig.serverLog.assertEmpty()
             testRig.client1Log.assertContents("topic1 changed: value")
             testRig.client2Log.assertContents("topic1 changed: value")
 
             serverTopicObserver.onChange("new value")
-            testRig.dispatcher.runCurrent()
+            testRig.fakePinkyDispatcher.runCurrent()
 
             testRig.serverLog.assertEmpty()
             testRig.client1Log.assertContents("topic1 changed: new value")
             testRig.client2Log.assertContents("topic1 changed: new value")
 
             client2TopicObserver.onChange("from client 2")
-            testRig.dispatcher.runCurrent()
+            testRig.fakePinkyDispatcher.runCurrent()
 
             testRig.serverLog.assertContents("topic1 changed: from client 2")
             testRig.client1Log.assertContents("topic1 changed: from client 2")
@@ -75,7 +75,7 @@ class PubSubSpec : DescribeSpec({
             serverTopicObserver.onChange("second value")
 
             testRig.client1.subscribe(topic1) { testRig.client1Log.add("topic1 changed: $it") }
-            testRig.dispatcher.runCurrent()
+            testRig.fakePinkyDispatcher.runCurrent()
 
             testRig.serverLog.assertEmpty()
             testRig.client1Log.assertContents("topic1 changed: second value")
@@ -96,7 +96,7 @@ class PubSubSpec : DescribeSpec({
                     testRig.client1.subscribe(topic1) { testRig.client1Log.add("topic1 changed1: $it") }
                 val client1TopicObserver2 =
                     testRig.client1.subscribe(topic1) { client1Log2.add("topic1 changed2: $it") }
-                testRig.dispatcher.runCurrent()
+                testRig.fakePinkyDispatcher.runCurrent()
 
                 testRig.client1Log.assertContents("topic1 changed1: value")
                 client1Log2.assertContents("topic1 changed2: value")
@@ -104,7 +104,7 @@ class PubSubSpec : DescribeSpec({
 
                 client1TopicObserver1.unsubscribe()
                 serverTopicObserver.onChange("new value")
-                testRig.dispatcher.runCurrent()
+                testRig.fakePinkyDispatcher.runCurrent()
 
                 testRig.client1Log.assertEmpty()
                 client1Log2.assertContents("topic1 changed2: new value")
@@ -112,7 +112,7 @@ class PubSubSpec : DescribeSpec({
 
                 client1TopicObserver2.unsubscribe()
                 serverTopicObserver.onChange("another new value")
-                testRig.dispatcher.runCurrent()
+                testRig.fakePinkyDispatcher.runCurrent()
 
                 testRig.client1Log.assertEmpty()
                 client1Log2.assertEmpty()
@@ -123,7 +123,7 @@ class PubSubSpec : DescribeSpec({
         context("before connection is made") {
             it("isConnected should return false") {
                 testRig.client1.isConnected.shouldBeFalse()
-                testRig.dispatcher.runCurrent()
+                testRig.fakePinkyDispatcher.runCurrent()
                 testRig.client1.isConnected.shouldBeTrue()
             }
         }
@@ -131,14 +131,14 @@ class PubSubSpec : DescribeSpec({
         context("when websocket is connected") {
             it("isConnected should notify listeners") {
                 testRig.client1.addStateChangeListener { testRig.client1Log.add("isConnected was changed to ${testRig.client1.isConnected}") }
-                testRig.dispatcher.runCurrent()
+                testRig.fakePinkyDispatcher.runCurrent()
                 testRig.client1Log.assertContents("isConnected was changed to true")
             }
         }
 
         context("when connection is reset") {
             it("should notify listener of state change") {
-                testRig.dispatcher.runCurrent()
+                testRig.fakePinkyDispatcher.runCurrent()
                 testRig.client1.isConnected.shouldBeTrue()
 
                 testRig.client1.addStateChangeListener { testRig.client1Log.add("isConnected was changed to ${testRig.client1.isConnected}") }
@@ -161,11 +161,11 @@ class PubSubSpec : DescribeSpec({
                 testRig.client1Network.tcpConnections.size.shouldBe(1)
 
                 // don't attempt a new connection until a second has passed
-                testRig.dispatcher.runCurrent()
+                testRig.fakePinkyDispatcher.runCurrent()
                 testRig.client1Network.tcpConnections.size.shouldBe(1)
 
-                testRig.dispatcher.advanceTimeBy(2000)
-                testRig.dispatcher.runCurrent()
+                testRig.fakePinkyDispatcher.advanceTimeBy(2000)
+                testRig.fakePinkyDispatcher.runCurrent()
 
                 // assert that there was a new outgoing connection
                 testRig.client1Network.tcpConnections.size.shouldBe(2)
@@ -181,7 +181,7 @@ class PubSubSpec : DescribeSpec({
                 }
 
                 testRig.client1Network.tcpConnections.size.shouldBe(1)
-                testRig.dispatcher.runCurrent()
+                testRig.fakePinkyDispatcher.runCurrent()
                 testRig.client1Log.assertContents("topic1 changed: value")
 
                 // trigger a connection reset
@@ -191,18 +191,18 @@ class PubSubSpec : DescribeSpec({
                 testRig.client1Network.tcpConnections.size.shouldBe(1)
 
                 // don't attempt a new connection until a second has passed
-                testRig.dispatcher.runCurrent()
+                testRig.fakePinkyDispatcher.runCurrent()
                 testRig.client1Network.tcpConnections.size.shouldBe(1)
 
-                testRig.dispatcher.advanceTimeBy(2000)
-                testRig.dispatcher.runCurrent()
+                testRig.fakePinkyDispatcher.advanceTimeBy(2000)
+                testRig.fakePinkyDispatcher.runCurrent()
 
                 // assert that there was a new outgoing connection
                 testRig.client1Network.tcpConnections.size.shouldBe(2)
                 testRig.client1.isConnected.shouldBeTrue()
 
                 serverTopicObserver.onChange("new value")
-                testRig.dispatcher.runCurrent()
+                testRig.fakePinkyDispatcher.runCurrent()
                 testRig.client1Log.assertContents("topic1 changed: new value")
             }
         }
@@ -218,11 +218,11 @@ class PubSubSpec : DescribeSpec({
                 testRig.client1.subscribe(nullableTopic) {
                     testRig.client1Log.add("topic1 changed: ${it?.string}")
                 }
-                testRig.dispatcher.runCurrent()
+                testRig.fakePinkyDispatcher.runCurrent()
                 testRig.client1Log.assertContents("topic1 changed: value")
 
                 serverTopicObserver.onChange(null)
-                testRig.dispatcher.runCurrent()
+                testRig.fakePinkyDispatcher.runCurrent()
                 testRig.client1Log.assertContents("topic1 changed: null")
             }
         }
@@ -259,21 +259,21 @@ class PubSubSpec : DescribeSpec({
                     beforeEach {
                         serverOtherCommandChannel.run {}
 
-                        testRig.testCoroutineScope.launch {
+                        testRig.pinkyScope.launch {
                             result.add("response: " + clientCommandChannel("the command"))
                         }
 
-                        testRig.testCoroutineScope.launch {
+                        testRig.pinkyScope.launch {
                             result.add("response: " + clientOtherCommandChannel("other command"))
                         }
                     }
 
                     it("can handle additional commands meanwhile") {
-                        testRig.dispatcher.runCurrent()
+                        testRig.fakePinkyDispatcher.runCurrent()
                         result.shouldContainExactly("response: immediate reply for other command")
 
                         future.complete("with completion value")
-                        testRig.dispatcher.runCurrent()
+                        testRig.fakePinkyDispatcher.runCurrent()
                         result.shouldContainExactly(
                             "response: immediate reply for other command",
                             "response: deferred reply for with completion value"
@@ -286,7 +286,7 @@ class PubSubSpec : DescribeSpec({
                 val result by value { arrayListOf<String>() }
 
                 beforeEach {
-                    testRig.testCoroutineScope.launch {
+                    testRig.pinkyScope.launch {
                         try {
                             result.add("response: " + clientCommandChannel("the command"))
                         } catch (e: Exception) {
@@ -297,7 +297,7 @@ class PubSubSpec : DescribeSpec({
 
                 suspend fun DescribeSpecContainerScope.sharedCommandSpecs() {
                     it("invokes that command on the server and returns the response to the caller") {
-                        testRig.dispatcher.runCurrent()
+                        testRig.fakePinkyDispatcher.runCurrent()
                         result.shouldContainExactly("response: reply for the command")
                     }
 
@@ -307,7 +307,7 @@ class PubSubSpec : DescribeSpec({
                         }
 
                         it("returns the response to the caller") {
-                            testRig.dispatcher.runCurrent()
+                            testRig.fakePinkyDispatcher.runCurrent()
                             result.shouldContainExactly("error: error for the command")
                         }
                     }

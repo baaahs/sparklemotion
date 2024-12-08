@@ -58,7 +58,7 @@ class SceneManagerSpec : DescribeSpec({
             val newScene by value { Scene.Empty }
             beforeEach {
                 serverSceneChannel.onChange(DocumentState(newScene, Unit, false, null))
-                pubSubRig.testCoroutineScope.advanceUntilIdle()
+                pubSubRig.pinkyScope.advanceUntilIdle()
             }
 
             it("has a scene loaded") {

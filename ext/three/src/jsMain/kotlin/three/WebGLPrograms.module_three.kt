@@ -16,16 +16,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external interface `T$16` {
-    @nativeGetter
-    operator fun get(define: String): dynamic /* String? | Number? | Boolean? */
-    @nativeSetter
-    operator fun set(define: String, value: String)
-    @nativeSetter
-    operator fun set(define: String, value: Number)
-    @nativeSetter
-    operator fun set(define: String, value: Boolean)
-}
+external interface `T$16`
 
 external interface WebGLProgramParameters {
     var shaderID: String
@@ -209,12 +200,7 @@ external interface WebGLProgramParameters {
     var customProgramCacheKey: String
 }
 
-external interface `T$17` {
-    @nativeGetter
-    operator fun get(uniform: String): IUniform__0?
-    @nativeSetter
-    operator fun set(uniform: String, value: IUniform__0)
-}
+external interface `T$17`
 
 external interface WebGLProgramParametersWithUniforms : WebGLProgramParameters {
     var uniforms: `T$17`

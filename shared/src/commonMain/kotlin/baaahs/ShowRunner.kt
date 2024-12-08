@@ -51,6 +51,7 @@ class ShowRunner(
 
     fun housekeeping(): Boolean {
         if (activePatchSetChanged) {
+            logger.debug { "Active patch set changed." }
             fixtureManager.activePatchSetChanged(openShow.getSnapshot().activePatchSet)
             activePatchSetChanged = false
         }
@@ -63,6 +64,6 @@ class ShowRunner(
     }
 
     companion object {
-        val logger = Logger("ShowRunner")
+        val logger = Logger<ShowRunner>()
     }
 }

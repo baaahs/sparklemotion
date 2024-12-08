@@ -23,6 +23,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.properties.shouldHaveValue
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 
@@ -45,7 +46,7 @@ class BrainManagerSpec : DescribeSpec({
                 link,
                 Pinky.NetworkStats(),
                 FakeClock(),
-                ImmediateDispatcher
+                CoroutineScope(ImmediateDispatcher)
             )
         }
         val listener by value { SpyFixtureListener() }

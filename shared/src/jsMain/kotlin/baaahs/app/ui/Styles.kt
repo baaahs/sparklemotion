@@ -124,6 +124,8 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
 
     val toolbar by css {
         overflow = Overflow.hidden
+        justifyContent = JustifyContent.spaceBetween
+        height = 100.pct
     }
 
     val appToolbarTabs by css {
@@ -147,6 +149,7 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
         display = Display.flex
         position = Position.relative
         right = 0.px
+        height = 2.em
     }
 
     val appToolbarEditModeActions by css {
@@ -185,7 +188,7 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
     }
     val titleFooter by css {
         position = Position.absolute
-        top = 2.2.em
+        bottom = 2.px
         fontSize = .6.em
         opacity = .6
         textWrap = TextWrap.nowrap
@@ -229,7 +232,7 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
 
     val logotype by css {
         position = Position.absolute
-        top = 0.5.em
+        bottom = 0.px
         right = 0.5.em
         fontSize = 0.6.rem
         userSelect = UserSelect.none
@@ -289,15 +292,31 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
     }
 
     val appDrawerHeader by css {
+        position = Position.relative
         display = Display.flex
         alignItems = Align.center
         padding = Padding(theme.spacing(0, 1).toLinearDimension())
         mixIn(theme.mixins.toolbar)
         justifyContent = JustifyContent.flexEnd
+        userSelect = UserSelect.none
     }
 
     val appModeTab by css {
         minWidth = 0.px
+    }
+
+    val appDrawerLogotype by css {
+        position = Position.absolute
+        fontWeight = FontWeight.bold.important
+        fontSize = 1.2.rem.important
+        left = 1.em
+    }
+    val appDrawerLogotypeSub by css {
+        position = Position.absolute
+        fontWeight = FontWeight.lighter.important
+        fontSize = .6.rem.important
+        left = 9.em
+        top = 3.em
     }
 
     val appDrawerDocInfo by css {

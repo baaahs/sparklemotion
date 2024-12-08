@@ -25,6 +25,12 @@ interface Clock {
     fun tz(): TimeZone = TimeZone.currentSystemDefault()
 }
 
+object SystemClock : Clock {
+    override fun now(): Instant {
+        return kotlinx.datetime.Clock.System.now()
+    }
+}
+
 fun Time.asInstant(): Instant =
     Instant.fromEpochSeconds(
         this.toLong(),

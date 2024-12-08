@@ -93,6 +93,8 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
 
     val button by css {
         textTransform = TextTransform.none
+        paddingLeft = 1.em
+        justifyContent = JustifyContent.start
     }
 
     val accordionPreview by css {

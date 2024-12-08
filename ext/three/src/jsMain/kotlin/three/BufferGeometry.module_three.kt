@@ -73,12 +73,7 @@ external interface GeometryGroup {
         set(value) = definedExternally
 }
 
-external interface `T$12` {
-    @nativeGetter
-    operator fun get(name: String): Array<dynamic /* BufferAttribute | InterleavedBufferAttribute */>?
-    @nativeSetter
-    operator fun set(name: String, value: Array<dynamic /* BufferAttribute | InterleavedBufferAttribute */>)
-}
+external interface `T$12`
 
 open external class BufferGeometry<Attributes : NormalOrGLBufferAttributes> : EventDispatcher/*<`T$8`>*/ {
     open var id: Number

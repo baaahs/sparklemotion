@@ -11,12 +11,11 @@ lwjgl = "3.3.1"
 
 # JVM:
 ktor = "2.3.12"
-
 tarsosDsp = "2.5"
 
 # JS:
 kotlinxHtml = "0.9.1"
-kotlinWrappers = "1.0.0-pre.804"
+kotlinWrappers = "1.0.0-pre.816"
 
 # Test:
 junit = "5.11.3"
@@ -40,8 +39,10 @@ lwjglGlfw = { group = "org.lwjgl", name = "lwjgl-glfw", version.ref = "lwjgl" }
 lwjglOpengl = { group = "org.lwjgl", name = "lwjgl-opengl", version.ref = "lwjgl" }
 kglJs = { group = "com.danielgergely.kgl", name = "kgl-js", version.ref = "kgl" }
 jmdns = { group = "org.jmdns", name = "jmdns", version = "3.5.7" }
+ktorClientCore = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
 ktorServerCore = { group = "io.ktor", name = "ktor-server-core", version.ref = "ktor" }
 ktorServerNetty = { group = "io.ktor", name = "ktor-server-netty", version.ref = "ktor" }
+ktorServerCio = { group = "io.ktor", name = "ktor-server-cio", version.ref = "ktor" }
 ktorServerHostCommon = { group = "io.ktor", name = "ktor-server-host-common", version.ref = "ktor" }
 ktorServerCallLogging = { group = "io.ktor", name = "ktor-server-call-logging", version.ref = "ktor" }
 ktorServerWebsockets = { group = "io.ktor", name = "ktor-server-websockets", version.ref = "ktor" }

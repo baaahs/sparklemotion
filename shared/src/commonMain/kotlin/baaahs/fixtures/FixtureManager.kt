@@ -108,11 +108,13 @@ class FixtureManagerImpl(
     }
 
     private fun removeFixture(fixture: Fixture) {
-        renderTargets.remove(fixture)?.let { renderTarget ->
+        val removedRenderTarget = renderTargets.remove(fixture)
+        removedRenderTarget?.let { renderTarget ->
             logger.debug { "Releasing fixture ${fixture.title}" }
             renderTarget.release()
             // TODO: remove from RemoteVisualizers
-        } ?: throw IllegalStateException("huh? can't remove unknown fixture $fixture")
+        }
+        logger.warn { "No render target to remove for $fixture." }
     }
 
     override fun activePatchSetChanged(activePatchSet: ActivePatchSet) {

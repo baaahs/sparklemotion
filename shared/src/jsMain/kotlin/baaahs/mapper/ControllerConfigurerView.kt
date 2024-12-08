@@ -12,10 +12,10 @@ import baaahs.ui.*
 import baaahs.ui.components.ListAndDetail
 import baaahs.ui.components.collapsibleSearchBox
 import baaahs.ui.components.listAndDetail
+import baaahs.util.JsPlatform
 import kotlinx.css.Color
 import kotlinx.css.RuleSet
 import kotlinx.css.backgroundColor
-import kotlinx.css.color
 import materialui.icon
 import mui.material.*
 import mui.system.sx
@@ -134,14 +134,14 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                                     TableCell {
                                         img {
                                             attrs.className = -styles.controllerIcon
-                                            attrs.src = "/assets/controllers/${
+                                            attrs.src = JsPlatform.imageUrl("/assets/controllers/${
                                                 when (controllerId.controllerType) {
                                                     BrainManager.controllerTypeName -> "baaahs-brain.svg"
                                                     DmxManager.controllerTypeName -> "dmx.svg"
                                                     SacnManager.controllerTypeName -> "sacn.svg"
                                                     else -> "unknown.svg"
                                                 }
-                                            }"
+                                            }")
                                         }
                                         +(state?.title ?: mutableController?.title ?: "Unnamed Controller")
                                     }
@@ -164,7 +164,7 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                                 div(+styles.navigatorPaneActions) {
                                     Button {
                                         attrs.className = -styles.button
-                                        attrs.color = ButtonColor.secondary
+                                        attrs.color = ButtonColor.primary
                                         attrs.onClick = handleNewControllerClick
 
                                         attrs.startIcon = buildElement { icon(mui.icons.material.AddCircleOutline) }
@@ -179,7 +179,7 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
             }
         }
         attrs.selection = selectedController
-        attrs.detailHeader = selectedController?.name()
+        attrs.detailHeader = selectedController?.name()?.asTextNode()
         attrs.detailRenderer = ListAndDetail.DetailRenderer { controller ->
             controllerConfigEditor {
                 attrs.mutableScene = props.mutableScene

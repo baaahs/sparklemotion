@@ -13,7 +13,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.modules.SerializersModule
 import kotlin.js.JsName
-import kotlin.jvm.Synchronized
+import kotlin.math.min
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -96,7 +96,6 @@ abstract class PubSub {
             }
         }
 
-        @Synchronized
         private fun maybeUpdateValueAndGetListeners(newData: JsonElement): List<Listener> {
             return if (!this::jsonValue.isInitialized || newData != jsonValue) {
                 jsonValue = newData
@@ -118,7 +117,6 @@ abstract class PubSub {
 
         fun stringify(jsonElement: JsonElement): String = json.encodeToString(JsonElement.serializer(), jsonElement)
 
-        @Synchronized
         fun addListener(listener: Listener) {
             listeners.add(listener)
             if (this::jsonValue.isInitialized) {
@@ -126,16 +124,13 @@ abstract class PubSub {
             }
         }
 
-        @Synchronized
         fun removeListener(listener: Listener) {
             listeners.remove(listener)
         }
 
         // If only the server listener remains, effectively no listeners.
-        @Synchronized
         fun noRemainingListeners(): Boolean = listeners.all { it.isServerListener }
 
-        @Synchronized
         fun removeListeners(block: (Listener) -> Boolean) {
             listeners.removeAll(block)
         }
@@ -148,18 +143,14 @@ abstract class PubSub {
     class Topics {
         private val map = hashMapOf<String, TopicInfo<*>>()
 
-        @Synchronized
         operator fun get(topicName: String): TopicInfo<*>? = map[topicName]
 
-        @Synchronized
         fun find(topicName: String): TopicInfo<*> = map.getBang(topicName, "topic")
 
-        @Synchronized
         fun <T> getOrPut(topicName: String, function: () -> TopicInfo<T>): TopicInfo<*> {
             return map.getOrPut(topicName, function)
         }
 
-        @Synchronized
         private fun values() = map.values.toList()
 
         fun forEach(function: (TopicInfo<*>) -> Unit) {
@@ -171,13 +162,10 @@ abstract class PubSub {
         private val serverChannels: MutableMap<String, ServerCommandChannel<*, *>> = hashMapOf()
         private val clientChannels: MutableMap<String, ClientCommandChannel<*, *>> = hashMapOf()
 
-        @Synchronized
         private fun hasServerChannel(name: String) = serverChannels.containsKey(name)
 
-        @Synchronized
         fun getServerChannel(name: String) = serverChannels.getBang(name, "command channel")
 
-        @Synchronized
         private fun putServerChannel(name: String, channel: ServerCommandChannel<*, *>) {
             serverChannels[name] = channel
         }
@@ -194,13 +182,10 @@ abstract class PubSub {
             }
         }
 
-        @Synchronized
         private fun hasClientChannel(name: String) = clientChannels.containsKey(name)
 
-        @Synchronized
         fun getClientChannel(name: String) = clientChannels.getBang(name, "command channel")
 
-        @Synchronized
         private fun putClientChannel(name: String, channel: ClientCommandChannel<*, *>) {
             clientChannels[name] = channel
         }
@@ -365,7 +350,13 @@ abstract class PubSub {
         fun sendTopicUpdate(topicInfo: TopicInfo<*>, data: JsonElement) {
             if (isConnected) {
                 if (verbose) {
-                    logger.debug { "$connectionInfo: update ${topicInfo.name} ${topicInfo.stringify(data)}" }
+                    logger.debug {
+                        val substring = topicInfo.stringify(data).let {
+                            it.substring(0 until min(it.length, 255)) +
+                                    if (it.length > 255) "..." else ""
+                        }
+                        "$connectionInfo: update ${topicInfo.name} $substring"
+                    }
                 }
 
                 val writer = ByteArrayWriter()
@@ -511,7 +502,14 @@ abstract class PubSub {
             commandPort: CommandPort<C, R>,
             callback: suspend (command: C) -> R
         ) {
-            commandChannels.listen(commandPort, callback)
+            commandChannels.listen(commandPort) {
+                try {
+                    callback(it)
+                } catch (e: Exception) {
+                    logger.error(e) { "Error in remote command invocation (${commandPort.name})." }
+                    throw e
+                }
+            }
         }
     }
 
@@ -784,12 +782,10 @@ abstract class PubSub {
     private class Cleanups {
         private val cleanups = mutableListOf<() -> Unit>()
 
-        @Synchronized
         fun add(cleanup: () -> Unit) {
             cleanups.add(cleanup)
         }
 
-        @Synchronized
         fun invokeAll() {
             cleanups.forEach { it.invoke() }
             cleanups.clear()

@@ -5,12 +5,7 @@ package three
 import org.w3c.xhr.ProgressEvent
 import kotlin.js.Promise
 
-external interface `T$89` {
-    @nativeGetter
-    operator fun get(header: String): String?
-    @nativeSetter
-    operator fun set(header: String, value: String)
-}
+external interface `T$89`
 
 open external class Loader<TData, TUrl>(manager: LoadingManager = definedExternally) {
     open var crossOrigin: String

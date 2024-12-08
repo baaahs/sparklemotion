@@ -15,6 +15,7 @@ import baaahs.gl.override
 import baaahs.gl.render.RenderManager
 import baaahs.gl.testPlugins
 import baaahs.io.FsServerSideSerializer
+import baaahs.io.resourcesFs
 import baaahs.kotest.value
 import baaahs.libraries.ShaderLibraryManager
 import baaahs.mapper.MappingSession
@@ -44,6 +45,7 @@ import baaahs.sm.server.PinkyConfigStore
 import baaahs.sm.server.ServerNotices
 import baaahs.sm.server.StageManager
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.core.test.testCoroutineScheduler
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.CoroutineScope
@@ -53,7 +55,7 @@ import kotlinx.coroutines.launch
 @Suppress("unused")
 @InternalCoroutinesApi
 class PinkySpec : DescribeSpec({
-    describe("Pinky") {
+    describe("Pinky").config(coroutineTestScope = true) {
         val fakeGlslContext by value { FakeGlContext() }
         val network by value { TestNetwork(1_000_000) }
         val clientAddress by value { TestNetwork.Address("client") }
@@ -69,13 +71,13 @@ class PinkySpec : DescribeSpec({
         val renderManager by value { fakeGlslContext.runInContext { RenderManager(fakeGlslContext) } }
         val fixtureManager by value { FixtureManagerImpl(renderManager, plugins) }
         val toolchain by value { RootToolchain(plugins) }
-        val httpServer by value { link.startHttpServer(Ports.PINKY_UI_TCP) }
+        val httpServer by value { link.createHttpServer(Ports.PINKY_UI_TCP) }
         val coroutineScope by value { CoroutineScope(ImmediateDispatcher) }
         val pubSub by value { PubSub.Server(httpServer, coroutineScope) }
         val clock by value { FakeClock() }
-        val gadgetManager by value { GadgetManager(pubSub, clock, ImmediateDispatcher) }
+        val gadgetManager by value { GadgetManager(pubSub, clock, CoroutineScope(ImmediateDispatcher)) }
         val brainManager by value {
-            BrainManager(PermissiveFirmwareDaddy(), link, Pinky.NetworkStats(), clock, ImmediateDispatcher)
+            BrainManager(PermissiveFirmwareDaddy(), link, Pinky.NetworkStats(), clock, CoroutineScope(ImmediateDispatcher))
         }
         val serverNotices by value { ServerNotices(pubSub, ImmediateDispatcher) }
         val sceneMonitor by value { SceneMonitor(OpenScene(model)) }
@@ -107,12 +109,12 @@ class PinkySpec : DescribeSpec({
 
             Pinky(
                 clock, PermissiveFirmwareDaddy(), plugins, fakeFs.rootFile, link, httpServer, pubSub,
-                dmxManager, mappingManager, fixtureManager, ImmediateDispatcher, toolchain,
+                dmxManager, mappingManager, fixtureManager, CoroutineScope(ImmediateDispatcher), toolchain,
                 stageManager, controllersManager, brainManager,
                 ShaderLibraryManager(plugins, fakeFs, FsServerSideSerializer(), pubSub),
                 Pinky.NetworkStats(), PinkySettings(), serverNotices, PinkyMapperHandlers(mappingStore),
                 PinkyConfigStore(plugins, fakeFs.rootFile), eventManager,
-                ObservableProvider(FeatureFlags.JVM)
+                ObservableProvider(FeatureFlags.JVM), resourcesFs
             )
         }
         val pinkyLink by value { network.links.only() }
@@ -131,7 +133,7 @@ class PinkySpec : DescribeSpec({
         beforeEach {
             pinky.switchTo(SampleData.sampleShow)
 
-            doRunBlocking {
+            val startup = CoroutineScope(testCoroutineScheduler).launch {
                 panelMappings.forEach { (brainId, surface) ->
                     val surfaceData = MappingSession.SurfaceData(
                         BrainManager.controllerTypeName, brainId.uuid, surface.name, null, null
@@ -146,8 +148,11 @@ class PinkySpec : DescribeSpec({
                     fakeFs.renameFile(mappingSessionPath, fakeFs.resolve("mapping/${model.name}/$mappingSessionPath"))
                 }
 
-                pinky.launchStartupJobs()
+                with(pinky) { launch { launchStartupJobs() } }
             }
+
+            testCoroutineScheduler.runCurrent()
+            startup.join()
         }
 
         describe("brains reporting to Pinky") {

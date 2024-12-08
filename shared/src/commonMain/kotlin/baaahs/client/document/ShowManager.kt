@@ -68,6 +68,7 @@ class ShowManager(
             Option("Empty Show") { makeNew { null } },
             Divider,
             DialogMenuItem.Header("From Template:"),
+            Option("Default for iPad") { makeNew { fromResources("Default for iPad.sparkle") } },
             Option("BRC 2024") { makeNew { fromResources("BRC 2024.sparkle") } },
             Option("BRC 2023") { makeNew { fromResources("BRC 2023.sparkle") } },
             Option("Eve Rafters") { makeNew { fromResources("Eve Rafters.sparkle") } },
@@ -81,7 +82,7 @@ class ShowManager(
         val file = fileFromResources(fileName)
         return plugins.showStore.load(file)?.let {
             it.copy(title = "${it.title} Copy")
-        } ?: error("Couldn't find show")
+        } ?: error("Couldn't find show \"$fileName\".")
     }
 
     private fun fileFromResources(fileName: String): Fs.File =

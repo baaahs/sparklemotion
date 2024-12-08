@@ -1,14 +1,13 @@
-@file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.addons
 
 import three.*
 
-external enum class SSAOPassOUTPUT {
-    Default,
-    SSAO,
-    Blur,
-    Depth,
-    Normal
+external object SSAOPassOUTPUT {
+    val Default: SSAOPassOUTPUT
+    val SSAO: SSAOPassOUTPUT
+    val Blur: SSAOPassOUTPUT
+    val Depth: SSAOPassOUTPUT
+    val Normal: SSAOPassOUTPUT
 }
 
 open external class SSAOPass(scene: Scene, camera: Camera, width: Number = definedExternally, height: Number = definedExternally, kernelSize: Number = definedExternally) : Pass {

@@ -18,6 +18,7 @@ import baaahs.plugin.midi.MidiManager
 import baaahs.sm.brain.DirectoryDaddy
 import baaahs.sm.brain.FirmwareDaddy
 import baaahs.sm.brain.proto.Ports
+import baaahs.sm.server.ExceptionReporter
 import baaahs.sm.server.PinkyArgs
 import baaahs.util.Clock
 import kotlinx.cli.ArgParser
@@ -25,14 +26,19 @@ import kotlinx.cli.ArgType
 import kotlinx.cli.default
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.asCoroutineDispatcher
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 import java.io.File
+import java.util.concurrent.Executors
 
 class JvmPlatformModule(
+    override val exceptionReporter: ExceptionReporter,
     private val clock_: Clock
 ) : PlatformModule {
-    override val network: Network = JvmNetwork()
+    override val networkDispatcher: CoroutineDispatcher = Dispatchers.IO
+    override val Scope.network: Network
+        get() = JvmNetwork(get(PlatformModule.Named.networkScope), exceptionReporter)
     override val Scope.clock: Clock
         get() = clock_
     override val Scope.mediaDevices: MediaDevices
@@ -77,7 +83,10 @@ class JvmPinkyModule(
         }
 
     override val Scope.pinkyMainDispatcher: CoroutineDispatcher
-        get() = Dispatchers.Default.limitedParallelism(1)
+        get() = Executors.newSingleThreadExecutor { runnable ->
+            Thread(runnable, "Pinky Main")
+        }.asCoroutineDispatcher()
+    // Dispatchers.Default.limitedParallelism(1, "Pinky Main")
     override val Scope.dmxDriver: Dmx.Driver
         get() = JvmFtdiDmxDriver
     override val Scope.midiManager: MidiManager

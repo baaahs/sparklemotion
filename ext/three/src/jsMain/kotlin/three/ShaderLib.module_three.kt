@@ -9,10 +9,6 @@ external interface ShaderLibShader {
 }
 
 external object ShaderLib {
-    @nativeGetter
-    operator fun get(name: String): ShaderLibShader?
-    @nativeSetter
-    operator fun set(name: String, value: ShaderLibShader)
     var basic: ShaderLibShader
     var lambert: ShaderLibShader
     var phong: ShaderLibShader

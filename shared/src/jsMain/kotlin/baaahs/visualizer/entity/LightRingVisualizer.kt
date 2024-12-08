@@ -14,7 +14,6 @@ class LightRingVisualizer(
     vizPixels: VizPixels?
 ) : BaseEntityVisualizer<LightRing>(lightRing) {
     private val ringMesh = Mesh<RingGeometry, MeshBasicMaterial>()
-    private val ringMaterial = MeshBasicMaterial()
 
     private val lineMaterial = LineDashedMaterial()
     private val pixel0IndicatorMaterial = MeshBasicMaterial()
@@ -37,11 +36,13 @@ class LightRingVisualizer(
     init { update(item) }
 
     override fun applyStyle(entityStyle: EntityStyle) {
-        entityStyle.applyToMesh(ringMesh.material, EntityStyle.Use.BacklitSurface)
+        entityStyle.applyToMesh(ringMesh.material)
+        ringMesh.material.opacity = .5
+        ringMesh.material.transparent = true
         entityStyle.applyToLine(lineMaterial, EntityStyle.Use.BacklitSurface)
         entityStyle.applyToMesh(pixel0IndicatorMaterial, EntityStyle.Use.LightStrandHint)
 
-        pixelsPreview.applyStyle(entityStyle)
+        pixelsPreview.applyStyle(entityStyle, adapter.units)
     }
 
     override fun isApplicable(newItem: Any): LightRing? =
@@ -50,11 +51,15 @@ class LightRingVisualizer(
     override fun update(newItem: LightRing) {
         super.update(newItem)
 
+        val borderWidth = adapter.units.fromCm(3)
+
         val ringGeom = RingGeometry(
-            innerRadius = newItem.radius - 1,
-            outerRadius = newItem.radius + 1,
-            thetaSegments = 16, phiSegments = 1
+            innerRadius = newItem.radius - borderWidth,
+            outerRadius = newItem.radius + borderWidth,
+            thetaSegments = 24, phiSegments = 1
         )
+        ringMesh.geometry = ringGeom
+        ringMesh.material = EntityStyle.meshMaterial()
 
         obj.clear()
         obj.add(ringMesh)
@@ -69,8 +74,6 @@ class LightRingVisualizer(
                 translate(pixel0.x, pixel0.y, pixel0.z)
             }, pixel0IndicatorMaterial))
         }
-        ringMesh.geometry = ringGeom
-        ringMesh.material = ringMaterial
 
         pixelsPreview.setLocations(pixelLocations.map { it.toVector3() }.toTypedArray())
     }

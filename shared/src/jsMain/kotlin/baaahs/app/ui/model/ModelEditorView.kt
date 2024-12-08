@@ -1,6 +1,7 @@
 package baaahs.app.ui.model
 
 import baaahs.app.ui.appContext
+import baaahs.app.ui.editor.textFieldEditor
 import baaahs.mapper.styleIf
 import baaahs.model.EntityData
 import baaahs.model.Model
@@ -10,6 +11,7 @@ import baaahs.sim.SimulationEnv
 import baaahs.ui.*
 import baaahs.ui.components.*
 import baaahs.ui.components.ListAndDetail.Orientation.*
+import baaahs.util.CacheBuilder
 import baaahs.util.globalLaunch
 import baaahs.util.useResizeListener
 import baaahs.visualizer.*
@@ -17,42 +19,55 @@ import baaahs.visualizer.sim.PixelArranger
 import baaahs.visualizer.sim.SwirlyPixelArranger
 import baaahs.window
 import emotion.styled.styled
+import js.objects.jso
 import materialui.icon
 import mui.icons.material.Delete
 import mui.icons.material.ExpandMore
 import mui.material.*
-import mui.material.styles.Theme
-import mui.material.styles.useTheme
 import mui.system.sx
 import mui.system.useMediaQuery
+import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
+import react.dom.events.MouseEvent
 import react.dom.span
 import web.cssom.pct
 import web.cssom.px
 import web.dom.Element
 import web.dom.document
 import web.html.HTMLDivElement
+import web.html.InputType
+
+private val EDIT_TITLE_IN_HEADER = true
 
 private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.modelEditor
-    val theme = useTheme<Theme>()
     val isPortraitScreen = useMediaQuery("(orientation: portrait)")
 
     val editMode = observe(appContext.sceneManager.editMode)
 
     val mutableScene = props.mutableScene
     val mutableModel = mutableScene.model
-    val domOverlayExtension = memo {
+    val domOverlayExtension = memo(mutableModel.units) {
         DomOverlayExtension { itemVisualizer ->
+            val bounds = itemVisualizer.item.bounds
+            val size = bounds.second - bounds.first
+            val length = size.length()
             document.createElement("div").also {
                 it.classList.add(+styles.domOverlayItem)
-                it.innerText = itemVisualizer.title
+                it.appendChild(document.createElement("div").also {
+                    it.classList.add(+styles.domOverlayItemInnerDiv)
+                    it.innerText = itemVisualizer.title
+                    it.style.fontSize = "1em"
+                    it.style.scale = "${length * .007}"
+                })
             }
+        }.also {
+            withCleanup { it.clear() }
         }
     }
-    val entityAdapter = memo(mutableModel.units) {
+    val entityAdapter = memo(mutableModel.units, domOverlayExtension) {
         domOverlayExtension.DomOverlayEntityAdapter(
             SimulationEnv {
                 component(appContext.clock)
@@ -148,6 +163,19 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
         props.onEdit()
     }
 
+    var newEntityMenuAnchor by state<Element?> { null }
+    val handleNewEntityClick by mouseEventHandler { newEntityMenuAnchor = it.currentTarget as Element? }
+    val hideNewEntityMenu by handler { _: Event, _: String -> newEntityMenuAnchor = null }
+
+    val addNewEntityTypeHandlers = memo(EntityTypes, handleAddEntity) {
+        CacheBuilder<EntityType, (MouseEvent<*, *>) -> Unit> {
+            { _: MouseEvent<*, *> ->
+                handleAddEntity(it.createNew())
+                newEntityMenuAnchor = null
+            }
+        }
+    }
+
     val visualizerParentEl = ref<Element>()
     onMount(visualizer) {
         val domElement = domOverlayExtension.domElement
@@ -169,9 +197,21 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
     }
 
     val selectedEditingEntity = visualizer.editingEntity
+    val handleEntityNameGetValue by handler<() -> String>(selectedEditingEntity) {
+        selectedMutableEntity?.title ?: ""
+    }
+    val handleEntityNameSetValue by handler<(String) -> Unit>(selectedEditingEntity, props.onEdit) { value ->
+        selectedMutableEntity?.title = value
+    }
 
     useResizeListener(visualizerParentEl) {  _, _ ->
         visualizer.resize()
+    }
+
+    val MyAccordionDetails = memo {
+        AccordionDetails.styled { x ->
+            x.sx { padding = 0.px }
+        }
     }
 
     div(styleIf(isPortraitScreen, styles.editorPanesPortrait, styles.editorPanesLandscape)) {
@@ -179,7 +219,7 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
             div(+styles.visualizer) {
                 ref = visualizerParentEl
 
-                if (editMode.isOn) {
+                if (editMode.isOn && selectedMutableEntity != null) {
                     modelEditorToolbar {
                         attrs.visualizer = visualizer.facade
                         attrs.modelUnit = mutableModel.units
@@ -210,10 +250,54 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
                             attrs.onSelect = handleListItemSelect
                             attrs.searchMatcher = entityMatcher::matches
                         }
+
+                        if (editMode.isOn) {
+                            Button {
+                                attrs.className = -styles.newEntityButton
+                                attrs.color = ButtonColor.primary
+                                attrs.onClick = handleNewEntityClick
+
+                                attrs.startIcon = buildElement { icon(mui.icons.material.AddCircleOutline) }
+                                +"New…"
+                            }
+
+                            Menu {
+                                attrs.anchorEl = newEntityMenuAnchor.asDynamic()
+                                attrs.anchorOrigin = jso {
+                                    horizontal = "left"
+                                    vertical = "bottom"
+                                }
+                                attrs.open = newEntityMenuAnchor != null
+                                attrs.onClose = hideNewEntityMenu
+
+                                EntityTypes.forEach { entityType ->
+                                    MenuItem {
+                                        attrs.onClick = addNewEntityTypeHandlers[entityType]
+                                        ListItemText { +entityType.addNewTitle }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
                 attrs.selection = selectedEditingEntity
-                attrs.detailHeader = selectedMutableEntity?.title
+                if (editMode.isOn && EDIT_TITLE_IN_HEADER) {
+                    attrs.detailHeader =
+                        buildElement {
+                            div(+styles.headerEditor) {
+                                textFieldEditor {
+                                    attrs.type = InputType.text
+                                    attrs.getValue = handleEntityNameGetValue
+                                    attrs.setValue = handleEntityNameSetValue
+                                    attrs.onChange = props.onEdit.unsafeCast<(Boolean) -> Unit>()
+                                    attrs.noIntermediateUpdates = true
+                                }
+                            }
+                        }
+                } else {
+                    attrs.detailHeader = selectedMutableEntity?.title?.asTextNode()
+                }
+
                 attrs.detailRenderer = ListAndDetail.DetailRenderer { editingEntity ->
                     FormControl {
                         attrs.margin = FormControlMargin.dense
@@ -221,20 +305,26 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
 
                         // Additional entity-specific views:
                         editingEntity.getEditorPanels().forEachIndexed { i, editorPanel ->
-                            Accordion {
-                                attrs.elevation = 4
-                                attrs.defaultExpanded = i == 0
-
-                                AccordionSummary {
-                                    attrs.expandIcon = ExpandMore.create()
-                                    editorPanel.title?.let {
-                                        Typography { +it }
-                                    }
-                                }
-                                AccordionDetails {
-                                    attrs.sx { padding = 0.px }
-
+                            if (editorPanel.isMainPanelForEntityType) {
+                                Paper {
+                                    attrs.className = -styles.mainPanelForEntityType
+                                    attrs.elevation = 4
                                     editingEntity.getView(editorPanel).render(this)
+                                }
+                            } else {
+                                Accordion {
+                                    attrs.elevation = 4
+                                    attrs.defaultExpanded = i == 0
+
+                                    AccordionSummary {
+                                        attrs.expandIcon = ExpandMore.create()
+                                        editorPanel.title?.let {
+                                            Typography { +it }
+                                        }
+                                    }
+                                    MyAccordionDetails {
+                                        editingEntity.getView(editorPanel).render(this)
+                                    }
                                 }
                             }
                         }
@@ -246,17 +336,17 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
                                 attrs.expandIcon = ExpandMore.create()
                                 Typography { +"Transformation" }
                             }
-                            AccordionDetails {
-                                attrs.sx { padding = 0.px }
-
+                            MyAccordionDetails {
                                 transformationEditor {
                                     attrs.editingEntity = editingEntity
                                 }
                             }
                         }
 
-                        titleAndDescriptionEditor {
-                            attrs.editingEntity = editingEntity
+                        if (!EDIT_TITLE_IN_HEADER) {
+                            titleAndDescriptionEditor {
+                                attrs.editingEntity = editingEntity
+                            }
                         }
 
                         Accordion {
@@ -267,12 +357,10 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
                                 attrs.expandIcon = ExpandMore.create()
                                 Typography { +"Actions" }
                             }
-                            AccordionDetails {
-                                attrs.sx { padding = 0.px }
-
+                            MyAccordionDetails {
                                 IconButton {
                                     attrs.onClick = handleDeleteEntity.withMouseEvent()
-                                    attrs.color = IconButtonColor.secondary
+                                    attrs.color = IconButtonColor.primary
                                     attrs.disabled = editMode.isOff
                                     icon(Delete)
                                     +"Delete Entity"

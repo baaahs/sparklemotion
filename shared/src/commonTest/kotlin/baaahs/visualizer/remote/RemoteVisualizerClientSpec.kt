@@ -34,7 +34,7 @@ import kotlinx.coroutines.InternalCoroutinesApi
 class RemoteVisualizerClientSpec : DescribeSpec({
     describe<RemoteVisualizerClient> {
         val pubSubRig by value { TestRig() }
-        val dispatcher by value { pubSubRig.dispatcher }
+        val dispatcher by value { pubSubRig.fakePinkyDispatcher }
         var cleanupTestCoroutines: () -> Unit = {}
         val coroutineScope by value {
             createTestCoroutineScope(dispatcher).also { scope ->
@@ -57,7 +57,7 @@ class RemoteVisualizerClientSpec : DescribeSpec({
         }
         val server by value {
             RemoteVisualizerServer(fakeFixtureManager, testPlugins()).also { server ->
-                serverLink.startHttpServer(Ports.PINKY_UI_TCP)
+                serverLink.createHttpServer(Ports.PINKY_UI_TCP)
                     .listenWebSocket("/ws/visualizer") { server }
             }
         }

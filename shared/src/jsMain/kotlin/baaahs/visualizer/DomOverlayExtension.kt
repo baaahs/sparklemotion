@@ -26,7 +26,10 @@ class DomOverlayExtension(
     }
 
     fun clear() {
-        console.log("domScene.clear() (had ${domScene.children.size} children)")
+        console.log("domScene.clear() (had ${domNodes.size} children)")
+        domNodes.forEach { (_, node) ->
+            node.objectCSS.removeFromParent()
+        }
         domNodes.clear()
         domScene.clear()
     }
@@ -58,6 +61,10 @@ class DomOverlayExtension(
             }
         }
         domRenderer.render(domScene, camera)
+    }
+
+    override fun VisualizerContext.clearScene() {
+        clear()
     }
 
     override fun VisualizerContext.release() {

@@ -67,7 +67,7 @@ class Interval<out T : TimeUnit>(value: Number, factory: () -> T) {
     override fun hashCode() = inMilliseconds.value.hashCode()
 
     override fun toString(): String {
-        val unitString = unit::class.simpleName?.toLowerCase()
+        val unitString = unit::class.simpleName?.lowercase()
         val isWhole = value % 1 == 0.0
         return (if (isWhole) longValue.toString() else value.toString())
             .plus(" ")

@@ -3,13 +3,13 @@ package baaahs.api.ws
 import baaahs.net.Network
 import baaahs.plugin.Plugins
 import baaahs.util.Logger
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.*
-import kotlin.coroutines.CoroutineContext
 
 class WebSocketRouter(
-    private val plugins: Plugins,
-    private val coroutineContext: CoroutineContext,
+    plugins: Plugins,
+    private val coroutineScope: CoroutineScope,
     handlers: HandlerBuilder.() -> Unit
 ) : Network.WebSocketListener {
     val json = plugins.json
@@ -26,7 +26,7 @@ class WebSocketRouter(
         var status = "success"
         var response: JsonElement
 
-        withContext(coroutineContext) {
+        withContext(coroutineScope.coroutineContext) {
             try {
                 val handler = handlerMap[command]
                     ?: throw UnsupportedOperationException("unknown command \"$command\"")

@@ -11,6 +11,7 @@ import react.dom.header
 
 private val LightRingEditorView = xComponent<LightRingEditorProps>("LightRingEditor") { props ->
     val appContext = useContext(appContext)
+    val editMode = observe(appContext.sceneManager.editMode)
     val styles = appContext.allStyles.modelEditor
 
     observe(props.editingEntity)
@@ -39,6 +40,7 @@ private val LightRingEditorView = xComponent<LightRingEditorProps>("LightRingEdi
         with(styles) {
             numberTextField<Float> {
                 this.attrs.label = ""
+                this.attrs.disabled = editMode.isOff
                 this.attrs.value = mutableEntity.radius
                 this.attrs.adornment = props.editingEntity.modelUnit.display.asTextNode()
                 this.attrs.onChange = handleRadiusChange
@@ -53,6 +55,7 @@ private val LightRingEditorView = xComponent<LightRingEditorProps>("LightRingEdi
         with(styles) {
             numberTextField<Double> {
                 this.attrs.label = "Position"
+                this.attrs.disabled = editMode.isOff
                 this.attrs.value = mutableEntity.firstPixelRadians.asDegrees
                 this.attrs.adornment = "°".asTextNode()
                 this.attrs.onChange = handleFirstPixelRadiansChange
@@ -69,6 +72,7 @@ private val LightRingEditorView = xComponent<LightRingEditorProps>("LightRingEdi
             attrs.control = buildElement {
                 Select<SelectProps<String>> {
                     attrs.value = mutableEntity.pixelDirection.name
+                    attrs.disabled = editMode.isOff
                     attrs.onChange = handlePixelDirectionChange.withSelectEvent()
 
                     LightRing.PixelDirection.values().forEach { direction ->

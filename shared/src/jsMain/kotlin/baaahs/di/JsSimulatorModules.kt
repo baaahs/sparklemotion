@@ -9,6 +9,7 @@ import baaahs.controller.ControllersManager
 import baaahs.dmx.Dmx
 import baaahs.encodeBase64
 import baaahs.io.Fs
+import baaahs.io.ResourcesFs
 import baaahs.mapper.PinkyMapperHandlers
 import baaahs.mapping.MappingManager
 import baaahs.net.BrowserNetwork
@@ -72,7 +73,7 @@ class JsSimulatorModule(
             single { WledsSimulator(get()) }
             single { (controllersManager: ControllersManager) ->
                 FixturesSimulator(
-                    get(), get(), get(), get(named("Fallback")),
+                    get(), get(), get(), get(PlatformModule.Named.fallback),
                     get(), get(), get(), controllersManager, get(), get()
                 )
             }
@@ -104,7 +105,7 @@ class JsSimPinkyModule(
     override val Scope.backupMappingManager: MappingManager
         get() = simMappingManager
     override val Scope.dmxDriver: Dmx.Driver
-        get() = SimDmxDriver(get(named("Fallback")))
+        get() = SimDmxDriver(get(PlatformModule.Named.fallback))
     override val Scope.midiManager: MidiManager
         get() = MidiManager(listOf(JsMidiSource(get())))
     override val Scope.pinkySettings: PinkySettings
@@ -120,6 +121,8 @@ class JsSimPinkyModule(
         }
     override val Scope.featureFlags: FeatureFlags
         get() = featureFlags_
+    override val Scope.resourcesFs: ResourcesFs
+        get() = ResourcesFs()
 
     override fun getModule(): Module {
         return super.getModule()

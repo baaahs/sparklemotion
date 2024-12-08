@@ -39,7 +39,7 @@ class FakeWledDevice(
     fun start() {
         mdnsService = link.mdns.register(id, "_wled", "_tcp", 80)
 
-        val fakeHttpServer = link.startHttpServer(80) as FakeNetwork.FakeLink.FakeHttpServer
+        val fakeHttpServer = link.createHttpServer(80) as FakeNetwork.FakeLink.FakeHttpServer
 
         fakeHttpServer.httpGetResponses["json"] =
                 /** language=json*/

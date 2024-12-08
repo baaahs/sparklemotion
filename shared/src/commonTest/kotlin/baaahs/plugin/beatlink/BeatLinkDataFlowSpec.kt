@@ -46,7 +46,7 @@ class BeatLinkDataFlowSpec : DescribeSpec({
                 serverPlugin.run {}
                 clientPlugin.run {}
                 fakeBeatSource.setBeatData(BeatData(1.0, 500))
-                testRig.dispatcher.advanceUntilIdle()
+                testRig.fakePinkyDispatcher.advanceUntilIdle()
             }
 
             it("flows from beat source to server feed") {
@@ -60,7 +60,7 @@ class BeatLinkDataFlowSpec : DescribeSpec({
                 beatUniform.value.shouldBe(2f)
 
                 fakeBeatSource.setBeatData(BeatData(1.0, 400))
-                testRig.dispatcher.advanceUntilIdle()
+                testRig.fakePinkyDispatcher.advanceUntilIdle()
                 programFeed.setOnProgram()
                 beatUniform.value.shouldBe(2.5f)
             }
@@ -76,7 +76,7 @@ class BeatLinkDataFlowSpec : DescribeSpec({
                 beatUniform.value.shouldBe(2f)
 
                 fakeBeatSource.setBeatData(BeatData(1.0, 400))
-                testRig.dispatcher.advanceUntilIdle()
+                testRig.fakePinkyDispatcher.advanceUntilIdle()
                 programFeed.setOnProgram()
                 beatUniform.value.shouldBe(2.5f)
             }

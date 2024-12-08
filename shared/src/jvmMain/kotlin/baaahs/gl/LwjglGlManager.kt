@@ -30,7 +30,7 @@ class LwjglGlManager : GlManager() {
     }
 
     inner class LwjglGlContext(name: String, kgl: Kgl) : GlContext(name, kgl, "330 core") {
-        var nestLevel = 0
+        private var nestLevel = 0
         override fun <T> runInContext(fn: () -> T): T {
             if (++nestLevel == 1) {
                 GLFW.glfwMakeContextCurrent(window)

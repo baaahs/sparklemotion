@@ -41,6 +41,11 @@ enum class EntityStyle {
             when (use) {
                 Use.LightStrand -> material.color.set(0x226622)
                 Use.FixtureHardware -> material.color.set(0x444444)
+                Use.BacklitSurface -> {
+                    material.side = BackSide
+                    material.transparent = true
+                    material.opacity = .9
+                }
                 else -> {}
             }
         }
@@ -147,7 +152,7 @@ enum class EntityStyle {
     open fun applyToPoints(material: PointsMaterial, use: Use? = null) {}
 
     enum class Use {
-        BacklitSurface,
+        BacklitSurface, // Used for pixel containers like light bars.
         LightStrand,
         LightStrandHint,
         GroupOutline,
@@ -164,6 +169,8 @@ enum class EntityStyle {
 
         fun meshMaterial(): MeshBasicMaterial = MeshBasicMaterial()
         fun lineMaterial(): LineDashedMaterial = LineDashedMaterial()
-        fun pointsMaterial(): PointsMaterial = PointsMaterial()
+        fun pointsMaterial(): PointsMaterial = PointsMaterial().apply {
+            sizeAttenuation = true
+        }
     }
 }

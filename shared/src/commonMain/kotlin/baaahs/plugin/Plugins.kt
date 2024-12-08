@@ -1,6 +1,7 @@
 package baaahs.plugin
 
 import baaahs.Gadget
+import baaahs.GadgetType
 import baaahs.PubSub
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.PortLinkOption
@@ -37,6 +38,7 @@ import baaahs.util.Clock
 import baaahs.util.Logger
 import kotlinx.datetime.Instant
 import kotlinx.datetime.serializers.InstantIso8601Serializer
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.MapSerializer
@@ -47,7 +49,6 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.*
 import kotlinx.serialization.modules.*
-import kotlinx.serialization.serializer
 import kotlin.reflect.KClass
 
 @Serializable
@@ -158,8 +159,8 @@ sealed class Plugins(
     }
 
     val feedBuilders = FeedBuilders()
-
     val fixtureTypes = FixtureTypes()
+    private val gadgets = Gadgets()
 
     val controllers = Controllers()
 
@@ -193,13 +194,18 @@ sealed class Plugins(
     class PluginFeedSerializer(
         private val byPlugin: Map<String, SerializersModule>
     ) : KSerializer<Feed> {
+        companion object {
+            private const val typeKey = "type"
+        }
+
         override val descriptor: SerialDescriptor = buildClassSerialDescriptor("baaahs.show.Feed") {
-            element("type", String.serializer().descriptor)
+            element(typeKey, String.serializer().descriptor)
         }
 
         override fun deserialize(decoder: Decoder): Feed {
             val obj = JsonObject(MapSerializer(String.serializer(), JsonElement.serializer()).deserialize(decoder))
-            val type = obj["type"]?.jsonPrimitive?.contentOrNull ?: error("Huh? No type?")
+            val type = obj.getBang(typeKey, "feed type").jsonPrimitive.contentOrNull
+                ?: error("Huh? Null type?")
             val pluginRef = PluginRef.from(type)
             val plugin = byPlugin[pluginRef.pluginId]
                 ?: return UnknownFeed(
@@ -213,7 +219,7 @@ sealed class Plugins(
 
             return try {
                 Json.decodeFromJsonElement(serializer, buildJsonObject {
-                    (obj.keys - "type").forEach { put(it, obj[it]!!) }
+                    (obj.keys - typeKey).forEach { put(it, obj[it]!!) }
                 })
             } catch (e: Exception) {
                 logger.error(e) { "Failed to deserialize feed $type." }
@@ -223,6 +229,7 @@ sealed class Plugins(
             }
         }
 
+        @OptIn(ExperimentalSerializationApi::class)
         override fun serialize(encoder: Encoder, value: Feed) {
             if (value is UnknownFeed) {
                 encoder.encodeSerializableValue(JsonObject.serializer(), value.data)
@@ -230,14 +237,25 @@ sealed class Plugins(
             }
 
             val serializersModule = byPlugin.getBang(value.pluginPackage, "plugin id")
-            val serializer = serializersModule.serializer<Feed>()
-            encoder.encodeSerializableValue(serializer, value)
+
+            // TODO: This works everywhere but iOS; see https://youtrack.jetbrains.com/issue/KT-72748/SerializersModule.serializer-behavior-is-different-on-iOS
+//            val serializer = serializersModule.serializer<Feed>()
+//            encoder.encodeSerializableValue(serializer, value)
+
+            val serializer = serializersModule.getPolymorphic(Feed::class, value)
+                ?: error("No serializer for ${value::class} in ${value.pluginPackage}.")
+            val encoded = (encoder as JsonEncoder).json.encodeToJsonElement(serializer, value)
+            val withType = buildJsonObject {
+                put(typeKey, serializer.descriptor.serialName)
+                encoded.jsonObject.entries.forEach { (k, v) -> put(k, v) }
+            }
+            encoder.encodeJsonElement(withType)
         }
     }
 
     val serialModule = SerializersModule {
         include(serializersModuleOf(Instant::class, InstantIso8601Serializer))
-        include(Gadget.serialModule)
+        include(gadgets.serialModule)
         include(contentTypes.serialModule)
         include(controlSerialModule)
         contextual(Feed::class, PluginFeedSerializer(feedBuilders.serialModulesByPlugin))
@@ -493,18 +511,17 @@ sealed class Plugins(
         val byContentType = all.groupBy { builder -> builder.contentType }
 
         val serialModulesByPlugin = serializersMap {
-            feedSerializerRegistrars()
+            feedBuilders().map { it.serializerRegistrar }
         }
 
         val serialModule = SerializersModule {
             registerSerializers {
-                feedSerializerRegistrars()
+                feedBuilders().map { it.serializerRegistrar }
             }
         }
 
-        private fun OpenPlugin.feedSerializerRegistrars() =
-            feedBuilders.map { it.serializerRegistrar } +
-                    fixtureTypes.flatMap { it.feedBuilders.map { builder -> builder.serializerRegistrar } }
+        private fun OpenPlugin.feedBuilders() =
+            feedBuilders + fixtureTypes.flatMap { it.feedBuilders }
 
         fun buildForContentType(
             contentType: ContentType?,
@@ -534,6 +551,22 @@ sealed class Plugins(
             return all.flatMap { fixtureType ->
                 fixtureType.feedBuilders.filter { feed -> feed.contentType == contentType }
             }.mapNotNull { safeBuild(it, inputPort) }
+        }
+    }
+
+    inner class Gadgets {
+        val all = openPlugins.flatMap { it.gadgetTypes }.toSet()
+
+        val serialModule = SerializersModule {
+            polymorphic(Gadget::class) {
+
+                all.forEach {
+                    fun <T : Gadget> GadgetType<T>.register() =
+                        subclass(klass, serializer)
+
+                    it.register()
+                }
+            }
         }
     }
 

@@ -32,7 +32,7 @@ private val TextFieldEditor = xComponent<TextFieldEditorProps>("TextFieldEditor"
     var isError by state { false }
     var errorValue by state<String?> { null }
 
-    val handleChange by formEventHandler(props.setValue, notifyOfChange) { event: FormEvent<*> ->
+    val handleChange by formEventHandler(props.setValue, notifyOfChange, props.noIntermediateUpdates) { event: FormEvent<*> ->
         val value = event.target.value
         try {
             props.setValue(value)
@@ -42,7 +42,12 @@ private val TextFieldEditor = xComponent<TextFieldEditorProps>("TextFieldEditor"
             isError = true
             errorValue = value
         }
-        notifyOfChange(false)
+
+        if (props.noIntermediateUpdates == true) {
+            forceRender()
+        } else {
+            notifyOfChange(false)
+        }
     }
 
     val handleBlur by focusEventHandler(notifyOfChange) { event: FocusEvent<*> ->
@@ -95,6 +100,9 @@ external interface TextFieldEditorProps : Props {
     var setValue: (String) -> Unit
     var editableManager: EditableManager<*>?
     var onChange: ((pushToUndoStack: Boolean) -> Unit)?
+
+    /** If per-key updates cause input to lose focus, turn them off. */
+    var noIntermediateUpdates: Boolean?
 }
 
 fun RBuilder.textFieldEditor(handler: RHandler<TextFieldEditorProps>) =

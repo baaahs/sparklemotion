@@ -1,5 +1,6 @@
 package baaahs.net
 
+import baaahs.io.Fs.File
 import baaahs.sm.brain.proto.Message
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
@@ -16,7 +17,7 @@ interface Network {
 
         fun listenUdp(port: Int, udpListener: UdpListener): UdpSocket
 
-        fun startHttpServer(port: Int): HttpServer
+        fun createHttpServer(port: Int): HttpServer
 
         suspend fun httpGetRequest(
             address: Address,
@@ -47,15 +48,17 @@ interface Network {
         fun unregister(inst: MdnsRegisteredService)
         fun listen(type: String, proto: String, domain: String, handler: MdnsListenHandler)
 
-        fun String.normalizeMdnsDomain(): String {
-            var dom = this
-            if (dom.startsWith(".")) {
-                dom = dom.substring(1)
+        companion object {
+            fun String.normalizeMdnsDomain(): String {
+                var dom = this
+                if (dom.startsWith(".")) {
+                    dom = dom.substring(1)
+                }
+                if (!dom.endsWith(".")) {
+                    dom += "."
+                }
+                return dom
             }
-            if (!dom.endsWith(".")) {
-                dom += "."
-            }
-            return dom
         }
     }
 
@@ -127,12 +130,22 @@ interface Network {
         fun routing(config: HttpRouting.() -> Unit)
         fun listenWebSocket(path: String, onConnect: (incomingConnection: TcpConnection) -> WebSocketListener)
 
+        fun start()
+        fun stop() {}
+
         interface HttpRequest {
             fun param(name: String): String?
         }
 
         interface HttpRouting {
-            fun get(path: String, handler: (HttpRequest) -> HttpResponse)
+            fun get(path: String, handler: suspend HttpHandling.() -> Unit)
+            fun staticResources(path: String, basePackage: String)
+            fun staticFiles(path: String, dir: File)
+        }
+
+        interface HttpHandling {
+            suspend fun redirect(path: String)
+            suspend fun respondWithResource(path: String, resourcePackage: String)
         }
     }
 

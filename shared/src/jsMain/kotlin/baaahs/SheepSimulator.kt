@@ -5,11 +5,9 @@ import baaahs.client.WebClient
 import baaahs.controller.ControllersManager
 import baaahs.monitor.MonitorUi
 import baaahs.sim.*
-import baaahs.sim.FixturesSimulator
 import baaahs.sim.ui.LaunchItem
 import baaahs.sm.brain.proto.Pixels
 import baaahs.sm.brain.sim.BrainSimulatorManager
-import baaahs.util.coroutineExceptionHandler
 import baaahs.visualizer.Visualizer
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -35,14 +33,14 @@ class SheepSimulator(
 
     suspend fun start() = coroutineScope {
         val pinkyScope = getKoin().createScope<Pinky>()
-        launch(coroutineExceptionHandler) { cleanUpBrowserStorage() }
+        launch { cleanUpBrowserStorage() }
 
         pinky = pinkyScope.get()
         val controllersManager = pinkyScope.get<ControllersManager>()
         fixturesSimulator = pinkyScope.get(parameters = { parametersOf(controllersManager) })
         brainSimulatorManager = pinkyScope.get<BrainSimulatorManager>()
 
-        launch(coroutineExceptionHandler) { pinky.startAndRun() }
+        launch { pinky.startAndRun() }
 
         pinky.awaitMappingResultsLoaded() // Otherwise controllers might report in before they can be mapped.
         facade.notifyChanged()

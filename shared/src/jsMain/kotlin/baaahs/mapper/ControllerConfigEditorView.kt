@@ -35,8 +35,9 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
     }
 
     val mutableFixtureMappings = memo(props.mutableScene, props.controllerId) {
-        props.mutableScene.fixtureMappings[props.controllerId]
-            ?: mutableListOf<MutableFixtureMapping>()
+        props.mutableScene.fixtureMappings.getOrPut(props.controllerId) {
+            mutableListOf<MutableFixtureMapping>()
+        }
     }
 
     val editingController = EditingController(props.controllerId, mutableControllerConfig, mutableFixtureMappings, props.onEdit)
@@ -161,7 +162,7 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
                     Box {
                         Button {
                             attrs.className = -styles.button
-                            attrs.color = ButtonColor.secondary
+                            attrs.color = ButtonColor.primary
                             attrs.fullWidth = true
                             attrs.onClick = handleNewFixtureMappingClick
 

@@ -38,8 +38,13 @@ class SacnController(
                 fixtureConfig.componentCount, fixtureConfig.bytesPerComponent,
                 transportConfig as DmxTransportConfig?
             )
-        return SacnTransport(transportConfig, staticDmxMapping)
-            .also { dmxUniverses.validate(staticDmxMapping) }
+        return try {
+            dmxUniverses.validate(staticDmxMapping)
+            SacnTransport(transportConfig, staticDmxMapping)
+        } catch (e: Exception) {
+            logger.error(e) { "Failed to allocate DMX for $entity." }
+            NullTransport
+        }
         }
     }
 

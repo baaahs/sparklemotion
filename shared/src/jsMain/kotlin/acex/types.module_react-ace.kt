@@ -1,4 +1,3 @@
-@file:Suppress("INTERFACE_WITH_SUPERCLASS", "EXTERNAL_DELEGATION")
 
 package ReactAce.Ace
 
@@ -16,9 +15,6 @@ external interface ICommandManager {
 }
 
 external interface IEditorProps {
-    @nativeGetter
-    operator fun get(index: String): Any?
-    @nativeSetter
     operator fun set(index: String, value: Any)
     var `$blockScrolling`: dynamic /* Number | Boolean */
         get() = definedExternally
@@ -126,9 +122,6 @@ external interface ICommand {
 }
 
 external interface IAceOptions {
-    @nativeGetter
-    operator fun get(index: String): Any?
-    @nativeSetter
     operator fun set(index: String, value: Any)
     var selectionStyle: String /* "line" | "text" */
     var highlightActiveLine: Boolean?

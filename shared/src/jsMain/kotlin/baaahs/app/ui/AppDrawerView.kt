@@ -48,6 +48,17 @@ private val AppDrawerView = xComponent<AppDrawerProps>("AppDrawer", isPure = tru
         props.onDarkModeChange()
     }
 
+    val handleAppModeChangeAndClose by handler(props.onAppModeChange, props.onClose) { appMode: AppMode ->
+        props.onAppModeChange(appMode)
+        props.onClose()
+    }
+    val handleSwitchToShowAndClose by handler(handleAppModeChangeAndClose) {
+        handleAppModeChangeAndClose(AppMode.Show)
+    }
+
+    val handleSwitchToSceneAndClose by handler(handleAppModeChangeAndClose) {
+        handleAppModeChangeAndClose(AppMode.Scene)
+    }
 
     Drawer {
         attrs.className = -themeStyles.appDrawer
@@ -60,16 +71,27 @@ private val AppDrawerView = xComponent<AppDrawerProps>("AppDrawer", isPure = tru
         attrs.onClose = handleClose
 
         div(+themeStyles.appDrawerHeader) {
-            Tabs {
-                attrs.value = props.appMode.name
-                attrs.onChange = handleAppModeChange
+            if (featureFlags.multiDoc) {
+                Tabs {
+                    attrs.value = props.appMode.name
+                    attrs.onChange = handleAppModeChange
 
-                for (aMode in AppMode.entries) {
-                    Tab {
-                        attrs.className = -themeStyles.appModeTab
-                        attrs.value = aMode.name
-                        attrs.label = ReactNode(aMode.name)
+                    for (aMode in AppMode.entries) {
+                        Tab {
+                            attrs.className = -themeStyles.appModeTab
+                            attrs.value = aMode.name
+                            attrs.label = ReactNode(aMode.name)
+                        }
                     }
+                }
+            } else {
+                Typography {
+                    attrs.className = -themeStyles.appDrawerLogotype
+                    +"Sparkle Motion"
+                }
+                Typography {
+                    attrs.className = -themeStyles.appDrawerLogotypeSub
+                    +"HECK YEAH!!!™"
                 }
             }
 
@@ -86,7 +108,7 @@ private val AppDrawerView = xComponent<AppDrawerProps>("AppDrawer", isPure = tru
             }
         }
 
-        if (isSmallScreen) {
+        if (isSmallScreen && featureFlags.multiDoc) {
             // Otherwise the document info is shown in the app toolbar.
 
             Box {
@@ -103,6 +125,28 @@ private val AppDrawerView = xComponent<AppDrawerProps>("AppDrawer", isPure = tru
 
                     b { +openDocument.title }
                     if (documentManager.isUnsaved) i(+themeStyles.unsaved) { +"* (unsaved)" }
+                }
+            }
+        }
+        if (!featureFlags.multiDoc) {
+            List {
+                ListItem {
+                    attrs.selected = props.appMode == AppMode.Show
+
+                    ListItemButton {
+                        attrs.onClick = handleSwitchToShowAndClose.withMouseEvent()
+//                            ListItemIcon { icon(CommonIcons.Settings) }
+                        ListItemText { +"Show" }
+                    }
+                }
+                ListItem {
+                    attrs.selected = props.appMode == AppMode.Scene
+
+                    ListItemButton {
+                        attrs.onClick = handleSwitchToSceneAndClose.withMouseEvent()
+//                            ListItemIcon { icon(CommonIcons.Settings) }
+                        ListItemText { +"Scene" }
+                    }
                 }
             }
         }

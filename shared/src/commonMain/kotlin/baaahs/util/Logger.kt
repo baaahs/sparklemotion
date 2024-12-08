@@ -5,12 +5,20 @@ import baaahs.internalTimerClock
 class Logger(val id: String) {
     private val nativeLogger = getLogger(id)
 
+    fun debug(message: () -> String) {
+        nativeLogger.debug(null, message)
+    }
+
     fun debug(exception: Throwable? = null, message: () -> String) {
         nativeLogger.debug(exception, message)
     }
 
     fun info(message: () -> String) {
         nativeLogger.info(null, message)
+    }
+
+    fun info(exception: Throwable, message: () -> String) {
+        nativeLogger.info(exception, message)
     }
 
     fun warn(message: () -> String) {

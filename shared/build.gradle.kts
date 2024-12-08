@@ -6,19 +6,6 @@ import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack
 import org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
-buildscript {
-    repositories {
-        mavenCentral()
-        maven("https://plugins.gradle.org/m2/")
-    }
-
-    dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlinGradlePlugin}")
-        classpath("org.jetbrains.kotlin:kotlin-serialization:${Versions.kotlin}")
-        classpath("org.jetbrains.dokka:dokka-gradle-plugin:${Versions.dokka}")
-    }
-}
-
 val lwjglAllNatives = listOf(
     "natives-linux",
     "natives-macos-arm64",
@@ -36,14 +23,6 @@ plugins {
     id("maven-publish")
     alias(libs.plugins.checkDependencyUpdates)
     alias(libs.plugins.kotestMultiplatform)
-}
-
-repositories {
-    mavenCentral()
-    maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/kotlin-js-wrappers")
-    maven("https://maven.danielgergely.com/releases")
-    maven("https://jitpack.io")
-    maven("https://mvn.0110.be/releases") // TarsosDSP
 }
 
 group = "org.baaahs"
@@ -71,8 +50,10 @@ kotlin {
         }
     }
 
+    applyDefaultHierarchyTemplate()
+
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             kotlin.srcDirs(file(project.layout.buildDirectory.file("generated/ksp/metadata/commonMain/kotlin").get()))
 
             dependencies {
@@ -85,7 +66,7 @@ kotlin {
                 implementation(projects.rpc)
             }
         }
-        val commonTest by getting {
+        commonTest {
             dependencies {
                 implementation(kotlin("test"))
 //                implementation("io.insert-koin:koin-test:${Versions.koin}")
@@ -96,12 +77,24 @@ kotlin {
             }
         }
 
-        val jvmMain by getting {
+        val serverCommonMain by creating {
+            dependsOn(commonMain.get())
+
+            dependencies {
+                implementation(libs.ktorServerCore)
+                implementation(libs.ktorServerCio)
+                implementation(libs.ktorServerWebsockets)
+            }
+        }
+
+        jvmMain {
+            dependsOn(serverCommonMain)
+
             dependencies {
                 implementation(libs.kotlinxCoroutinesDebug)
                 implementation(libs.kotlinxCli)
                 implementation(libs.ktorServerCore)
-                implementation(libs.ktorServerNetty)
+//                implementation(libs.ktorServerNetty)
                 implementation(libs.ktorServerHostCommon)
                 implementation(libs.ktorServerCallLogging)
                 implementation(libs.ktorServerWebsockets)
@@ -144,7 +137,7 @@ kotlin {
                 implementation(libs.webcamCaptureDriverNative)
             }
         }
-        val jvmTest by getting {
+        jvmTest {
             dependencies {
                 implementation(project.dependencies.platform("org.junit:junit-bom:${Versions.junit}"))
                 implementation(libs.kotestRunnerJunit5)
@@ -157,8 +150,9 @@ kotlin {
             }
         }
 
-        val jsMain by getting {
+        jsMain {
             dependencies {
+                implementation(libs.kotlinxCoroutinesCore)
                 implementation(libs.kotlinxHtmlJs)
 
                 implementation(libs.kglJs)
@@ -200,14 +194,21 @@ kotlin {
 
                 // Used by slider view:
                 implementation(npm("d3-array", "^3.2.4"))
+
+                implementation(devNpm("webpack-bundle-analyzer", "4.10.2"))
             }
         }
-        val jsTest by getting {
+        jsTest {
             dependencies {
                 implementation(kotlin("test-js"))
             }
         }
 
+    }
+}
+
+afterEvaluate {
+    kotlin {
         sourceSets.all {
             languageSettings.apply {
                 progressiveMode = true
@@ -218,7 +219,7 @@ kotlin {
 }
 
 dependencies {
-    add("kspCommonMainMetadata", projects.rpc.processor)
+    kspCommonMainMetadata(projects.rpc.processor)
 }
 
 val isProductionBuild = project.hasProperty("isProduction")
@@ -293,6 +294,15 @@ tasks.withType(Test::class) {
 
     // Copy in system properties.
     systemProperties = System.getProperties().asIterable().associate { it.key.toString() to it.value }
+
+    val outputDir = reports.junitXml.outputLocation
+    reports.junitXml.required.set(false)
+    jvmArgumentProviders += CommandLineArgumentProvider {
+        listOf(
+            "-Djunit.platform.reporting.open.xml.enabled=true",
+            "-Djunit.platform.reporting.output.dir=${outputDir.get().asFile.absolutePath}"
+        )
+    }
 }
 
 tasks.named<Test>("jvmTest") {

@@ -4,20 +4,20 @@ package three
 
 external var REVISION: String
 
-external enum class MOUSE {
-    LEFT /* = 0 */,
-    MIDDLE /* = 1 */,
-    RIGHT /* = 2 */,
-    ROTATE /* = 0 */,
-    DOLLY /* = 1 */,
-    PAN /* = 2 */
+external object MOUSE {
+    val LEFT: MOUSE /* = 0 */
+    val MIDDLE: MOUSE /* = 1 */
+    val RIGHT: MOUSE /* = 2 */
+    val ROTATE: MOUSE /* = 0 */
+    val DOLLY: MOUSE /* = 1 */
+    val PAN: MOUSE /* = 2 */
 }
 
-external enum class TOUCH {
-    ROTATE /* = 0 */,
-    PAN /* = 1 */,
-    DOLLY_PAN /* = 2 */,
-    DOLLY_ROTATE /* = 3 */
+external object TOUCH {
+    val ROTATE: TOUCH /* = 0 */
+    val PAN: TOUCH /* = 1 */
+    val DOLLY_PAN: TOUCH /* = 2 */
+    val DOLLY_ROTATE: TOUCH /* = 3 */
 }
 
 external var CullFaceNone: Number /* 0 */

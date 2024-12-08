@@ -1,6 +1,7 @@
 package baaahs.sim
 
 import baaahs.net.Network
+import baaahs.net.Network.Mdns.Companion.normalizeMdnsDomain
 
 class FakeMdns : Network.Mdns {
     private var services = mutableMapOf<String, FakeMdns.FakeMdnsService>()

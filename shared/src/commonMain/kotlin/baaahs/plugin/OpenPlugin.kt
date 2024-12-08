@@ -1,5 +1,7 @@
 package baaahs.plugin
 
+import baaahs.Gadget
+import baaahs.GadgetType
 import baaahs.PubSub
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.controller.ControllerManager
@@ -50,6 +52,9 @@ interface OpenPlugin {
         get() = emptyList()
 
     val fixtureTypes: List<FixtureType>
+        get() = emptyList()
+
+    val gadgetTypes: List<GadgetType<*>>
         get() = emptyList()
 
     val shaderDialects: List<ShaderDialect>

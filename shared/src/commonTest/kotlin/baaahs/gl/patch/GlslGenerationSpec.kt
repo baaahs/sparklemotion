@@ -69,7 +69,7 @@ class GlslGenerationSpec : DescribeSpec({
                     /**language=glsl*/
                     """
                         #ifdef GL_ES
-                        precision mediump float;
+                        precision highp float;
                         #endif
 
                         // SparkleMotion-generated GLSL
@@ -161,7 +161,7 @@ class GlslGenerationSpec : DescribeSpec({
                     /**language=glsl*/
                     """
                         #ifdef GL_ES
-                        precision mediump float;
+                        precision highp float;
                         #endif
 
                         // SparkleMotion-generated GLSL
@@ -244,7 +244,7 @@ class GlslGenerationSpec : DescribeSpec({
                     /**language=glsl*/
                     """
                         #ifdef GL_ES
-                        precision mediump float;
+                        precision highp float;
                         #endif
 
                         // SparkleMotion-generated GLSL
@@ -333,7 +333,7 @@ class GlslGenerationSpec : DescribeSpec({
                     /**language=glsl*/
                     """
                         #ifdef GL_ES
-                        precision mediump float;
+                        precision highp float;
                         #endif
 
                         // SparkleMotion-generated GLSL
@@ -508,7 +508,7 @@ class GlslGenerationSpec : DescribeSpec({
                     /**language=glsl*/
                     """
                         #ifdef GL_ES
-                        precision mediump float;
+                        precision highp float;
                         #endif
 
                         // SparkleMotion-generated GLSL
@@ -590,7 +590,7 @@ class GlslGenerationSpec : DescribeSpec({
                         /**language=glsl*/
                         """
                             #ifdef GL_ES
-                            precision mediump float;
+                            precision highp float;
                             #endif
 
                             // SparkleMotion-generated GLSL
@@ -682,7 +682,7 @@ class GlslGenerationSpec : DescribeSpec({
                     /**language=glsl*/
                     """
                         #ifdef GL_ES
-                        precision mediump float;
+                        precision highp float;
                         #endif
 
                         // SparkleMotion-generated GLSL
@@ -790,7 +790,7 @@ class GlslGenerationSpec : DescribeSpec({
                     /**language=glsl*/
                     """
                         #ifdef GL_ES
-                        precision mediump float;
+                        precision highp float;
                         #endif
 
                         // SparkleMotion-generated GLSL
@@ -888,7 +888,7 @@ class GlslGenerationSpec : DescribeSpec({
                     /**language=glsl*/
                     """
                         #ifdef GL_ES
-                        precision mediump float;
+                        precision highp float;
                         #endif
 
                         // SparkleMotion-generated GLSL
@@ -1018,7 +1018,7 @@ class GlslGenerationSpec : DescribeSpec({
                     /**language=glsl*/
                     """
                         #ifdef GL_ES
-                        precision mediump float;
+                        precision highp float;
                         #endif
 
                         // SparkleMotion-generated GLSL
@@ -1143,7 +1143,7 @@ class GlslGenerationSpec : DescribeSpec({
                     /**language=glsl*/
                     """
                         #ifdef GL_ES
-                        precision mediump float;
+                        precision highp float;
                         #endif
 
                         // SparkleMotion-generated GLSL

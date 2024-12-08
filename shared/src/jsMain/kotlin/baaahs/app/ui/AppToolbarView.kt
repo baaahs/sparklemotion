@@ -8,6 +8,7 @@ import baaahs.app.ui.settings.fullScreenToggleButton
 import baaahs.client.document.DocumentManager
 import baaahs.sm.webapi.Severity
 import baaahs.ui.*
+import baaahs.util.JsPlatform
 import js.objects.jso
 import kotlinx.css.PointerEvents
 import kotlinx.css.opacity
@@ -258,7 +259,9 @@ private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props -
 
                         displaySettings {}
 
-                        fullScreenToggleButton {}
+                        if (JsPlatform.isBrowser) {
+                            fullScreenToggleButton {}
+                        }
                     }
 
                     help {
