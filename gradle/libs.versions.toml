@@ -1,9 +1,9 @@
 [versions]
-kotlin = "2.0.21"
+kotlin = "2.1.0"
 coroutines = "1.9.0"
 serializationRuntime = "1.6.3"
 koin = "3.5.3"
-ksp = "2.0.21-1.0.26"
+ksp = "2.1.0-1.0.29"
 dokka = "1.7.10"
 kgl = "0.6.3"
 #jogl = "2.3.2"
