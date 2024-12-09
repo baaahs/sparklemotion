@@ -42,7 +42,6 @@ class Notifier(
 
         fun launchAndReportErrors(block: suspend () -> Unit) {
             globalLaunch {
-                println("ZZZ launchAndReportErrors")
                 try {
                     block()
                 } catch (e: Exception) {
