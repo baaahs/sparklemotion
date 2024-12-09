@@ -90,7 +90,7 @@ kotlin {
                 implementation(libs.kotlinxCoroutinesDebug)
                 implementation(libs.kotlinxCli)
                 implementation(libs.ktorServerCore)
-//                implementation(libs.ktorServerNetty)
+                implementation(libs.ktorServerCio)
                 implementation(libs.ktorServerHostCommon)
                 implementation(libs.ktorServerCallLogging)
                 implementation(libs.ktorServerWebsockets)
@@ -311,15 +311,15 @@ tasks.withType<DependencyUpdatesTask> {
 }
 
 // Janky. See https://github.com/google/ksp/issues/963#issuecomment-1780330007.
-//gradle.projectsEvaluated {
-//    tasks {
-//        val kspCommonMainKotlinMetadata by getting
-//        withType<KotlinCompilationTask<*>> {
-//            if (this !== kspCommonMainKotlinMetadata) {
-//                dependsOn(kspCommonMainKotlinMetadata)
-//            }
-//        }
-//    }
-//}
+gradle.projectsEvaluated {
+    tasks {
+        val kspCommonMainKotlinMetadata by getting
+        withType<KotlinCompilationTask<*>> {
+            if (this !== kspCommonMainKotlinMetadata) {
+                dependsOn(kspCommonMainKotlinMetadata)
+            }
+        }
+    }
+}
 
 fun Project.buildDir(path: String) = layout.buildDirectory.file(path).get().asFile
