@@ -120,6 +120,7 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
         whiteSpace = WhiteSpace.nowrap
         paddingLeft = 0.px.important
         paddingRight = 0.px.important
+        userSelect = UserSelect.none
 //        color = theme.palette.primary.contrastText
 //        backgroundColor = theme.palette.primary.main
 

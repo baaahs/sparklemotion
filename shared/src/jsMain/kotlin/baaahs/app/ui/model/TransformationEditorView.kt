@@ -8,12 +8,15 @@ import baaahs.scene.EditingEntity
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
 import baaahs.visualizer.toVector3
-import kotlinx.html.unsafe
 import mui.material.Container
 import mui.material.FormControl
 import mui.material.InputLabel
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
+import react.buildElement
 import react.dom.span
+import react.useContext
 
 private val TransformationEditorView = xComponent<TransformationEditorProps>("TransformationEditor") { props ->
     val appContext = useContext(appContext)
@@ -94,10 +97,7 @@ private val TransformationEditorView = xComponent<TransformationEditorProps>("Tr
                 attrs.vector3F = mutableEntity.scale
                 attrs.disabled = editMode.isOff
                 attrs.adornment = buildElement {
-                    span {
-//                    attrs.entity(Entities.times)
-                        attrs.unsafe { +"&#xd7;" }
-                    }
+                    span { +Typography.times.toString() }
                 }
                 attrs.onChange = handleScaleChange
             }

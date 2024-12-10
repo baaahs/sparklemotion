@@ -1,20 +1,20 @@
 package baaahs.app.ui.model
 
-import baaahs.app.ui.appContext
+import baaahs.app.ui.editor.numberFieldEditor
 import baaahs.geom.EulerAngle
-import baaahs.ui.asTextNode
 import baaahs.ui.xComponent
+import kotlinx.css.em
+import kotlinx.css.fontSize
 import react.Props
 import react.RBuilder
 import react.RHandler
-import react.useContext
+import react.buildElement
+import styled.css
+import styled.styledSpan
 import kotlin.math.PI
 import kotlin.math.roundToInt
 
 private val RotationEditorView = xComponent<RotationEditorProps>("RotationEditor", true) { props ->
-    val appContext = useContext(appContext)
-    val styles = appContext.allStyles.modelEditor
-
     val updatePitch by handler(props.eulerAngle, props.onChange) { v: Double ->
         props.onChange(props.eulerAngle.copy(pitchRad = v.fromDegrees))
     }
@@ -27,29 +27,33 @@ private val RotationEditorView = xComponent<RotationEditorProps>("RotationEditor
         props.onChange(props.eulerAngle.copy(rollRad = v.fromDegrees))
     }
 
+    val degreeAdornment = memo {
+        buildElement {
+            styledSpan { css { fontSize = 1.5.em }; +Typography.degree.toString() }
+        }
+    }
+
     val rotation = props.eulerAngle
-    with(styles) {
-        numberTextField<Double> {
-            this.attrs.label = "Pitch"
-            this.attrs.disabled = props.disabled == true
-            this.attrs.value = rotation.pitchRad.asDegrees
-            this.attrs.adornment = "°".asTextNode()
-            this.attrs.onChange = updatePitch
-        }
-        numberTextField<Double> {
-            this.attrs.label = "Yaw"
-            this.attrs.disabled = props.disabled == true
-            this.attrs.value = rotation.yawRad.asDegrees
-            this.attrs.adornment = "°".asTextNode()
-            this.attrs.onChange = updateYaw
-        }
-        numberTextField<Double> {
-            this.attrs.label = "Roll"
-            this.attrs.disabled = props.disabled == true
-            this.attrs.value = rotation.rollRad.asDegrees
-            this.attrs.adornment = "°".asTextNode()
-            this.attrs.onChange = updateRoll
-        }
+    numberFieldEditor<Double> {
+        this.attrs.label = "Pitch"
+        this.attrs.disabled = props.disabled == true
+        this.attrs.adornment = degreeAdornment
+        this.attrs.getValue = { rotation.pitchRad.asDegrees }
+        this.attrs.setValue = updatePitch
+    }
+    numberFieldEditor<Double> {
+        this.attrs.label = "Yaw"
+        this.attrs.disabled = props.disabled == true
+        this.attrs.adornment = degreeAdornment
+        this.attrs.getValue = { rotation.yawRad.asDegrees }
+        this.attrs.setValue = updateYaw
+    }
+    numberFieldEditor<Double> {
+        this.attrs.label = "Roll"
+        this.attrs.disabled = props.disabled == true
+        this.attrs.adornment = degreeAdornment
+        this.attrs.getValue = { rotation.rollRad.asDegrees }
+        this.attrs.setValue = updateRoll
     }
 }
 

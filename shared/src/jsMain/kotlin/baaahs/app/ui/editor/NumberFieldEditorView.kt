@@ -12,11 +12,19 @@ import mui.material.FormLabel
 import mui.material.InputAdornment
 import mui.material.InputBase
 import mui.material.Size
-import react.*
+import mui.system.sx
+import react.Fragment
+import react.Props
+import react.RBuilder
+import react.RHandler
+import react.ReactNode
+import react.buildElement
 import react.dom.events.FocusEvent
 import react.dom.events.KeyboardEvent
 import react.dom.html.ReactHTML.button
+import react.useContext
 import web.cssom.ClassName
+import web.cssom.Color
 import web.html.HTMLInputElement
 import web.html.InputType
 
@@ -35,11 +43,6 @@ private val NumberFieldEditor = xComponent<NumberFieldEditorProps<Number?>>("Num
     }
     console.log("RENDER!!! enteredString.current == ", enteredString.current, " value = ", value)
 
-    val handleSetValue by handler(props.setValue) { value: Number? ->
-        console.log("Setting to ", value)
-        if (value?.toDouble()?.isNaN() == true) return@handler
-        props.setValue(value)
-    }
     val notifyOfChange by handler(props.onChange, props.editableManager) { pushToUndoStack: Boolean ->
         val onChange = props.onChange
         val editableManager = props.editableManager
@@ -165,6 +168,8 @@ private val NumberFieldEditor = xComponent<NumberFieldEditorProps<Number?>>("Num
             attrs.endAdornment = buildElement {
                 Fragment {
                     InputAdornment {
+                        attrs.sx { color = Color.currentcolor }
+                        attrs.disablePointerEvents = true
                         props.adornment?.let {
                             child(it)
                         }

@@ -177,6 +177,9 @@ fun <T> StyledElement.important(property: KProperty<T>, value: T) {
 val <T : CssValue> T.important: T
     get() = (object : CssValue("${this.value} !important") {}) as T
 
+val <T : Any> T.important: T
+    get() = (object : CssValue("$this !important") {}) as T
+
 inline fun RBuilder.typographyH1(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography {
         attrs.variant = TypographyVariant.h1
