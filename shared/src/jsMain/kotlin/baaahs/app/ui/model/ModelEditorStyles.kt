@@ -118,6 +118,8 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
     }
     val propertiesEditSection by css {
         whiteSpace = WhiteSpace.nowrap
+        paddingLeft = 0.px.important
+        paddingRight = 0.px.important
 //        color = theme.palette.primary.contrastText
 //        backgroundColor = theme.palette.primary.main
 
@@ -141,14 +143,14 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
 
         input {
             width = 4.em
-            textAlign = TextAlign.right
         }
     }
 
-    val transformThreeColumns by css {
+    val columns by css {
         display = important(Display.grid)
-        gridTemplateColumns = GridTemplateColumns(1.fr, 1.fr, 1.fr)
         gap = 1.em
+        paddingLeft = 0.px
+        paddingRight = 0.px
         paddingTop = .5.em
 
         "> label" {
@@ -157,6 +159,12 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
             fontWeight = FontWeight.bolder
             lineHeight = 1.1.em.lh
         }
+    }
+    val twoColumns by css(columns) {
+        gridTemplateColumns = GridTemplateColumns(1.fr, 1.fr)
+    }
+    val threeColumns by css(columns) {
+        gridTemplateColumns = GridTemplateColumns(1.fr, 1.fr, 1.fr)
     }
 
     val partialUnderline by css {
@@ -171,7 +179,7 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
             fontSize = .8.em
             fontFamily = "monospace"
             lineHeight = LineHeight("1.1")
-            whiteSpace = WhiteSpace.nowrap
+            whiteSpace = WhiteSpace.pre
         }
     }
 }

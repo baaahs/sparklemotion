@@ -2,7 +2,6 @@ package baaahs.app.ui.model
 
 import baaahs.app.ui.appContext
 import baaahs.app.ui.editor.numberFieldEditor
-import baaahs.app.ui.editor.textFieldEditor
 import baaahs.geom.Vector3F
 import baaahs.scene.EditingEntity
 import baaahs.scene.MutableLightBarData
@@ -12,8 +11,11 @@ import baaahs.ui.xComponent
 import mui.material.Container
 import mui.material.FormControl
 import mui.material.InputLabel
-import react.*
-import web.html.InputType
+import react.Props
+import react.RBuilder
+import react.RHandler
+import react.buildElement
+import react.useContext
 
 private val LightBarEditorView = xComponent<LightBarEditorProps>("LightBarEditor") { props ->
     val appContext = useContext(appContext)
@@ -46,12 +48,14 @@ private val LightBarEditorView = xComponent<LightBarEditorProps>("LightBarEditor
         props.editingEntity.onChange()
     }
 
+    // Length and entity transformation seems like a simpler way to describe geometry
+    //    than startVertex and endVertex.
     if (mutableEntity.startVertex != Vector3F.origin) {
         Container {
-            attrs.className = -styles.transformEditSection
+            attrs.className = -styles.propertiesEditSection
 
             FormControl {
-                attrs.className = -styles.transformThreeColumns
+                attrs.className = -styles.threeColumns
                 InputLabel {
                     attrs.shrink = true
                     +"Start"
@@ -67,43 +71,38 @@ private val LightBarEditorView = xComponent<LightBarEditorProps>("LightBarEditor
         }
     }
 
-    Container {
-        attrs.className = -styles.transformEditSection
-        FormControl {
-            attrs.className = -styles.transformThreeColumns
-            InputLabel {
-                attrs.shrink = true
-                +"End"
-            }
+    if (mutableEntity.endVertex.y != 0f || mutableEntity.endVertex.z != 0f) {
+        Container {
+            attrs.className = -styles.propertiesEditSection
+            FormControl {
+                attrs.className = -styles.threeColumns
+                InputLabel {
+                    attrs.shrink = true
+                    +"End"
+                }
 
-            vectorEditor {
-                attrs.vector3F = mutableEntity.endVertex
-                attrs.adornment = buildElement { +props.editingEntity.modelUnit.display }
-                attrs.disabled = editMode.isOff
-                attrs.onChange = handleEndVertexChange
+                vectorEditor {
+                    attrs.vector3F = mutableEntity.endVertex
+                    attrs.adornment = buildElement { +props.editingEntity.modelUnit.display }
+                    attrs.disabled = editMode.isOff
+                    attrs.onChange = handleEndVertexChange
+                }
             }
         }
     }
 
     Container {
-        attrs.className = -styles.transformEditSection
-        FormControl {
-            attrs.className = -styles.transformThreeColumns
-            InputLabel {
-                attrs.shrink = true
-                +"Length"
-            }
+        attrs.className = -styles.propertiesEditSection
 
-            numberFieldEditor {
-                attrs.isInteger = false
-                attrs.isNullable = false
-                attrs.label = ""
-                attrs.getValue = handleGetLength
-                attrs.setValue = handleLengthChange
-                attrs.adornment = props.editingEntity.modelUnit.display.asTextNode()
-                attrs.onChange = {}
-                attrs.disabled = editMode.isOff
-            }
+        numberFieldEditor {
+            attrs.isInteger = false
+            attrs.isNullable = false
+            attrs.label = "Length"
+            attrs.getValue = handleGetLength
+            attrs.setValue = handleLengthChange
+            attrs.adornment = props.editingEntity.modelUnit.display.asTextNode()
+            attrs.onChange = {}
+            attrs.disabled = editMode.isOff
         }
     }
 }

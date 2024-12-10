@@ -95,5 +95,6 @@ external interface NumberTextFieldProps<T: Number?> : Props {
     var onChange: (T) -> Unit
 }
 
+@Deprecated("Use NumberFieldEditor instead.")
 fun <T : Number?> RBuilder.numberTextField(handler: RHandler<NumberTextFieldProps<T>>) =
     child(NumberTextFieldView, handler = handler)

@@ -8,6 +8,7 @@ import baaahs.ui.xComponent
 import js.objects.jso
 import mui.material.FormControl
 import mui.material.FormHelperText
+import mui.material.FormLabel
 import mui.material.InputAdornment
 import mui.material.InputBase
 import mui.material.Size
@@ -46,7 +47,7 @@ private val NumberFieldEditor = xComponent<NumberFieldEditorProps<Number?>>("Num
             onChange(pushToUndoStack)
         } else if (editableManager != null) {
             editableManager.onChange(pushToUndoStack)
-        } else error("NumberFieldEditor needs either onChange or editableManager.")
+        }
     }
 
     var isError by state { false }
@@ -131,6 +132,13 @@ private val NumberFieldEditor = xComponent<NumberFieldEditorProps<Number?>>("Num
     }
 
     FormControl {
+        props.label?.let {
+            FormLabel {
+                attrs.className = -styles.inputLabel
+                +it
+            }
+        }
+
         InputBase {
             attrs.className = -styles.newRoot
             attrs.type = InputType.text.asDynamic()

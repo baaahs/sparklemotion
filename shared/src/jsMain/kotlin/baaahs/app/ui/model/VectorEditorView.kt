@@ -27,7 +27,6 @@ private val VectorEditorView = xComponent<VectorEditorProps>("VectorEditor", tru
 
     val handleChange by handler { _: Boolean -> }
 
-    val vector = props.vector3F
     numberFieldEditor<Float> {
         this.attrs.label = "X"
         this.attrs.disabled = props.disabled == true
@@ -48,6 +47,7 @@ private val VectorEditorView = xComponent<VectorEditorProps>("VectorEditor", tru
         this.attrs.label = "Z"
         this.attrs.disabled = props.disabled == true
         this.attrs.getValue = getZ
+        this.attrs.setValue = updateZ
         this.attrs.adornment = props.adornment
         this.attrs.onChange = handleChange
     }

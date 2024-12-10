@@ -1,6 +1,8 @@
 package baaahs.app.ui.model
 
 import baaahs.app.ui.appContext
+import baaahs.app.ui.editor.betterSelect
+import baaahs.app.ui.editor.numberFieldEditor
 import baaahs.model.LightRing
 import baaahs.scene.EditingEntity
 import baaahs.scene.MutableLightRingData
@@ -27,62 +29,41 @@ private val LightRingEditorView = xComponent<LightRingEditorProps>("LightRingEdi
         props.editingEntity.onChange()
     }
 
-    val handlePixelDirectionChange by eventHandler(mutableEntity) {
-        mutableEntity.pixelDirection = LightRing.PixelDirection.valueOf(it.target.value)
+    val handlePixelDirectionChange by handler(mutableEntity) { newValue: LightRing.PixelDirection ->
+        mutableEntity.pixelDirection = newValue
         props.editingEntity.onChange()
     }
 
 
     Container {
-        attrs.className = -styles.transformEditSection
-        header { +"Radius:" }
+        attrs.className = -styles.propertiesEditSection and styles.twoColumns
 
-        with(styles) {
-            numberTextField<Float> {
-                this.attrs.label = ""
-                this.attrs.disabled = editMode.isOff
-                this.attrs.value = mutableEntity.radius
-                this.attrs.adornment = props.editingEntity.modelUnit.display.asTextNode()
-                this.attrs.onChange = handleRadiusChange
-            }
+        numberFieldEditor<Float> {
+            this.attrs.label = "Radius"
+            this.attrs.disabled = editMode.isOff
+            this.attrs.adornment = props.editingEntity.modelUnit.display.asTextNode()
+            this.attrs.getValue = { mutableEntity.radius }
+            this.attrs.setValue = handleRadiusChange
+        }
+
+        numberFieldEditor<Double> {
+            this.attrs.label = "First Pixel Position"
+            this.attrs.disabled = editMode.isOff
+            this.attrs.adornment = "°".asTextNode()
+            this.attrs.getValue = { mutableEntity.firstPixelRadians.asDegrees }
+            this.attrs.setValue = handleFirstPixelRadiansChange
         }
     }
 
     Container {
         attrs.className = -styles.transformEditSection
-        header { +"First Pixel:" }
 
-        with(styles) {
-            numberTextField<Double> {
-                this.attrs.label = "Position"
-                this.attrs.disabled = editMode.isOff
-                this.attrs.value = mutableEntity.firstPixelRadians.asDegrees
-                this.attrs.adornment = "°".asTextNode()
-                this.attrs.onChange = handleFirstPixelRadiansChange
-            }
-        }
-    }
-
-    Container {
-        attrs.className = -styles.transformEditSection
-        header { +"Pixel Direction:" }
-
-        FormControlLabel {
-//            attrs.label { +"Pixel Direction" }
-            attrs.control = buildElement {
-                Select<SelectProps<String>> {
-                    attrs.value = mutableEntity.pixelDirection.name
-                    attrs.disabled = editMode.isOff
-                    attrs.onChange = handlePixelDirectionChange.withSelectEvent()
-
-                    LightRing.PixelDirection.values().forEach { direction ->
-                        MenuItem {
-                            attrs.value = direction.name
-                            ListItemText { +direction.name }
-                        }
-                    }
-                }
-            }
+        betterSelect<LightRing.PixelDirection> {
+            attrs.label = "Pixel Direction"
+            attrs.disabled = editMode.isOff
+            attrs.value = mutableEntity.pixelDirection
+            attrs.values = LightRing.PixelDirection.entries
+            attrs.onChange = handlePixelDirectionChange
         }
     }
 

@@ -13,7 +13,6 @@ import mui.material.Container
 import mui.material.FormControl
 import mui.material.InputLabel
 import react.*
-import react.dom.header
 import react.dom.span
 
 private val TransformationEditorView = xComponent<TransformationEditorProps>("TransformationEditor") { props ->
@@ -49,7 +48,7 @@ private val TransformationEditorView = xComponent<TransformationEditorProps>("Tr
         attrs.className = -styles.transformEditSection
 
         FormControl {
-            attrs.className = -styles.transformThreeColumns
+            attrs.className = -styles.threeColumns
             InputLabel {
                 attrs.shrink = true
                 +"Position"
@@ -68,7 +67,7 @@ private val TransformationEditorView = xComponent<TransformationEditorProps>("Tr
         attrs.className = -styles.transformEditSection
 
         FormControl {
-            attrs.className = -styles.transformThreeColumns
+            attrs.className = -styles.threeColumns
             InputLabel {
                 attrs.shrink = true
                 +"Rotation"
@@ -85,7 +84,7 @@ private val TransformationEditorView = xComponent<TransformationEditorProps>("Tr
         attrs.className = -styles.transformEditSection
 
         FormControl {
-            attrs.className = -styles.transformThreeColumns
+            attrs.className = -styles.threeColumns
             InputLabel {
                 attrs.shrink = true
                 +"Scale"

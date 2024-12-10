@@ -4,12 +4,14 @@ import baaahs.ui.asTextNode
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
 import mui.material.*
+import mui.system.sx
 import react.Props
 import react.RBuilder
 import react.RHandler
 import react.ReactNode
 import react.dom.events.ChangeEvent
 import react.dom.html.ReactHTML
+import web.cssom.em
 import web.html.HTMLInputElement
 import baaahs.app.ui.controls.Styles as ControlsStyles
 
@@ -38,7 +40,6 @@ private val BetterSelectView = xComponent<BetterSelectProps<Any?>>("BetterSelect
             InputLabel {
                 attrs.className = -ControlsStyles.inputLabel
                 attrs.margin = InputLabelMargin.dense
-                attrs.component = ReactHTML.legend
                 +label
             }
         }
@@ -48,6 +49,7 @@ private val BetterSelectView = xComponent<BetterSelectProps<Any?>>("BetterSelect
             attrs.displayEmpty = true
             attrs.margin = InputBaseMargin.dense
             attrs.size = Size.small
+            attrs.sx { marginTop = .5.em }
             attrs.disabled = props.disabled == true
             attrs.value = props.values.indexOf(props.value).let {
                 if (it == -1) {

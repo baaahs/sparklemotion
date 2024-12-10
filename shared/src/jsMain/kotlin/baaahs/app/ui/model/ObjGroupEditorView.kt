@@ -7,15 +7,35 @@ import baaahs.model.ConstEntityMetadataProvider
 import baaahs.model.StrandCountEntityMetadataProvider
 import baaahs.scene.EditingEntity
 import baaahs.scene.MutableImportedEntityGroup
-import baaahs.ui.*
+import baaahs.ui.asTextNode
+import baaahs.ui.checked
+import baaahs.ui.unaryMinus
+import baaahs.ui.value
+import baaahs.ui.withTChangeEvent
+import baaahs.ui.xComponent
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 import materialui.icon
-import mui.material.*
-import react.*
-import react.dom.*
+import mui.material.Container
+import mui.material.Typography
+import mui.material.FormControlLabel
+import mui.material.IconButton
+import mui.material.Switch
+import mui.material.TextField
+import mui.system.sx
+import react.Props
+import react.RBuilder
+import react.RHandler
+import react.buildElement
+import react.dom.br
 import react.dom.events.FormEvent
+import react.dom.header
+import react.dom.li
+import react.dom.onChange
+import react.dom.ul
+import react.useContext
+import web.cssom.em
 
 private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor") { props ->
     val appContext = useContext(appContext)
@@ -128,7 +148,9 @@ private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor
 
         Container {
             if (mutableEntity.problems.isEmpty()) {
-                +"Imported ${mutableEntity.children.size} surfaces."
+                Typography {
+                    +"Imported ${mutableEntity.children.size} surfaces."
+                }
             } else {
                 header { +"Problems Importing…" }
                 ul {
@@ -144,8 +166,9 @@ private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor
 
     val metadata = mutableEntity.metadata
     Container {
+        attrs.sx { marginTop = 1.em}
         betterSelect<String?> {
-            attrs.label = "Adapter"
+            attrs.label = "Strategy"
             attrs.disabled = editMode.isOff
             attrs.values = listOf(null, "Constant", "Per Entity")
             attrs.renderValueOption = { adapter -> buildElement { +(adapter ?: "None" ) } }
@@ -187,7 +210,6 @@ private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor
                 }
             }
             null -> {}
-            else -> error("Unknown metadata type ${metadata::class}.")
         }
     }
 }

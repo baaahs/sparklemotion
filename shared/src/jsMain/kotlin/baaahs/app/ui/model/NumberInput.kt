@@ -242,10 +242,12 @@ class NumberInputStyles(val theme: Theme) : StyleSheet("app-ui-numberinput", isS
             gridRow = GridRow("1 / 3")
             boxSizing = BoxSizing.borderBox
             margin = Margin(4.px)
+            width = 5.em
             minHeight = 2.em
             paddingRight = .5.em
             paddingTop = 4.px
             paddingBottom = 4.px
+            textAlign = TextAlign.right
         }
         "input:focus-within" {
             outlineOffset = 0.px

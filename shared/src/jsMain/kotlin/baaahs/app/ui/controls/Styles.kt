@@ -213,7 +213,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
     }
 
     val inputLabel by css {
-        whiteSpace = WhiteSpace.nowrap
+        left = (-.7).em
     }
 
     val slider by css {}
