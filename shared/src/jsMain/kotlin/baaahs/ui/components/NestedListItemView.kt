@@ -22,8 +22,9 @@ private val NestedListItemView = xComponent<NestedListItemProps>("NestedListItem
     }
 
     @Suppress("UNUSED_VARIABLE")
-    val handleCollapseClick by mouseEventHandler(props.item) {
+    val handleCollapseClick by mouseEventHandler(props.item) { e ->
         props.item.isOpen = !props.item.isOpen
+        e.stopPropagation()
     }
 
     ListItemButton {
