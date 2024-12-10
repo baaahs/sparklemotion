@@ -64,7 +64,10 @@ private val ListAndDetailView = xComponent<ListAndDetailProps<*>>("ListAndDetail
                 header {
                     Fade {
                         attrs.`in` = props.selection == null
-                        attrs.timeout = speedMs
+                        // Uhhh... if this fade happens before or simultaneous to
+                        // the slide, Safari crashes.
+                        val aLittleSlowerMs = speedMs * 1.1
+                        attrs.timeout = aLittleSlowerMs
 
                         span { child(props.listHeader) }
                     }
