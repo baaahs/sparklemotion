@@ -31,7 +31,7 @@ class JsMidiSource(
             "Keystation 61 MK3 (USB MIDI)"
         )
 
-        if (navigator::requestMIDIAccess == undefined) {
+        if (navigator.asDynamic().requestMIDIAccess == undefined) {
             logger.error { "No MIDI access available." }
             return
         }
