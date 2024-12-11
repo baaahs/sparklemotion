@@ -363,7 +363,7 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
                                     attrs.color = IconButtonColor.primary
                                     attrs.disabled = editMode.isOff
                                     icon(Delete)
-                                    +"Delete Entity"
+                                    +"Delete ${selectedMutableEntity?.typeTitle}"
                                 }
                             }
                         }
