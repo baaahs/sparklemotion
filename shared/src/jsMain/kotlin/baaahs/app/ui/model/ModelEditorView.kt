@@ -158,7 +158,7 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
     }
 
     val handleDeleteEntity by handler(mutableScene, selectedMutableEntity) {
-        selectedMutableEntity?.let { mutableModel.delete(it) }
+        selectedMutableEntity?.let { mutableScene.delete(it) }
         visualizer.selectedEntity = null
         props.onEdit()
     }
@@ -363,7 +363,7 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
                                     attrs.color = IconButtonColor.primary
                                     attrs.disabled = editMode.isOff
                                     icon(Delete)
-                                    +"Delete ${selectedMutableEntity?.typeTitle}"
+                                    +"Delete ${editingEntity.mutableEntity.typeTitle}"
                                 }
                             }
                         }

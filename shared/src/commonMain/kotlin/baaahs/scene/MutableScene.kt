@@ -58,6 +58,14 @@ class MutableScene(
     }
 
     override fun build(): Scene = build(SceneBuilder())
+
+    fun delete(entity: MutableEntity) {
+        model.delete(entity)
+        fixtureMappings.entries.removeAll { (controllerId, mutableFixtureMappings) ->
+            mutableFixtureMappings.removeAll { fixtureMapping -> fixtureMapping.entity == entity }
+            mutableFixtureMappings.isEmpty()
+        }
+    }
 }
 
 interface MutableControllerConfig {
@@ -166,6 +174,7 @@ class MutableModel(
     /** @return `true` if `mutableEntity` was found and deleted. */
     fun delete(mutableEntity: MutableEntity): Boolean =
         if (entities.remove(mutableEntity)) true else {
+            // TODO: Walk the tree in a more clear way.
             entities.any { it.delete(mutableEntity) }
         }
 }
