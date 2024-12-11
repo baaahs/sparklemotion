@@ -31,7 +31,7 @@ import web.cssom.em
 import web.cssom.pct
 import web.html.HTMLElement
 
-private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("ControllerConfigurer") { props ->
+private val ControllerListView = xComponent<DeviceListProps>("ControllerList") { props ->
     val appContext = useContext(appContext)
     val sceneEditorClient = observe(appContext.sceneEditorClient)
 
@@ -195,10 +195,10 @@ fun styleIf(condition: Boolean, style: RuleSet, otherwise: RuleSet? = null): Str
     return if (condition) +style else otherwise?.let { +it } ?: ""
 }
 
-external interface DeviceConfigurerProps : Props {
+external interface DeviceListProps : Props {
     var mutableScene: MutableScene
     var onEdit: () -> Unit
 }
 
-fun RBuilder.deviceConfigurer(handler: RHandler<DeviceConfigurerProps>) =
-    child(ControllerConfigurerView, handler = handler)
+fun RBuilder.controllerList(handler: RHandler<DeviceListProps>) =
+    child(ControllerListView, handler = handler)
