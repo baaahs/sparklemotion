@@ -81,8 +81,8 @@ class DmxManagerImpl(
                 val controllerId = ControllerId(controllerType, device.id)
                 onStateChange(controllerId) { fromState ->
                     DirectDmxController.DirectDmxState(
-                        "${device.name} (${device.id})",
-                        null,
+                        device.name,
+                        device.id,
                         clock.now(),
                         null, null
                     )

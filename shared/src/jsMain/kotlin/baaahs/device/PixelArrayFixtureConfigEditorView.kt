@@ -41,7 +41,7 @@ private val PixelArrayFixtureConfigEditorView =
             betterSelect<PixelFormat?> {
                 attrs.label = "Pixel Format"
                 attrs.values = listOf(null) + PixelFormat.values().toList()
-                attrs.renderValueOption = { (it?.name ?: "Default").asTextNode() }
+                attrs.renderValueOption = { it, _ -> (it?.name ?: "Default").asTextNode() }
                 attrs.value = mutableConfig.pixelFormat
                 attrs.onChange = handlePixelFormatChange
             }

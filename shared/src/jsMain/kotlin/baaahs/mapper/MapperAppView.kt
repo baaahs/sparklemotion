@@ -131,7 +131,7 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
                 betterSelect<MediaDevices.Device?> {
                     attrs.label = "Camera:"
                     attrs.values = listOf(null) + ui.devices
-                    attrs.renderValueOption = { device -> buildElement { +(device?.label ?: "None") } }
+                    attrs.renderValueOption = { device, _ -> buildElement { +(device?.label ?: "None") } }
                     attrs.onChange = uiActions.changedCamera
                     attrs.value = ui.selectedDevice
                 }
@@ -140,7 +140,7 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
                     betterSelect<MappingStrategy> {
                         attrs.label = "Mapping Strategy:"
                         attrs.values = MappingStrategy.options
-                        attrs.renderValueOption = { mappingStrategy -> buildElement { +mappingStrategy.title } }
+                        attrs.renderValueOption = { mappingStrategy, _ -> buildElement { +mappingStrategy.title } }
                         attrs.onChange = uiActions.changedMappingStrategy
                         attrs.value = ui.mappingStrategy
                     }
@@ -176,7 +176,7 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
                     betterSelect<Model.Entity?> {
                         attrs.label = "Entity:"
                         attrs.values = ui.entitiesByName.values.toList().map<_, Model.Entity?>{ it }.plus(null)
-                        attrs.renderValueOption = { entity -> buildElement { +(entity?.name ?: "None" ) } }
+                        attrs.renderValueOption = { entity, _ -> buildElement { +(entity?.name ?: "None" ) } }
                         attrs.value = mappingController.guessedEntity
                         attrs.onChange = handleChangeEntity
                     }
@@ -199,7 +199,7 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
                         betterSelect<PixelFormat?> {
                             attrs.label = "Pixel Format"
                             attrs.values = listOf(null) + PixelFormat.entries
-                            attrs.renderValueOption = { (it?.name ?: "Default").asTextNode() }
+                            attrs.renderValueOption = { it, _ -> (it?.name ?: "Default").asTextNode() }
                             attrs.value = mappingController.pixelFormat
                             attrs.onChange = handlePixelFormatChange
                         }
@@ -210,7 +210,7 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
                     betterSelect<String?> {
                         attrs.label = "Load Session:"
                         attrs.values = listOf(null) + ui.sessions.map { it }
-                        attrs.renderValueOption = { name -> buildElement { +(name ?: "None" ) } }
+                        attrs.renderValueOption = { name, _ -> buildElement { +(name ?: "None" ) } }
                         attrs.value = ui.selectedMappingSessionName
                         attrs.onChange = handleLoadMappingSession
                     }
@@ -226,7 +226,7 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
                     betterSelect<String?> {
                         attrs.label = "Load Image:"
                         attrs.values = listOf(null) + ui.images.map { it }
-                        attrs.renderValueOption = { name -> buildElement { +(name ?: "None" ) } }
+                        attrs.renderValueOption = { name, _ -> buildElement { +(name ?: "None" ) } }
                         attrs.value = ui.selectedImageName
                         attrs.onChange = handleLoadImage
                     }

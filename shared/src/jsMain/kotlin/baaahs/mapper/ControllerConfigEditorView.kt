@@ -1,6 +1,7 @@
 package baaahs.mapper
 
 import baaahs.app.ui.appContext
+import baaahs.app.ui.editor.textFieldEditor
 import baaahs.controller.ControllerId
 import baaahs.fixtures.FixturePreviewError
 import baaahs.scene.EditingController
@@ -13,11 +14,31 @@ import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
 import materialui.icon
 import mui.icons.material.ExpandMore
-import mui.material.*
+import mui.material.Accordion
+import mui.material.AccordionDetails
+import mui.material.AccordionSummary
+import mui.material.Box
+import mui.material.Button
+import mui.material.ButtonColor
+import mui.material.Container
+import mui.material.Paper
+import mui.material.Size
+import mui.material.Table
+import mui.material.TableBody
+import mui.material.TableCell
+import mui.material.TableCellVariant
+import mui.material.TablePadding
+import mui.material.TableRow
+import mui.material.Typography
 import mui.material.styles.Theme
 import mui.material.styles.useTheme
 import mui.system.sx
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
+import react.buildElement
+import react.create
+import react.useContext
 import web.cssom.em
 
 private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>("ControllerConfigEditor") { props ->
@@ -84,52 +105,7 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
 
         Accordion {
             attrs.elevation = 4
-
-            AccordionSummary {
-                attrs.expandIcon = ExpandMore.create()
-                Typography { +"Controller Info" }
-            }
-
-            AccordionDetails {
-                Table {
-                    attrs.size = Size.small
-
-                    TableBody {
-                        TableRow {
-                            TableCell { attrs.variant = TableCellVariant.head; +"Type:" }
-                            TableCell { +mutableControllerConfig.controllerMeta.controllerTypeName }
-                        }
-                        TableRow {
-                            TableCell { attrs.variant = TableCellVariant.head; +"Address:" }
-                            TableCell { +(controllerState?.address ?: "") }
-                        }
-                        TableRow {
-                            TableCell { attrs.variant = TableCellVariant.head; +"Online Since:" }
-                            TableCell { +(controllerState?.onlineSince?.toString() ?: "Offline") }
-                        }
-                        TableRow {
-                            TableCell { attrs.variant = TableCellVariant.head; +"Firmware Version:" }
-                            TableCell { +(controllerState?.firmwareVersion ?: "") }
-                        }
-                        TableRow {
-                            TableCell { attrs.variant = TableCellVariant.head; +"Last Error Message:" }
-                            TableCell { +(controllerState?.lastErrorMessage ?: "") }
-                        }
-                        TableRow {
-                            TableCell { attrs.variant = TableCellVariant.head; +"Last Error At:" }
-                            TableCell { +(controllerState?.lastErrorAt?.toString() ?: "") }
-                        }
-                    }
-                }
-
-                editingController.getEditorPanelViews().forEach {
-                    it.render(this)
-                }
-            }
-        }
-
-        Accordion {
-            attrs.elevation = 4
+            attrs.defaultExpanded = true
 
             AccordionSummary {
                 attrs.expandIcon = ExpandMore.create()
@@ -163,13 +139,72 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
                         Button {
                             attrs.className = -styles.button
                             attrs.color = ButtonColor.primary
+                            attrs.disabled = editMode.isOff
                             attrs.fullWidth = true
                             attrs.onClick = handleNewFixtureMappingClick
 
-                            icon(mui.icons.material.AddCircleOutline)
+                            attrs.startIcon = buildElement { icon(mui.icons.material.AddCircleOutline) }
                             +"New Fixture Mapping…"
                         }
                     }
+                }
+            }
+        }
+
+        Accordion {
+            attrs.elevation = 4
+
+            AccordionSummary {
+                attrs.expandIcon = ExpandMore.create()
+                Typography { +"Controller Info" }
+            }
+
+            AccordionDetails {
+                Table {
+                    attrs.padding = TablePadding.none
+                    attrs.size = Size.small
+
+                    TableBody {
+                        TableRow {
+                            TableCell { attrs.variant = TableCellVariant.head; +"Name:" }
+                            TableCell {
+                                textFieldEditor {
+                                    attrs.disabled = editMode.isOff
+                                    attrs.getValue = { mutableControllerConfig.title }
+                                    attrs.setValue = { mutableControllerConfig.title = it }
+                                    attrs.onChange = { props.onEdit() }
+                                }
+                            }
+                        }
+                        TableRow {
+                            TableCell { attrs.variant = TableCellVariant.head; +"Type:" }
+                            TableCell { +mutableControllerConfig.controllerMeta.controllerTypeName }
+                        }
+                        TableRow {
+                            TableCell { attrs.variant = TableCellVariant.head; +"Address:" }
+                            TableCell { +(controllerState?.address ?: "") }
+                        }
+                        TableRow {
+                            TableCell { attrs.variant = TableCellVariant.head; +"Online Since:" }
+                            TableCell { +(controllerState?.onlineSince?.toString() ?: "Offline") }
+                        }
+                        TableRow {
+                            TableCell { attrs.variant = TableCellVariant.head; +"Firmware Version:" }
+                            TableCell { +(controllerState?.firmwareVersion ?: "") }
+                        }
+                        TableRow {
+                            TableCell { attrs.variant = TableCellVariant.head; +"Last Error Message:" }
+                            TableCell { +(controllerState?.lastErrorMessage ?: "") }
+                        }
+                        TableRow {
+                            TableCell { attrs.variant = TableCellVariant.head; +"Last Error At:" }
+                            TableCell { +(controllerState?.lastErrorAt?.toString() ?: "") }
+                        }
+                    }
+                }
+
+                editingController.getEditorPanelViews().forEach {
+                    it.render(this)
                 }
             }
         }

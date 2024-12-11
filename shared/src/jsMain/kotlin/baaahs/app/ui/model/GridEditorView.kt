@@ -62,7 +62,7 @@ private val GridEditorView = xComponent<GridEditorProps>("GridEditor") { props -
                 attrs.disabled = editMode.isOff
                 attrs.value = mutableEntity.direction
                 attrs.values = GridData.Direction.entries
-                attrs.renderValueOption = { it.title.asTextNode() }
+                attrs.renderValueOption = { it, _ -> it.title.asTextNode() }
                 attrs.onChange = handleDirectionChange
             }
 

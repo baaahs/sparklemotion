@@ -17,6 +17,7 @@ import react.useContext
 
 private val FixtureConfigPickerView = xComponent<FixtureConfigPickerProps>("FixtureConfigPicker") { props ->
     val appContext = useContext(appContext)
+    val editMode = observe(appContext.sceneManager.editMode)
     val styles = appContext.allStyles.controllerEditor
 
     val handleFixtureTypeChange by handler(
@@ -36,7 +37,8 @@ private val FixtureConfigPickerView = xComponent<FixtureConfigPickerProps>("Fixt
             attrs.label = "Fixture Type"
             attrs.values = listOf(null) + appContext.plugins.fixtureTypes.all
             attrs.value = fixtureConfig?.fixtureType
-            attrs.renderValueOption = { o -> (o?.title ?: "Default").asTextNode() }
+            attrs.renderValueOption = { o, _ -> (o?.title ?: "Default").asTextNode() }
+            attrs.disabled = editMode.isOff
             attrs.onChange = handleFixtureTypeChange
             attrs.fullWidth = true
         }

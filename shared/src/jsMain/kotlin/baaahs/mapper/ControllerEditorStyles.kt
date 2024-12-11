@@ -1,10 +1,8 @@
 package baaahs.mapper
 
-import baaahs.app.ui.StyleConstants
 import baaahs.ui.asColor
 import baaahs.ui.important
 import baaahs.ui.inset
-import baaahs.ui.selector
 import kotlinx.css.*
 import kotlinx.css.FlexDirection.column
 import kotlinx.css.properties.lh
@@ -51,7 +49,11 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
     val navigatorPaneActions by css {
     }
     val navigatorPaneHeader by css {
+        userSelect = UserSelect.none
+        marginTop = 2.px
         lineHeight = 1.5.em.lh
+        backgroundColor = theme.palette.primary.dark.asColor()
+            .darken(20).desaturate(20)
     }
 
     val statusDot by css {
@@ -122,8 +124,8 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
         borderTopRightRadius = 0.px.important
     }
 
-    val expansionPanelSummaryContent by css {
-        overflow = Overflow.hidden
+    val accordionSummaryContent by css {
+//        overflow = Overflow.hidden
         justifyContent = JustifyContent.spaceBetween
     }
 

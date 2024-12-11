@@ -17,6 +17,7 @@ import react.useContext
 
 private val TransportConfigPickerView = xComponent<TransportConfigPickerProps>("DeviceConfigPicker") { props ->
     val appContext = useContext(appContext)
+    val editMode = observe(appContext.sceneManager.editMode)
     val styles = appContext.allStyles.controllerEditor
 
     val handleTransportTypeChange by handler(
@@ -42,7 +43,8 @@ private val TransportConfigPickerView = xComponent<TransportConfigPickerProps>("
             attrs.label = "Transport Type"
             attrs.values = listOf(null) + supportedTransportTypes
             attrs.value = transportConfig?.transportType
-            attrs.renderValueOption = { o -> (o?.title ?: "Default").asTextNode() }
+            attrs.renderValueOption = { o, _ -> (o?.title ?: "Default").asTextNode() }
+            attrs.disabled = editMode.isOff
             attrs.onChange = handleTransportTypeChange
             attrs.fullWidth = true
         }
