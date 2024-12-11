@@ -15,6 +15,7 @@ import baaahs.gl.override
 import baaahs.gl.render.RenderManager
 import baaahs.gl.testPlugins
 import baaahs.io.FsServerSideSerializer
+import baaahs.io.ResourcesFs
 import baaahs.kotest.value
 import baaahs.libraries.ShaderLibraryManager
 import baaahs.mapper.MappingSession
@@ -113,7 +114,7 @@ class PinkySpec : DescribeSpec({
                 ShaderLibraryManager(plugins, fakeFs, FsServerSideSerializer(), pubSub),
                 Pinky.NetworkStats(), PinkySettings(), serverNotices, PinkyMapperHandlers(mappingStore),
                 PinkyConfigStore(plugins, fakeFs.rootFile), eventManager,
-                ObservableProvider(FeatureFlags.JVM)
+                ObservableProvider(FeatureFlags.JVM), ResourcesFs()
             )
         }
         val pinkyLink by value { network.links.only() }
