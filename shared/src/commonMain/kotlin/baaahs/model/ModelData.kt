@@ -263,6 +263,7 @@ class MutableSurfaceDataForTest(
     var expectedPixelCount: Int?,
     var vertices: MutableList<Vector3F>
 ) : MutableEntity(title, description, position, rotation, scale, locator) {
+    override val typeTitle: String get() = "Surface Data for Test"
 
     override fun build(): SurfaceDataForTest =
         SurfaceDataForTest(title, description, position, rotation, scale, locator, expectedPixelCount, vertices)

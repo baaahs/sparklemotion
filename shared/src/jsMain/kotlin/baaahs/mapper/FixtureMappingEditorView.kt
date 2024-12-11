@@ -84,7 +84,6 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
                 IconButton {
                     attrs.size = Size.small
                     attrs.color = IconButtonColor.error
-                    attrs.title = "Delete Fixture Mapping"
                     attrs.onClick = handleDeleteButton
                     icon(Delete)
                     +"Delete"

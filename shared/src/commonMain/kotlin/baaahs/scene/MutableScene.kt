@@ -58,6 +58,14 @@ class MutableScene(
     }
 
     override fun build(): Scene = build(SceneBuilder())
+
+    fun delete(entity: MutableEntity) {
+        model.delete(entity)
+        fixtureMappings.entries.removeAll { (controllerId, mutableFixtureMappings) ->
+            mutableFixtureMappings.removeAll { fixtureMapping -> fixtureMapping.entity == entity }
+            mutableFixtureMappings.isEmpty()
+        }
+    }
 }
 
 interface MutableControllerConfig {
@@ -166,6 +174,7 @@ class MutableModel(
     /** @return `true` if `mutableEntity` was found and deleted. */
     fun delete(mutableEntity: MutableEntity): Boolean =
         if (entities.remove(mutableEntity)) true else {
+            // TODO: Walk the tree in a more clear way.
             entities.any { it.delete(mutableEntity) }
         }
 }
@@ -181,6 +190,8 @@ abstract class MutableEntity(
     constructor(baseEntity: EntityData) : this(
         baseEntity.title, baseEntity.description, baseEntity.position, baseEntity.rotation, baseEntity.scale, baseEntity.locator
     )
+
+    abstract val typeTitle: String
 
     abstract fun build(): EntityData
 
@@ -225,6 +236,8 @@ abstract class MutableEntityGroup(
 class MutableImportedEntityGroup(
     baseImportedEntityData: ImportedEntityData
 ) : MutableEntityGroup(baseImportedEntityData) {
+    override val typeTitle: String get() = "Import"
+
     var objData: String = baseImportedEntityData.objData
         set(value) { field = value; importerResults = null }
 
@@ -298,6 +311,7 @@ class MutableImportedEntityGroup(
     ) : MutableEntity(
         childEntity.title, null, position, rotation, scale, childEntity.locator
     ) {
+        override val typeTitle: String get() = "Imported Entity"
         val childId = nextChildId++
 
         init {
@@ -328,6 +342,7 @@ class MutableImportedEntityGroup(
 class MutableMovingHeadData(
     baseMovingHeadData: MovingHeadData
 ) : MutableEntity(baseMovingHeadData) {
+    override val typeTitle: String get() = "Moving Head"
     var baseDmxChannel: Int = baseMovingHeadData.baseDmxChannel
     var adapter: MovingHeadAdapter = baseMovingHeadData.adapter
 
@@ -340,6 +355,8 @@ class MutableMovingHeadData(
 class MutableLightBarData(
     baseLightBar: LightBarData
 ) : MutableEntity(baseLightBar) {
+    override val typeTitle: String get() = "Light Bar"
+
     var startVertex = baseLightBar.startVertex
     var endVertex = baseLightBar.endVertex
 
@@ -352,6 +369,8 @@ class MutableLightBarData(
 class MutablePolyLineData(
     basePolyLine: PolyLineData
 ) : MutableEntity(basePolyLine) {
+    override val typeTitle: String get() = "Poly Line"
+
     var segments = basePolyLine.segments
 
     override fun build(): EntityData =
@@ -367,6 +386,8 @@ class MutablePolyLineData(
 class MutableGridData(
     baseGridData: GridData
 ) : MutableEntity(baseGridData) {
+    override val typeTitle: String get() = "Grid"
+
     var rows = baseGridData.rows
     var columns = baseGridData.columns
     var rowGap = baseGridData.rowGap
@@ -384,6 +405,8 @@ class MutableGridData(
 class MutableLightRingData(
     baseLightRing: LightRingData
 ) : MutableEntity(baseLightRing) {
+    override val typeTitle: String get() = "Light Ring"
+
     var radius = baseLightRing.radius
     var firstPixelRadians = baseLightRing.firstPixelRadians
     var pixelDirection = baseLightRing.pixelDirection
