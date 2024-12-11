@@ -10,7 +10,9 @@ import baaahs.gl.override
 import baaahs.kotest.value
 import baaahs.nuffin
 import io.kotest.core.spec.style.DescribeSpec
-import io.kotest.matchers.*
+import io.kotest.matchers.shouldBe
+import kotlin.math.PI
+import kotlin.math.roundToInt
 
 class ModelSpec : DescribeSpec({
     describe<Model> {
@@ -113,6 +115,40 @@ class ModelSpec : DescribeSpec({
                 }
             }
 
+            context("with a one-dimensional geometry") {
+                override(model) { fakeModel(LightBar("bar1", startVertex = Vector3F(0f, 0f, 0f), endVertex = Vector3F(1f, 0f, 0f))) }
+
+                it("should give a non-zero size for any dimensions of size 0") {
+                    model.extents
+                        .shouldBe(Vector3F(1f, 1f, 1f))
+                }
+
+                context("rotated") {
+                    override(model) {
+                        fakeModel(
+                            LightBar("bar1", startVertex = Vector3F(0f, 0f, 0f), endVertex = Vector3F(1f, 0f, 0f),
+                                rotation = EulerAngle(pitchRad = 0.0, yawRad = 0.0, rollRad = PI / 2))
+                        )
+                    }
+
+                    it("should give a non-zero size for any dimensions of size 0") {
+                        fun Vector3F.nearly(): Vector3F {
+                            val round = Vector3F(8f, 8f, 8f)
+                            return (this * round).let {
+                                Vector3F(
+                                    it.x.roundToInt().toFloat(),
+                                    it.y.roundToInt().toFloat(),
+                                    it.z.roundToInt().toFloat()
+                                ) / round
+                            }
+                        }
+                        model.extents.nearly()
+                            .shouldBe(Vector3F(1f, 1f, 1f))
+                    }
+                }
+            }
+
+
             context("with light rings") {
                 override(model) {
                     fakeModel(
@@ -122,8 +158,8 @@ class ModelSpec : DescribeSpec({
                 }
 
                 it("should include all points on both light rings") {
-                    model.modelBounds
-                        .shouldBe(Vector3F(-2f, -1f, 0f) to Vector3F(2f, 2f, 5f))
+                    model.extents
+                        .shouldBe(Vector3F(4f, 3f, 5f))
                 }
 
                 it("should compute the correct center") {
