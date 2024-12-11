@@ -73,7 +73,8 @@ class ListAndDetailStyles(val theme: Theme) : StyleSheet("ui-components-list-and
 
     val listLargeYStacked by css {
         flex = Flex(1)
-        overflow = Overflow.hidden
+        overflowX = Overflow.hidden
+        overflowY = Overflow.auto
     }
 
     val detailLarge by css {
