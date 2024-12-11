@@ -5,14 +5,19 @@ import baaahs.device.FixtureType
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.FixtureMapping
 import baaahs.fixtures.FixtureOptions
-import baaahs.geom.*
+import baaahs.geom.EulerAngle
+import baaahs.geom.Matrix4F
+import baaahs.geom.Vector3F
+import baaahs.geom.boundingBox
+import baaahs.geom.center
+import baaahs.geom.compose
 import baaahs.model.WtfMaths.cross
 import baaahs.sim.FixtureSimulation
 import baaahs.sim.simulations
 import baaahs.sm.webapi.Problem
 import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.entity.ItemVisualizer
-import kotlinx.serialization.Transient
+import kotlin.math.abs
 
 class Model(
     val name: String,
@@ -47,7 +52,15 @@ class Model(
     private val modelExtents by lazy { val (min, max) = modelBounds; max - min }
     private val modelCenter by lazy { center(modelBounds.toList()) }
 
-    override val extents get() = modelExtents.let { if (it == Vector3F.origin) Vector3F(1f, 1f, 1f) else it }
+    // No zero-sized coordinates so we don't get division by zero errors later.
+    override val extents get() = modelExtents.let { extent ->
+        Vector3F(
+            if (abs(extent.x) < 0.0001) 1f else extent.x,
+            if (abs(extent.y) < 0.0001) 1f else extent.y,
+            if (abs(extent.z) < 0.0001) 1f else extent.z
+        )
+    }
+
     override val center: Vector3F get() = modelCenter
 
     fun generateFixtureMappings(): Map<ControllerId, List<FixtureMapping>> = emptyMap()
