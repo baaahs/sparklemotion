@@ -5,16 +5,38 @@ import baaahs.app.ui.editor.textFieldEditor
 import baaahs.mapper.styleIf
 import baaahs.model.EntityData
 import baaahs.model.Model
-import baaahs.scene.*
+import baaahs.scene.EditingEntity
+import baaahs.scene.MutableEntity
+import baaahs.scene.MutableEntityGroup
+import baaahs.scene.MutableEntityMatcher
+import baaahs.scene.MutableScene
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.SimulationEnv
-import baaahs.ui.*
-import baaahs.ui.components.*
-import baaahs.ui.components.ListAndDetail.Orientation.*
+import baaahs.ui.addObserver
+import baaahs.ui.asTextNode
+import baaahs.ui.components.ListAndDetail
+import baaahs.ui.components.ListAndDetail.Orientation.xStacked
+import baaahs.ui.components.ListAndDetail.Orientation.yStacked
+import baaahs.ui.components.ListAndDetail.Orientation.zStacked
+import baaahs.ui.components.NestedList
+import baaahs.ui.components.Renderer
+import baaahs.ui.components.collapsibleSearchBox
+import baaahs.ui.components.listAndDetail
+import baaahs.ui.components.nestedList
+import baaahs.ui.render
+import baaahs.ui.unaryMinus
+import baaahs.ui.unaryPlus
+import baaahs.ui.withMouseEvent
+import baaahs.ui.xComponent
 import baaahs.util.CacheBuilder
 import baaahs.util.globalLaunch
 import baaahs.util.useResizeListener
-import baaahs.visualizer.*
+import baaahs.visualizer.DomOverlayExtension
+import baaahs.visualizer.EntityAdapter
+import baaahs.visualizer.ModelVisualEditor
+import baaahs.visualizer.TransformControlsExtension
+import baaahs.visualizer.extension
+import baaahs.visualizer.modelEntity
 import baaahs.visualizer.sim.PixelArranger
 import baaahs.visualizer.sim.SwirlyPixelArranger
 import baaahs.window
@@ -23,14 +45,35 @@ import js.objects.jso
 import materialui.icon
 import mui.icons.material.Delete
 import mui.icons.material.ExpandMore
-import mui.material.*
+import mui.material.Accordion
+import mui.material.AccordionDetails
+import mui.material.AccordionSummary
+import mui.material.Button
+import mui.material.ButtonColor
+import mui.material.Card
+import mui.material.FormControl
+import mui.material.FormControlMargin
+import mui.material.IconButton
+import mui.material.IconButtonColor
+import mui.material.ListItemText
+import mui.material.Menu
+import mui.material.MenuItem
+import mui.material.Paper
+import mui.material.Size
+import mui.material.Typography
 import mui.system.sx
 import mui.system.useMediaQuery
 import org.w3c.dom.events.Event
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
+import react.buildElement
+import react.create
 import react.dom.div
 import react.dom.events.MouseEvent
 import react.dom.span
+import react.useContext
+import web.cssom.em
 import web.cssom.pct
 import web.cssom.px
 import web.dom.Element
@@ -349,22 +392,23 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
                             }
                         }
 
-                        Accordion {
-                            attrs.elevation = 4
-                            attrs.defaultExpanded = true
-
-                            AccordionSummary {
-                                attrs.expandIcon = ExpandMore.create()
-                                Typography { +"Actions" }
+                        // Actions
+                        Card {
+                            attrs.elevation = 1
+                            attrs.sx {
+                                marginTop = 1.em
+                                paddingTop = 1.em
+                                paddingBottom = 1.em
+                                border = "none".asDynamic()
                             }
-                            MyAccordionDetails {
-                                IconButton {
-                                    attrs.onClick = handleDeleteEntity.withMouseEvent()
-                                    attrs.color = IconButtonColor.primary
-                                    attrs.disabled = editMode.isOff
-                                    icon(Delete)
-                                    +"Delete ${editingEntity.mutableEntity.typeTitle}"
-                                }
+
+                            IconButton {
+                                attrs.size = Size.small
+                                attrs.color = IconButtonColor.error
+                                attrs.onClick = handleDeleteEntity.withMouseEvent()
+                                attrs.disabled = editMode.isOff
+                                icon(Delete)
+                                +"Delete ${editingEntity.mutableEntity.typeTitle}"
                             }
                         }
                     }
