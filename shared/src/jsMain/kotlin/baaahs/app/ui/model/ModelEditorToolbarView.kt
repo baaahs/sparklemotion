@@ -24,11 +24,12 @@ import web.dom.Element
 private val ModelEditorToolbarView = xComponent<ModelEditorToolbarProps>("ModelEditorToolbar", true) { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.modelEditor
+//    val visualizer = observe(props.visualizer)
     val visualizer = props.visualizer
 
     var newEntityMenuAnchor by state<Element?> { null }
     val handleNewEntityClick by mouseEventHandler { newEntityMenuAnchor = it.currentTarget as Element? }
-    val hideNewEntityMenu by handler { _: Event, _: String -> newEntityMenuAnchor = null }
+    val hideNewEntityMenu by handler { newEntityMenuAnchor = null }
 
     val handleToolChange by handler(visualizer) { _: MouseEvent<*, *>, value: Any? ->
         val modeEnum = TransformMode.find(value as String)
@@ -65,13 +66,9 @@ private val ModelEditorToolbarView = xComponent<ModelEditorToolbarProps>("ModelE
         forceRender()
     }
 
-    val addNewEntityTypeHandlers = memo(EntityTypes) {
-        CacheBuilder<EntityType, (MouseEvent<*, *>) -> Unit> {
-            { _: MouseEvent<*, *> ->
-                props.onAddEntity(it.createNew())
-                newEntityMenuAnchor = null
-            }
-        }
+    val handleNewEntitySelect by handler(props.onAddEntity) { entityType: EntityType ->
+        props.onAddEntity(entityType.createNew())
+        newEntityMenuAnchor = null
     }
 
     Draggable {
@@ -90,21 +87,10 @@ private val ModelEditorToolbarView = xComponent<ModelEditorToolbarProps>("ModelE
                     attrs.onClick = handleNewEntityClick
                 }
 
-                Menu {
-                    attrs.anchorEl = newEntityMenuAnchor.asDynamic()
-                    attrs.anchorOrigin = jso {
-                        horizontal = "left"
-                        vertical = "bottom"
-                    }
-                    attrs.open = newEntityMenuAnchor != null
+                newEntityMenu {
+                    attrs.menuAnchor = newEntityMenuAnchor
+                    attrs.onSelect = handleNewEntitySelect
                     attrs.onClose = hideNewEntityMenu
-
-                    EntityTypes.forEach { entityType ->
-                        MenuItem {
-                            attrs.onClick = addNewEntityTypeHandlers[entityType]
-                            ListItemText { +entityType.addNewTitle }
-                        }
-                    }
                 }
 
                 ToggleButtonGroup {
@@ -136,10 +122,7 @@ private val ModelEditorToolbarView = xComponent<ModelEditorToolbarProps>("ModelE
 
                 numberTextField<Double> {
                     attrs.adornment = buildElement {
-                        InputAdornment {
-                            attrs.position = InputAdornmentPosition.end
-                            +transformMode.getGridUnitAdornment(props.modelUnit)
-                        }
+                        +transformMode.getGridUnitAdornment(props.modelUnit)
                     }
                     attrs.disabled = !gridSnap
                     attrs.onChange = handleGridSizeChange

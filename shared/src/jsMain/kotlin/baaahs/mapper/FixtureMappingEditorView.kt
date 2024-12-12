@@ -31,6 +31,7 @@ import mui.material.IconButtonColor
 import mui.material.MenuItemProps
 import mui.material.Size
 import mui.system.sx
+import org.w3c.dom.events.Event
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -41,27 +42,32 @@ import react.useContext
 import web.cssom.TextTransform
 import web.cssom.WhiteSpace
 import web.cssom.em
+import web.dom.Element
 
 private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("FixtureMappingEditor") { props ->
     val appContext = useContext(appContext)
     val editMode = observe(appContext.sceneManager.editMode)
     val styles = appContext.allStyles.controllerEditor
 
+    var newEntityMenuAnchor by state<Element?> { null }
+    val handleNewEntityClick by mouseEventHandler { newEntityMenuAnchor = it.currentTarget as Element? }
+    val hideNewEntityMenu by handler { _: Event, _: String -> newEntityMenuAnchor = null }
+
     val allEntities = buildList { props.mutableScene.model.visit { add(it) } }
-    val fixtureMappings = run {
-        val map = mutableMapOf<MutableEntity, MutableList<ControllerId>>()
+    val fixtureMappings = mutableMapOf<MutableEntity, MutableList<ControllerId>>().also { map ->
         props.mutableScene.fixtureMappings.forEach { (controllerId, fixtureMappings) ->
             fixtureMappings.forEach { mapping ->
-                mapping.entity?.let { entity -> map.getOrPut(entity) { mutableListOf() }
-                    .add(controllerId)
+                mapping.entity?.let { entity ->
+                    map.getOrPut(entity) { mutableListOf() }
+                        .add(controllerId)
                 }
             }
         }
-        map
     }
-    val alreadyMappedEntities = allEntities.filter { entity ->
-        fixtureMappings.contains(entity)
-    }.toSet()
+
+    val alreadyMappedEntities = allEntities
+        .filter { entity -> fixtureMappings.contains(entity) }
+        .toSet()
 
     val transportConfig = props.mutableFixtureMapping.transportConfig
 

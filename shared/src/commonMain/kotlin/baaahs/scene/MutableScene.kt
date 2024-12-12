@@ -67,7 +67,10 @@ class MutableScene(
 
     override fun build(): Scene = build(SceneBuilder())
 
-    fun delete(entity: MutableEntity) {
+    fun addEntity(entity: MutableEntity) =
+        model.add(entity)
+
+    fun deleteEntity(entity: MutableEntity) {
         model.delete(entity)
         fixtureMappings.entries.removeAll { (controllerId, mutableFixtureMappings) ->
             mutableFixtureMappings.removeAll { fixtureMapping -> fixtureMapping.entity == entity }
@@ -178,6 +181,16 @@ class MutableModel(
 
     fun findByLocator(locator: EntityLocator): MutableEntity? =
         entities.firstNotNullOfOrNull { it.findByLocator(locator) }
+
+    fun add(mutableEntity: MutableEntity) {
+        if (entities.any { it.title == mutableEntity.title }) {
+            var suffix = 2
+            while (entities.any { it.title == "${mutableEntity.title} $suffix" }) suffix++
+            mutableEntity.title = "${mutableEntity.title} $suffix"
+
+        }
+        entities.add(mutableEntity)
+    }
 
     /** @return `true` if `mutableEntity` was found and deleted. */
     fun delete(mutableEntity: MutableEntity): Boolean =

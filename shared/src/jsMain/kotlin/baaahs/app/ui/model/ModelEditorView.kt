@@ -28,7 +28,6 @@ import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.withMouseEvent
 import baaahs.ui.xComponent
-import baaahs.util.CacheBuilder
 import baaahs.util.globalLaunch
 import baaahs.util.useResizeListener
 import baaahs.visualizer.DomOverlayExtension
@@ -41,7 +40,6 @@ import baaahs.visualizer.sim.PixelArranger
 import baaahs.visualizer.sim.SwirlyPixelArranger
 import baaahs.window
 import emotion.styled.styled
-import js.objects.jso
 import materialui.icon
 import mui.icons.material.Delete
 import mui.icons.material.ExpandMore
@@ -55,22 +53,17 @@ import mui.material.FormControl
 import mui.material.FormControlMargin
 import mui.material.IconButton
 import mui.material.IconButtonColor
-import mui.material.ListItemText
-import mui.material.Menu
-import mui.material.MenuItem
 import mui.material.Paper
 import mui.material.Size
 import mui.material.Typography
 import mui.system.sx
 import mui.system.useMediaQuery
-import org.w3c.dom.events.Event
 import react.Props
 import react.RBuilder
 import react.RHandler
 import react.buildElement
 import react.create
 import react.dom.div
-import react.dom.events.MouseEvent
 import react.dom.span
 import react.useContext
 import web.cssom.em
@@ -195,29 +188,24 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
 
     val handleAddEntity by handler(mutableScene, props.onEdit) { newEntityData: EntityData ->
         val newMutableEntity = newEntityData.edit()
-        mutableModel.entities.add(newMutableEntity)
+        mutableScene.addEntity(newMutableEntity)
         nextSelectedMutableEntity.current = newMutableEntity
         props.onEdit()
     }
 
     val handleDeleteEntity by handler(mutableScene, selectedMutableEntity) {
-        selectedMutableEntity?.let { mutableScene.delete(it) }
+        selectedMutableEntity?.let { mutableScene.deleteEntity(it) }
         visualizer.selectedEntity = null
         props.onEdit()
     }
 
     var newEntityMenuAnchor by state<Element?> { null }
     val handleNewEntityClick by mouseEventHandler { newEntityMenuAnchor = it.currentTarget as Element? }
-    val hideNewEntityMenu by handler { _: Event, _: String -> newEntityMenuAnchor = null }
-
-    val addNewEntityTypeHandlers = memo(EntityTypes, handleAddEntity) {
-        CacheBuilder<EntityType, (MouseEvent<*, *>) -> Unit> {
-            { _: MouseEvent<*, *> ->
-                handleAddEntity(it.createNew())
-                newEntityMenuAnchor = null
-            }
-        }
+    val handleNewEntityMenuSelect by handler(handleAddEntity) { entityType: EntityType ->
+        handleAddEntity(entityType.createNew())
+        newEntityMenuAnchor = null
     }
+    val hideNewEntityMenu by handler { newEntityMenuAnchor = null }
 
     val visualizerParentEl = ref<Element>()
     onMount(visualizer) {
@@ -304,21 +292,10 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
                                 +"New…"
                             }
 
-                            Menu {
-                                attrs.anchorEl = newEntityMenuAnchor.asDynamic()
-                                attrs.anchorOrigin = jso {
-                                    horizontal = "left"
-                                    vertical = "bottom"
-                                }
-                                attrs.open = newEntityMenuAnchor != null
+                            newEntityMenu {
+                                attrs.menuAnchor = newEntityMenuAnchor
+                                attrs.onSelect = handleNewEntityMenuSelect
                                 attrs.onClose = hideNewEntityMenu
-
-                                EntityTypes.forEach { entityType ->
-                                    MenuItem {
-                                        attrs.onClick = addNewEntityTypeHandlers[entityType]
-                                        ListItemText { +entityType.addNewTitle }
-                                    }
-                                }
                             }
                         }
                     }

@@ -160,11 +160,12 @@ class ModelVisualEditor(
         }
         selectedEntity = selectedEntity?.let { previousSelectedEntity ->
             model.findEntityByLocator(previousSelectedEntity.locator)
-                .also {
-                    console.log("Previous selectedEntity:", previousSelectedEntity)
-                    console.log("New selectedEntity:", it)
-                }
+//                .also {
+//                    console.log("Previous selectedEntity:", previousSelectedEntity)
+//                    console.log("New selectedEntity:", it)
+//                }
         }
+        // TODO: We're probably forcing too many rerenders with this, fix.
         editingEntity = selectedEntity?.let { previousEditingEntity ->
             buildEditingEntityForRefresh(previousEditingEntity)
                 .also {
