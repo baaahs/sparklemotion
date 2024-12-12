@@ -41,6 +41,9 @@ actual fun getCommonIcons() = object : PlatformIcons {
     override val Info: Icon get() = jsIcon(mui.icons.material.Info)
     override val Warning: Icon get() = jsIcon(mui.icons.material.Warning)
     override val Error: Icon get() = jsIcon(mui.icons.material.Error)
+
+    override val MoreHoriz: Icon get() = jsIcon(mui.icons.material.MoreHoriz)
+    override val MoreVert: Icon get() = jsIcon(mui.icons.material.MoreVert)
 }
 
 fun jsIcon(materialIcon: SvgIconComponent): Icon = JsIcon(materialIcon)
