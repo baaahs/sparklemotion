@@ -61,12 +61,12 @@ class OpenSceneSpec : DescribeSpec({
 
             context("with fixture mappings configured for the controller") {
                 override(controllerFixtureMappingData) {
-                    MutableFixtureMapping(null, PixelArrayDevice.MutableOptions(111, null, null, null), null)
+                    MutableFixtureMapping(surface123.edit(), PixelArrayDevice.MutableOptions(111, null, null, null), null)
                 }
 
                 it("returns the correct mappings") {
                     relevantMappings.shouldContainExactly(
-                        FixtureMapping(null, PixelArrayDevice.Options(111))
+                        FixtureMapping(openScene.model.findEntityByName("surface"), PixelArrayDevice.Options(111))
                     )
                 }
             }
