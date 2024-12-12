@@ -1,11 +1,14 @@
 package baaahs.scene
 
+import baaahs.SparkleMotion
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.EditableManager
 import baaahs.app.ui.editor.MutableEditable
 import baaahs.camelize
 import baaahs.controller.*
 import baaahs.device.FixtureType
+import baaahs.device.MovingHeadDevice
+import baaahs.device.PixelArrayDevice
 import baaahs.dmx.DirectDmxControllerConfig
 import baaahs.dmx.DmxManager
 import baaahs.dmx.DmxTransportType
@@ -48,14 +51,19 @@ class MutableScene(
         )
     )
 
-    fun build(sceneBuilder: SceneBuilder): Scene {
-        return Scene(
+    fun List<MutableFixtureMapping>.maybeRemoveAnonymous() =
+        if (SparkleMotion.SUPPORT_ANONYMOUS_FIXTURE_MAPPINGS) this
+        else filter { it.entity != null }
+
+    fun build(sceneBuilder: SceneBuilder): Scene =
+        Scene(
             model = model.build(sceneBuilder),
             entities = sceneBuilder.entityIds.all(),
             controllers = controllers.mapValues { (_, v) -> v.build(sceneBuilder) },
-            fixtureMappings = fixtureMappings.mapValues { (_, v) -> v.map { it.build(sceneBuilder) } }
+            fixtureMappings = fixtureMappings.mapValues { (_, v) ->
+                v.maybeRemoveAnonymous().map { it.build(sceneBuilder) }
+            }
         )
-    }
 
     override fun build(): Scene = build(SceneBuilder())
 
@@ -191,7 +199,8 @@ abstract class MutableEntity(
         baseEntity.title, baseEntity.description, baseEntity.position, baseEntity.rotation, baseEntity.scale, baseEntity.locator
     )
 
-    abstract val typeTitle: String
+    abstract val fixtureType: FixtureType?
+    abstract val entityTypeTitle: String
 
     abstract fun build(): EntityData
 
@@ -236,7 +245,8 @@ abstract class MutableEntityGroup(
 class MutableImportedEntityGroup(
     baseImportedEntityData: ImportedEntityData
 ) : MutableEntityGroup(baseImportedEntityData) {
-    override val typeTitle: String get() = "Import"
+    override val fixtureType: FixtureType? get() = null
+    override val entityTypeTitle: String get() = "Import"
 
     var objData: String = baseImportedEntityData.objData
         set(value) { field = value; importerResults = null }
@@ -311,7 +321,8 @@ class MutableImportedEntityGroup(
     ) : MutableEntity(
         childEntity.title, null, position, rotation, scale, childEntity.locator
     ) {
-        override val typeTitle: String get() = "Imported Entity"
+        override val fixtureType: FixtureType? get() = null
+        override val entityTypeTitle: String get() = "Imported Entity"
         val childId = nextChildId++
 
         init {
@@ -342,7 +353,8 @@ class MutableImportedEntityGroup(
 class MutableMovingHeadData(
     baseMovingHeadData: MovingHeadData
 ) : MutableEntity(baseMovingHeadData) {
-    override val typeTitle: String get() = "Moving Head"
+    override val fixtureType: FixtureType get() = MovingHeadDevice
+    override val entityTypeTitle: String get() = "Moving Head"
     var baseDmxChannel: Int = baseMovingHeadData.baseDmxChannel
     var adapter: MovingHeadAdapter = baseMovingHeadData.adapter
 
@@ -355,7 +367,8 @@ class MutableMovingHeadData(
 class MutableLightBarData(
     baseLightBar: LightBarData
 ) : MutableEntity(baseLightBar) {
-    override val typeTitle: String get() = "Light Bar"
+    override val fixtureType: FixtureType get() = PixelArrayDevice
+    override val entityTypeTitle: String get() = "Light Bar"
 
     var startVertex = baseLightBar.startVertex
     var endVertex = baseLightBar.endVertex
@@ -369,7 +382,8 @@ class MutableLightBarData(
 class MutablePolyLineData(
     basePolyLine: PolyLineData
 ) : MutableEntity(basePolyLine) {
-    override val typeTitle: String get() = "Poly Line"
+    override val fixtureType: FixtureType get() = PixelArrayDevice
+    override val entityTypeTitle: String get() = "Poly Line"
 
     var segments = basePolyLine.segments
 
@@ -386,7 +400,8 @@ class MutablePolyLineData(
 class MutableGridData(
     baseGridData: GridData
 ) : MutableEntity(baseGridData) {
-    override val typeTitle: String get() = "Grid"
+    override val fixtureType: FixtureType get() = PixelArrayDevice
+    override val entityTypeTitle: String get() = "Grid"
 
     var rows = baseGridData.rows
     var columns = baseGridData.columns
@@ -405,7 +420,8 @@ class MutableGridData(
 class MutableLightRingData(
     baseLightRing: LightRingData
 ) : MutableEntity(baseLightRing) {
-    override val typeTitle: String get() = "Light Ring"
+    override val fixtureType: FixtureType get() = PixelArrayDevice
+    override val entityTypeTitle: String get() = "Light Ring"
 
     var radius = baseLightRing.radius
     var firstPixelRadians = baseLightRing.firstPixelRadians

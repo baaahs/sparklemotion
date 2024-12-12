@@ -1,5 +1,6 @@
 package baaahs.mapper
 
+import baaahs.SparkleMotion
 import baaahs.app.ui.appContext
 import baaahs.app.ui.editor.betterSelect
 import baaahs.controller.ControllerId
@@ -51,6 +52,10 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
         props.mutableScene, props.mutableFixtureMapping, props.editingController
     ) { value: EntityMenuItem ->
         props.mutableFixtureMapping.entity = value.entity
+        // If the new mapped entity's fixture type doesn't match the fixture options, remove 'em.
+        if (props.mutableFixtureMapping.fixtureOptions?.fixtureType != value.entity?.fixtureType) {
+            props.mutableFixtureMapping.fixtureOptions = null
+        }
         props.editingController.onChange()
     }
 
@@ -68,19 +73,21 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
         console.error("Set expanded to ", expanded)
     }
 
+    val entity = props.mutableFixtureMapping.entity
+
     Accordion {
         attrs.className = -styles.accordionRoot
         attrs.expanded = expanded
 
         AccordionSummary {
-            attrs.classes = muiClasses<AccordionSummaryClasses> { content = -styles.accordionSummaryContent }
+            attrs.classes = muiClasses<AccordionSummaryClasses> {
+                content = -styles.accordionSummaryContent
+            }
             attrs.sx {
                 whiteSpace = WhiteSpace.nowrap
             }
             attrs.expandIcon = ExpandMore.create()
             attrs.onClick = toggleExpanded
-
-            val entity = props.mutableFixtureMapping.entity
 
             if (!expanded) {
                 if (entity != null) +entity.title else i { +"Anonymous" }
@@ -135,9 +142,13 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
                     addAll(mapped)
                 }
                 betterSelect<EntityMenuItem> {
-                    val noneItem = EntityMenuItem(label = "None", isItalic = true)
+                    val noneOrAnonymousItem = if (SparkleMotion.SUPPORT_ANONYMOUS_FIXTURE_MAPPINGS) {
+                        EntityMenuItem(label = "Anonymous", isItalic = true)
+                    } else {
+                        EntityMenuItem(label = "None", isItalic = true)
+                    }
                     attrs.label = "Model Entity"
-                    attrs.values = listOf(noneItem) + entityList
+                    attrs.values = listOf(noneOrAnonymousItem) + entityList
                     attrs.renderValueOption = { item, menuItemProps ->
                         menuItemProps.disabled = item.isDisabled
                         if (item.entity != null) {
@@ -158,8 +169,8 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
                             }
                         } else error("Huh?")
                     }
-                    attrs.value = entityList.firstOrNull { it.entity == props.mutableFixtureMapping.entity }
-                        ?: noneItem
+                    attrs.value = entityList.firstOrNull { it.entity == entity }
+                        ?: noneOrAnonymousItem
                     attrs.disabled = editMode.isOff
                     attrs.onChange = handleEntityChange
                     attrs.fullWidth = true
@@ -170,21 +181,24 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
         AccordionDetails {
             attrs.className = -styles.expansionPanelDetails
 
-            fixtureConfigPicker {
-                attrs.editingController = props.editingController
-                attrs.mutableFixtureOptions = props.mutableFixtureMapping.fixtureOptions
-                attrs.setMutableFixtureOptions = { props.mutableFixtureMapping.fixtureOptions = it!! }
-                attrs.allowNullFixtureOptions = false
-            }
+            if (entity != null || SparkleMotion.SUPPORT_ANONYMOUS_FIXTURE_MAPPINGS) {
+                fixtureConfigPicker {
+                    attrs.editingController = props.editingController
+                    attrs.fixtureType = entity?.fixtureType
+                    attrs.mutableFixtureOptions = props.mutableFixtureMapping.fixtureOptions
+                    attrs.setMutableFixtureOptions = { props.mutableFixtureMapping.fixtureOptions = it }
+                    attrs.allowNullFixtureOptions = false
+                }
 
-            transportConfigPicker {
-                attrs.editingController = props.editingController
-                attrs.mutableTransportConfig = props.mutableFixtureMapping.transportConfig
-                attrs.setMutableTransportConfig = { props.mutableFixtureMapping.transportConfig = it }
+                transportConfigPicker {
+                    attrs.editingController = props.editingController
+                    attrs.mutableTransportConfig = props.mutableFixtureMapping.transportConfig
+                    attrs.setMutableTransportConfig = { props.mutableFixtureMapping.transportConfig = it }
+                }
             }
 
             IconButton {
-                attrs.sx { marginTop = 1.em }
+                attrs.sx { marginTop = .5.em }
                 attrs.size = Size.small
                 attrs.color = IconButtonColor.error
                 attrs.hidden = editMode.isOff

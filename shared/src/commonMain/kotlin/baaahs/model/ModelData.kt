@@ -3,6 +3,8 @@
 package baaahs.model
 
 import baaahs.camelize
+import baaahs.device.FixtureType
+import baaahs.device.PixelArrayDevice
 import baaahs.dmx.Shenzarpy
 import baaahs.geom.EulerAngle
 import baaahs.geom.Matrix4F
@@ -263,7 +265,8 @@ class MutableSurfaceDataForTest(
     var expectedPixelCount: Int?,
     var vertices: MutableList<Vector3F>
 ) : MutableEntity(title, description, position, rotation, scale, locator) {
-    override val typeTitle: String get() = "Surface Data for Test"
+    override val fixtureType: FixtureType get() = PixelArrayDevice
+    override val entityTypeTitle: String get() = "Surface Data for Test"
 
     override fun build(): SurfaceDataForTest =
         SurfaceDataForTest(title, description, position, rotation, scale, locator, expectedPixelCount, vertices)

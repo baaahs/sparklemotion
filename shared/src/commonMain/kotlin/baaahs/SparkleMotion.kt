@@ -14,5 +14,7 @@ object SparkleMotion {
     // See https://www.paulirish.com/2012/why-moving-elements-with-translate-is-better-than-posabs-topleft/
     const val USE_CSS_TRANSFORM = false
 
+    const val SUPPORT_ANONYMOUS_FIXTURE_MAPPINGS = false
+
     val logger = Logger<SparkleMotion>()
 }
