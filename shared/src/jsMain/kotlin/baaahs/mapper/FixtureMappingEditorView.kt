@@ -64,11 +64,6 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
     }
 
     var expanded by state { props.initiallyOpen == true }
-    val renderCount = ref(0)
-    console.log("Render count: ${renderCount.current}")
-    renderCount.current = renderCount.current!! + 1
-
-    console.log("Expanded = $expanded")
     val toggleExpanded by mouseEventHandler { expanded = !expanded
         console.error("Set expanded to ", expanded)
     }
@@ -169,7 +164,7 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
                             }
                         } else error("Huh?")
                     }
-                    attrs.value = entityList.firstOrNull { it.entity == entity }
+                    attrs.value = entity?.let { selected -> entityList.firstOrNull { it.entity == selected } }
                         ?: noneOrAnonymousItem
                     attrs.disabled = editMode.isOff
                     attrs.onChange = handleEntityChange

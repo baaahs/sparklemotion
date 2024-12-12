@@ -128,6 +128,9 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
 //        overflow = Overflow.hidden
         justifyContent = JustifyContent.spaceBetween
     }
+    val accordionSummaryContentRows by css {
+        flexDirection = FlexDirection.column
+    }
 
     val expansionPanelSummaryChips by css {
         overflow = Overflow.scroll

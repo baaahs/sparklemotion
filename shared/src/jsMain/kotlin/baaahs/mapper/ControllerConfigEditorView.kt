@@ -9,6 +9,7 @@ import baaahs.scene.MutableFixtureMapping
 import baaahs.scene.MutableScene
 import baaahs.scene.SceneOpener
 import baaahs.scene.mutable.SceneBuilder
+import baaahs.ui.muiClasses
 import baaahs.ui.render
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
@@ -21,6 +22,7 @@ import mui.material.Box
 import mui.material.Button
 import mui.material.ButtonColor
 import mui.material.Container
+import mui.material.FormHelperText
 import mui.material.Paper
 import mui.material.Size
 import mui.material.Table
@@ -213,8 +215,14 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
             attrs.elevation = 4
 
             AccordionSummary {
+                attrs.classes = muiClasses { content = -styles.accordionSummaryContentRows }
                 attrs.expandIcon = ExpandMore.create()
                 Typography { +"Controller Fixture Defaults" }
+                FormHelperText {
+                    +"""
+                         Fixture settings given here will be used as defaults for mapped fixtures.
+                    """.trimIndent()
+                }
             }
             AccordionDetails {
                 fixtureConfigPicker {
@@ -231,8 +239,14 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
             attrs.elevation = 4
 
             AccordionSummary {
+                attrs.classes = muiClasses { content = -styles.accordionSummaryContentRows }
                 attrs.expandIcon = ExpandMore.create()
                 Typography { +"Controller Transport Defaults" }
+                FormHelperText {
+                    +"""
+                         Transport settings given here will be used as defaults for mapped fixtures.
+                    """.trimIndent()
+                }
             }
             AccordionDetails {
                 transportConfigPicker {

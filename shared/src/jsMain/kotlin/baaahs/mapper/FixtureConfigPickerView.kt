@@ -65,7 +65,7 @@ private val FixtureConfigPickerView = xComponent<FixtureConfigPickerProps>("Fixt
 
                     attrs.disabled = editMode.isOff
                     FormControlLabel {
-                        attrs.label = buildElement { +"Show ${fixtureType.title} Options" }
+                        attrs.label = buildElement { +"Specify ${fixtureType.title} Options" }
                         attrs.control = buildElement {
                             Checkbox {
 //                                attrs.sx { marginLeft = 1.em}
@@ -79,8 +79,12 @@ private val FixtureConfigPickerView = xComponent<FixtureConfigPickerProps>("Fixt
         }
 
         if (fixtureConfig != null) {
-            fixtureConfig.getEditorView(props.editingController)
-                .render(this)
+            Container {
+                attrs.disableGutters = true
+
+                fixtureConfig.getEditorView(props.editingController)
+                    .render(this)
+            }
         } else {
             props.editingController.config.defaultFixtureOptions?.let { defaultFixtureOptions ->
                 +defaultFixtureOptions.fixtureType.title

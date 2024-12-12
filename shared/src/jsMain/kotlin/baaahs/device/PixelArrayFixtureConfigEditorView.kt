@@ -2,7 +2,7 @@ package baaahs.device
 
 import baaahs.app.ui.appContext
 import baaahs.app.ui.editor.betterSelect
-import baaahs.app.ui.model.numberTextField
+import baaahs.app.ui.editor.numberFieldEditor
 import baaahs.scene.EditingController
 import baaahs.ui.asTextNode
 import baaahs.ui.unaryPlus
@@ -28,10 +28,12 @@ private val PixelArrayFixtureConfigEditorView =
         }
 
         div(+styles.pixelArrayConfigEditorRow) {
-            numberTextField<Int?> {
+            numberFieldEditor<Int?> {
                 attrs.label = "Pixel Count"
-                attrs.value = mutableConfig.componentCount
-                attrs.onChange = { v: Int? ->
+                attrs.isInteger = true
+                attrs.isNullable = true
+                attrs.getValue = { mutableConfig.componentCount }
+                attrs.setValue = { v: Int? ->
                     mutableConfig.componentCount = if (v == 0) null else v
                     props.editingController.onChange()
                 }
@@ -40,16 +42,17 @@ private val PixelArrayFixtureConfigEditorView =
 
             betterSelect<PixelFormat?> {
                 attrs.label = "Pixel Format"
-                attrs.values = listOf(null) + PixelFormat.values().toList()
+                attrs.values = listOf(null) + PixelFormat.entries
                 attrs.renderValueOption = { it, _ -> (it?.name ?: "Default").asTextNode() }
                 attrs.value = mutableConfig.pixelFormat
                 attrs.onChange = handlePixelFormatChange
             }
 
-            numberTextField<Float?> {
+            numberFieldEditor<Float?>() {
                 attrs.label = "Gamma Correction"
-                attrs.value = mutableConfig.gammaCorrection
-                attrs.onChange = { v: Float? ->
+                attrs.isNullable = true
+                attrs.getValue = { mutableConfig.gammaCorrection }
+                attrs.setValue = { v: Float? ->
                     mutableConfig.gammaCorrection = v
                     props.editingController.onChange()
                 }
