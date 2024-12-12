@@ -250,12 +250,11 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
             div(+styles.visualizer) {
                 ref = visualizerParentEl
 
-                if (editMode.isOn && selectedMutableEntity != null) {
-                    modelEditorToolbar {
-                        attrs.visualizer = visualizer.facade
-                        attrs.modelUnit = mutableModel.units
-                        attrs.onAddEntity = handleAddEntity
-                    }
+                modelEditorToolbar {
+                    attrs.visible = editMode.isOn && selectedMutableEntity != null
+                    attrs.visualizer = visualizer.facade
+                    attrs.modelUnit = mutableModel.units
+                    attrs.onAddEntity = handleAddEntity
                 }
             }
         }
