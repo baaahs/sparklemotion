@@ -27,13 +27,16 @@ import react.dom.html.ReactHTML.span
 import react.dom.li
 import styled.inlineStyles
 import web.cssom.Padding
+import web.cssom.VerticalAlign
 import web.cssom.em
+import web.cssom.number
 import web.cssom.pct
 import web.html.HTMLElement
 
-private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("ControllerConfigurer") { props ->
+private val ControllerListView = xComponent<DeviceListProps>("ControllerList") { props ->
     val appContext = useContext(appContext)
     val sceneEditorClient = observe(appContext.sceneEditorClient)
+    val editMode = observe(appContext.sceneManager.editMode)
 
     val styles = appContext.allStyles.controllerEditor
 
@@ -57,6 +60,7 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
     }
 
     val handleNewControllerClick by mouseEventHandler {
+        // TODO: We can't just always use "new" here.
         selectedController = ControllerId(SacnManager.controllerTypeName, "new")
     }
 
@@ -64,6 +68,27 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
         attrs.listHeader = buildElement {
             span {
                 +"Controllers"
+
+                CircularProgress {
+                    attrs.sx {
+                        marginLeft = 2.em
+                        marginRight = .5.em
+                        verticalAlign = VerticalAlign.middle
+                    }
+                    attrs.size = "1rem"
+                    attrs.color = CircularProgressColor.primary
+                    attrs.variant = CircularProgressVariant.indeterminate
+                }
+
+                Typography {
+                    attrs.component = span
+                    attrs.sx {
+                        fontSize = .8.em
+                        opacity = number(.75)
+                    }
+
+                    +"Scanning…"
+                }
                 collapsibleSearchBox {
                     attrs.searchString = controllerMatcher.searchString
                     attrs.onSearchChange = handleSearchChange
@@ -80,17 +105,6 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                     attrs.size = Size.small
                     attrs.stickyHeader = true
 
-                    TableHead {
-                        TableRow {
-                            TableCell {
-                                attrs.sx { width = 1.pct } // So the table fills full width.
-                                +""
-                            } // Status icon
-                            TableCell { +"Name" }
-                            TableCell { +"Fixtures" }
-                        }
-                    }
-
                     var lastControllerType: String? = null
                     TableBody {
                         allControllerIds.forEach { controllerId ->
@@ -100,10 +114,30 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                                 if (controllerId.controllerType != lastControllerType) {
                                     TableRow {
                                         TableCell {
-                                            attrs.colSpan = 3
+                                            attrs.colSpan = 4
                                             attrs.sx { padding = Padding(0.em, 0.em) }
                                             header(+styles.navigatorPaneHeader) {
                                                 +controllerId.controllerType
+                                            }
+                                        }
+                                    }
+
+                                    TableRow {
+                                        TableCell {
+                                            attrs.colSpan = 2
+                                            attrs.sx { width = 1.pct } // So the table fills full width.
+                                            +""
+                                        } // Status icon
+                                        TableCell {
+                                            Typography {
+                                                attrs.sx { fontSize = .8.em }
+                                                +"Name"
+                                            }
+                                        }
+                                        TableCell {
+                                            Typography {
+                                                attrs.sx { fontSize = .8.em }
+                                                +"Fixtures"
                                             }
                                         }
                                     }
@@ -134,16 +168,21 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                                     TableCell {
                                         img {
                                             attrs.className = -styles.controllerIcon
-                                            attrs.src = JsPlatform.imageUrl("/assets/controllers/${
-                                                when (controllerId.controllerType) {
-                                                    BrainManager.controllerTypeName -> "baaahs-brain.svg"
-                                                    DmxManager.controllerTypeName -> "dmx.svg"
-                                                    SacnManager.controllerTypeName -> "sacn.svg"
-                                                    else -> "unknown.svg"
-                                                }
-                                            }")
+                                            attrs.src = JsPlatform.imageUrl(
+                                                "/assets/controllers/${
+                                                    when (controllerId.controllerType) {
+                                                        BrainManager.controllerTypeName -> "baaahs-brain.svg"
+                                                        DmxManager.controllerTypeName -> "dmx.svg"
+                                                        SacnManager.controllerTypeName -> "sacn.svg"
+                                                        else -> "unknown.svg"
+                                                    }
+                                                }"
+                                            )
                                         }
-                                        +(state?.title ?: mutableController?.title ?: "Unnamed Controller")
+                                    }
+
+                                    TableCell {
+                                        +(mutableController?.title ?: "Unnamed Controller")
                                     }
 
                                     TableCell {
@@ -159,16 +198,18 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
 
                         TableRow {
                             TableCell {
-                                attrs.colSpan = 3
+                                attrs.colSpan = 4
 
                                 div(+styles.navigatorPaneActions) {
                                     Button {
                                         attrs.className = -styles.button
                                         attrs.color = ButtonColor.primary
+                                        attrs.disabled = editMode.isOff
+                                        attrs.fullWidth = true
                                         attrs.onClick = handleNewControllerClick
 
                                         attrs.startIcon = buildElement { icon(mui.icons.material.AddCircleOutline) }
-                                        +"New…"
+                                        +"New Controller…"
                                     }
                                 }
                             }
@@ -180,10 +221,10 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
         }
         attrs.selection = selectedController
         attrs.detailHeader = selectedController?.name()?.asTextNode()
-        attrs.detailRenderer = ListAndDetail.DetailRenderer { controller ->
+        attrs.detailRenderer = ListAndDetail.DetailRenderer { controllerId ->
             controllerConfigEditor {
                 attrs.mutableScene = props.mutableScene
-                attrs.controllerId = controller
+                attrs.controllerId = controllerId
                 attrs.onEdit = props.onEdit
             }
         }
@@ -195,10 +236,10 @@ fun styleIf(condition: Boolean, style: RuleSet, otherwise: RuleSet? = null): Str
     return if (condition) +style else otherwise?.let { +it } ?: ""
 }
 
-external interface DeviceConfigurerProps : Props {
+external interface DeviceListProps : Props {
     var mutableScene: MutableScene
     var onEdit: () -> Unit
 }
 
-fun RBuilder.deviceConfigurer(handler: RHandler<DeviceConfigurerProps>) =
-    child(ControllerConfigurerView, handler = handler)
+fun RBuilder.controllerList(handler: RHandler<DeviceListProps>) =
+    child(ControllerListView, handler = handler)

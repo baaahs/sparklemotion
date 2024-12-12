@@ -171,7 +171,7 @@ private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor
             attrs.label = "Strategy"
             attrs.disabled = editMode.isOff
             attrs.values = listOf(null, "Constant", "Per Entity")
-            attrs.renderValueOption = { adapter -> buildElement { +(adapter ?: "None" ) } }
+            attrs.renderValueOption = { adapter, _ -> buildElement { +(adapter ?: "None" ) } }
             attrs.value = mutableEntity.metadata?.let {
                 when (it) {
                     is ConstEntityMetadataProvider -> "Constant"

@@ -35,7 +35,7 @@ private val DmxTransportConfigEditorView =
         div(+styles.dmxTransportConfigEditorRow) {
             FormControl {
                 FormControlLabel {
-                    attrs.label = buildElement { +"Start in a fresh universe" }
+                    attrs.label = buildElement { +"Start each fixture in a fresh universe" }
                     attrs.control = buildElement {
                         Checkbox {
                             attrs.checked = mutableConfig.fixtureStartsInFreshUniverse
@@ -49,22 +49,36 @@ private val DmxTransportConfigEditorView =
                 }
 
                 FormHelperText {
-                    +"texty text text"
+                    +"""
+                        For DMX controllers that support multiple universes, Sparkle Motion will
+                        start every fixture at the first channel of a fresh universe unless this
+                        option is checked.
+                    """.trimIndent()
                 }
             }
         }
 
         div(+styles.dmxTransportConfigEditorRow) {
-            FormControlLabel {
-                attrs.label = buildElement { +"Components may span universes" }
-                attrs.control = buildElement {
-                    Checkbox {
-                        attrs.checked = mutableConfig.componentMaySpanUniverses
-                        attrs.onChange = { _, checked ->
-                            mutableConfig.componentMaySpanUniverses = checked
-                            props.editingController.onChange()
+            FormControl {
+                FormControlLabel {
+                    attrs.label = buildElement { +"Components may span universes" }
+                    attrs.control = buildElement {
+                        Checkbox {
+                            attrs.checked = mutableConfig.componentMaySpanUniverses
+                            attrs.onChange = { _, checked ->
+                                mutableConfig.componentMaySpanUniverses = checked
+                                props.editingController.onChange()
+                            }
                         }
                     }
+                }
+
+                FormHelperText {
+                    +"""
+                        If a fixture needs more channels than the universe can accommodate,
+                        Sparkle Motion will prevent components (e.g. a pixel's RGB value) from
+                        spanning universes. This may cause some channels to be left unused.
+                    """.trimIndent()
                 }
             }
         }

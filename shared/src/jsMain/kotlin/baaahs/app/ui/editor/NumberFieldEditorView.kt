@@ -157,14 +157,7 @@ private val NumberFieldEditor = xComponent<NumberFieldEditorProps<Number?>>("Num
             attrs.spellCheck = false
 //            attrs.label = buildElement { +props.label }
             attrs.error = isError
-            console.log("DRAW enteredString.current == ", enteredString.current)
-            attrs.value = errorValue ?: enteredString.current ?: value
-            // Notify EditableManager of changes as we type, but don't push them to the undo stack...
-            attrs.onChange = handleChange
-
-            // ... until we lose focus or hit return; then, push to the undo stack only if the value would change.
-            attrs.onBlur = handleBlur
-            attrs.onKeyDown = handleKeyDown
+            attrs.placeholder = props.placeholder
             attrs.endAdornment = buildElement {
                 Fragment {
                     InputAdornment {
@@ -188,6 +181,15 @@ private val NumberFieldEditor = xComponent<NumberFieldEditorProps<Number?>>("Num
                     }
                 }
             }
+
+            console.log("DRAW enteredString.current == ", enteredString.current)
+            attrs.value = errorValue ?: enteredString.current ?: value
+            // Notify EditableManager of changes as we type, but don't push them to the undo stack...
+            attrs.onChange = handleChange
+
+            // ... until we lose focus or hit return; then, push to the undo stack only if the value would change.
+            attrs.onBlur = handleBlur
+            attrs.onKeyDown = handleKeyDown
         }
 
 //        props.label?.let { FormControlLabel { +it} }
@@ -205,6 +207,7 @@ external interface NumberFieldEditorProps<T : Number?> : Props {
     var isNullable: Boolean? // defaults to false
     var label: String?
     var helperText: String?
+    var placeholder: String?
     var adornment: ReactNode?
     var autoFocus: Boolean?
     var disabled: Boolean?

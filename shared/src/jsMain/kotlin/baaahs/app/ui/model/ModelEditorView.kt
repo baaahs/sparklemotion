@@ -408,7 +408,7 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
                                 attrs.onClick = handleDeleteEntity.withMouseEvent()
                                 attrs.disabled = editMode.isOff
                                 icon(Delete)
-                                +"Delete ${editingEntity.mutableEntity.typeTitle}"
+                                +"Delete ${editingEntity.mutableEntity.entityTypeTitle}"
                             }
                         }
                     }

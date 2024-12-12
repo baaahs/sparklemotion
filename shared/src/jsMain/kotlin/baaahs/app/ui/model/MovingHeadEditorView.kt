@@ -28,7 +28,7 @@ private val MovingHeadEditorView = xComponent<MovingHeadEditorProps>("MovingHead
         attrs.label = "Adapter"
         attrs.disabled = editMode.isOff
         attrs.values = MovingHeadAdapter.all
-        attrs.renderValueOption = { adapter -> buildElement { +adapter.id } }
+        attrs.renderValueOption = { adapter, _ -> buildElement { +adapter.id } }
         attrs.value = mutableEntity.adapter
         attrs.onChange = handleAdapterChange
     }

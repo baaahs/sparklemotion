@@ -71,7 +71,7 @@ val SceneEditorView = xComponent<SceneEditorViewProps>("SceneEditorView") { prop
         }
 
         tabPanel(PageTabs.Controllers, selectedTab) {
-            deviceConfigurer {
+            controllerList {
                 attrs.mutableScene = mutableScene
                 attrs.onEdit = handleEdit
             }

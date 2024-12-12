@@ -61,7 +61,7 @@ class FakeModelEntityData(
 
 class MutableFakeModelEntity(
     name: String,
-    var fixtureType: FixtureType = PixelArrayDevice,
+    override var fixtureType: FixtureType = PixelArrayDevice,
     description: String? = null,
     position: Vector3F = Vector3F.origin,
     rotation: EulerAngle = EulerAngle.identity,
@@ -70,7 +70,7 @@ class MutableFakeModelEntity(
 ) : MutableEntity(
     name, description, position, rotation, scale, id
 ) {
-    override val typeTitle: String get() = "Fake Model Entity"
+    override val entityTypeTitle: String get() = "Fake Model Entity"
 
     override fun build(): EntityData =
         FakeModelEntityData(title, fixtureType, description, position, rotation, scale, locator)

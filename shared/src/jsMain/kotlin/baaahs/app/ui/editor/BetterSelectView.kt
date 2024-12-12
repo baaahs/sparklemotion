@@ -3,14 +3,24 @@ package baaahs.app.ui.editor
 import baaahs.ui.asTextNode
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import mui.material.*
+import js.objects.jso
+import mui.material.FormControl
+import mui.material.FormControlMargin
+import mui.material.InputBaseMargin
+import mui.material.InputLabel
+import mui.material.InputLabelMargin
+import mui.material.ListItemText
+import mui.material.MenuItem
+import mui.material.MenuItemProps
+import mui.material.Select
+import mui.material.SelectProps
+import mui.material.Size
 import mui.system.sx
 import react.Props
 import react.RBuilder
 import react.RHandler
 import react.ReactNode
 import react.dom.events.ChangeEvent
-import react.dom.html.ReactHTML
 import web.cssom.em
 import web.html.HTMLInputElement
 import baaahs.app.ui.controls.Styles as ControlsStyles
@@ -28,7 +38,7 @@ private val BetterSelectView = xComponent<BetterSelectProps<Any?>>("BetterSelect
     val renderValueSelected = props.renderValueSelected ?: props.renderValueOption
     val renderSelected: (Int) -> ReactNode = callback(renderValueSelected, props.values) { selectedIndex ->
         val value = props.values[selectedIndex]
-        renderValueSelected?.let { it(value) }
+        renderValueSelected?.let { it(value, jso {}) }
             ?: value.toString().asTextNode()
     }
 
@@ -53,7 +63,7 @@ private val BetterSelectView = xComponent<BetterSelectProps<Any?>>("BetterSelect
             attrs.disabled = props.disabled == true
             attrs.value = props.values.indexOf(props.value).let {
                 if (it == -1) {
-                    fun Any.render() = props.renderValueOption?.invoke(this) ?: this.toString()
+                    fun Any.render() = props.renderValueOption?.invoke(this, jso {}) ?: this.toString()
                     this@xComponent.logger.error { ("Value ${props.value?.render() ?: "null"} not found " +
                             "in [${props.values.map { it?.render() ?: "null" }.joinToString(", ")}]") }
                     null
@@ -61,6 +71,7 @@ private val BetterSelectView = xComponent<BetterSelectProps<Any?>>("BetterSelect
             }
             attrs.renderValue = renderSelected
             attrs.onChange = handleChange
+            attrs.onClick = { event -> event.stopPropagation() }
 
             props.values.forEachIndexed { index, option ->
                 MenuItem {
@@ -69,7 +80,7 @@ private val BetterSelectView = xComponent<BetterSelectProps<Any?>>("BetterSelect
                     ListItemText {
                         val renderValueOption = props.renderValueOption
                         if (renderValueOption != null) {
-                            child(renderValueOption.invoke(option))
+                            child(renderValueOption.invoke(option, this@MenuItem.attrs))
                         } else {
                             +option.toString()
                         }
@@ -84,8 +95,8 @@ external interface BetterSelectProps<T: Any?> : Props {
     var label: String?
     var values: List<T>
     var disabled: Boolean?
-    var renderValueOption: ((T) -> ReactNode)?
-    var renderValueSelected: ((T) -> ReactNode)?
+    var renderValueOption: ((T, MenuItemProps) -> ReactNode)?
+    var renderValueSelected: ((T, MenuItemProps) -> ReactNode)?
     var value: T
     var onChange: (T) -> Unit
     var fullWidth: Boolean?
