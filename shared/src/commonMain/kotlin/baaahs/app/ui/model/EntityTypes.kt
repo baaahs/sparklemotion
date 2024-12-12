@@ -1,7 +1,12 @@
 package baaahs.app.ui.model
 
 import baaahs.geom.Vector3F
-import baaahs.model.*
+import baaahs.model.EntityData
+import baaahs.model.GridData
+import baaahs.model.ImportedEntityData
+import baaahs.model.LightBarData
+import baaahs.model.LightRingData
+import baaahs.model.MovingHeadData
 
 interface EntityType {
     val title: String
@@ -27,23 +32,26 @@ object GridEntityType : EntityType {
 object LightBarEntityType : EntityType {
     override val title: String = "Light Bar"
 
-    override fun createNew(): EntityData = LightBarData(
-        "New Light Bar",
-        startVertex = Vector3F.origin,
-        endVertex = Vector3F(1.0, 0.0, 0.0)
-    )
+    override fun createNew(): EntityData =
+        LightBarData(
+            "New Light Bar",
+            startVertex = Vector3F.Companion.origin,
+            endVertex = Vector3F(1.0, 0.0, 0.0)
+        )
 }
 
 object LightRingEntityType : EntityType {
     override val title: String = "Light Ring"
 
-    override fun createNew(): EntityData = LightRingData("New Light Ring")
+    override fun createNew(): EntityData =
+        LightRingData("New Light Ring")
 }
 
 object MovingHeadEntityType : EntityType {
     override val title: String = "Moving Head"
 
-    override fun createNew(): EntityData = MovingHeadData("New Moving Head", baseDmxChannel = 1)
+    override fun createNew(): EntityData =
+        MovingHeadData("New Moving Head", baseDmxChannel = 1)
 }
 
 //object SurfaceEntityType : EntityType {
@@ -56,5 +64,6 @@ object ImportEntityType : EntityType {
     override val title: String = "Imported Model"
     override val addNewTitle: String get() = "Import..."
 
-    override fun createNew(): EntityData = ImportedEntityData("New OBJ", objData = "", objDataIsFileRef = false)
+    override fun createNew(): EntityData =
+        ImportedEntityData("New OBJ", objData = "", objDataIsFileRef = false)
 }
