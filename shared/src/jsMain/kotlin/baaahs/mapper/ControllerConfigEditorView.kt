@@ -69,9 +69,14 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
      * state, so we hold another unfiltered list for editing.
      */
     val handleEdit by handler(props.onEdit, props.controllerId, mutableFixtureMappings, editingFixtureMappings) {
-        mutableFixtureMappings.clear()
-        mutableFixtureMappings.addAll(editingFixtureMappings.maybeRemoveAnonymous())
-        props.onEdit()
+        val filtered = editingFixtureMappings.maybeRemoveAnonymous()
+        if (filtered != mutableFixtureMappings) {
+            mutableFixtureMappings.clear()
+            mutableFixtureMappings.addAll(filtered)
+            props.onEdit()
+        } else {
+            forceRender()
+        }
     }
     val editingController = EditingController(props.controllerId, mutableControllerConfig, editingFixtureMappings, handleEdit)
 

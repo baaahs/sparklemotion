@@ -43,6 +43,7 @@ import web.cssom.TextTransform
 import web.cssom.WhiteSpace
 import web.cssom.em
 import web.dom.Element
+import web.prompts.alert
 
 private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("FixtureMappingEditor") { props ->
     val appContext = useContext(appContext)
@@ -81,7 +82,9 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
             }
 
             // No op for now.
-            is CreateNewMenuItem -> {}
+            is CreateNewMenuItem -> {
+                alert("Oops not yet.")
+            }
 
             is EntityMenuItem -> {
                 props.mutableFixtureMapping.entity = value.entity
