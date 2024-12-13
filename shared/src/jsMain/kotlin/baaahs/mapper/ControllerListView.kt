@@ -26,6 +26,7 @@ import react.dom.html.ReactHTML.img
 import react.dom.html.ReactHTML.span
 import react.dom.li
 import styled.inlineStyles
+import web.cssom.JustifyContent
 import web.cssom.Padding
 import web.cssom.VerticalAlign
 import web.cssom.em
@@ -206,6 +207,7 @@ private val ControllerListView = xComponent<DeviceListProps>("ControllerList") {
                                 div(+styles.navigatorPaneActions) {
                                     Button {
                                         attrs.className = -styles.button
+                                        attrs.sx { justifyContent = JustifyContent.flexStart }
                                         attrs.color = ButtonColor.primary
                                         attrs.disabled = editMode.isOff
                                         attrs.fullWidth = true
