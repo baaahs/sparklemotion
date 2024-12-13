@@ -60,20 +60,26 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
     val visualizerToolbar by css {
         position = Position.absolute
         display = Display.flex
-        flexDirection = FlexDirection.column
-        top = 10.px
-        left = 10.px
+        flexDirection = FlexDirection.row
+        bottom = 4.px
+        right = 0.px
         backgroundColor = Color(theme.palette.background.paper).withAlpha(.8)
-        declarations["scale"] = .8
+        opacity = .9
     }
 
     val visualizerSnapToGrid by css {
+        width = LinearDimension.minContent
         display = Display.flex
 
         input {
             width = 5.em
             textAlign = TextAlign.right
         }
+    }
+
+    val visualizerNumberInput by css {
+        paddingTop = 0.px.important
+        paddingBottom = 0.px.important
     }
 
     val domOverlay by css {

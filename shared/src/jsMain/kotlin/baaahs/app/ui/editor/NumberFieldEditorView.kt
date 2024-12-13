@@ -11,6 +11,7 @@ import mui.material.FormHelperText
 import mui.material.FormLabel
 import mui.material.InputAdornment
 import mui.material.InputBase
+import mui.material.InputBaseClasses
 import mui.material.Size
 import mui.system.sx
 import react.Fragment
@@ -144,6 +145,7 @@ private val NumberFieldEditor = xComponent<NumberFieldEditorProps<Number?>>("Num
 
         InputBase {
             attrs.className = -styles.newRoot
+            attrs.classes = props.classes
             attrs.type = InputType.text.asDynamic()
             attrs.inputProps = jso<HTMLInputElement> {
 //                this.pattern = if (isInteger) "[0-9]*" else "[0-9]*[.,]?[0-9]*"
@@ -203,6 +205,7 @@ private val NumberFieldEditor = xComponent<NumberFieldEditorProps<Number?>>("Num
 }
 
 external interface NumberFieldEditorProps<T : Number?> : Props {
+    var classes: InputBaseClasses?
     var isInteger: Boolean? // defaults to false
     var isNullable: Boolean? // defaults to false
     var label: String?

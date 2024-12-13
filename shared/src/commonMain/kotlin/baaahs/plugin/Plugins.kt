@@ -5,11 +5,25 @@ import baaahs.GadgetType
 import baaahs.PubSub
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.PortLinkOption
-import baaahs.controller.*
+import baaahs.app.ui.model.GridEntityType
+import baaahs.app.ui.model.ImportEntityType
+import baaahs.app.ui.model.LightBarEntityType
+import baaahs.app.ui.model.LightRingEntityType
+import baaahs.app.ui.model.MovingHeadEntityType
+import baaahs.controller.ControllerId
+import baaahs.controller.ControllerState
+import baaahs.controller.NullController
+import baaahs.controller.SacnControllerConfig
+import baaahs.controller.SacnManager
 import baaahs.device.EnumeratedPixelLocations
 import baaahs.device.FixtureType
 import baaahs.device.PixelLocations
-import baaahs.dmx.*
+import baaahs.dmx.Boryli
+import baaahs.dmx.DirectDmxController
+import baaahs.dmx.DirectDmxControllerConfig
+import baaahs.dmx.DmxTransportConfig
+import baaahs.dmx.LixadaMiniMovingHead
+import baaahs.dmx.Shenzarpy
 import baaahs.fixtures.TransportConfig
 import baaahs.getBang
 import baaahs.gl.glsl.GlslType
@@ -23,11 +37,30 @@ import baaahs.glsl.SurfacePixelStrategy
 import baaahs.mapper.MappingStrategy
 import baaahs.mapper.OneAtATimeMappingStrategy
 import baaahs.mapper.TwoLogNMappingStrategy
-import baaahs.model.*
+import baaahs.model.ConstEntityMetadataProvider
+import baaahs.model.EntityData
+import baaahs.model.EntityMetadataProvider
+import baaahs.model.GridData
+import baaahs.model.ImportedEntityData
+import baaahs.model.LightBarData
+import baaahs.model.LightRingData
+import baaahs.model.MovingHeadAdapter
+import baaahs.model.MovingHeadData
+import baaahs.model.PolyLineData
+import baaahs.model.StrandCountEntityMetadataProvider
+import baaahs.model.SurfaceDataForTest
 import baaahs.plugin.core.CorePlugin
 import baaahs.scene.ControllerConfig
 import baaahs.scene.MutableControllerConfig
-import baaahs.show.*
+import baaahs.show.EventBinding
+import baaahs.show.Feed
+import baaahs.show.FeedBuilder
+import baaahs.show.GridTab
+import baaahs.show.LegacyTab
+import baaahs.show.MidiChannelEventBinding
+import baaahs.show.Tab
+import baaahs.show.UnknownFeed
+import baaahs.show.appearsToBePurposeBuiltFor
 import baaahs.show.mutable.MutableFeedPort
 import baaahs.sim.BridgeClient
 import baaahs.sm.brain.BrainControllerConfig
@@ -47,8 +80,20 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import kotlinx.serialization.json.*
-import kotlinx.serialization.modules.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonEncoder
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.put
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
+import kotlinx.serialization.modules.serializersModuleOf
+import kotlinx.serialization.modules.subclass
 import kotlin.reflect.KClass
 
 @Serializable
@@ -159,7 +204,13 @@ sealed class Plugins(
     }
 
     val feedBuilders = FeedBuilders()
+
+    val entityTypes = listOf(
+        GridEntityType, LightBarEntityType, LightRingEntityType, MovingHeadEntityType, ImportEntityType
+    )
+
     val fixtureTypes = FixtureTypes()
+
     private val gadgets = Gadgets()
 
     val controllers = Controllers()

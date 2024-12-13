@@ -1,5 +1,6 @@
 package baaahs.mapper
 
+import baaahs.SparkleMotion.maybeRemoveAnonymous
 import baaahs.app.ui.appContext
 import baaahs.app.ui.editor.textFieldEditor
 import baaahs.controller.ControllerId
@@ -32,8 +33,6 @@ import mui.material.TableCellVariant
 import mui.material.TablePadding
 import mui.material.TableRow
 import mui.material.Typography
-import mui.material.styles.Theme
-import mui.material.styles.useTheme
 import mui.system.sx
 import react.Props
 import react.RBuilder
@@ -47,9 +46,7 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
     val appContext = useContext(appContext)
     val sceneEditorClient = observe(appContext.sceneEditorClient)
     val editMode = observe(appContext.sceneManager.editMode)
-
     val styles = appContext.allStyles.controllerEditor
-    val theme = useTheme<Theme>()
 
     val mutableControllerConfig = memo(props.mutableScene, props.controllerId) {
         props.mutableScene.controllers[props.controllerId]
@@ -62,20 +59,38 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
             mutableListOf<MutableFixtureMapping>()
         }
     }
-
-    val editingController = EditingController(props.controllerId, mutableControllerConfig, mutableFixtureMappings, props.onEdit)
-
-    val recentlyAddedFixtureMappingRef = ref<MutableFixtureMapping>(null)
-    val handleNewFixtureMappingClick by mouseEventHandler(mutableFixtureMappings, props.onEdit) {
-        val newMapping = MutableFixtureMapping(null, null, null)
-        mutableFixtureMappings.add(newMapping)
-        recentlyAddedFixtureMappingRef.current = newMapping
-        props.onEdit()
+    val editingFixtureMappings = memo(props.mutableScene, props.controllerId, mutableFixtureMappings) {
+        mutableFixtureMappings.toMutableList()
     }
 
-    val handleDeleteFixtureMapping by handler(mutableControllerConfig, props.onEdit) { fixtureMapping: MutableFixtureMapping ->
-        mutableFixtureMappings.remove(fixtureMapping)
-        props.onEdit()
+    /**
+     * If SparkleMotion.SUPPORT_ANONYMOUS_FIXTURE_MAPPINGS is false, we need to filter out fixture
+     * mappings with no entity must be removed, but we still need to be able to edit them in that
+     * state, so we hold another unfiltered list for editing.
+     */
+    val handleEdit by handler(props.onEdit, props.controllerId, mutableFixtureMappings, editingFixtureMappings) {
+        val filtered = editingFixtureMappings.maybeRemoveAnonymous()
+        if (filtered != mutableFixtureMappings) {
+            mutableFixtureMappings.clear()
+            mutableFixtureMappings.addAll(filtered)
+            props.onEdit()
+        } else {
+            forceRender()
+        }
+    }
+    val editingController = EditingController(props.controllerId, mutableControllerConfig, editingFixtureMappings, handleEdit)
+
+    val recentlyAddedFixtureMappingRef = ref<MutableFixtureMapping>(null)
+    val handleNewFixtureMappingClick by mouseEventHandler(editingFixtureMappings, handleEdit) {
+        val newMapping = MutableFixtureMapping(null, null, null)
+        editingFixtureMappings.add(newMapping)
+        recentlyAddedFixtureMappingRef.current = newMapping
+        handleEdit()
+    }
+
+    val handleDeleteFixtureMapping by handler(mutableControllerConfig, editingFixtureMappings, handleEdit) { fixtureMapping: MutableFixtureMapping ->
+        editingFixtureMappings.remove(fixtureMapping)
+        handleEdit()
     }
 
     val sceneBuilder = SceneBuilder()
@@ -84,7 +99,7 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
     val previewBuilder = tempController.createPreviewBuilder()
     val sceneOpener = SceneOpener(tempScene)
         .also { it.open() }
-    val fixturePreviews = mutableFixtureMappings.map { mapping ->
+    val fixturePreviews = editingFixtureMappings.map { mapping ->
         try {
             val fixtureMappingData = mapping.build(sceneBuilder)
             val fixtureMapping = with (sceneOpener) { fixtureMappingData.open() }
@@ -95,7 +110,7 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
             FixturePreviewError(e)
         }
     }
-    val mutableFixtureMappingToPreview = mutableFixtureMappings.zip(fixturePreviews)
+    val mutableFixtureMappingToPreview = editingFixtureMappings.zip(fixturePreviews)
 
     Container {
         attrs.disableGutters = true
@@ -115,7 +130,7 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
 
                 Typography {
                     attrs.className = -styles.accordionPreview
-                    +mutableFixtureMappings.joinToString(", ") {
+                    +editingFixtureMappings.joinToString(", ") {
                         it.entity?.title ?: "Anonymous"
                     }
                 }
@@ -174,7 +189,7 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
                                     attrs.disabled = editMode.isOff
                                     attrs.getValue = { mutableControllerConfig.title }
                                     attrs.setValue = { mutableControllerConfig.title = it }
-                                    attrs.onChange = { props.onEdit() }
+                                    attrs.onChange = { handleEdit() }
                                 }
                             }
                         }

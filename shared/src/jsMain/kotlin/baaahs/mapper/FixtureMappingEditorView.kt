@@ -10,53 +10,93 @@ import baaahs.scene.EditingController
 import baaahs.scene.MutableEntity
 import baaahs.scene.MutableFixtureMapping
 import baaahs.scene.MutableScene
-import baaahs.ui.asTextNode
+import baaahs.ui.buildElements
 import baaahs.ui.muiClasses
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
 import materialui.icon
 import mui.icons.material.Delete
 import mui.icons.material.ExpandMore
-import mui.material.*
+import mui.material.Accordion
+import mui.material.AccordionDetails
+import mui.material.AccordionSummary
+import mui.material.AccordionSummaryClasses
+import mui.material.Box
+import mui.material.Chip
+import mui.material.ChipColor
+import mui.material.ChipVariant
+import mui.material.Divider
+import mui.material.IconButton
+import mui.material.IconButtonColor
+import mui.material.MenuItemProps
+import mui.material.Size
 import mui.system.sx
-import react.*
+import org.w3c.dom.events.Event
+import react.Props
+import react.RBuilder
+import react.RHandler
+import react.buildElement
+import react.create
 import react.dom.i
+import react.useContext
 import web.cssom.TextTransform
 import web.cssom.WhiteSpace
 import web.cssom.em
+import web.dom.Element
+import web.prompts.alert
 
 private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("FixtureMappingEditor") { props ->
     val appContext = useContext(appContext)
     val editMode = observe(appContext.sceneManager.editMode)
     val styles = appContext.allStyles.controllerEditor
 
+    var newEntityMenuAnchor by state<Element?> { null }
+    val handleNewEntityClick by mouseEventHandler { newEntityMenuAnchor = it.currentTarget as Element? }
+    val hideNewEntityMenu by handler { _: Event, _: String -> newEntityMenuAnchor = null }
+
     val allEntities = buildList { props.mutableScene.model.visit { add(it) } }
-    val fixtureMappings = run {
-        val map = mutableMapOf<MutableEntity, MutableList<ControllerId>>()
+    val fixtureMappings = mutableMapOf<MutableEntity, MutableList<ControllerId>>().also { map ->
         props.mutableScene.fixtureMappings.forEach { (controllerId, fixtureMappings) ->
             fixtureMappings.forEach { mapping ->
-                mapping.entity?.let { entity -> map.getOrPut(entity) { mutableListOf() }
-                    .add(controllerId)
+                mapping.entity?.let { entity ->
+                    map.getOrPut(entity) { mutableListOf() }
+                        .add(controllerId)
                 }
             }
         }
-        map
     }
-    val alreadyMappedEntities = allEntities.filter { entity ->
-        fixtureMappings.contains(entity)
-    }.toSet()
+
+    val alreadyMappedEntities = allEntities
+        .filter { entity -> fixtureMappings.contains(entity) }
+        .toSet()
 
     val transportConfig = props.mutableFixtureMapping.transportConfig
 
     val handleEntityChange by handler(
         props.mutableScene, props.mutableFixtureMapping, props.editingController
-    ) { value: EntityMenuItem ->
-        props.mutableFixtureMapping.entity = value.entity
-        // If the new mapped entity's fixture type doesn't match the fixture options, remove 'em.
-        if (props.mutableFixtureMapping.fixtureOptions?.fixtureType != value.entity?.fixtureType) {
-            props.mutableFixtureMapping.fixtureOptions = null
+    ) { value: StyledMenuItem ->
+        when (value) {
+            is NoSelectionMenuItem -> {
+                props.mutableFixtureMapping.entity = null
+                props.editingController.onChange()
+            }
+
+            // No op for now.
+            is CreateNewMenuItem -> {
+                alert("Oops not yet.")
+            }
+
+            is EntityMenuItem -> {
+                props.mutableFixtureMapping.entity = value.entity
+
+                // If the new mapped entity's fixture type doesn't match the fixture options, remove 'em.
+                if (props.mutableFixtureMapping.fixtureOptions?.fixtureType != value.entity?.fixtureType) {
+                    props.mutableFixtureMapping.fixtureOptions = null
+                }
+                props.editingController.onChange()
+            }
+            else -> error("Should only be called with EntityMenuItem instances.")
         }
-        props.editingController.onChange()
     }
 
     val handleDeleteButton by mouseEventHandler(props.onDelete, props.mutableFixtureMapping) {
@@ -68,7 +108,7 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
         console.error("Set expanded to ", expanded)
     }
 
-    val entity = props.mutableFixtureMapping.entity
+    val selectedEntity = props.mutableFixtureMapping.entity
 
     Accordion {
         attrs.className = -styles.accordionRoot
@@ -85,7 +125,7 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
             attrs.onClick = toggleExpanded
 
             if (!expanded) {
-                if (entity != null) +entity.title else i { +"Anonymous" }
+                if (selectedEntity != null) +selectedEntity.title else i { +"Anonymous" }
 
                 Box {
                     attrs.className = -styles.expansionPanelSummaryChips
@@ -112,60 +152,41 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
                 fun MutableEntity.isAlreadyMapped() =
                     this in alreadyMappedEntities
 
-                val entityList = buildList {
-                    val unmapped = allEntities.filter { !it.isAlreadyMapped() || it == entity }
+                val noneOrAnonymous = when(SparkleMotion.SUPPORT_ANONYMOUS_FIXTURE_MAPPINGS) {
+                    true -> AnonymousEntityMenuItem
+                    false -> NoSelectionMenuItem
+                }
+
+                val menuItems = buildList {
+                    add(noneOrAnonymous)
+
+                    val unmapped = allEntities.filter { !it.isAlreadyMapped() || it == selectedEntity }
                         .sortedBy { it.title }
-                        .map { EntityMenuItem(it, it.title, isItalic = true) }
-                    val mapped = allEntities.filter { it.isAlreadyMapped() && it != entity }
+                        .map { EntityMenuItem(it) }
+                    val mappedToOtherControllers = allEntities.filter { it.isAlreadyMapped() && it != selectedEntity }
                         .sortedBy { it.title }
-                        .map { EntityMenuItem(
-                            it,
-                            it.title + " \u2713",
-                            isDisabled = true,
-                            isItalic = true
-                        ) }
+                        .map { EntityMenuItem(it, isAlreadyMapped = true) }
 
                     addAll(unmapped)
-                    if (mapped.isNotEmpty()) {
-                        add(EntityMenuItem(
-                            label = "Already Mapped",
-                            isHeader = true,
-                            isDisabled = true,
-                            isItalic = true
-                        ))
+                    if (unmapped.isNotEmpty()) add(DividerMenuItem)
+                    add(CreateNewMenuItem)
+                    if (mappedToOtherControllers.isNotEmpty()) {
+                        add(DividerMenuItem)
+                        add(HeaderMenuItem("Already Mapped"))
                     }
-                    addAll(mapped)
+                    addAll(mappedToOtherControllers)
                 }
-                betterSelect<EntityMenuItem> {
-                    val noneOrAnonymousItem = if (SparkleMotion.SUPPORT_ANONYMOUS_FIXTURE_MAPPINGS) {
-                        EntityMenuItem(label = "Anonymous", isItalic = true)
-                    } else {
-                        EntityMenuItem(label = "None", isItalic = true)
-                    }
-                    attrs.label = "Model Entity"
-                    attrs.values = listOf(noneOrAnonymousItem) + entityList
-                    attrs.renderValueOption = { item, menuItemProps ->
-                        menuItemProps.disabled = item.isDisabled
-                        if (item.entity != null) {
-                            item.entity.title.asTextNode()
-                        } else if (item.label != null) {
-                            if (item.isHeader) {
-                                menuItemProps.divider = true
-                                menuItemProps.disabled = true
-                                menuItemProps.sx {
-                                    textTransform = TextTransform.uppercase
-                                }
-                            }
+                val selectedMenuItem = if (selectedEntity == null)
+                    noneOrAnonymous
+                else menuItems.first { it is EntityMenuItem && it.entity == selectedEntity }
 
-                            buildElement {
-                                if (item.isItalic) {
-                                    i { +item.label }
-                                } else item.label.asTextNode()
-                            }
-                        } else error("Huh?")
+                betterSelect<StyledMenuItem> {
+                    attrs.label = "Model Entity"
+                    attrs.values = menuItems
+                    attrs.renderValueOption = { item, menuItemProps ->
+                        item.doRender(menuItemProps)
                     }
-                    attrs.value = entity?.let { selected -> entityList.firstOrNull { it.entity == selected } }
-                        ?: noneOrAnonymousItem
+                    attrs.value = selectedMenuItem
                     attrs.disabled = editMode.isOff
                     attrs.onChange = handleEntityChange
                     attrs.fullWidth = true
@@ -176,10 +197,10 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
         AccordionDetails {
             attrs.className = -styles.expansionPanelDetails
 
-            if (entity != null || SparkleMotion.SUPPORT_ANONYMOUS_FIXTURE_MAPPINGS) {
+            if (selectedEntity != null || SparkleMotion.SUPPORT_ANONYMOUS_FIXTURE_MAPPINGS) {
                 fixtureConfigPicker {
                     attrs.editingController = props.editingController
-                    attrs.fixtureType = entity?.fixtureType
+                    attrs.fixtureType = selectedEntity?.fixtureType
                     attrs.mutableFixtureOptions = props.mutableFixtureMapping.fixtureOptions
                     attrs.setMutableFixtureOptions = { props.mutableFixtureMapping.fixtureOptions = it }
                     attrs.allowNullFixtureOptions = false
@@ -196,7 +217,7 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
                 attrs.sx { marginTop = .5.em }
                 attrs.size = Size.small
                 attrs.color = IconButtonColor.error
-                attrs.hidden = editMode.isOff
+                attrs.disabled = editMode.isOff
                 attrs.onClick = handleDeleteButton
                 icon(Delete)
                 +"Delete"
@@ -205,13 +226,44 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
     }
 }
 
+interface StyledMenuItem {
+    fun doRender(menuItem: MenuItemProps) = buildElements { this.render(menuItem) }
+
+    fun RBuilder.render(menuItem: MenuItemProps)
+}
 private data class EntityMenuItem(
-    val entity: MutableEntity? = null,
-    val label: String? = null,
-    val isHeader: Boolean = false,
-    val isDisabled: Boolean = false,
-    val isItalic: Boolean = false
-)
+    val entity: MutableEntity,
+    val isAlreadyMapped: Boolean = false
+) : StyledMenuItem {
+    override fun RBuilder.render(menuItem: MenuItemProps) {
+        menuItem.disabled = isAlreadyMapped
+        +entity.title
+    }
+}
+
+private class HeaderMenuItem(val title: String) : StyledMenuItem {
+    override fun RBuilder.render(menuItem: MenuItemProps) {
+        menuItem.sx { textTransform = TextTransform.uppercase }
+        menuItem.disabled = true
+        +title
+    }
+}
+
+private object AnonymousEntityMenuItem : StyledMenuItem {
+    override fun RBuilder.render(menuItem: MenuItemProps) = i { +"Anonymous" }
+}
+
+private object NoSelectionMenuItem : StyledMenuItem {
+    override fun RBuilder.render(menuItem: MenuItemProps) = i { +"None" }
+}
+
+private object CreateNewMenuItem : StyledMenuItem {
+    override fun RBuilder.render(menuItem: MenuItemProps) = i { +"Create New Entity…" }
+}
+
+private object DividerMenuItem : StyledMenuItem {
+    override fun RBuilder.render(menuItem: MenuItemProps) = Divider {}
+}
 
 external interface FixtureMappingEditorProps : Props {
     var mutableScene: MutableScene

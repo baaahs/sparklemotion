@@ -26,6 +26,7 @@ import react.dom.html.ReactHTML.img
 import react.dom.html.ReactHTML.span
 import react.dom.li
 import styled.inlineStyles
+import web.cssom.JustifyContent
 import web.cssom.Padding
 import web.cssom.VerticalAlign
 import web.cssom.em
@@ -69,26 +70,29 @@ private val ControllerListView = xComponent<DeviceListProps>("ControllerList") {
             span {
                 +"Controllers"
 
-                CircularProgress {
-                    attrs.sx {
-                        marginLeft = 2.em
-                        marginRight = .5.em
-                        verticalAlign = VerticalAlign.middle
-                    }
-                    attrs.size = "1rem"
-                    attrs.color = CircularProgressColor.primary
-                    attrs.variant = CircularProgressVariant.indeterminate
-                }
-
-                Typography {
-                    attrs.component = span
-                    attrs.sx {
-                        fontSize = .8.em
-                        opacity = number(.75)
+                div(+styles.scanningIndicator) {
+                    CircularProgress {
+                        attrs.sx {
+                            marginLeft = 2.em
+                            marginRight = .5.em
+                            verticalAlign = VerticalAlign.middle
+                        }
+                        attrs.size = "1rem"
+                        attrs.color = CircularProgressColor.primary
+                        attrs.variant = CircularProgressVariant.indeterminate
                     }
 
-                    +"Scanning…"
+                    Typography {
+                        attrs.component = span
+                        attrs.sx {
+                            fontSize = .8.em
+                            opacity = number(.75)
+                        }
+
+                        +"Scanning…"
+                    }
                 }
+
                 collapsibleSearchBox {
                     attrs.searchString = controllerMatcher.searchString
                     attrs.onSearchChange = handleSearchChange
@@ -203,6 +207,7 @@ private val ControllerListView = xComponent<DeviceListProps>("ControllerList") {
                                 div(+styles.navigatorPaneActions) {
                                     Button {
                                         attrs.className = -styles.button
+                                        attrs.sx { justifyContent = JustifyContent.flexStart }
                                         attrs.color = ButtonColor.primary
                                         attrs.disabled = editMode.isOff
                                         attrs.fullWidth = true

@@ -1,5 +1,6 @@
 package baaahs.scene
 
+import baaahs.app.ui.model.GridEntityType
 import baaahs.controller.ControllerId
 import baaahs.controller.SacnManager
 import baaahs.describe
@@ -26,6 +27,20 @@ class MutableSceneSpec : DescribeSpec({
             }
         }
         val sceneBuilder by value { SceneBuilder() }
+
+        it("tries to keep entity names unique") {
+            val firstGrid = GridEntityType.createNew().edit()
+            val secondGrid = GridEntityType.createNew().edit()
+            val thirdGrid = GridEntityType.createNew().edit()
+            val fourthGrid = GridEntityType.createNew().edit().apply { title = "My Grid" }
+            mutableScene.addEntity(firstGrid)
+            mutableScene.addEntity(secondGrid)
+            mutableScene.addEntity(thirdGrid)
+            mutableScene.addEntity(fourthGrid)
+
+            listOf(firstGrid, secondGrid, thirdGrid, fourthGrid).map { it.title }
+                .shouldContainExactly("Grid", "Grid 2", "Grid 3", "My Grid")
+        }
 
         context(".build") {
             it("builds an empty scene") {
@@ -79,21 +94,21 @@ class MutableSceneSpec : DescribeSpec({
 
                 describe("#delete entity") {
                     it("removes entity") {
-                        mutableScene.delete(panelA)
+                        mutableScene.deleteEntity(panelA)
 
                         mutableScene.model.entities.shouldContainExactly(panelB)
                     }
 
                     it("removes fixture mappings too") {
-                        mutableScene.delete(panelA)
+                        mutableScene.deleteEntity(panelA)
 
                         mutableScene.fixtureMappings shouldContainExactly
                             mapOf(sacn1Id to listOf(panelBMapping))
                     }
 
                     it("removes controller entry entirely if all fixture mappings are removed") {
-                        mutableScene.delete(panelA)
-                        mutableScene.delete(panelB)
+                        mutableScene.deleteEntity(panelA)
+                        mutableScene.deleteEntity(panelB)
 
                         mutableScene.fixtureMappings.shouldBeEmpty()
                     }

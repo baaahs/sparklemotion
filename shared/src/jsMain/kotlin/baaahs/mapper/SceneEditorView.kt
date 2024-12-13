@@ -19,9 +19,9 @@ import react.*
 import react.dom.div
 
 private enum class PageTabs(val title: String) {
-    Model("Model"),
     Controllers("Controllers"),
-//    Fixtures("Fixtures"),
+    Model("Model"),
+    //    Fixtures("Fixtures"),
     Mapping("Pixel Mapping")
 }
 
@@ -31,7 +31,7 @@ val SceneEditorView = xComponent<SceneEditorViewProps>("SceneEditorView") { prop
 
     observe(props.sceneManager)
 
-    var selectedTab by state { PageTabs.Model }
+    var selectedTab by state { PageTabs.entries.first() }
     val handleChangeTab by syntheticEventHandler { _, tab: PageTabs ->
         selectedTab = tab
     }
