@@ -69,26 +69,29 @@ private val ControllerListView = xComponent<DeviceListProps>("ControllerList") {
             span {
                 +"Controllers"
 
-                CircularProgress {
-                    attrs.sx {
-                        marginLeft = 2.em
-                        marginRight = .5.em
-                        verticalAlign = VerticalAlign.middle
-                    }
-                    attrs.size = "1rem"
-                    attrs.color = CircularProgressColor.primary
-                    attrs.variant = CircularProgressVariant.indeterminate
-                }
-
-                Typography {
-                    attrs.component = span
-                    attrs.sx {
-                        fontSize = .8.em
-                        opacity = number(.75)
+                div(+styles.scanningIndicator) {
+                    CircularProgress {
+                        attrs.sx {
+                            marginLeft = 2.em
+                            marginRight = .5.em
+                            verticalAlign = VerticalAlign.middle
+                        }
+                        attrs.size = "1rem"
+                        attrs.color = CircularProgressColor.primary
+                        attrs.variant = CircularProgressVariant.indeterminate
                     }
 
-                    +"Scanning…"
+                    Typography {
+                        attrs.component = span
+                        attrs.sx {
+                            fontSize = .8.em
+                            opacity = number(.75)
+                        }
+
+                        +"Scanning…"
+                    }
                 }
+
                 collapsibleSearchBox {
                     attrs.searchString = controllerMatcher.searchString
                     attrs.onSearchChange = handleSearchChange

@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.scene.MutableFixtureMapping
 import baaahs.util.Logger
 
 object SparkleMotion {
@@ -15,6 +16,10 @@ object SparkleMotion {
     const val USE_CSS_TRANSFORM = false
 
     const val SUPPORT_ANONYMOUS_FIXTURE_MAPPINGS = false
+
+    fun List<MutableFixtureMapping>.maybeRemoveAnonymous() =
+        if (SUPPORT_ANONYMOUS_FIXTURE_MAPPINGS) this
+        else filter { it.entity != null }
 
     val logger = Logger<SparkleMotion>()
 }

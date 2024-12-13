@@ -51,18 +51,12 @@ class MutableScene(
         )
     )
 
-    fun List<MutableFixtureMapping>.maybeRemoveAnonymous() =
-        if (SparkleMotion.SUPPORT_ANONYMOUS_FIXTURE_MAPPINGS) this
-        else filter { it.entity != null }
-
     fun build(sceneBuilder: SceneBuilder): Scene =
         Scene(
             model = model.build(sceneBuilder),
             entities = sceneBuilder.entityIds.all(),
             controllers = controllers.mapValues { (_, v) -> v.build(sceneBuilder) },
-            fixtureMappings = fixtureMappings.mapValues { (_, v) ->
-                v.maybeRemoveAnonymous().map { it.build(sceneBuilder) }
-            }
+            fixtureMappings = fixtureMappings.mapValues { (_, v) -> v.map { it.build(sceneBuilder) } }
         )
 
     override fun build(): Scene = build(SceneBuilder())

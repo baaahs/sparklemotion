@@ -74,18 +74,26 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
     val handleEntityChange by handler(
         props.mutableScene, props.mutableFixtureMapping, props.editingController
     ) { value: StyledMenuItem ->
-        if (value is CreateNewMenuItem) {
-            // No op for now.
-            return@handler
-        }
+        when (value) {
+            is NoSelectionMenuItem -> {
+                props.mutableFixtureMapping.entity = null
+                props.editingController.onChange()
+            }
 
-        value as? EntityMenuItem ?: error("Should only be called with EntityMenuItem instances.")
-        props.mutableFixtureMapping.entity = value.entity
-        // If the new mapped entity's fixture type doesn't match the fixture options, remove 'em.
-        if (props.mutableFixtureMapping.fixtureOptions?.fixtureType != value.entity?.fixtureType) {
-            props.mutableFixtureMapping.fixtureOptions = null
+            // No op for now.
+            is CreateNewMenuItem -> {}
+
+            is EntityMenuItem -> {
+                props.mutableFixtureMapping.entity = value.entity
+
+                // If the new mapped entity's fixture type doesn't match the fixture options, remove 'em.
+                if (props.mutableFixtureMapping.fixtureOptions?.fixtureType != value.entity?.fixtureType) {
+                    props.mutableFixtureMapping.fixtureOptions = null
+                }
+                props.editingController.onChange()
+            }
+            else -> error("Should only be called with EntityMenuItem instances.")
         }
-        props.editingController.onChange()
     }
 
     val handleDeleteButton by mouseEventHandler(props.onDelete, props.mutableFixtureMapping) {
