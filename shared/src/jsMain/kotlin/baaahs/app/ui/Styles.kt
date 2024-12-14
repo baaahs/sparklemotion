@@ -128,6 +128,14 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
         height = 100.pct
     }
 
+
+    val appToolbarModeToggleButton by css {
+        border = Border.none.important
+    }
+    val appToolbarModeToggleButtonSelected by css {
+        backgroundColor = theme.palette.primary.main.asColor().important
+    }
+
     val appToolbarTabs by css {
         flex = Flex.GROW
     }

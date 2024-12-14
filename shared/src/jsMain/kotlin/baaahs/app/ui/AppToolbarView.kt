@@ -73,6 +73,14 @@ private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props -
     val handleAppModeTabClick by syntheticEventHandler<AppMode>(props.onAppModeChange) { _, value ->
         props.onAppModeChange(value)
     }
+    val handleAppModeToggle by mouseEventHandler(props.onAppModeChange, props.appMode) {
+        props.onAppModeChange(
+            when (props.appMode) {
+                AppMode.Show -> AppMode.Scene
+                AppMode.Scene -> AppMode.Show
+            }
+        )
+    }
 
     val show = showManager.openShow
     val showProblemsSeverity = showManager.showProblems.maxOfOrNull { it.severity }
@@ -91,11 +99,26 @@ private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props -
 
         Toolbar {
             attrs.className = -themeStyles.toolbar
-            IconButton {
-                attrs.color = IconButtonColor.inherit
-                attrs.edge = IconButtonEdge.start
-                attrs.onClick = props.onMenuButtonClick.withMouseEvent()
-                icon(Menu)
+
+            Box {
+                IconButton {
+                    attrs.color = IconButtonColor.inherit
+                    attrs.edge = IconButtonEdge.start
+                    attrs.onClick = props.onMenuButtonClick.withMouseEvent()
+                    icon(Menu)
+                }
+
+                if (isSmallScreen) {
+                    ToggleButton {
+                        attrs.classes = muiClasses {
+                            root = -themeStyles.appToolbarModeToggleButton
+                            selected = -themeStyles.appToolbarModeToggleButtonSelected
+                        }
+                        attrs.selected = props.appMode == AppMode.Scene
+                        attrs.onChange = handleAppModeToggle.withTMouseEvent()
+                        icon(CommonIcons.Settings)
+                    }
+                }
             }
 
             if (!isSmallScreen) {
