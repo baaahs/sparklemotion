@@ -20,7 +20,7 @@ import react.dom.div
 
 private enum class PageTabs(val title: String) {
     Controllers("Controllers"),
-    Model("Model"),
+    Model("Geometry"),
     //    Fixtures("Fixtures"),
     Mapping("Pixel Mapping")
 }
