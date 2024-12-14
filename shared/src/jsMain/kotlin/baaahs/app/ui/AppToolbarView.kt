@@ -264,9 +264,11 @@ private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props -
                         }
                     }
 
-                    help {
-                        attrs.divClass = themeStyles.appToolbarHelpIcon.name
-                        attrs.inject(HelpText.appToolbar)
+                    if (!isSmallScreen) {
+                        help {
+                            attrs.divClass = themeStyles.appToolbarHelpIcon.name
+                            attrs.inject(HelpText.appToolbar)
+                        }
                     }
                 }
             }
