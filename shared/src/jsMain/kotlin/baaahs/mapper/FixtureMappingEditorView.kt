@@ -3,13 +3,13 @@ package baaahs.mapper
 import baaahs.SparkleMotion
 import baaahs.app.ui.appContext
 import baaahs.app.ui.editor.betterSelect
+import baaahs.app.ui.model.EntityType
+import baaahs.app.ui.model.entityEditor
+import baaahs.app.ui.model.newEntityMenu
 import baaahs.controller.ControllerId
 import baaahs.fixtures.FixturePreview
 import baaahs.fixtures.FixturePreviewError
-import baaahs.scene.EditingController
-import baaahs.scene.MutableEntity
-import baaahs.scene.MutableFixtureMapping
-import baaahs.scene.MutableScene
+import baaahs.scene.*
 import baaahs.ui.buildElements
 import baaahs.ui.muiClasses
 import baaahs.ui.unaryMinus
@@ -17,42 +17,50 @@ import baaahs.ui.xComponent
 import materialui.icon
 import mui.icons.material.Delete
 import mui.icons.material.ExpandMore
-import mui.material.Accordion
-import mui.material.AccordionDetails
-import mui.material.AccordionSummary
-import mui.material.AccordionSummaryClasses
-import mui.material.Box
-import mui.material.Chip
-import mui.material.ChipColor
-import mui.material.ChipVariant
-import mui.material.Divider
-import mui.material.IconButton
-import mui.material.IconButtonColor
-import mui.material.MenuItemProps
-import mui.material.Size
+import mui.material.*
 import mui.system.sx
-import org.w3c.dom.events.Event
-import react.Props
-import react.RBuilder
-import react.RHandler
-import react.buildElement
-import react.create
+import react.*
+import react.dom.html.ReactHTML.div
 import react.dom.i
-import react.useContext
 import web.cssom.TextTransform
 import web.cssom.WhiteSpace
 import web.cssom.em
 import web.dom.Element
-import web.prompts.alert
 
 private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("FixtureMappingEditor") { props ->
     val appContext = useContext(appContext)
     val editMode = observe(appContext.sceneManager.editMode)
     val styles = appContext.allStyles.controllerEditor
 
+    var newEntityInProgress by state<MutableEntity?> { null }
+    val handleNewEntityChange by handler(newEntityInProgress, props.editingController) {
+        props.editingController.onChange()
+    }
+    val newEditingEntity = memo(newEntityInProgress, props.mutableScene.model.units, handleNewEntityChange) {
+        newEntityInProgress?.let {
+            EditingEntity(it, props.mutableScene.model.units, null, handleNewEntityChange)
+        }
+    }
     var newEntityMenuAnchor by state<Element?> { null }
-    val handleNewEntityClick by mouseEventHandler { newEntityMenuAnchor = it.currentTarget as Element? }
-    val hideNewEntityMenu by handler { _: Event, _: String -> newEntityMenuAnchor = null }
+    var newEntityMenuAnchorPosition = ref<Element>(null)
+    val handleNewEntityClick by handler { newEntityMenuAnchor = newEntityMenuAnchorPosition.current }
+    val handleNewEntityMenuSelect by handler(props.mutableScene) { entityType: EntityType ->
+        newEntityMenuAnchor = null
+        newEntityInProgress = entityType.createNew().edit().apply {
+            title = props.mutableScene.model.findUniqueName(title)
+        }
+    }
+    val handleNewEntityMenuClose by handler { newEntityMenuAnchor = null }
+    val handleNewEntityDialogClose by handler { _: Any, _: String -> newEntityInProgress = null }
+    val handleNewEntityCreate by mouseEventHandler(props.mutableScene, props.mutableFixtureMapping, props.editingController) {
+        props.mutableScene.addEntity(newEntityInProgress!!)
+        props.mutableFixtureMapping.entity = newEntityInProgress
+        newEntityInProgress = null
+        props.editingController.onChange()
+    }
+    val handleNewEntityCancel by mouseEventHandler(props.mutableScene, props.mutableFixtureMapping, props.editingController) {
+        newEntityInProgress = null
+    }
 
     val allEntities = buildList { props.mutableScene.model.visit { add(it) } }
     val fixtureMappings = mutableMapOf<MutableEntity, MutableList<ControllerId>>().also { map ->
@@ -83,7 +91,7 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
 
             // No op for now.
             is CreateNewMenuItem -> {
-                alert("Oops not yet.")
+                handleNewEntityClick()
             }
 
             is EntityMenuItem -> {
@@ -116,6 +124,7 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
 
         AccordionSummary {
             attrs.classes = muiClasses<AccordionSummaryClasses> {
+                root = -styles.accordionSummaryRoot
                 content = -styles.accordionSummaryContent
             }
             attrs.sx {
@@ -180,16 +189,19 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
                     noneOrAnonymous
                 else menuItems.first { it is EntityMenuItem && it.entity == selectedEntity }
 
-                betterSelect<StyledMenuItem> {
-                    attrs.label = "Model Entity"
-                    attrs.values = menuItems
-                    attrs.renderValueOption = { item, menuItemProps ->
-                        item.doRender(menuItemProps)
+                div {
+                    attrs.ref = newEntityMenuAnchorPosition
+                    betterSelect<StyledMenuItem> {
+                        attrs.label = "Model Entity"
+                        attrs.values = menuItems
+                        attrs.renderValueOption = { item, menuItemProps ->
+                            item.doRender(menuItemProps)
+                        }
+                        attrs.value = selectedMenuItem
+                        attrs.disabled = editMode.isOff
+                        attrs.onChange = handleEntityChange
+                        attrs.fullWidth = true
                     }
-                    attrs.value = selectedMenuItem
-                    attrs.disabled = editMode.isOff
-                    attrs.onChange = handleEntityChange
-                    attrs.fullWidth = true
                 }
             }
         }
@@ -221,6 +233,52 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
                 attrs.onClick = handleDeleteButton
                 icon(Delete)
                 +"Delete"
+            }
+        }
+    }
+
+    if (newEntityMenuAnchor != null) {
+        newEntityMenu {
+            attrs.menuAnchor = newEntityMenuAnchor
+            attrs.header = "Create New…"
+            attrs.onSelect = handleNewEntityMenuSelect
+            attrs.onClose = handleNewEntityMenuClose
+        }
+    }
+
+    if (newEditingEntity != null) {
+        Dialog {
+            attrs.classes = muiClasses {
+                root = -styles.newEntityDialogRoot
+                paper = -styles.newEntityDialogPaper
+            }
+            attrs.fullWidth = true
+            attrs.scroll = DialogScroll.paper
+            attrs.open = newEntityInProgress != null
+            attrs.onClose = handleNewEntityDialogClose
+
+            DialogTitle {
+                +"Create New ${newEditingEntity.mutableEntity.entityTypeTitle}"
+            }
+
+            DialogContent {
+                attrs.className = -styles.newEntityDialogContent
+                entityEditor {
+                    attrs.showTitleField = true
+                    attrs.editingEntity = newEditingEntity
+                    attrs.hideActions = true
+                }
+            }
+
+            DialogActions {
+                Button {
+                    attrs.onClick = handleNewEntityCancel
+                    +"Nope"
+                }
+                Button {
+                    attrs.onClick = handleNewEntityCreate
+                    +"Create It!"
+                }
             }
         }
     }

@@ -11,6 +11,7 @@ import baaahs.app.ui.model.LightBarEntityType
 import baaahs.app.ui.model.LightRingEntityType
 import baaahs.app.ui.model.MovingHeadEntityType
 import baaahs.controller.ControllerId
+import baaahs.controller.ControllerManager
 import baaahs.controller.ControllerState
 import baaahs.controller.NullController
 import baaahs.controller.SacnControllerConfig
@@ -643,6 +644,9 @@ sealed class Plugins(
                 subclass(NullController.NullState::class, NullController.NullState.serializer())
             }
         }
+
+        fun findManager(controllerId: ControllerId): ControllerManager.Meta =
+            all.first() { meta -> meta.controllerTypeName == controllerId.controllerType }
     }
 
     inner class ShaderDialects {

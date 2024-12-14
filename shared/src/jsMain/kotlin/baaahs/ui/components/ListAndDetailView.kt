@@ -102,9 +102,11 @@ private val ListAndDetailView = xComponent<ListAndDetailProps<*>>("ListAndDetail
                         }
 
                         div(+styles.detailContent) {
-                            cachedSelection?.let { selection ->
-                                with (props.detailRenderer) {
-                                    render(selection.unsafeCast<Nothing>())
+                            div(+styles.detailContentScroller) {
+                                cachedSelection?.let { selection ->
+                                    with (props.detailRenderer) {
+                                        render(selection.unsafeCast<Nothing>())
+                                    }
                                 }
                             }
                         }
@@ -148,9 +150,11 @@ private val ListAndDetailView = xComponent<ListAndDetailProps<*>>("ListAndDetail
                         }
 
                         div(+styles.detailContent) {
-                            cachedSelection?.let { selection ->
-                                with (props.detailRenderer) {
-                                    render(selection.unsafeCast<Nothing>())
+                            div(+styles.detailContentScroller) {
+                                cachedSelection?.let { selection ->
+                                    with (props.detailRenderer) {
+                                        render(selection.unsafeCast<Nothing>())
+                                    }
                                 }
                             }
                         }

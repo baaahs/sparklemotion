@@ -128,6 +128,14 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
         height = 100.pct
     }
 
+
+    val appToolbarModeToggleButton by css {
+        border = Border.none.important
+    }
+    val appToolbarModeToggleButtonSelected by css {
+        backgroundColor = theme.palette.primary.main.asColor().important
+    }
+
     val appToolbarTabs by css {
         flex = Flex.GROW
     }
@@ -233,8 +241,9 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
     val logotype by css {
         position = Position.absolute
         bottom = 0.px
-        right = 0.5.em
+        right = 2.em
         fontSize = 0.6.rem
+        opacity = .7
         userSelect = UserSelect.none
     }
 

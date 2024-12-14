@@ -10,7 +10,7 @@ import baaahs.visualizer.entity.ItemVisualizer
 class EditingEntity<T : MutableEntity>(
     val mutableEntity: T,
     val modelUnit: ModelUnit,
-    val itemVisualizer: ItemVisualizer<*>,
+    val itemVisualizer: ItemVisualizer<*>?,
     private val onChange: () -> Unit
 ) : Observable() {
     val affineTransforms = Observable()

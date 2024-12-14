@@ -103,7 +103,7 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
 
     val propertiesPane by css {
         height = 100.pct
-        overflow = Overflow.scroll
+        overflow = Overflow.hidden
     }
 
     val headerEditor by css {
