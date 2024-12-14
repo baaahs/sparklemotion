@@ -3,11 +3,20 @@ package baaahs.util
 import baaahs.net.BrowserNetwork
 import org.w3c.dom.Location
 import web.location.location
+import web.window.window
 
 external fun encodeURIComponent(uri: String): String
 external fun decodeURIComponent(encodedURI: String): String
 
 object JsPlatform {
+    // Bootstrapping opportunities for mysterious interlopers.
+    init {
+        val bootstrapper = window.asDynamic().Bootstrapper
+        if (bootstrapper != null) {
+            eval(bootstrapper.bootstrap())
+        }
+    }
+
     val container: SparkleMotionContainer?
         get() = js("window.SparkleMotionContainer")
 
