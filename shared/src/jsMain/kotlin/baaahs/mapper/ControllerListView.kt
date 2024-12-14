@@ -172,16 +172,9 @@ private val ControllerListView = xComponent<DeviceListProps>("ControllerList") {
                                     TableCell {
                                         img {
                                             attrs.className = -styles.controllerIcon
-                                            attrs.src = JsPlatform.imageUrl(
-                                                "/assets/controllers/${
-                                                    when (controllerId.controllerType) {
-                                                        BrainManager.controllerTypeName -> "baaahs-brain.svg"
-                                                        DmxManager.controllerTypeName -> "dmx.svg"
-                                                        SacnManager.controllerTypeName -> "sacn.svg"
-                                                        else -> "unknown.svg"
-                                                    }
-                                                }"
-                                            )
+                                            val icon = appContext.plugins.controllers.findManager(controllerId)
+                                                .controllerIcon
+                                            attrs.src = JsPlatform.imageUrl("/assets/controllers/$icon")
                                         }
                                     }
 
@@ -225,7 +218,20 @@ private val ControllerListView = xComponent<DeviceListProps>("ControllerList") {
             }
         }
         attrs.selection = selectedController
-        attrs.detailHeader = selectedController?.name()?.asTextNode()
+        attrs.detailHeader = buildElement {
+            span {
+                selectedController?.let { controllerId ->
+                    img {
+                        attrs.className = -styles.controllerIcon
+                        val icon = appContext.plugins.controllers.findManager(controllerId)
+                            .controllerIcon
+                        attrs.src = JsPlatform.imageUrl("/assets/controllers/$icon")
+                    }
+
+                    +controllerId.name()
+                }
+            }
+        }
         attrs.detailRenderer = ListAndDetail.DetailRenderer { controllerId ->
             controllerConfigEditor {
                 attrs.mutableScene = props.mutableScene
