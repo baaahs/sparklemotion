@@ -1,5 +1,6 @@
 package baaahs.app.ui.controls
 
+import baaahs.SparkleMotion
 import baaahs.app.ui.appContext
 import baaahs.app.ui.patchmod.patchMod
 import baaahs.app.ui.shaderPreview
@@ -51,7 +52,15 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
         }
     }
 
+    val longPressed = ref(false)
     val handlePointerUp by pointerEventHandler(buttonControl, handleToggleRelease) {
+        // iOS still sends this after long-press, which would the button to be toggled. Don't.
+        if (longPressed.current == true) {
+            isPressed.current = false
+            longPressed.current = false
+            return@pointerEventHandler
+        }
+
         try {
             when (buttonControl.type) {
                 Momentary -> if (buttonControl.isPressed) buttonControl.click()
@@ -76,12 +85,13 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
     onMount(buttonControl, buttonRef.current) {
         val buttonEl = buttonRef.current
         if (buttonControl.expandsOnLongPress && buttonEl != null) {
-            buttonEl.setAttribute("data-long-press-delay", "750")
+            buttonEl.setAttribute("data-long-press-delay", SparkleMotion.LONG_PRESS_DELAY_MS.toString())
             buttonEl.addEventListener(EventType("long-press"), { e ->
                 val originalEvent = e.asDynamic().detail.originalEvent as web.uievents.PointerEvent
                 val isPrimaryButton = originalEvent.button == MouseButton.MAIN && !originalEvent.ctrlKey
                 if (isPrimaryButton && appContext.showManager.editMode.isOff) {
                     lightboxOpen = true
+                    longPressed.current = true
                 }
             })
         }
