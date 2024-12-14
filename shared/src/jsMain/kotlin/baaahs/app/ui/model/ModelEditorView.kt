@@ -320,9 +320,9 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
                 }
                 attrs.onDeselect = handleListItemDeselect
                 if (isPortraitScreen)
-                    attrs.orientation = if (window.innerWidth < 450) zStacked else xStacked
+                    attrs.orientation = if (window.innerWidth < 600) zStacked else xStacked
                 else
-                    attrs.orientation = if (window.innerHeight < 450) zStacked else yStacked
+                    attrs.orientation = if (window.innerHeight < 600) zStacked else yStacked
             }
         }
 

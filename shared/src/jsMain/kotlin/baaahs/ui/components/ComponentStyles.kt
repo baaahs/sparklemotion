@@ -105,6 +105,9 @@ class ListAndDetailStyles(val theme: Theme) : StyleSheet("ui-components-list-and
             }
         }
     }
+    val detailContentScroller by css {
+        height = LinearDimension.minContent
+    }
 
     val detailHeader by css {
         a {
