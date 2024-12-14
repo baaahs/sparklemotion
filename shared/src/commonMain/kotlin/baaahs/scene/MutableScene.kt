@@ -1,6 +1,5 @@
 package baaahs.scene
 
-import baaahs.SparkleMotion
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.EditableManager
 import baaahs.app.ui.editor.MutableEditable
@@ -177,14 +176,16 @@ class MutableModel(
         entities.firstNotNullOfOrNull { it.findByLocator(locator) }
 
     fun add(mutableEntity: MutableEntity) {
-        if (entities.any { it.title == mutableEntity.title }) {
-            var suffix = 2
-            while (entities.any { it.title == "${mutableEntity.title} $suffix" }) suffix++
-            mutableEntity.title = "${mutableEntity.title} $suffix"
-
-        }
+        mutableEntity.title = findUniqueName(mutableEntity.title)
         entities.add(mutableEntity)
     }
+
+    fun findUniqueName(origTitle: String): String =
+        if (entities.any { it.title == origTitle }) {
+            var suffix = 2
+            while (entities.any { it.title == "$origTitle $suffix" }) suffix++
+            "$origTitle $suffix"
+        } else origTitle
 
     /** @return `true` if `mutableEntity` was found and deleted. */
     fun delete(mutableEntity: MutableEntity): Boolean =

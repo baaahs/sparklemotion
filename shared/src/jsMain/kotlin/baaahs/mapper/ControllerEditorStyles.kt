@@ -4,73 +4,13 @@ import baaahs.ui.asColor
 import baaahs.ui.important
 import baaahs.ui.inset
 import emotion.css.keyframes
-import kotlinx.css.Align
-import kotlinx.css.Border
-import kotlinx.css.Color
-import kotlinx.css.Display
-import kotlinx.css.FlexDirection
+import kotlinx.css.*
 import kotlinx.css.FlexDirection.column
-import kotlinx.css.FlexWrap
-import kotlinx.css.GridAutoRows
-import kotlinx.css.GridTemplateColumns
-import kotlinx.css.GridTemplateRows
-import kotlinx.css.JustifyContent
-import kotlinx.css.ListStyleType
-import kotlinx.css.Margin
-import kotlinx.css.Overflow
-import kotlinx.css.Padding
-import kotlinx.css.TextTransform
-import kotlinx.css.UserSelect
-import kotlinx.css.VerticalAlign
-import kotlinx.css.WhiteSpace
-import kotlinx.css.alignItems
-import kotlinx.css.backgroundColor
-import kotlinx.css.border
-import kotlinx.css.borderRadius
-import kotlinx.css.borderTopLeftRadius
-import kotlinx.css.borderTopRightRadius
-import kotlinx.css.color
-import kotlinx.css.columnGap
-import kotlinx.css.display
-import kotlinx.css.em
-import kotlinx.css.flexDirection
-import kotlinx.css.flexWrap
-import kotlinx.css.fontSize
-import kotlinx.css.gap
-import kotlinx.css.gridTemplateColumns
-import kotlinx.css.gridTemplateRows
-import kotlinx.css.header
-import kotlinx.css.height
-import kotlinx.css.input
-import kotlinx.css.justifyContent
-import kotlinx.css.lineHeight
-import kotlinx.css.listStyleType
-import kotlinx.css.margin
-import kotlinx.css.marginBottom
-import kotlinx.css.marginLeft
-import kotlinx.css.marginRight
-import kotlinx.css.marginTop
-import kotlinx.css.minHeight
-import kotlinx.css.opacity
-import kotlinx.css.overflow
-import kotlinx.css.overflowY
-import kotlinx.css.padding
-import kotlinx.css.paddingBottom
-import kotlinx.css.paddingLeft
-import kotlinx.css.paddingTop
-import kotlinx.css.pct
 import kotlinx.css.properties.IterationCount
 import kotlinx.css.properties.lh
 import kotlinx.css.properties.s
-import kotlinx.css.px
-import kotlinx.css.td
-import kotlinx.css.textTransform
-import kotlinx.css.userSelect
-import kotlinx.css.verticalAlign
-import kotlinx.css.vw
-import kotlinx.css.whiteSpace
-import kotlinx.css.width
 import mui.material.styles.Theme
+import mui.system.Breakpoint.Companion.sm
 import styled.StyleSheet
 import styled.animation
 
@@ -183,7 +123,7 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
     }
 
     val accordionDetails by css {
-        padding = Padding(0.px)
+        declarations["padding"] = "0".important
     }
 
     val previewChip by css {
@@ -202,6 +142,17 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
         borderTopRightRadius = 0.px.important
     }
 
+    val accordionSummaryRoot by css {
+        paddingRight = .5.em.important
+
+        // Hide fixture list when accordion is open.
+        ".Mui-expanded" {
+            ".app-ui-scene-editor-accordionPreview" {
+                opacity = 0
+                fontSize = .5.px
+            }
+        }
+    }
     val accordionSummaryContent by css {
 //        overflow = Overflow.hidden
         justifyContent = JustifyContent.spaceBetween
@@ -259,6 +210,24 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
     val dmxTransportConfigEditorRow by css(configEditorRow) {
         input {
             width = 7.em
+        }
+    }
+
+    val newEntityDialogRoot by css {
+        theme.breakpoints.down(sm)() {
+            margin = Margin(0.em)
+        }
+    }
+    val newEntityDialogPaper by css {
+        theme.breakpoints.down(sm)() {
+            width = LinearDimension("calc(100% - 2em)")
+            margin = Margin(0.em)
+        }
+    }
+    val newEntityDialogContent by css {
+        theme.breakpoints.down(sm)() {
+            paddingLeft = 1.em
+            paddingRight = 1.em
         }
     }
 }

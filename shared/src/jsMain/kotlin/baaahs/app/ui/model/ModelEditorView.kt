@@ -239,12 +239,6 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
         visualizer.resize()
     }
 
-    val MyAccordionDetails = memo {
-        AccordionDetails.styled { x ->
-            x.sx { padding = 0.px }
-        }
-    }
-
     div(styleIf(isPortraitScreen, styles.editorPanesPortrait, styles.editorPanesLandscape)) {
         div(+styles.visualizerPane) {
             div(+styles.visualizer) {
@@ -318,75 +312,10 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
                 }
 
                 attrs.detailRenderer = ListAndDetail.DetailRenderer { editingEntity ->
-                    FormControl {
-                        attrs.margin = FormControlMargin.dense
-                        attrs.sx { width = 100.pct }
-
-                        // Additional entity-specific views:
-                        editingEntity.getEditorPanels().forEachIndexed { i, editorPanel ->
-                            if (editorPanel.isMainPanelForEntityType) {
-                                Paper {
-                                    attrs.className = -styles.mainPanelForEntityType
-                                    attrs.elevation = 4
-                                    editingEntity.getView(editorPanel).render(this)
-                                }
-                            } else {
-                                Accordion {
-                                    attrs.elevation = 4
-                                    attrs.defaultExpanded = i == 0
-
-                                    AccordionSummary {
-                                        attrs.expandIcon = ExpandMore.create()
-                                        editorPanel.title?.let {
-                                            Typography { +it }
-                                        }
-                                    }
-                                    MyAccordionDetails {
-                                        editingEntity.getView(editorPanel).render(this)
-                                    }
-                                }
-                            }
-                        }
-
-                        Accordion {
-                            attrs.elevation = 4
-
-                            AccordionSummary {
-                                attrs.expandIcon = ExpandMore.create()
-                                Typography { +"Transformation" }
-                            }
-                            MyAccordionDetails {
-                                transformationEditor {
-                                    attrs.editingEntity = editingEntity
-                                }
-                            }
-                        }
-
-                        if (!EDIT_TITLE_IN_HEADER) {
-                            titleAndDescriptionEditor {
-                                attrs.editingEntity = editingEntity
-                            }
-                        }
-
-                        // Actions
-                        Card {
-                            attrs.elevation = 1
-                            attrs.sx {
-                                marginTop = 1.em
-                                paddingTop = 1.em
-                                paddingBottom = 1.em
-                                border = "none".asDynamic()
-                            }
-
-                            IconButton {
-                                attrs.size = Size.small
-                                attrs.color = IconButtonColor.error
-                                attrs.onClick = handleDeleteEntity.withMouseEvent()
-                                attrs.disabled = editMode.isOff
-                                icon(Delete)
-                                +"Delete ${editingEntity.mutableEntity.entityTypeTitle}"
-                            }
-                        }
+                    entityEditor {
+                        attrs.showTitleField = !EDIT_TITLE_IN_HEADER
+                        attrs.editingEntity = editingEntity
+                        attrs.onDelete = handleDeleteEntity
                     }
                 }
                 attrs.onDeselect = handleListItemDeselect

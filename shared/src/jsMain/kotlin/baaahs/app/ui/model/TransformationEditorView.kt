@@ -29,19 +29,19 @@ private val TransformationEditorView = xComponent<TransformationEditorProps>("Tr
     val entityVisualizer = props.editingEntity.itemVisualizer
 
     val handlePositionChange by handler(entityVisualizer, mutableEntity) { value: Vector3F ->
-        entityVisualizer.obj.position.copy(value.toVector3())
+        entityVisualizer?.obj?.position?.copy(value.toVector3())
         mutableEntity.position = value
         props.editingEntity.onChange()
     }
 
     val handleRotationChange by handler(entityVisualizer, mutableEntity) { value: EulerAngle ->
-        entityVisualizer.obj.rotation.copy(value.toThreeEuler())
+        entityVisualizer?.obj?.rotation?.copy(value.toThreeEuler())
         mutableEntity.rotation = value
         props.editingEntity.onChange()
     }
 
     val handleScaleChange by handler(entityVisualizer, mutableEntity) { value: Vector3F ->
-        entityVisualizer.obj.scale.copy(value.toVector3())
+        entityVisualizer?.obj?.scale?.copy(value.toVector3())
         mutableEntity.scale = value
         props.editingEntity.onChange()
     }

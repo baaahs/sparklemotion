@@ -125,6 +125,7 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
             attrs.defaultExpanded = true
 
             AccordionSummary {
+                attrs.className = -styles.accordionSummaryRoot
                 attrs.expandIcon = ExpandMore.create()
                 Typography { +"Fixtures" }
 
