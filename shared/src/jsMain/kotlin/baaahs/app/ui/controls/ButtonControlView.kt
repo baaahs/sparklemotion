@@ -114,12 +114,15 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
             ref = buttonRef
 
             if (showPreview) {
-                attrs.className = -Styles.buttonLabelWhenPreview
+                attrs.className = -Styles.buttonControl and Styles.buttonControlWithPreview
                 attrs.classes = muiClasses {
-                    selected = -Styles.buttonSelectedWhenPreview
+                    selected = -Styles.buttonControlSelectedWithPreview
                 }
+            } else {
+                attrs.className = -Styles.buttonControl and Styles.buttonControlWithoutPreview
             }
 
+            attrs.disableRipple = true
             attrs.value = "n/a"
             // Yep, for some reason you need to set it directly or it doesn't work.
             attrs.selected = buttonControl.isPressed

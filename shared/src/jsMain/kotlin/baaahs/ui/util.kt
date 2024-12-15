@@ -1,5 +1,6 @@
 package baaahs.ui
 
+import baaahs.dasherize
 import baaahs.document
 import baaahs.get2DContext
 import js.objects.Object
@@ -338,7 +339,7 @@ fun StyledElement.transition(
     timing: Timing = Timing.ease,
     delay: Time = 0.s
 ) {
-    transition += Transition(property.name, duration, timing, delay)
+    transition += Transition(property.name.dasherize(), duration, timing, delay)
 }
 
 fun Length.toLinearDimension(): LinearDimension =

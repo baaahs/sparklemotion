@@ -122,6 +122,13 @@ fun String.camelize(): String =
         .joinToString("") { it.lowercase().capitalize() }
         .decapitalize()
 
+fun String.dasherize(): String =
+    this.trim()
+        .replace(Regex("([a-z])([A-Z])"), "$1-$2") // Insert dash between camel case
+        .replace(Regex("\\s+"), "-")             // Replace spaces with dash
+        .replace(Regex("_+"), "-")              // Replace underscores with dash
+        .lowercase()                            // Convert to lowercase
+
 fun String.englishize(): String =
     Regex("([A-Z](?=[a-z]+)|[A-Z]+(?![a-z]))").replace(this) {
         " " + it.value

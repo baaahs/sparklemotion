@@ -24,12 +24,14 @@ import mui.material.Tab
 import mui.material.styles.Theme
 import mui.material.styles.useTheme
 import mui.system.useMediaQuery
+import mui.system.sx
 import react.*
 import react.dom.div
 import react.dom.h4
 import react.dom.html.ReactHTML
 import styled.inlineStyles
 import web.cssom.ClassName
+import web.cssom.Display
 import web.cssom.pct
 
 private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props ->
@@ -101,6 +103,8 @@ private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props -
             attrs.className = -themeStyles.toolbar
 
             Box {
+                attrs.sx { display = Display.flex }
+
                 IconButton {
                     attrs.color = IconButtonColor.inherit
                     attrs.edge = IconButtonEdge.start
