@@ -136,17 +136,15 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
     }
 
     val beatLinkedSwitch by css {
-        position = Position.absolute
+        position = Position.absolute.important
         left = 0.px
         bottom = 0.px
-        padding = Padding(0.px, 4.px)
     }
 
     val resetSwitch by css {
         position = Position.absolute
         right = 0.px
         bottom = 0.px
-        padding = Padding(0.px, 4.px)
     }
 
     val inUse by css {

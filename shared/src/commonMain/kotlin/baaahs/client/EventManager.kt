@@ -18,7 +18,9 @@ class EventManager(
     private val showProvider: ShowProvider,
     private val clock: Clock
 ) {
+    val facade = Facade()
     private val deviceStates = mutableMapOf<MidiDevice, State>()
+    private var hasExternalControllers: Boolean = false
 
     init {
         midiManager.addEventListener(::onMidiEvent)
@@ -31,6 +33,11 @@ class EventManager(
     }
 
     private fun onMidiEvent(midiDevice: MidiDevice, midiEvent: MidiEvent) {
+        if (!hasExternalControllers) {
+            hasExternalControllers = true
+            facade.notifyChanged()
+        }
+
         val state = deviceStates.getOrPut(midiDevice) { State() }
 
         when (midiEvent.command) {
@@ -94,6 +101,11 @@ class EventManager(
             val controlChannel = data1
             val change = data2
         }
+    }
+
+    inner class Facade : baaahs.ui.Facade() {
+        val hasExternalControllers: Boolean =
+            this@EventManager.hasExternalControllers
     }
 
     companion object {

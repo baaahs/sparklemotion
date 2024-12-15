@@ -162,8 +162,8 @@ class WebClient(
         val uiSettings: UiSettings
             get() = this@WebClient.uiSettings
 
-        val eventManager: EventManager
-            get() = this@WebClient.eventManager
+        val eventManager: EventManager.Facade
+            get() = this@WebClient.eventManager.facade
 
         val featureFlags: FeatureFlags
             get() = this@WebClient.featureFlagsProvider.get()
