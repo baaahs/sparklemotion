@@ -61,8 +61,16 @@ data class Vector3F(val x: Float, val y: Float, val z: Float) {
         return sqrt(lengthSquared().toDouble().absoluteValue).toFloat()
     }
 
-    fun isNan(): Boolean {
+    fun isNaN(): Boolean {
         return x.isNaN() || y.isNaN() || z.isNaN()
+    }
+
+    fun isZero(): Boolean {
+        return x == 0f && y == 0f && z == 0f
+    }
+
+    fun isNonZero(): Boolean {
+        return !isZero()
     }
 
     private fun lengthSquared(): Float {

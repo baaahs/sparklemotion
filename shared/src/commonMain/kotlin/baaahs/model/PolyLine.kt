@@ -125,6 +125,8 @@ open class PolyLine(
          * are at [startVertex] and [endVertex] respectively.
          */
         private fun calculatePixelLocation(index: Int, count: Int): Vector3F {
+            if (count == 1) return startVertex
+
             val delta = endVertex - startVertex
             return delta * index.toDouble() / (count - 1).toDouble() + startVertex
         }
