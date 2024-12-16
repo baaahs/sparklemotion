@@ -196,7 +196,7 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
     }
     val titleFooter by css {
         position = Position.absolute
-        bottom = 2.px
+        bottom = (-1).em
         fontSize = .6.em
         opacity = .6
         textWrap = TextWrap.nowrap
