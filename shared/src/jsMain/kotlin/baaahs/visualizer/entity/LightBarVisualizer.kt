@@ -104,6 +104,8 @@ class PolyLineVisualizer(
         box.max.x += abs(item.xPadding)
         box.min.y -= abs(item.yPadding)
         box.max.y += abs(item.yPadding)
+        box.min.z -= units.fromCm(2)
+        box.max.z += units.fromCm(2)
     }
 }
 
