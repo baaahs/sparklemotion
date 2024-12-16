@@ -47,12 +47,12 @@ class SharpyVisualizer(
         }
     }
 
-    private val Int.cm: Double get() = units.fromCm(this)
-    private val Float.cm: Float get() = units.fromCm(this)
-    private val Double.cm: Double get() = units.fromCm(this)
-    private val Int.`in` get() = ModelUnit.Inches.toCm(this)
-    private val Float.`in` get() = ModelUnit.Inches.toCm(this)
-    private val Double.`in` get() = ModelUnit.Inches.toCm(this)
+    private val Int.cm get() = units.fromCm(this)
+    private val Float.cm get() = units.fromCm(this)
+    private val Double.cm get() = units.fromCm(this)
+    private val Int.`in` get() = ModelUnit.Inches.toUnits(this, units)
+    private val Float.`in` get() = ModelUnit.Inches.toUnits(this, units)
+    private val Double.`in` get() = ModelUnit.Inches.toUnits(this, units)
 
     fun updateGeometry(visualizerInfo: MovingHeadAdapter.VisualizerInfo) {
         val canRadius = visualizerInfo.canRadius.cm

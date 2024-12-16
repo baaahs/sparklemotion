@@ -35,6 +35,13 @@ enum class ModelUnit(val display: String, val inCentimeters: Double) {
     fun toCm(value: Double) = value * inCentimeters
     fun toCm(value: Float): Float = (value * inCentimeters).toFloat()
 
+    fun toUnits(value: Int, toUnit: ModelUnit) =
+        toUnit.fromCm(value * inCentimeters)
+    fun toUnits(value: Double, toUnit: ModelUnit) =
+        toUnit.fromCm(value * inCentimeters)
+    fun toUnits(value: Float, toUnit: ModelUnit): Float =
+        toUnit.fromCm(value * inCentimeters).toFloat()
+
     fun fromCm(value: Int) = value / inCentimeters
     fun fromCm(value: Double) = value / inCentimeters
     fun fromCm(value: Float): Float = (value / inCentimeters).toFloat()
