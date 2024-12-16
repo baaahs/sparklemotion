@@ -202,6 +202,7 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
     val editModeOff by css {
         descendants(
             selector(::gridBackground),
+            selector(::itemControlsModeControl),
             selector(::deleteModeControl),
             selector(::editModeControl),
         ) {

@@ -42,7 +42,7 @@ private val LightBarEditorView = xComponent<LightBarEditorProps>("LightBarEditor
         with (mutableEntity) {
             val normal = (endVertex - startVertex).normalize()
             val newEndVertex = startVertex + normal * length
-            if (!newEndVertex.isNan())
+            if (!newEndVertex.isNaN())
                 mutableEntity.endVertex = newEndVertex
         }
         props.editingEntity.onChange()

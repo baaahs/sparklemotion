@@ -15,6 +15,7 @@ object SparkleMotion {
     // See https://www.paulirish.com/2012/why-moving-elements-with-translate-is-better-than-posabs-topleft/
     const val USE_CSS_TRANSFORM = false
 
+    const val LONG_PRESS_DELAY_MS = 750
     const val SUPPORT_ANONYMOUS_FIXTURE_MAPPINGS = false
 
     fun List<MutableFixtureMapping>.maybeRemoveAnonymous() =

@@ -6,24 +6,12 @@ import baaahs.ui.value
 import baaahs.ui.withoutEvent
 import baaahs.ui.xComponent
 import js.objects.jso
-import mui.material.FormControl
-import mui.material.FormHelperText
-import mui.material.FormLabel
-import mui.material.InputAdornment
-import mui.material.InputBase
-import mui.material.InputBaseClasses
-import mui.material.Size
+import mui.material.*
 import mui.system.sx
-import react.Fragment
-import react.Props
-import react.RBuilder
-import react.RHandler
-import react.ReactNode
-import react.buildElement
+import react.*
 import react.dom.events.FocusEvent
 import react.dom.events.KeyboardEvent
 import react.dom.html.ReactHTML.button
-import react.useContext
 import web.cssom.ClassName
 import web.cssom.Color
 import web.html.HTMLInputElement
@@ -80,16 +68,16 @@ private val NumberFieldEditor = xComponent<NumberFieldEditorProps<Number?>>("Num
                     errorValue = null
                 } else {
                     isError = true
-//                    errorValue = "May not be blank."
+                    errorValue = "May not be blank."
                 }
             } else {
                 props.setValue(numValue)
                 isError = false
                 errorValue = null
             }
-        } catch (e: Exception) {
+        } catch (e: NumberFieldException) {
             isError = true
-//            errorValue = "error:$value"
+            errorValue = e.message
         }
 
         if (props.noIntermediateUpdates == true) {
@@ -111,14 +99,26 @@ private val NumberFieldEditor = xComponent<NumberFieldEditorProps<Number?>>("Num
 
     val stepAmount = props.stepAmount ?: 1
     val handleDecrementButton by mouseEventHandler(props.getValue, props.setValue, stepAmount, notifyOfChange) {
-        props.setValue(props.getValue()?.let {
-            it.asDynamic() - stepAmount
-        })
-        notifyOfChange(true)
+        try {
+            props.setValue(props.getValue()?.let {
+                it.asDynamic() - stepAmount
+            })
+            isError = false
+            errorValue = null
+            notifyOfChange(true)
+        } catch (_: NumberFieldException) {
+            // Ignore.
+        }
     }
     val handleIncrementButton by mouseEventHandler(props.getValue, props.setValue, stepAmount, notifyOfChange) {
-        props.setValue(props.getValue()?.let { it.asDynamic() + stepAmount })
-        notifyOfChange(true)
+        try {
+            props.setValue(props.getValue()?.let { it.asDynamic() + stepAmount })
+            isError = false
+            errorValue = null
+            notifyOfChange(true)
+        } catch (_: NumberFieldException) {
+            // Ignore.
+        }
     }
 
     val handleKeyDown by keyboardEventHandler(handleBlur, handleDecrementButton, handleIncrementButton) { event: KeyboardEvent<*> ->
@@ -185,7 +185,7 @@ private val NumberFieldEditor = xComponent<NumberFieldEditorProps<Number?>>("Num
             }
 
             console.log("DRAW enteredString.current == ", enteredString.current)
-            attrs.value = errorValue ?: enteredString.current ?: value
+            attrs.value = enteredString.current ?: value
             // Notify EditableManager of changes as we type, but don't push them to the undo stack...
             attrs.onChange = handleChange
 
@@ -198,11 +198,27 @@ private val NumberFieldEditor = xComponent<NumberFieldEditorProps<Number?>>("Num
 
 
 
-        props.helperText?.let { helperText ->
-            FormHelperText { +helperText }
+        if (errorValue != null) {
+            FormHelperText {
+                attrs.className = -styles.helperText
+                attrs.error = true
+                +errorValue!!
+            }
+        } else {
+            props.helperText?.let { helperText ->
+                FormHelperText {
+                    attrs.className = -styles.helperText
+                    +helperText
+                }
+            }
         }
     }
 }
+
+class NumberFieldException(override val message: String) : Exception(message)
+
+fun numberFieldException(message: String): Nothing =
+    throw NumberFieldException(message)
 
 external interface NumberFieldEditorProps<T : Number?> : Props {
     var classes: InputBaseClasses?

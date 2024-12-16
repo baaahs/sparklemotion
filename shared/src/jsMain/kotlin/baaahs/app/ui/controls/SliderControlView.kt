@@ -23,6 +23,7 @@ import kotlin.time.Duration.Companion.milliseconds
 private val SliderControlView = xComponent<SliderControlProps>("SliderControl") { props ->
     val appContext = useContext(appContext)
     val controlsStyles = appContext.allStyles.controls
+    val eventManager = observe(appContext.webClient.eventManager)
 
     val slider = props.slider
 
@@ -37,7 +38,7 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
     val controlsInfo = openShow?.getSnapshot()?.controlsInfo
 
     val sliderNumber = memo(controlsInfo, sliderControl) {
-        if (sliderControl != null) {
+        if (eventManager.hasExternalControllers && sliderControl != null) {
             controlsInfo?.midiChannelNumberForSlider(sliderControl)
         } else null
     }

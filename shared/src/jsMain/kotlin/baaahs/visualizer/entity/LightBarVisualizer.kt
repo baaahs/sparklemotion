@@ -173,11 +173,29 @@ abstract class PixelArrayVisualizer<T : PixelArray>(
             lastEndVertex?.let { lastEndVertex ->
                 val connectorVector = segment.startVertex - lastEndVertex
                 val connectorLength = connectorVector.length()
+                if (connectorVector.isNonZero()) {
+                    strandGroup.add(
+                        ArrowHelper(
+                            connectorVector.normalize().toVector3(),
+                            lastEndVertex.toVector3(),
+                            connectorLength,
+                            0x228822,
+                            arrowSize,
+                            arrowSize
+                        ).apply {
+                            line.asDynamic().material = strandMaterial
+                            cone.asDynamic().material = strandHintMaterial
+                        }
+                    )
+                }
+            }
+
+            if (vector.isNonZero()) {
                 strandGroup.add(
                     ArrowHelper(
-                        connectorVector.normalize().toVector3(),
-                        lastEndVertex.toVector3(),
-                        connectorLength,
+                        vector.normalize().toVector3(),
+                        segment.startVertex.toVector3(),
+                        length,
                         0x228822,
                         arrowSize,
                         arrowSize
@@ -187,20 +205,6 @@ abstract class PixelArrayVisualizer<T : PixelArray>(
                     }
                 )
             }
-
-            strandGroup.add(
-                ArrowHelper(
-                    vector.normalize().toVector3(),
-                    segment.startVertex.toVector3(),
-                    length,
-                    0x228822,
-                    arrowSize,
-                    arrowSize
-                ).apply {
-                    line.asDynamic().material = strandMaterial
-                    cone.asDynamic().material = strandHintMaterial
-                }
-            )
             lastEndVertex = segment.endVertex
         }
 

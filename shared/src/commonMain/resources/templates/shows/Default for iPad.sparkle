@@ -210,7 +210,7 @@
                                             "row": 0
                                         },
                                         {
-                                            "controlId": "midCentruy",
+                                            "controlId": "midCentury",
                                             "column": 5,
                                             "row": 1
                                         },
@@ -455,8 +455,8 @@
             "title": "sincos 3d",
             "src": "// https://www.shadertoy.com/view/XfXGz4\n\n#define A(v) mat2(cos(m.v+radians(vec4(0, -90, 90, 0))))  // rotate\n#define W(v) length(vec3(p.yz-v(p.x+vec2(0, pi_2)+t), 0))-lt  // wave\n//#define W(v) length(p-vec3(round(p.x*pi)/pi, v(t+p.x), v(t+pi_2+p.x)))-lt  // wave\n#define P(v) length(p-vec3(0, v(t), v(t+pi_2)))-pt  // point\nvoid mainImage( out vec4 C, in vec2 U )\n{\n    float lt = .1, // line thickness\n          pt = .3, // point thickness\n          pi = 3.1416,\n          pi2 = pi*2.,\n          pi_2 = pi/2.,\n          t = iTime*pi,\n          s = 1., d = 0., i = d;\n    vec2 R = iResolution.xy,\n         m = (iMouse.xy-.5*R)/R.y*4.;\n    vec3 o = vec3(0, 0, -7), // cam\n         u = normalize(vec3((U-.5*R)/R.y, 1)),\n         c = vec3(0), k = c, p;\n    if (iMouse.z < 1.) m = -vec2(t/20.-pi_2, 0);\n    mat2 v = A(y), h = A(x); // pitch & yaw\n    for (; i++<50.;) // raymarch\n    {\n        p = o+u*d;\n        p.yz *= v;\n        p.xz *= h;\n        p.x -= 3.;\n        if (p.y < -1.5) p.y = 2./p.y;\n        k.x = min( max(p.x+lt, W(sin)), P(sin) );\n        k.y = min( max(p.x+lt, W(cos)), P(cos) );\n        s = min(s, min(k.x, k.y));\n        if (s < .001 || d > 100.) break;\n        d += s*.5;\n    }\n    c = max(cos(d*pi2) - s*sqrt(d) - k, 0.);\n    c.gb += .1;\n    C = vec4(c*.4 + c.brg*.6 + c*c, 1);\n}"
         },
-        "midCentruy": {
-            "title": "MidCentruy",
+        "midCentury": {
+            "title": "MidCentury",
             "src": "// https://www.shadertoy.com/view/mtyGWy\n\n/* This animation is the material of my first youtube tutorial about creative \n   coding, which is a video in which I try to introduce programmers to GLSL \n   and to the wonderful world of shaders, while also trying to share my recent \n   passion for this community.\n                                       Video URL: https://youtu.be/f4s1h2YETNY\n*/\n\n//https://iquilezles.org/articles/palettes/\nvec3 palette( float t ) {\n    vec3 a = vec3(0.5, 0.5, 0.5);\n    vec3 b = vec3(0.5, 0.5, 0.5);\n    vec3 c = vec3(1.0, 1.0, 1.0);\n    vec3 d = vec3(0.263,0.416,0.557);\n\n    return a + b*cos( 6.28318*(c*t+d) );\n}\n\n//https://www.shadertoy.com/view/mtyGWy\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord ) {\n    vec2 uv = (fragCoord * 2.0 - iResolution.xy) / iResolution.y;\n    vec2 uv0 = uv;\n    vec3 finalColor = vec3(0.0);\n    \n    for (float i = 0.0; i < 4.0; i++) {\n        uv = fract(uv * 1.5) - 0.5;\n\n        float d = length(uv) * exp(-length(uv0));\n\n        vec3 col = palette(length(uv0) + i*.4 + iTime*.4);\n\n        d = sin(d*8. + iTime)/8.;\n        d = abs(d);\n\n        d = pow(0.01 / d, 1.2);\n\n        finalColor += col * d;\n    }\n        \n    fragColor = vec4(finalColor, 1.0);\n}"
         },
         "monitorsAndFractalLife": {
@@ -1180,8 +1180,8 @@
                 }
             }
         },
-        "midCentruy-patch": {
-            "shaderId": "midCentruy",
+        "midCentury-patch": {
+            "shaderId": "midCentury",
             "incomingLinks": {
                 "fragCoord": {
                     "type": "stream",
@@ -1626,11 +1626,11 @@
                 "sincos3d-patch"
             ]
         },
-        "midCentruy": {
+        "midCentury": {
             "type": "baaahs.Core:Button",
-            "title": "MidCentruy",
+            "title": "MidCentury",
             "patchIds": [
-                "midCentruy-patch"
+                "midCentury-patch"
             ]
         },
         "monitorsAndFractalLife": {
