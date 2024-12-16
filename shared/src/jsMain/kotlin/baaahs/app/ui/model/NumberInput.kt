@@ -323,7 +323,10 @@ class NumberInputStyles(val theme: Theme) : StyleSheet("app-ui-numberinput", isS
         }
     }
 
-    val helperText by css {}
+    val helperText by css {
+        margin = Margin((-1).em, 0.em, 0.em, 0.em)
+        padding = Padding(0.px)
+    }
 
     val error by css {
         input {

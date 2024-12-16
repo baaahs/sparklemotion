@@ -36,8 +36,9 @@ private val ModelEditorToolbarView = xComponent<ModelEditorToolbarProps>("ModelE
     val handleOptionsMenuClose by handler { optionsMenuAnchor = null }
 
     val handleToolChange by handler(visualizer) { _: MouseEvent<*, *>, value: Any? ->
-        val modeEnum = TransformMode.find(value as String)
-        visualizer.transformMode = modeEnum
+        val mode = (value as? String)?.let { TransformMode.find(it) }
+            ?: TransformMode.Move
+        visualizer.transformMode = mode
         forceRender()
     }
 

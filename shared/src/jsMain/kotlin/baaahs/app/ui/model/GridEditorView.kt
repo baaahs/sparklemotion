@@ -3,6 +3,7 @@ package baaahs.app.ui.model
 import baaahs.app.ui.appContext
 import baaahs.app.ui.editor.betterSelect
 import baaahs.app.ui.editor.numberFieldEditor
+import baaahs.app.ui.editor.numberFieldException
 import baaahs.model.GridData
 import baaahs.scene.EditingEntity
 import baaahs.scene.MutableGridData
@@ -85,6 +86,7 @@ private val GridEditorView = xComponent<GridEditorProps>("GridEditor") { props -
             attrs.isNullable = false
             attrs.getValue = { mutableEntity.columns }
             attrs.setValue = namedHandler("setColumns", mutableEntity) { v: Int ->
+                if (v < 1) numberFieldException("Grid must have at least one column.")
                 mutableEntity.columns = v
                 props.editingEntity.onChange()
             }
@@ -95,6 +97,7 @@ private val GridEditorView = xComponent<GridEditorProps>("GridEditor") { props -
             attrs.disabled = editMode.isOff
             attrs.getValue = namedHandler("getRows", mutableEntity) { mutableEntity.rows }
             attrs.setValue = namedHandler("setRows", mutableEntity) { v: Int ->
+                if (v < 1) numberFieldException("Grid must have at least one row.")
                 mutableEntity.rows = v
                 props.editingEntity.onChange()
             }
