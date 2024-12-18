@@ -56,6 +56,19 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
         transition(::left, .125.s)
         transition(::width, .125.s)
         transition(::height, .125.s)
+
+        "&.react-draggable-dragging" {
+            transition(::top, 0.s)
+            transition(::left, 0.s)
+            transition(::width, 0.s)
+            transition(::height, 0.s)
+        }
+        "&.grid-item-resizing" {
+            transition(::top, 0.s)
+            transition(::left, 0.s)
+            transition(::width, 0.s)
+            transition(::height, 0.s)
+        }
     }
 
     val groupGridCell by css {
