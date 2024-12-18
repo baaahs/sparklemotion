@@ -31,6 +31,7 @@ external interface GridLayoutState : State {
     var originalDragItem: LayoutItem?
     var oldLayout: Layout?
     var oldResizeItem: LayoutItem?
+    var resizing: Boolean?
     var droppingDOMNode: ReactElement<*>?
     var droppingPosition: DroppingPosition?
     var notDroppableHere: Boolean?
@@ -304,6 +305,7 @@ class GridLayout(
         setState {
             this.oldResizeItem = l.copy()
             this.oldLayout = state.layout
+            this.resizing = true
         }
 
         props.onResizeStart(layout, l, l, null, e, node)
@@ -317,7 +319,10 @@ class GridLayout(
     private fun onResize(i: String, w: Int, h: Int, gridResizeEvent: GridResizeEvent) {
         val e = gridResizeEvent.e
         val node = gridResizeEvent.node
-        val layout = state.layout
+        val size = gridResizeEvent.size
+        val handle = gridResizeEvent.handle
+
+        var layout = state.layout
         val oldResizeItem = state.oldResizeItem
 
         val newLayout = layout.resizeElement(layout.find(i)!!, w, h)
@@ -325,14 +330,41 @@ class GridLayout(
         val l = newLayout.find(i)
             ?: return
 
+        var finalLayout: Layout
+        var w = w
+        var h = h
+        if (arrayOf("sw", "w", "nw", "n", "ne").indexOf(handle) != -1) {
+            var x = l.x
+            var y = l.y
+            if (arrayOf("sw", "nw", "w").indexOf(handle) != -1) {
+                x = l.x + (l.w - w)
+                w = if (l.x != x && x < 0) l.w else w
+                x = if (x < 0) 0 else x
+            }
+
+            if (arrayOf("ne", "n", "nw").indexOf(handle) != -1) {
+                y = l.y + (l.h - h)
+                h = if (l.y != y && y < 0) l.h else h
+                y = if (y < 0) 0 else y
+            }
+
+            // Move the element to the new position.
+            finalLayout = newLayout
+                .moveElement(i, x, y)
+                .resizeElement(i, w, h)
+        } else {
+            finalLayout = newLayout
+                .resizeElement(i, w, h)
+        }
+
         // Create placeholder element (display only)
         val placeholder = l.toStatic()
 
-        props.onResize(newLayout, oldResizeItem, l, placeholder, e, node)
+        props.onResize(finalLayout, oldResizeItem, l, placeholder, e, node)
 
         // Re-compact the newLayout and set the drag placeholder.
         setState {
-            this.layout = newLayout.resetMovedFlag()
+            this.layout = finalLayout/*.compact()*/.resetMovedFlag()
             this.draggingPlaceholder = placeholder
         }
     }
@@ -359,6 +391,7 @@ class GridLayout(
             this.layout = newLayout
             this.oldResizeItem = null
             this.oldLayout = null
+            this.resizing = false
         }
 
         onLayoutMaybeChanged(newLayout, oldLayout, false)
@@ -388,8 +421,8 @@ class GridLayout(
                 attrs.x = activeDrag.x
                 attrs.y = activeDrag.y
                 attrs.i = activeDrag.i
-                attrs.className = "react-grid-placeholder"
-//                attrs.containerWidth = props.width!!
+                attrs.className = "react-grid-placeholder ${if (state.resizing == true) "placeholder-resizing" else ""}"
+                attrs.containerWidth = props.width!!
 //                attrs.cols = props.cols!!
 //                attrs.margin = props.margin!!
 //                attrs.containerPadding = props.containerPadding ?: props.margin!!
@@ -445,7 +478,7 @@ class GridLayout(
         return buildElement {
             gridItem {
                 attrs.parentContainer = this@GridLayout
-//                attrs.containerWidth = width!!
+                attrs.containerWidth = containerWidth
 //                attrs.cols = cols
 //                attrs.margin = margin
 //                attrs.containerPadding = containerPadding ?: margin

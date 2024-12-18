@@ -5,6 +5,7 @@ import baaahs.geom.Vector2I
 import baaahs.x
 import baaahs.y
 import external.react_resizable.ResizeHandleAxis
+import external.react_resizable.position
 import js.objects.Object
 import js.objects.jso
 import org.w3c.dom.events.Event
@@ -232,9 +233,10 @@ data class PositionParams(
      * @param  {Number} width                   Width in pixels.
      * @param  {Number} xGridUnits              X coordinate in grid units.
      * @param  {Number} yGridUnits              Y coordinate in grid units.
+     * @param  {String} handle                  Resize Handle.
      * @return {Object}                         w, h as grid units.
      */
-    fun calcWidthAndHeightInGridUnits(widthPx: Int, heightPx: Int, xGridUnits: Int, yGridUnits: Int): LayoutItemSize {
+    fun calcWidthAndHeightInGridUnits(widthPx: Int, heightPx: Int, xGridUnits: Int, yGridUnits: Int, handle: String): LayoutItemSize {
         val colWidth = calcGridColWidth() // width = colWidth * w - (margin * (w - 1))
         // ...
         // w = (width + margin) / (colWidth + margin)
@@ -242,9 +244,13 @@ data class PositionParams(
         var w = ((widthPx + margin.x) / (colWidth + margin.x)).roundToInt()
         var h = ((heightPx + margin.y) / (rowHeight + margin.y)).roundToInt() // Capping
 
-        w = w.clamp(0, cols - xGridUnits)
-        h = h.clamp(0, maxRows - yGridUnits)
-        return LayoutItemSize(w, h)
+        var _w = w.clamp(0, cols - xGridUnits)
+        var _h = h.clamp(0, maxRows - yGridUnits)
+        if (arrayOf("sw", "w", "nw").contains(handle))
+            _w = w.clamp(0, cols)
+        if (arrayOf("nw", "n", "ne").contains(handle))
+            _h = h.clamp(0, maxRows)
+        return LayoutItemSize(_w, _h)
     }
 
     /**
@@ -307,12 +313,15 @@ data class PositionParams(
         if (dragging != null) {
             top = dragging.y.roundToInt()
             left = dragging.x.roundToInt()
+        } else if (resizing != null) {
+            top = resizing.top
+            left = resizing.left
         } else { // Otherwise, calculate from grid units.
             top = ((rowHeight + margin.y) * yGridUnits + containerPadding.y).roundToInt()
             left = ((colWidth + margin.x) * xGridUnits + containerPadding.x).roundToInt()
         }
 
-        return Position(left, top, width, height)
+        return position(left, top, width, height)
     }
 }
 

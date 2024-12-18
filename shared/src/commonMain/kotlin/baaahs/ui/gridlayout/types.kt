@@ -75,12 +75,12 @@ data class LayoutItemSize(
     val height: Int
 )
 
-data class Position(
-    val left: Int,
-    val top: Int,
-    val width: Int,
+external interface Position {
+    val left: Int
+    val top: Int
+    val width: Int
     val height: Int
-)
+}
 
 enum class Direction(
     val xIncr: Int, val yIncr: Int

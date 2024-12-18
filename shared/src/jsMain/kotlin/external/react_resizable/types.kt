@@ -1,5 +1,7 @@
 package external.react_resizable
 
+import baaahs.ui.gridlayout.Position
+import js.objects.jso
 import mui.material.SvgIcon
 import react.ReactElement
 import react.Ref
@@ -12,6 +14,21 @@ typealias ResizeHandle =
             (resizeHandleAxis: ResizeHandleAxis, ref: Ref<HTMLElement>) -> ReactElement<*>
 
 typealias ResizeHandleAxis = String
+
+typealias Size = Position
+
+fun position(left: Int, top: Int, width: Int, height: Int) =
+    jso<dynamic> {
+        this.left = left
+        this.top = top
+        this.width = width
+        this.height = height
+    }
+
+fun ResizeHandleAxis.draggingTop() = this.contains('n')
+fun ResizeHandleAxis.draggingLeft() = this.contains('w')
+fun ResizeHandleAxis.draggingBottom() = this.contains('s')
+fun ResizeHandleAxis.draggingRight() = this.contains('e')
 
 val ResizeHandleAxes = arrayOf(
     "s", "w", "e", "n", "sw", "nw", "se", "ne"

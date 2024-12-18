@@ -107,6 +107,9 @@ data class Layout(
     private fun getStatics(): List<LayoutItem> =
         items.filter { l -> l.isStatic }
 
+    fun moveElement(itemId: String, x: Int, y: Int): Layout =
+        moveElement(find(itemId)!!, x, y)
+
     /**
      * Move an element. Responsible for doing cascading movements of other elements.
      *
@@ -170,6 +173,10 @@ data class Layout(
 
         return updatedLayout
     }
+
+    fun resizeElement(itemId: String, w: Int, h: Int) =
+        resizeElement(find(itemId)!!, w,h )
+
 
     /**
      * Resize an element. Responsible for doing cascading movements of other elements.

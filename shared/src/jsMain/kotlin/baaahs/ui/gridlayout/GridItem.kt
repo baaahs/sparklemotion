@@ -6,6 +6,7 @@ import baaahs.app.ui.layout.GridLayoutContext
 import baaahs.app.ui.layout.dragNDropContext
 import baaahs.clamp
 import baaahs.geom.Vector2D
+import baaahs.geom.Vector2I
 import baaahs.ui.className
 import baaahs.ui.isParentOf
 import baaahs.x
@@ -20,6 +21,7 @@ import js.objects.jso
 import org.w3c.dom.events.MouseEvent
 import react.*
 import web.dom.Element
+import web.events.Event
 import web.html.HTMLDivElement
 import web.html.HTMLElement
 import kotlin.math.max
@@ -30,7 +32,7 @@ external interface GridItemProps : Props {
     var children: ReactElement<*>
     var parentContainer: GridLayout
 //    var cols: Int
-//    var containerWidth: Double
+    var containerWidth: Double
 //    var margin: Array<Int>
 //    var containerPadding: Array<Int>
 //    var rowHeight: Double
@@ -241,6 +243,19 @@ class GridItem(
     }
 
     /**
+     * Utility function to setup callback handler definitions for
+     * similarily structured resize events.
+     */
+    fun curryResizeHandler(
+        position: Position,
+        handler: (MouseEvent, ResizeCallbackData, Position) -> Unit
+    ): (MouseEvent, ResizeCallbackData) -> Any {
+        return { e: MouseEvent, data: ResizeCallbackData ->
+            handler(e, data, position)
+        }
+    }
+
+    /**
      * Mix a Resizable instance into a child.
      * @param  {Element} child    Child element.
      * @param  {Object} position  Position object (pixel values)
@@ -262,7 +277,7 @@ class GridItem(
         val positionParams = state.parentContainer.getPositionParams()
 
         // This is the max possible width - doesn't go to infinity because of the width of the window
-        val maxWidth = positionParams.calcGridItemPosition(0, 0, cols - x, 0).width
+        val maxWidth = positionParams.calcGridItemPosition(0, 0, cols, 0).width;
 
         // Calculate min/max constraints using our min & maxes
         val mins = positionParams.calcGridItemPosition(0, 0, minW, minH)
@@ -284,9 +299,9 @@ class GridItem(
             this.height = position.height
             this.minConstraints = minConstraints
             this.maxConstraints = maxConstraints
-            this.onResizeStop = ::onResizeStop
-            this.onResizeStart = ::onResizeStart
-            this.onResize = ::onResize
+            this.onResizeStop = curryResizeHandler(position, ::onResizeStop)
+            this.onResizeStart = curryResizeHandler(position, ::onResizeStart)
+            this.onResize = curryResizeHandler(position, ::onResize)
             this.transformScale = transformScale
             this.resizeHandles = ResizeHandleAxes
             this.handle = resizeHandle
@@ -342,9 +357,9 @@ class GridItem(
             )
             val draggingSizeGridUnits = positionParams.calcWidthAndHeightInGridUnits(
                 draggingNode.clientWidth, draggingNode.clientHeight,
-                positionParams.cols, positionParams.maxRows
+                positionParams.cols, positionParams.maxRows, props.handle
             ).let<LayoutItemSize, Size> {
-                jso { this.width = it.width; this.height = it.height }
+                jso<dynamic> { this.width = it.width; this.height = it.height }
             }
             state.dragging = positionInContainerPx
             state.resizing = draggingSizeGridUnits
@@ -518,8 +533,8 @@ class GridItem(
      * @param  {Event}  e             event data
      * @param  {Object} callbackData  an object with node and size information
      */
-    private fun onResizeStop(e: MouseEvent, callbackData: ResizeCallbackData) {
-        return onResizeHandler(e, callbackData, "onResizeStop")
+    private fun onResizeStop(e: MouseEvent, callbackData: ResizeCallbackData, position: Position) {
+        return onResizeHandler(e, callbackData, position, "onResizeStop")
     }
 
     /**
@@ -527,8 +542,8 @@ class GridItem(
      * @param  {Event}  e             event data
      * @param  {Object} callbackData  an object with node and size information
      */
-    private fun onResizeStart(e: MouseEvent, callbackData: ResizeCallbackData) {
-        return onResizeHandler(e, callbackData, "onResizeStart")
+    private fun onResizeStart(e: MouseEvent, callbackData: ResizeCallbackData, position: Position) {
+        return onResizeHandler(e, callbackData, position, "onResizeStart")
     }
 
     /**
@@ -536,8 +551,8 @@ class GridItem(
      * @param  {Event}  e             event data
      * @param  {Object} callbackData  an object with node and size information
      */
-    private fun onResize(e: MouseEvent, callbackData: ResizeCallbackData) {
-        return onResizeHandler(e, callbackData, "onResize")
+    private fun onResize(e: MouseEvent, callbackData: ResizeCallbackData, position: Position) {
+        return onResizeHandler(e, callbackData, position, "onResize")
     }
 
     /**
@@ -548,11 +563,10 @@ class GridItem(
      * @param  {String} handlerName Handler name to wrap.
      * @return {Function}           Handler function.
      */
-    private fun onResizeHandler(e: MouseEvent, callbackData: ResizeCallbackData, handlerName: String) {
+    private fun onResizeHandler(e: MouseEvent, callbackData: ResizeCallbackData, position: Position, handlerName: String) {
         val handler = props.asDynamic()[handlerName] as GridItemCallback<GridResizeEvent>
             ?: return
 
-        val cols = state.parentContainer.cols
         val x = props.x
         val y = props.y
         val i = props.i
@@ -563,33 +577,105 @@ class GridItem(
 
         val node = callbackData.node
         val size = callbackData.size
+        val handle = callbackData.handle
 
         // Get new XY
         val layoutItemSize = state.parentContainer.getPositionParams()
-            .calcWidthAndHeightInGridUnits(size.width, size.height, x, y)
+            .calcWidthAndHeightInGridUnits(size.width, size.height, x, y, handle)
         var w = layoutItemSize.width
         var h = layoutItemSize.height
 
         // minW should be at least 1 (TODO propTypes validation?)
         minW = max(minW, 1)
 
-        // maxW should be at most (cols - x)
-        maxW = min(maxW, cols - x)
-
         // Min/max capping
         w = w.clamp(minW, maxW)
         h = h.clamp(minH, maxH)
 
-        setState {
-            this.resizing = if (handlerName == "onResizeStop") null else size
+        var updatedSize = size
+        if (true /*node*/) {
+            val currentLeft = position.left
+            val currentTop = position.top
+            val currentWidth = position.width
+            val currentHeight = position.height
+
+            fun Position.resizeNorth(): Position {
+                val top = currentTop - (height - currentHeight);
+
+                return position(
+                    left, constrainTop(top),
+                    width, constrainHeight(top, currentHeight, height)
+                )
+            }
+
+            fun Position.resizeEast(): Position =
+                position(
+                    constrainLeft(left), top,
+                    constrainWidth(currentLeft, currentWidth, width), height
+                )
+
+            fun Position.resizeWest(): Position {
+                val left = currentLeft - (width - currentWidth)
+
+                return position(
+                    constrainLeft(left), constrainTop(top),
+                    if (left <= 0) currentWidth else constrainWidth(currentLeft, currentWidth, width),
+                    height,
+                )
+            }
+
+            fun Position.resizeSouth(): Position =
+                position(
+                    left, constrainTop(top),
+                    width, constrainHeight(top, currentHeight, height)
+                )
+
+            fun Position.resizeNorthEast() = resizeEast().resizeNorth()
+            fun Position.resizeNorthWest() = resizeWest().resizeNorth()
+            fun Position.resizeSouthEast() = resizeEast().resizeSouth()
+            fun Position.resizeSouthWest() = resizeWest().resizeSouth()
+
+            val ordinalResizeHandlerMap = mapOf<String, Position.() -> Position> (
+                "n" to { resizeNorth() },
+                "ne" to { resizeNorthEast() },
+                "e" to { resizeEast() },
+                "se" to { resizeSouthEast() },
+                "s" to { resizeSouth() },
+                "sw" to { resizeSouthWest() },
+                "w" to { resizeWest() },
+                "nw" to { resizeNorthWest() }
+            )
+
+            val resizeHandler = ordinalResizeHandlerMap[handle]
+            updatedSize = resizeHandler?.invoke(Object.assign(jso(), position, size)) ?: size
+            setState {
+                this.resizing = if (handlerName == "onResizeStop") null else updatedSize
+            }
         }
 
-        handler.invoke(i, w, h, jso {
+        handler.invoke(i, w, h, jso<GridResizeEvent> {
             this.e = e
             this.node = node
-            this.size = size
+            this.size = updatedSize
+            this.handle = handle
         })
     }
+
+    /**
+     * Helper functions to constrain dimensions of a GridItem
+     */
+    fun constrainWidth(left: Int, currentWidth: Int, newWidth: Int): Int =
+        if (left + newWidth > props.containerWidth) currentWidth else newWidth
+
+    fun constrainHeight(top: Int, currentHeight: Int, newHeight: Int): Int =
+        if (top <= 0) currentHeight else newHeight
+
+    fun constrainLeft(left: Int): Int =
+        max(0, left)
+
+    fun constrainTop(top: Int): Int =
+        max(0, top)
+
 
     override fun RBuilder.render() {
         val isDraggable = props.isDraggable

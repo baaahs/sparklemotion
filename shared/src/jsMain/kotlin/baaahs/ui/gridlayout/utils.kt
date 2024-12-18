@@ -1,6 +1,7 @@
 package baaahs.ui.gridlayout
 
 import baaahs.geom.Vector2D
+import external.react_resizable.ResizeHandleAxis
 import external.react_resizable.Size
 import org.w3c.dom.events.MouseEvent
 import react.ReactElement
@@ -23,6 +24,7 @@ external interface GridResizeEvent {
     var e: MouseEvent
     var node: HTMLElement
     var size: Size
+    var handle: ResizeHandleAxis
 }
 
 typealias ReactChildren = Array<ReactElement<*>>

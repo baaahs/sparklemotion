@@ -16,11 +16,6 @@ external interface ResizeCallbackData {
     var handle: ResizeHandleAxis
 }
 
-external interface Size {
-    var width: Int
-    var height: Int
-}
-
 //external enum class ResizeHandleAxis {
 //    s, w, e, n, sw, nw, se, ne
 //}
