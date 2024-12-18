@@ -1,0 +1,3 @@
+[submodule "submodules/ISF-Files"]
+	path = submodules/ISF-Files
+	url = git@github.com:Vidvox/ISF-Files.git

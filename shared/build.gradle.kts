@@ -245,6 +245,8 @@ tasks.named<ProcessResources>("jsProcessResources") {
         include("css/styles.css")
     }
 
+    includeIsfFiles()
+
     doLast {
         createResourceFilesList(buildDir("processedResources/js/main"))
     }
@@ -257,6 +259,8 @@ tasks.named<ProcessResources>("jvmProcessResources") {
     from(jsTask.map { it.destinationDir }) {
         into("htdocs")
     }
+
+    includeIsfFiles()
 
     doLast {
         createResourceFilesList(buildDir("processedResources/jvm/main"))
@@ -307,6 +311,24 @@ gradle.projectsEvaluated {
                 dependsOn(kspCommonMainKotlinMetadata)
             }
         }
+    }
+}
+
+fun ProcessResources.includeIsfFiles() {
+    from("submodules/ISF-Files/ISF") {
+        into("shader-libraries/ISF Files")
+        include("*")
+    }
+
+    from("submodules/ISF-Files") {
+        into("shader-libraries/ISF Files")
+        include("LICENSE")
+        include("notes_on_categories.txt")
+    }
+
+    from("data/shader-libraries/ISF Files") {
+        into("shader-libraries/ISF Files")
+        include("_libraryIndex.json")
     }
 }
 

@@ -8,6 +8,7 @@ import baaahs.dmx.Dmx
 import baaahs.dmx.JvmFtdiDmxDriver
 import baaahs.io.Fs
 import baaahs.io.RealFs
+import baaahs.libraries.ShaderLibraryManager
 import baaahs.net.JvmNetwork
 import baaahs.net.Network
 import baaahs.plugin.Plugin
@@ -20,6 +21,7 @@ import baaahs.sm.brain.FirmwareDaddy
 import baaahs.sm.brain.proto.Ports
 import baaahs.sm.server.ExceptionReporter
 import baaahs.sm.server.PinkyArgs
+import baaahs.sm.server.PinkyArgs.Subcommand
 import baaahs.util.Clock
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
@@ -113,4 +115,24 @@ class ParserPinkyArgs(
 
     override val simulateBrains by parser.option(ArgType.Boolean, description = "Simulate connected brains")
         .default(false)
+
+    override var subcommand: Subcommand? = null
+        private set
+
+    init {
+        parser.subcommands(IndexShaderLibrary())
+    }
+
+    inner class IndexShaderLibrary : kotlinx.cli.Subcommand(
+        "index-shader-library",
+        "Generate an index for a shader library."
+    ), Subcommand {
+        val libraryName by argument(ArgType.String)
+
+        override fun execute() { subcommand = this }
+
+        override suspend fun Scope.execute() {
+            get<ShaderLibraryManager>().buildIndex(libraryName)
+        }
+    }
 }

@@ -29,7 +29,7 @@ data class InputPort(
 
     fun suggestVarName(): String {
         val postfix = pluginRef?.resourceName ?: type.glslLiteral
-        return id.decapitalize() + postfix.capitalize()
+        return id.replaceFirstChar { it.lowercase() } + postfix.capitalize()
     }
 
     fun dataTypeIs(glslType: GlslType): Boolean {

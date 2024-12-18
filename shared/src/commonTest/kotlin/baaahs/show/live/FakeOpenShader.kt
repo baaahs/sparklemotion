@@ -6,6 +6,7 @@ import baaahs.gl.glsl.GlslExpr
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
+import baaahs.gl.shader.dialect.GenericShaderDialect
 import baaahs.gl.shader.dialect.ShaderDialect
 import baaahs.gl.shader.type.ShaderType
 import baaahs.show.Shader
@@ -28,12 +29,12 @@ class FakeOpenShader(
         get() = TODO("not implemented")
 
     override val shaderDialect: ShaderDialect
-        get() = TODO("not implemented")
+        get() = GenericShaderDialect
 
     override val errors: List<GlslError>
         get() = emptyList()
 
-    override fun toGlsl(fileNumber: Int?, substitutions: GlslCode.Substitutions): String =
+    override fun toGlsl(fileNumber: Int?, statementRewriter: GlslCode.StatementRewriter): String =
         "// GLSL for $title"
 
     override fun invoker(

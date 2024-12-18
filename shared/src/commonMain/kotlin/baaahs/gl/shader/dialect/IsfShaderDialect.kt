@@ -1,16 +1,20 @@
 package baaahs.gl.shader.dialect
 
+import baaahs.Color
 import baaahs.englishize
-import baaahs.gl.glsl.AnalysisException
-import baaahs.gl.glsl.GlslCode
-import baaahs.gl.glsl.GlslType
+import baaahs.gl.glsl.*
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OutputPort
+import baaahs.gl.shader.ShaderStatementRewriter
+import baaahs.gl.shader.ShaderSubstitutions
 import baaahs.listOf
 import baaahs.plugin.PluginRef
 import baaahs.plugin.Plugins
+import baaahs.plugin.core.feed.ColorPickerFeed
 import baaahs.plugin.core.feed.XyPadFeed
+import baaahs.show.Shader
+import baaahs.util.Logger
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
@@ -19,6 +23,24 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 
+/**
+ * A dialect to support the [ISF format](https://docs.isf.video).
+ *
+ * ISF extends GLSL with the following functions:
+ *
+ * ```glsl
+ * vec4 pixelColor = IMG_PIXEL(image imageName, vec2 pixelCoord);
+ * vec4 pixelColor = IMG_NORM_PIXEL(image imageName, vec2 normalizedPixelCoord);
+ * vec4 pixelColor = IMG_THIS_PIXEL(image imageName);
+ * vec4 pixelColor = IMG_NORM_THIS_PIXEL(image imageName);
+ * vec2 imageSize = IMG_SIZE(image imageName);
+ * ```
+ *
+ * Unsupported ISF features:
+ * * Multi-pass and persistent buffers
+ * * Vertex shaders
+ * * IMPORTED data
+ */
 object IsfShaderDialect : BaseShaderDialect("baaahs.Core:ISF") {
     override val title: String = "ISF"
 
@@ -35,6 +57,79 @@ object IsfShaderDialect : BaseShaderDialect("baaahs.Core:ISF") {
 
     override fun match(glslCode: GlslCode, plugins: Plugins): ShaderAnalyzer =
         IsfShaderAnalyzer(glslCode, plugins)
+
+    override fun buildStatementRewriter(substitutions: ShaderSubstitutions): ShaderStatementRewriter {
+        return IsfStatementRewriter(substitutions)
+    }
+
+    override fun genGlslStatements(glslCode: GlslCode): List<GlslCode.GlslStatement> {
+        return glslCode.globalVars.filter { !it.isUniform && !it.isVarying } +
+                glslCode.functions.filterNot { it.isAbstract }
+    }
+}
+
+class IsfStatementRewriter(substitutions: ShaderSubstitutions) : ShaderStatementRewriter(substitutions) {
+    private var chompWhitespace = false
+
+    override fun visit(token: String): GlslParser.Tokenizer.State {
+        return if (!inComment && !inDotTraversal) {
+            if (token.isBlank()) {
+                if (chompWhitespace) return this
+            } else {
+                chompWhitespace = false
+            }
+
+            when (token) {
+                "IMG_PIXEL" -> ImgPixelState()
+                "IMG_NORM_PIXEL" -> ImgPixelState(normalizedCoords = true)
+                "IMG_THIS_PIXEL" -> ImgPixelState(implicitCoords = true)
+                "IMG_THIS_NORM_PIXEL" -> ImgPixelState(implicitCoords = true, normalizedCoords = true)
+                else -> superVisit(token)
+            }
+        } else superVisit(token)
+    }
+
+    private fun superVisit(token: String) = super.visit(token)
+
+    inner class ImgPixelState(
+        val implicitCoords: Boolean = false,
+        // TODO: Coords should always be normalized, right?
+        val normalizedCoords: Boolean = false
+    ) : GlslParser.Tokenizer.State {
+        var expecting = "("
+
+        override fun visit(token: String): GlslParser.Tokenizer.State {
+            if (token.isBlank()) return this
+
+            return when (expecting) {
+                "(" -> {
+                    if (token != expecting) error("Unexpected token \"$token\" (expected $expecting)")
+                    expecting = "varName"
+                    this
+                }
+                "varName" -> {
+                    superVisit(token) // The image port variable name.
+                    if (implicitCoords) {
+                        superVisit("(")
+                        superVisit("gl_FragCoord")
+                        superVisit(".")
+                        superVisit("xy")
+                        this@IsfStatementRewriter
+                    } else {
+                        expecting = ","
+                        this
+                    }
+                }
+                "," -> {
+                    if (token != expecting) error("Unexpected token \"$token\" (expected $expecting)")
+                    superVisit("(")
+                    chompWhitespace = true
+                    this@IsfStatementRewriter
+                }
+                else -> error("Unexpected token \"$token\" (expected $expecting)")
+            }
+        }
+    }
 }
 
 class IsfShaderAnalyzer(
@@ -46,8 +141,21 @@ class IsfShaderAnalyzer(
 
     override val entryPointName: String = "main"
 
+    private val isfShader: IsfShader?
+    private val isfShaderError: Exception?
+    init {
+        var error: Exception? = null
+        isfShader = try {
+            findIsfShaderDeclaration(glslCode)
+        } catch (e: Exception) {
+            error = e
+            null
+        }
+        isfShaderError = error
+    }
+
     override val matchLevel: MatchLevel by lazy {
-        if (glslCode.src.startsWith("/*{") &&
+        if (startsWithJsonComment(glslCode) &&
             run {
                 val entryPoint = glslCode.findFunctionOrNull("main")
                 entryPoint?.returnType == GlslType.Void && entryPoint.params.isEmpty()
@@ -60,32 +168,57 @@ class IsfShaderAnalyzer(
 //        InputPort("isf_FragNormCoord", ContentType.UvCoordinate, GlslType.Vec2, "Coordinates"),
     )
 
-    override fun findDeclaredInputPorts(): List<InputPort> {
-        val isfShader = findIsfShaderDeclaration(glslCode)
-            ?: return emptyList()
+    private val declaredInputPorts = run {
+        isfShader ?: return@run emptyList()
 
-        return isfShader.INPUTS.map { input ->
-            when (input) {
-                is IsfEventInput -> null
-                is IsfBoolInput -> createSwitch(input)
-                is IsfLongInput -> null
-                is IsfFloatInput -> createSlider(input)
-                is IsfPoint2DInput -> createXyPad(input)
-                is IsfColorInput -> createColor(input)
-                is IsfImageInput -> createImage(input)
-                is IsfAudioInput -> null
-                is IsfAudioFftInput -> null
-                else -> throw AnalysisException("unknown ISF input type \"${input.TYPE}\"")
-            } ?: throw AnalysisException("unsupported ISF input type \"${input.TYPE}\"")
+        isfShader.INPUTS.mapNotNull { input ->
+            val inputPort = createInputPortFor(input)
+            inputPort ?: run {
+                logger.warn { "Unsupported ISF input type \"${input.TYPE}\" for input \"${input.NAME}." }
+                null
+            }
         }
     }
+
+    private fun createInputPortFor(input: IsfInput) = when (input) {
+        is IsfEventInput -> null
+        is IsfBoolInput -> createSwitch(input)
+        is IsfLongInput -> createSelect(input)
+        is IsfFloatInput -> createSlider(input)
+        is IsfPoint2DInput -> createXyPad(input)
+        is IsfColorInput -> createColor(input)
+        is IsfImageInput -> createImage(input)
+        is IsfAudioInput -> null
+        is IsfAudioFftInput -> null
+    }
+
+    override fun findDeclaredInputPorts(): List<InputPort> =
+        declaredInputPorts
+
+    override fun findAuthor(): String? =
+        isfShader?.CREDIT
+
+    override fun findTags(): List<String> =
+        isfShader?.CATEGORIES ?: emptyList()
 
     private fun createSwitch(input: IsfBoolInput): InputPort {
         return InputPort(
             input.NAME, ContentType.Boolean, title = input.LABEL ?: input.NAME.englishize(),
             pluginRef = PluginRef("baaahs.Core", "Switch"),
             pluginConfig = buildJsonObject {
-                input.DEFAULT?.let { put("default", JsonPrimitive(it.toFloat() != 0f)) }
+                input.DEFAULT?.let { put("default", JsonPrimitive(it.toBoolean())) }
+            }
+        )
+    }
+
+    private fun createSelect(input: IsfLongInput): InputPort {
+        return InputPort(
+            input.NAME, ContentType.Int, title = input.LABEL ?: input.NAME.englishize(),
+            pluginRef = PluginRef("baaahs.Core", "Select"),
+            pluginConfig = buildJsonObject {
+                input.LABELS?.let { put("labels", JsonArray(it.map { n -> JsonPrimitive(n) })) }
+                input.VALUES?.let { put("values", JsonArray(it.map { l -> JsonPrimitive(l) })) }
+                input.DEFAULT?.let { put("default", JsonPrimitive(it.toInt())) }
             }
         )
     }
@@ -117,26 +250,47 @@ class IsfShaderAnalyzer(
     private fun createColor(input: IsfColorInput): InputPort {
         return InputPort(
             input.NAME, ContentType.Color, title = input.LABEL ?: input.NAME.englishize(),
-            pluginRef = PluginRef("baaahs.Core", "ColorPicker"),
+            pluginRef = ColorPickerFeed.pluginRef,
             pluginConfig = buildJsonObject {
+                input.DEFAULT?.let {
+                    if (it.size == 4) {
+                        val (r, g, b, a) = it
+                        val defaultColor = Color(r.toFloat(), g.toFloat(), b.toFloat(), a.toFloat())
+                        put("default", JsonPrimitive(defaultColor.toHexString()))
+                    }
+                }
             }
         )
     }
 
+    /**
+     * Per [ISF FX: inputImage](https://docs.isf.video/ref_json.html#isf-attributes):
+     *
+     * ISF shaders that are to be used as image filters are expected to pass the image
+     * to be filtered using the "inputImage" variable name. This input needs to be declared
+     * like any other image input, and host developers can assume that any ISF shader
+     * specifying an "image"-type input named "inputImage" can be operated as an image
+     * filter.
+     */
     private fun createImage(input: IsfImageInput): InputPort {
-        // TODO: image, not color?
+        val invocationFnName = input.NAME
         return InputPort(
-            input.NAME, ContentType.Color, title = input.LABEL ?: input.NAME.englishize(),
-            pluginRef = PluginRef("baaahs.Core", "ColorPicker"),
-            pluginConfig = buildJsonObject {
-            }
-        )
+                input.NAME, ContentType.Color, title = input.LABEL ?: invocationFnName.englishize(),
+                isImplicit = true, injectedData = mapOf("uv" to ContentType.UvCoordinate),
+                glslArgSite = GlslCode.GlslFunction(
+                    invocationFnName, GlslType.Vec4,
+                    listOf(GlslCode.GlslParam("uv", GlslType.Vec2, true)),
+                    "vec4 $invocationFnName(vec2 uv);",
+                    isAbstract = true, isGlobalInput = true
+                )
+            )
     }
 
     private fun findIsfShaderDeclaration(glslCode: GlslCode): IsfShader? {
-        if (!glslCode.src.startsWith("/*{")) return null
+        if (!startsWithJsonComment(glslCode)) return null
+        val startOfJson = glslCode.src.indexOf("{")
         val endOfJson = glslCode.src.indexOf("*/")
-        val jsonDecl = glslCode.src.substring(2, endOfJson)
+        val jsonDecl = glslCode.src.substring(startOfJson, endOfJson)
         try {
             return json.decodeFromString(IsfShader.serializer(), jsonDecl)
         } catch (e: SerializationException) {
@@ -150,6 +304,19 @@ class IsfShaderAnalyzer(
                 .listOf()
         } else emptyList()
     }
+
+    override fun findAdditionalErrors(): List<GlslError> = buildList {
+        val passes = isfShader?.PASSES ?: emptyList()
+        val normalPasses = passes.isEmpty() || passes == listOf(IsfPass())
+        if (!normalPasses) {
+            add(GlslError("Multiple passes aren't supported."))
+        }
+    }
+
+    override fun analyze(existingShader: Shader?): ShaderAnalysis =
+        isfShaderError?.let {
+            ErrorsShaderAnalysis(glslCode.src, WrappedException(it), existingShader ?: createShader())
+        } ?: super.analyze(existingShader)
 
     private val defaultContentTypes = mapOf<GlslType, ContentType>(
         GlslType.Vec4 to ContentType.Color
@@ -174,22 +341,33 @@ class IsfShaderAnalyzer(
     }
 
     companion object {
+        private val logger = Logger<IsfShaderAnalyzer>()
+
         private val json = Json {
             classDiscriminator = "TYPE"
             ignoreUnknownKeys = true
             isLenient = true
         }
+
+        private fun startsWithJsonComment(glslCode: GlslCode) =
+            Regex("^\\s*/[*]\\s*[{]", RegexOption.MULTILINE)
+                .matchesAt(glslCode.src, 0)
     }
 }
 
+/**
+ * See [ISF JSON Attributes](https://docs.isf.video/ref_json.html).
+ */
 @Serializable
 private data class IsfShader(
-    val DESCRIPTION: String? = null,
-    val CREDIT: String? = null,
     val ISFVSN: String? = null,
     val VSN: String? = null,
+    val DESCRIPTION: String? = null,
     val CATEGORIES: List<String> = emptyList(),
-    val INPUTS: List<IsfInput> = emptyList()
+    val INPUTS: List<IsfInput> = emptyList(),
+    val PASSES: List<IsfPass> = emptyList(),
+    val IMPORTED: Map<String, IsfImported> = emptyMap(),
+    val CREDIT: String? = null
 )
 
 @Serializable
@@ -229,8 +407,8 @@ private class IsfLongInput(
     override val TYPE: String,
     override val LABEL: String? = null,
     val DEFAULT: String? = null,
-    val MIN: String? = null,
-    val MAX: String? = null
+    val LABELS: List<String>? = null,
+    val VALUES: List<Int>? = null
 ) : IsfInput()
 
 @Serializable
@@ -287,3 +465,17 @@ private class IsfAudioFftInput(
     override val TYPE: String,
     override val LABEL: String? = null,
 ) : IsfInput()
+
+@Serializable
+private class IsfPass(
+    val TARGET: String? = null,
+    val PERSISTENT: Boolean = false,
+    val FLOAT: Boolean = false,
+    val HEIGHT: String? = null,
+    val WIDTH: String? = null
+)
+
+@Serializable
+private class IsfImported(
+    val PATH: String
+)

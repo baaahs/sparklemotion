@@ -196,7 +196,7 @@ interface PinkyModule : KModule {
                 )
             }
             scoped { ProdBrainSimulator(get(), get()) }
-            scoped { ShaderLibraryManager(get(), get(), get(), get()) }
+            scoped { ShaderLibraryManager(get(), get(), get(), get(), get()) }
             scoped { pinkySettings }
             scoped { ServerNotices(get(), get<CoroutineScope>(Named.pinkyScope).coroutineContext) }
             scoped { PinkyMapperHandlers(get()) }

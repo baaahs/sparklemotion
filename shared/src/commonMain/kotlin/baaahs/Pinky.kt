@@ -93,6 +93,10 @@ class Pinky(
 
     private var keepRunning = true
 
+    suspend fun indexShaderLibrary(libraryName: String) {
+        shaderLibraryManager.buildIndex(libraryName)
+    }
+
     suspend fun startAndRun(beforeRun: suspend CoroutineScope.() -> Unit = {}) {
         val startupJobs = pinkyMainScope.launch(CoroutineName("Pinky Startup Jobs")) {
             launchStartupJobs()

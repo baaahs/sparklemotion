@@ -1,8 +1,10 @@
 package baaahs.app.ui.editor
 
 import baaahs.app.ui.appContext
+import baaahs.app.ui.library.resultsSummary
 import baaahs.app.ui.shaderCard
 import baaahs.app.ui.toolchainContext
+import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.withCache
 import baaahs.libraries.ShaderLibrary
 import baaahs.show.Shader
@@ -14,24 +16,25 @@ import js.objects.jso
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlinx.css.GridTemplateColumns
-import kotlinx.css.gridTemplateColumns
-import kotlinx.css.px
+import kotlinx.css.*
 import materialui.icon
 import mui.icons.material.Search
 import mui.material.*
+import mui.system.sx
 import react.*
 import react.dom.div
 import react.dom.events.FocusEvent
 import react.dom.events.FormEvent
 import react.dom.events.SyntheticEvent
 import styled.inlineStyles
+import web.cssom.AlignItems
+import web.cssom.Display
 import web.events.Event
 
 private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("ShaderLibraryDialog") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.shaderLibrary
-    val shaderLibraries = appContext.webClient.shaderLibraries
+    val shaderLibraries = appContext.shaderLibraries
     val baseToolchain = useContext(toolchainContext)
     val toolchain = memo(baseToolchain) { baseToolchain.withCache("Shader Library") }
 
@@ -42,7 +45,7 @@ private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("Shad
 
     val handleClose = callback(onSelect) { _: Any, _: String -> onSelect(null) }
 
-    val previewSizeRange = 1 .. 5
+    val previewSizeRange = 1..5
     var previewSize by state { 3 }
     val handleSmallerPreviewClick by mouseEventHandler { previewSize-- }
     val handleBiggerPreviewClick by mouseEventHandler { previewSize++ }
@@ -53,10 +56,13 @@ private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("Shad
         adjustInputs = checked
     }
 
+    val shaderStates = memo { ShaderStates() }
     val searchJob = ref<Job>()
     val entryDisplayCache = memo(onSelect) {
         CacheBuilder<ShaderLibrary.Entry, EntryDisplay> {
-            EntryDisplay(it, onSelect)
+            EntryDisplay(it, onSelect) { entry, state ->
+                shaderStates.onShaderStateChange(entry, state)
+            }
         }
     }
     var matches by state { emptyList<EntryDisplay>() }
@@ -65,6 +71,9 @@ private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("Shad
         searchJob.current = GlobalScope.launch {
             matches = shaderLibraries.searchFor(terms)
                 .map { entryDisplayCache[it] }
+                .also {
+                    shaderStates.onNewResults(it.size)
+                }
         }
     }
 
@@ -113,13 +122,41 @@ private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("Shad
             attrs.maxWidth = "xl"
             attrs.scroll = DialogScroll.paper
             attrs.onClose = handleClose
+            attrs.PaperProps = jso {
+                this.classes = muiClasses { this.root = -styles.dialogPaper }
+            }
 
-            DialogTitle { +"Shader Library" }
+            div(+styles.dialogTitle) {
+                DialogTitle {
+                    +"Shader Library"
+                }
+
+                div(+styles.dialogTitleActions) {
+                    IconButton {
+                        attrs.title = "Smaller"
+                        attrs.disabled = !previewSizeRange.contains(previewSize - 1)
+                        attrs.onClick = handleSmallerPreviewClick
+                        icon(mui.icons.material.ZoomOut)
+                    }
+
+                    IconButton {
+                        attrs.title = "Bigger"
+                        attrs.disabled = !previewSizeRange.contains(previewSize + 1)
+                        attrs.onClick = handleBiggerPreviewClick
+                        icon(mui.icons.material.ZoomIn)
+                    }
+                }
+            }
 
             DialogContent {
                 attrs.className = -styles.dialogContent
 
                 Box {
+                    attrs.sx {
+                        display = Display.flex
+                        alignItems = AlignItems.center
+                    }
+
                     FormControl {
                         TextField<StandardTextFieldProps> {
                             attrs.autoFocus = true
@@ -139,28 +176,22 @@ private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("Shad
                         FormHelperText { +"Enter stuff to search for!" }
                     }
 
-                    IconButton {
-                        attrs.title = "Smaller"
-                        attrs.disabled = !previewSizeRange.contains(previewSize - 1)
-                        attrs.onClick = handleSmallerPreviewClick
-                        icon(mui.icons.material.ZoomOut)
-                    }
-
-                    IconButton {
-                        attrs.title = "Bigger"
-                        attrs.disabled = !previewSizeRange.contains(previewSize + 1)
-                        attrs.onClick = handleBiggerPreviewClick
-                        icon(mui.icons.material.ZoomIn)
-                    }
-
                     FormControlLabel {
-                        attrs.control =  buildElement {
+                        attrs.control = buildElement {
                             Switch {
                                 attrs.checked = adjustInputs
                                 attrs.onChange = handleAdjustInputsChange.withTChangeEvent()
                             }
                         }
                         attrs.label = "Adjust Inputs".asTextNode()
+                    }
+
+                    div {
+                        inlineStyles { flex = Flex.GROW }
+                    }
+
+                    resultsSummary {
+                        attrs.shaderStates = shaderStates
                     }
                 }
 
@@ -178,11 +209,13 @@ private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("Shad
                                     shaderCard {
                                         key = match.entry.id
                                         attrs.mutablePatch = match.mutablePatch
-                                        attrs.onSelect = match.onSelect
-                                        attrs.onDelete = null
+                                        attrs.subtitle = match.entry.id.split(":").first()
                                         attrs.toolchain = toolchain
                                         attrs.cardSize = previewSizePx
                                         attrs.adjustGadgets = adjustInputs
+                                        attrs.onSelect = match.onSelect
+                                        attrs.onDelete = null
+                                        attrs.onShaderStateChange = match.onShaderStateChange
                                     }
                                 }
                             }
@@ -193,8 +226,9 @@ private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("Shad
                 if (devWarningIsOpen) {
                     Snackbar {
                         attrs.open = devWarningIsOpen
-                        attrs.message = "NOTE: Shader Library for dev purposes only, nothing useful happens when you select one."
-                            .asTextNode()
+                        attrs.message =
+                            "NOTE: Shader Library for dev purposes only, nothing useful happens when you select one."
+                                .asTextNode()
                         attrs.autoHideDuration = 5000
                         attrs.onClose = handleHideDevWarning
                     }
@@ -206,10 +240,34 @@ private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("Shad
 
 class EntryDisplay(
     val entry: ShaderLibrary.Entry,
-    onSelect: (Shader?) -> Unit
+    onSelect: (Shader?) -> Unit,
+    onShaderStateChange: (ShaderLibrary.Entry, ShaderBuilder.State) -> Unit
 ) {
     val mutablePatch = MutablePatch(MutableShader(entry.shader))
     val onSelect = { onSelect(entry.shader) }
+    val onShaderStateChange = { state: ShaderBuilder.State -> onShaderStateChange(entry, state) }
+}
+
+class ShaderStates(
+    shaderCount: Int? = null
+) : Observable() {
+    var shaderCount = shaderCount
+        private set
+
+    private val states: MutableMap<String, ShaderBuilder.State> = mutableMapOf()
+
+    fun onShaderStateChange(entry: ShaderLibrary.Entry, state: ShaderBuilder.State) {
+        states[entry.id] = state
+        notifyChanged()
+    }
+
+    fun onNewResults(shaderCount: Int) {
+        this.shaderCount = shaderCount
+        notifyChanged()
+    }
+
+    val stateCount: Map<ShaderBuilder.State, Int>
+        get() = states.values.groupingBy { it }.eachCount()
 }
 
 external interface ShaderLibraryDialogProps : Props {

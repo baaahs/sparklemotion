@@ -21,12 +21,12 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 /**
- * This feed provides `gl_FragColor` for quad previews.
+ * This feed provides `gl_FragCoord` for quad previews.
  *
- * Because `gl_FragColor` is always given as absolute pixels relative to the bottom-left
+ * Because `gl_FragCoord` is always given as absolute pixels relative to the bottom-left
  * of the screen/canvas, _not_ relative to the viewport, and we might be rendering
  * into a `SharedGlContext` (which adjusts the viewport to a rectangle within the shared
- * canvas), we need to adjust `gl_FragColor` to account for any offset.
+ * canvas), we need to adjust `gl_FragCoord` to account for any offset.
  */
 @Serializable
 @SerialName("baaahs.Core:RasterCoordinate")

@@ -15,6 +15,7 @@ import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.koin.core.qualifier.named
+import org.koin.core.scope.Scope
 import org.koin.dsl.koinApplication
 import kotlin.system.exitProcess
 
@@ -32,13 +33,14 @@ class PinkyMain(private val args: Array<String>) : BasePinkyMain() {
         logger.info { "Running JVM ${System.getProperty("java.vendor")} ${System.getProperty("java.version")} from ${System.getProperty("java.home")}." }
 
         val programName = PinkyMain::class.simpleName ?: "Pinky"
+
         val clock = SystemClock
         val exceptionReporter = object : ExceptionReporter {
             override fun reportException(context: String, throwable: Throwable) {
                 Logger(context).error(throwable) { throwable.message ?: "Unknown error." }
             }
         }
-        val pinkyInjector = koinApplication {
+        val serverInjector = koinApplication {
             logger(KoinLogger())
 
             modules(
@@ -48,13 +50,38 @@ class PinkyMain(private val args: Array<String>) : BasePinkyMain() {
             )
         }
 
-        val pinkyScope = pinkyInjector.koin.createScope<Pinky>()
+        // TODO: Too much of Pinky still starts up for subcommands.
+        // TODO: More granular Koin modules, add OpenPlugin.start() and .stop(), etc.
+        val pinkyScope = serverInjector.koin.createScope<Pinky>()
+        val pinkyArgs = pinkyScope.get<PinkyArgs>()
+        val subcommand = pinkyArgs.subcommand
+        if (subcommand == null) {
+            runServer(pinkyArgs, pinkyScope)
+        } else {
+            try {
+                runBlocking {
+                    with(subcommand) { pinkyScope.execute() }
+                }
+            } catch (e: Throwable) {
+                logger.error(e) { "Failed to run command ${subcommand.name}." }
+                exitProcess(1)
+            } finally {
+                exitProcess(0)
+            }
+        }
+    }
+
+    private fun runServer(pinkyArgs: PinkyArgs, pinkyScope: Scope) {
         val pinky = pinkyScope.get<Pinky>()
+
+        logger.info { "Are you pondering what I'm pondering?" }
+
         configureKtor(pinky, pinkyScope)
             .start()
 
         logger.info { responses.random() }
 
+        val pinkyDispatcher: CoroutineDispatcher = pinkyScope.get(named("PinkyMainDispatcher"))
         try {
             val pinkyArgs = pinkyScope.get<PinkyArgs>()
             runBlocking(pinkyScope.get<CoroutineDispatcher>(named("PinkyMainDispatcher")) + CoroutineName("Pinky Launcher")) {
@@ -66,9 +93,10 @@ class PinkyMain(private val args: Array<String>) : BasePinkyMain() {
             }
         } catch (e: Throwable) {
             logger.error(e) { "Failed to start Pinky." }
+            exitProcess(1)
         } finally {
             logger.info { "Exiting." }
-            exitProcess(1)
+            exitProcess(0)
         }
     }
 }
