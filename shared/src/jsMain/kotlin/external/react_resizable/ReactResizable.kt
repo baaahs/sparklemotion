@@ -2,6 +2,7 @@
 
 package external.react_resizable
 
+import baaahs.ui.gridlayout.Position
 import org.w3c.dom.events.MouseEvent
 import react.ElementType
 import react.PropsWithClassName
@@ -12,7 +13,7 @@ external val Resizable : ElementType<ResizableProps>
 
 external interface ResizeCallbackData {
     var node: HTMLElement
-    var size: Size // {width: number, height: number}
+    var size: Position // {width: number, height: number}
     var handle: ResizeHandleAxis
 }
 

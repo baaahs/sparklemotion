@@ -1,8 +1,12 @@
 package baaahs.ui.gridlayout
 
 import baaahs.geom.Vector2D
+import baaahs.getBang
 import external.react_resizable.ResizeHandleAxis
 import external.react_resizable.Size
+import external.react_resizable.position
+import js.objects.Object
+import js.objects.jso
 import org.w3c.dom.events.MouseEvent
 import react.ReactElement
 import web.html.HTMLElement
@@ -69,3 +73,84 @@ fun HTMLElement.getPosition(): Vector2D =
 
 fun HTMLElement.getPositionMinusScroll(): Vector2D =
     getPosition() - Vector2D(scrollLeft, scrollTop)
+
+/**
+ * Helper functions to constrain dimensions of a GridItem
+ */
+private fun constrainWidth(left: Int, currentWidth: Int, newWidth: Int, containerWidth: Int): Int =
+    if (left + newWidth > containerWidth) currentWidth else newWidth
+
+private fun constrainHeight(top: Int, currentHeight: Int, newHeight: Int): Int =
+    if (top < 0) currentHeight else newHeight
+
+private fun constrainLeft(left: Int): Int =
+    max(0, left)
+
+private fun constrainTop(top: Int): Int =
+    max(0, top)
+
+private fun Position.resizeNorth(currentSize: Position, _containerWidth: Int): Position {
+    val top = currentSize.top - (height - currentSize.height);
+
+    return position(
+        left, constrainTop(top),
+        width, constrainHeight(top, currentSize.height, height)
+    )
+}
+
+private fun Position.resizeEast(currentSize: Position, containerWidth: Int): Position =
+    position(
+        constrainLeft(left), top,
+        constrainWidth(currentSize.left, currentSize.width, width, containerWidth), height
+    )
+
+private fun Position.resizeWest(currentSize: Position, containerWidth: Int): Position {
+    val left = currentSize.left - (width - currentSize.width)
+
+    return position(
+        constrainLeft(left),
+        constrainTop(top),
+        if (left < 0) currentSize.width else constrainWidth(currentSize.left, currentSize.width, width, containerWidth),
+        height
+    )
+}
+
+private fun Position.resizeSouth(currentSize: Position, containerWidth: Int): Position =
+    position(
+        left, constrainTop(top),
+        width, constrainHeight(top, currentSize.height, height)
+    )
+
+private fun Position.resizeNorthEast(currentSize: Position, containerWidth: Int) =
+    resizeNorth(resizeEast(currentSize, containerWidth), containerWidth)
+
+private fun Position.resizeNorthWest(currentSize: Position, containerWidth: Int) =
+    resizeNorth(resizeWest(currentSize, containerWidth), containerWidth)
+
+private fun Position.resizeSouthEast(currentSize: Position, containerWidth: Int) =
+    resizeSouth(resizeEast(currentSize, containerWidth), containerWidth)
+
+private fun Position.resizeSouthWest(currentSize: Position, containerWidth: Int) =
+    resizeSouth(resizeWest(currentSize, containerWidth), containerWidth)
+
+
+fun resizeItemInDirection(
+    direction: ResizeHandleAxis,
+    currentSize: Position,
+    newSize: Position,
+    containerWidth: Int
+): Position {
+    val ordinalResizeHandlerMap = mapOf<String, Position.(currentSize: Position, containerWidth: Int) -> Position> (
+        "n" to Position::resizeNorth,
+        "ne" to Position::resizeNorthEast,
+        "e" to Position::resizeEast,
+        "se" to Position::resizeSouthEast,
+        "s" to Position::resizeSouth,
+        "sw" to Position::resizeSouthWest,
+        "w" to Position::resizeWest,
+        "nw" to Position::resizeNorthWest
+    )
+
+    val ordinalHandler = ordinalResizeHandlerMap.getBang(direction, "direction")
+    return ordinalHandler(Object.assign(jso(), currentSize, newSize), currentSize, containerWidth)
+}

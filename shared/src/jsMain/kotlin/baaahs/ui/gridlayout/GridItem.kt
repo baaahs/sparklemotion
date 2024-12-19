@@ -565,7 +565,6 @@ class GridItem(
      */
     private fun onResizeHandler(e: MouseEvent, callbackData: ResizeCallbackData, position: Position, handlerName: String) {
         val handler = props.asDynamic()[handlerName] as GridItemCallback<GridResizeEvent>
-            ?: return
 
         val x = props.x
         val y = props.y
@@ -574,84 +573,42 @@ class GridItem(
         val maxH = props.maxH ?: Int.MAX_VALUE
         var minW = props.minW ?: 1
         var maxW = props.maxW ?: Int.MAX_VALUE
+        var containerWidth = props.containerWidth
 
         val node = callbackData.node
-        val size = callbackData.size
+        val size = callbackData.size // 'size' is updated position
         val handle = callbackData.handle
 
-        // Get new XY
-        val layoutItemSize = state.parentContainer.getPositionParams()
-            .calcWidthAndHeightInGridUnits(size.width, size.height, x, y, handle)
-        var w = layoutItemSize.width
-        var h = layoutItemSize.height
-
-        // minW should be at least 1 (TODO propTypes validation?)
-        minW = max(minW, 1)
-
-        // Min/max capping
-        w = w.clamp(minW, maxW)
-        h = h.clamp(minH, maxH)
-
+        // Clamping of dimensions based on resize direction
         var updatedSize = size
         if (true /*node*/) {
-            val currentLeft = position.left
-            val currentTop = position.top
-            val currentWidth = position.width
-            val currentHeight = position.height
-
-            fun Position.resizeNorth(): Position {
-                val top = currentTop - (height - currentHeight);
-
-                return position(
-                    left, constrainTop(top),
-                    width, constrainHeight(top, currentHeight, height)
-                )
-            }
-
-            fun Position.resizeEast(): Position =
-                position(
-                    constrainLeft(left), top,
-                    constrainWidth(currentLeft, currentWidth, width), height
-                )
-
-            fun Position.resizeWest(): Position {
-                val left = currentLeft - (width - currentWidth)
-
-                return position(
-                    constrainLeft(left), constrainTop(top),
-                    if (left <= 0) currentWidth else constrainWidth(currentLeft, currentWidth, width),
-                    height,
-                )
-            }
-
-            fun Position.resizeSouth(): Position =
-                position(
-                    left, constrainTop(top),
-                    width, constrainHeight(top, currentHeight, height)
-                )
-
-            fun Position.resizeNorthEast() = resizeEast().resizeNorth()
-            fun Position.resizeNorthWest() = resizeWest().resizeNorth()
-            fun Position.resizeSouthEast() = resizeEast().resizeSouth()
-            fun Position.resizeSouthWest() = resizeWest().resizeSouth()
-
-            val ordinalResizeHandlerMap = mapOf<String, Position.() -> Position> (
-                "n" to { resizeNorth() },
-                "ne" to { resizeNorthEast() },
-                "e" to { resizeEast() },
-                "se" to { resizeSouthEast() },
-                "s" to { resizeSouth() },
-                "sw" to { resizeSouthWest() },
-                "w" to { resizeWest() },
-                "nw" to { resizeNorthWest() }
-            )
-
-            val resizeHandler = ordinalResizeHandlerMap[handle]
-            updatedSize = resizeHandler?.invoke(Object.assign(jso(), position, size)) ?: size
+            updatedSize = resizeItemInDirection(
+                handle,
+                position,
+                size,
+                containerWidth.roundToInt()
+            );
             setState {
                 this.resizing = if (handlerName == "onResizeStop") null else updatedSize
             }
         }
+
+        // Get new XY based on pixel size
+        val layoutItemSize = state.parentContainer.getPositionParams()
+            .calcWidthAndHeightInGridUnits(
+                updatedSize.width,
+                updatedSize.height,
+                x,
+                y,
+                handle
+            )
+        var w = layoutItemSize.width
+        var h = layoutItemSize.height
+
+        // Min/max capping.
+        // minW should be at least 1 (TODO propTypes validation?)
+        w = w.clamp(max(minW, 1), maxW);
+        h = h.clamp(minH, maxH)
 
         handler.invoke(i, w, h, jso<GridResizeEvent> {
             this.e = e
@@ -660,21 +617,6 @@ class GridItem(
             this.handle = handle
         })
     }
-
-    /**
-     * Helper functions to constrain dimensions of a GridItem
-     */
-    fun constrainWidth(left: Int, currentWidth: Int, newWidth: Int): Int =
-        if (left + newWidth > props.containerWidth) currentWidth else newWidth
-
-    fun constrainHeight(top: Int, currentHeight: Int, newHeight: Int): Int =
-        if (top <= 0) currentHeight else newHeight
-
-    fun constrainLeft(left: Int): Int =
-        max(0, left)
-
-    fun constrainTop(top: Int): Int =
-        max(0, top)
 
 
     override fun RBuilder.render() {
