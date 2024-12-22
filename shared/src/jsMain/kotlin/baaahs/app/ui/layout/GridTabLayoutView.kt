@@ -2,12 +2,12 @@ package baaahs.app.ui.layout
 
 import baaahs.app.ui.AppContext
 import baaahs.app.ui.appContext
-import baaahs.app.ui.controlsPalette
 import baaahs.app.ui.editor.AddControlToGrid
 import baaahs.app.ui.editor.Editor
 import baaahs.control.OpenButtonGroupControl
 import baaahs.plugin.AddControlMenuItem
 import baaahs.show.live.ControlProps
+import baaahs.show.live.OpenControl
 import baaahs.show.live.OpenIGridLayout
 import baaahs.show.mutable.MutableIGridLayout
 import baaahs.show.mutable.MutableShow
@@ -20,11 +20,11 @@ import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.unknown
+import baaahs.util.Logger
 import baaahs.util.useResizeListener
 import external.react_resizable.buildResizeHandle
 import kotlinx.css.*
 import materialui.icon
-import mui.base.Portal
 import mui.material.*
 import react.*
 import react.dom.div
@@ -142,32 +142,7 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
 
                     div(gridCellStyles) {
                         key = item.control.id
-
-                        val gridItemId = item.control.id
-                        val editor = object : Editor<MutableIGridLayout> {
-                            override val title: String = "Grid tab layout editor for $gridItemId"
-
-                            override fun edit(mutableShow: MutableShow, block: MutableIGridLayout.() -> Unit) {
-                                mutableShow.editLayouts {
-                                    props.tabEditor.edit(mutableShow) {
-                                        val gridItem = items.firstOrNull { it.control.asBuiltId == gridItemId }
-                                            ?: error(unknown("item", gridItemId, items.map { it.control.asBuiltId }))
-                                        val layout = gridItem.layout
-                                        if (layout != null) {
-                                            block(layout)
-                                        } else {
-                                            this@xComponent.logger.error { "No layout for $gridItemId." }
-                                        }
-                                    }
-                                }
-                            }
-
-                            override fun delete(mutableShow: MutableShow) {
-                                props.tabEditor.edit(mutableShow) {
-                                    items.removeAt(index)
-                                }
-                            }
-                        }
+                        val editor = CellEditor(item.control, props.tabEditor)
 
                         gridItem {
                             attrs.control = item.control
@@ -204,6 +179,39 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
 //            }
 //        }
 //    }
+}
+
+class CellEditor(
+    control: OpenControl,
+    private val tabEditor: Editor<MutableIGridLayout>
+) : Editor<MutableIGridLayout> {
+    val gridItemId = control.id
+    override val title: String = "Grid tab layout editor for $gridItemId"
+
+    override fun edit(mutableShow: MutableShow, block: MutableIGridLayout.() -> Unit) {
+        mutableShow.editLayouts {
+            tabEditor.edit(mutableShow) {
+                val gridItem = items.firstOrNull { it.control.asBuiltId == gridItemId }
+                    ?: error(unknown("item", gridItemId, items.map { it.control.asBuiltId }))
+                val layout = gridItem.layout
+                if (layout != null) {
+                    block(layout)
+                } else {
+                    logger.error { "No layout for $gridItemId." }
+                }
+            }
+        }
+    }
+
+    override fun delete(mutableShow: MutableShow) {
+        tabEditor.edit(mutableShow) {
+            items.removeAll { it.control.asBuiltId == gridItemId }
+        }
+    }
+
+    companion object {
+        private val logger = Logger<CellEditor>()
+    }
 }
 
 class AddMenuContext(
