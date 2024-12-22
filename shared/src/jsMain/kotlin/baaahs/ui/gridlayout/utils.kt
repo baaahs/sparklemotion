@@ -31,6 +31,13 @@ external interface GridResizeEvent {
     var handle: ResizeHandleAxis
 }
 
+external interface Position {
+    val left: Int
+    val top: Int
+    val width: Int
+    val height: Int
+}
+
 typealias ReactChildren = Array<ReactElement<*>>
 
 
