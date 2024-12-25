@@ -19,6 +19,10 @@ class GridLayoutViewableSpec : DescribeSpec({
                 DBBG
                 .HI.
                 ....
+                
+                # B
+                WX
+                YZ
             """.trimIndent().toLayout()
         }
         val viewRoot by value {
@@ -35,8 +39,7 @@ class GridLayoutViewableSpec : DescribeSpec({
                 allViews.mapValues { (_, v) -> v.bounds }
                     .shouldContainExactly(
                         mapOf(
-                            "##VIEWROOT##" to null,
-                            "ROOT" to Rect(100, 100, 400, 400),
+                            "##VIEWROOT##" to Rect(100, 100, 400, 400),
                             "A" to Rect(100, 100, 100, 100),
                             "B" to Rect(200, 100, 200, 200),
                             "D" to Rect(100, 200, 100, 100),
@@ -58,14 +61,14 @@ class GridLayoutViewableSpec : DescribeSpec({
                 viewRoot.layout(Rect(0, 0, 400, 400))
                 allViews.mapValues { (_, v) -> v.bounds }
                     .shouldContainExactly(
-                        mapOf("##VIEWROOT##" to null,
-                            "ROOT" to Rect(10, 10, 380, 380),
-                            "A" to Rect(10, 10, 87, 87),
-                            "B" to Rect(107, 10, 175, 175),
-                            "D" to Rect(10, 107, 87, 87),
-                            "G" to Rect(302, 107, 87, 87),
-                            "H" to Rect(107, 205, 87, 87),
-                            "I" to Rect(205, 205, 87, 87)
+                        mapOf(
+                            "##ROOT##" to Rect(0, 0, 400, 400),
+                            "A" to Rect(10, 10, 88, 88),
+                            "B" to Rect(108, 10, 185, 185),
+                            "D" to Rect(10, 108, 88, 87),
+                            "G" to Rect(303, 108, 87, 87),
+                            "H" to Rect(108, 205, 87, 88),
+                            "I" to Rect(205, 205, 88, 88)
                         )
                     )
             }
@@ -78,7 +81,7 @@ class GridLayoutViewableSpec : DescribeSpec({
             { id: String, x: Int, y: Int ->
                 val view = find(id)
                 view.draggedBy(Vector2I(x, y))
-                // TODO viewRoot.gridLayout.stringify()
+//                viewRoot.gridLayout.stringify()
                 ""
             }
         }

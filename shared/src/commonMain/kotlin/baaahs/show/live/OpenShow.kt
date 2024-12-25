@@ -335,7 +335,7 @@ interface OpenIGridLayout : OpenILayout {
     fun createViewable(viewRoot: ViewRoot): Viewable =
         object : Observable(), Viewable {
             override val id: String
-                get() = "ROOT"
+                get() = "##VIEWROOT##"
             override val classes: Set<String> = setOf("open-grid-layout")
             override var bounds: Rect? = null
                 private set
