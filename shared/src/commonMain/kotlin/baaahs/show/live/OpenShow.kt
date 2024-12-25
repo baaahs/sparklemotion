@@ -8,9 +8,12 @@ import baaahs.app.ui.editor.Editor
 import baaahs.app.ui.editor.GridLayoutEditorPanel
 import baaahs.client.document.OpenDocument
 import baaahs.control.OpenButtonControl
+import baaahs.control.OpenButtonGroupControl
+import baaahs.geom.Vector2I
 import baaahs.getBang
 import baaahs.randomId
 import baaahs.show.*
+import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableIGridLayout
 import baaahs.show.mutable.MutableILayout
 import baaahs.show.mutable.MutableShow
@@ -18,10 +21,17 @@ import baaahs.show.mutable.ShowBuilder
 import baaahs.sm.webapi.Problem
 import baaahs.sm.webapi.Severity
 import baaahs.ui.Observable
+import baaahs.ui.View
 import baaahs.ui.addObserver
+import baaahs.ui.gridlayout.Rect
+import baaahs.ui.gridlayout.GridContainer
+import baaahs.ui.gridlayout.GridCoords
+import baaahs.ui.gridlayout.ViewRoot
+import baaahs.ui.gridlayout.Viewable
 import baaahs.util.Logger
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
+import kotlinx.serialization.json.JsonElement
 
 interface OpenContext : GadgetProvider {
     val allControls: List<OpenControl>
@@ -42,7 +52,7 @@ object EmptyOpenContext : OpenContext {
 
     override fun findControl(id: String): OpenControl? = null
 
-    override fun getControl(id: String): OpenControl = error("not really an open context")
+    override fun getControl(id: String): OpenControl = FakeOpenControl(id)
 
     override fun getFeed(id: String): Feed = error("not really an open context")
 
@@ -54,6 +64,14 @@ object EmptyOpenContext : OpenContext {
         error("not really an open context")
 
     override fun release() {}
+}
+
+class FakeOpenControl(override val id: String) : OpenControl {
+    override fun getState(): Map<String, JsonElement>? = TODO("not implemented")
+    override fun applyState(state: Map<String, JsonElement>) = TODO("not implemented")
+    override fun toNewMutable(mutableShow: MutableShow): MutableControl = TODO("not implemented")
+    override fun getView(controlProps: ControlProps): View = TODO("not implemented")
+
 }
 
 class OpenShow(
@@ -313,6 +331,45 @@ interface OpenIGridLayout : OpenILayout {
 
     override fun getEditorPanel(editableManager: EditableManager<*>, layoutEditor: Editor<MutableILayout>) =
         GridLayoutEditorPanel(editableManager, layoutEditor as Editor<MutableIGridLayout>)
+
+    fun createViewable(viewRoot: ViewRoot): Viewable =
+        object : Observable(), Viewable {
+            override val id: String
+                get() = "ROOT"
+            override val classes: Set<String> = setOf("open-grid-layout")
+            override var bounds: Rect? = null
+                private set
+            override val layer: Int = 0
+            override val parent: Viewable?
+                get() = null
+            override val children: List<OpenGridItem.GridItemViewable> =
+                items.map { it.createViewable(viewRoot, this) }
+            override val view: View
+                get() = TODO("not implemented")
+            override var gridContainer: GridContainer? = null
+
+            override fun layout(bounds: Rect) {
+                if (this.bounds == bounds) return
+                this.bounds = bounds
+
+                println("$id bounds = ${bounds}")
+                gridContainer = GridContainer(columns, rows, bounds.inset(viewRoot.margins), viewRoot.gap).apply {
+                    children.forEach {
+                        it.layout(calculateRegionBounds(it.gridRegion))
+                    }
+                }
+
+                notifyChanged()
+            }
+
+            override fun draggedBy(point: Vector2I?) {
+                // No-op.
+            }
+
+            override fun resizeToMatch(viewable: Viewable) {
+                // No-op.
+            }
+        }
 }
 
 data class GridDimens(
@@ -329,4 +386,87 @@ class OpenGridItem(
     val layout: OpenGridLayout?
 ) {
     val gridDimens = GridDimens(width, height)
+
+    fun createViewable(viewRoot: ViewRoot, parent: Viewable): GridItemViewable =
+        GridItemViewable(viewRoot, parent)
+
+    inner class GridItemViewable(
+        private val viewRoot: ViewRoot,
+        override val parent: Viewable
+    ) : Observable(), Viewable {
+        private var layoutBounds: Rect? = null
+        private var draggedBy: Vector2I? = null
+
+        override val id: String
+            get() = control.id
+        override val classes: Set<String>
+            get() = emptySet()
+        override val bounds: Rect? get() =
+            layoutBounds?.let { bounds ->
+                draggedBy?.let { drag -> Rect(bounds.left + drag.x, bounds.top + drag.y, bounds.width, bounds.height) }
+                    ?: bounds
+            }
+        override val layer: Int
+            get() = parent.layer + 1
+        override val children =
+            if (layout != null && control is ControlContainer) {
+                layout.items.map { it.createViewable(viewRoot, this) }
+            } else emptyList()
+        override val view: View
+            get() = TODO("not implemented")
+        override val isDragging: Boolean
+            get() = draggedBy != null
+        override var gridContainer: GridContainer? = null
+        val gridRegion get() = GridCoords(column, row, width, height)
+
+        private fun calculateGridContainer(): GridContainer? {
+            val bounds = layoutBounds
+            val layout = layout
+            if (bounds == null || layout == null) return null
+            // TODO: we should calculate inner bounds properly somehow...
+            val topInset = if (control is OpenButtonGroupControl && control.showTitle) {
+                20
+            } else 0
+            val innerBounds = Rect(bounds.left, bounds.top + topInset, bounds.width, bounds.height - topInset)
+            val insetBounds = innerBounds.inset(viewRoot.margins)
+            println("$id insetBounds = $insetBounds")
+            return GridContainer(layout.columns, layout.rows, insetBounds, viewRoot.gap)
+        }
+
+        override fun layout(bounds: Rect) {
+            println("$id: layout($bounds)")
+            if (this.bounds == bounds) return
+            layoutBounds = bounds
+            gridContainer = calculateGridContainer()
+
+            if (layout != null) {
+                calculateGridContainer()?.apply {
+                    children.forEach {
+                        it.layout(calculateRegionBounds(it.gridRegion))
+                    }
+                }
+            }
+            notifyChanged()
+        }
+
+        override fun draggedBy(point: Vector2I?) {
+            if (draggedBy == point) return
+            draggedBy = point
+            children.forEach {
+                it.draggedBy(point)
+            }
+            parent?.dragging(this, bounds?.center)
+            notifyChanged()
+        }
+
+        override fun resizeToMatch(viewable: Viewable) {
+            viewable.bounds?.let { bounds ->
+                val destGridSize = gridContainer?.calculateRegionBounds(0, 0, 1, 1)
+                    ?: return
+                val newBounds = bounds.resizeFromCenter(destGridSize)
+                println("Resizing ${viewable.id} from ${viewable.bounds} to $newBounds")
+                viewable.layout(newBounds)
+            }
+        }
+    }
 }

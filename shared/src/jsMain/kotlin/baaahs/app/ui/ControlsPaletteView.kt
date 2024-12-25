@@ -5,9 +5,7 @@ import baaahs.show.live.ControlProps
 import baaahs.show.live.ControlsInfo
 import baaahs.show.live.OpenShow
 import baaahs.ui.and
-import baaahs.ui.gridlayout.Layout
 import baaahs.ui.gridlayout.LayoutItem
-import baaahs.ui.gridlayout.gridLayout
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
@@ -72,50 +70,50 @@ private val ControlsPaletteView = xComponent<ControlsPaletteProps>("ControlsPale
                     div(+Styles.unplacedControlsDroppable) {
                         ref = containerDiv
 
-                        if (editMode.isOn) {
-                            val styles = appContext.allStyles.layout
-                            val paletteWidth = layoutDimens.first
-                            val columns = if (paletteWidth > 200) paletteWidth / 100 else paletteWidth / 75
-
-                            val controlsInfo = props.show.getSnapshot().controlsInfo
-                            val items = controlsInfo.relevantUnplacedControls
-                            val rows = items.size / columns + 1
-                            val gridRowHeight = paletteWidth / columns
-
-                            val layout = Layout(items.mapIndexed { index, openControl ->
-                                LayoutItem(index % columns, index / columns, 1, 1, openControl.id)
-                            }, columns, rows)
-
-                            gridLayout {
-                                attrs.id = "_control_palette_"
-                                attrs.className = +styles.gridContainer
-                                attrs.width = paletteWidth.toDouble()
-                                attrs.autoSize = false
-                                attrs.cols = columns
-                                attrs.rowHeight = gridRowHeight.toDouble()
-                                attrs.maxRows = rows
-                                attrs.margin = 5 to 5
-                                attrs.layout = layout
-//                                attrs.onLayoutChange = handleLayoutChange
-                                attrs.disableDrag = !editMode.isOn
-                                attrs.disableResize = true
-                                attrs.isDroppable = editMode.isOn
-//                                attrs.onDragStart = handleDragStart
-//                                attrs.onDragStop = handleDragStop
-
-                                items.forEachIndexed { index, item ->
-                                    div(+styles.gridCell) {
-                                        key = item.id
-
-                                        gridItem {
-                                            attrs.control = item
-                                            attrs.controlProps = props.controlProps.withLayout(null, null, null)
-                                            attrs.className = -styles.controlBox
-                                        }
-                                    }
-                                }
-                            }
-                        }
+//                        if (editMode.isOn) {
+//                            val styles = appContext.allStyles.layout
+//                            val paletteWidth = layoutDimens.first
+//                            val columns = if (paletteWidth > 200) paletteWidth / 100 else paletteWidth / 75
+//
+//                            val controlsInfo = props.show.getSnapshot().controlsInfo
+//                            val items = controlsInfo.relevantUnplacedControls
+//                            val rows = items.size / columns + 1
+//                            val gridRowHeight = paletteWidth / columns
+//
+//                            val layout = Layout(items.mapIndexed { index, openControl ->
+//                                LayoutItem(index % columns, index / columns, 1, 1, openControl.id)
+//                            }, columns, rows)
+//
+//                            gridLayout {
+//                                attrs.id = "_control_palette_"
+//                                attrs.className = +styles.gridContainer
+//                                attrs.width = paletteWidth.toDouble()
+//                                attrs.autoSize = false
+//                                attrs.cols = columns
+//                                attrs.rowHeight = gridRowHeight.toDouble()
+//                                attrs.maxRows = rows
+//                                attrs.margin = 5 to 5
+//                                attrs.layout = layout
+////                                attrs.onLayoutChange = handleLayoutChange
+//                                attrs.disableDrag = !editMode.isOn
+//                                attrs.disableResize = true
+//                                attrs.isDroppable = editMode.isOn
+////                                attrs.onDragStart = handleDragStart
+////                                attrs.onDragStop = handleDragStop
+//
+//                                items.forEachIndexed { index, item ->
+//                                    div(+styles.gridCell) {
+//                                        key = item.id
+//
+//                                        gridItem {
+//                                            attrs.control = item
+//                                            attrs.controlProps = props.controlProps.withLayout(null, null, null)
+//                                            attrs.className = -styles.controlBox
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        }
                     }
                 }
             }

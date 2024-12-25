@@ -283,6 +283,21 @@ tasks.withType(Test::class) {
     useJUnitPlatform {
         excludeTags("glsl")
     }
+
+    doLast {
+        val reportDir = file("build/reports/tests/")
+        val cssFile = file("${reportDir}/style.css")
+        cssFile.appendText(
+            """
+            span.code pre {
+                font-size: 0.7em;
+                height: 5em;
+                overflow: scroll;
+                width: 85vw;
+            }
+            """.trimIndent()
+        )
+    }
 }
 
 tasks.named<Test>("jvmTest") {

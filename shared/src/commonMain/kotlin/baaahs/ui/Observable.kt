@@ -10,6 +10,8 @@ interface IObservable {
 
 open class Observable : IObservable {
     private val observers = mutableListOf<Observer>()
+    private var inChange = 0
+    private var changed = false
 
     protected fun anyObservers(): Boolean = observers.isNotEmpty()
 
@@ -22,8 +24,21 @@ open class Observable : IObservable {
         observers.remove(observer)
     }
 
-    fun notifyChanged() {
+    open fun notifyChanged() {
         observers.forEach { it.notifyChanged() }
+    }
+
+    fun <T> T.transaction(block: T.() -> Unit) {
+        try {
+            inChange++
+            block()
+        } finally {
+            inChange--
+            if (inChange == 0 && changed) {
+                changed = false
+                notifyChanged()
+            }
+        }
     }
 
     protected fun <V> notifyOnChange(initialValue: V): ReadWriteProperty<Observable, V> {

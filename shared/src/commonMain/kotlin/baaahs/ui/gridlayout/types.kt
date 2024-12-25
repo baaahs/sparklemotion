@@ -1,5 +1,6 @@
 package baaahs.ui.gridlayout
 
+import baaahs.show.GridItem
 import baaahs.show.live.GridDimens
 
 data class LayoutItem(
@@ -47,12 +48,12 @@ data class LayoutItem(
 /**
  * Sort layout items by row ascending then column ascending.
  */
-fun List<LayoutItem>.sortLayoutItemsByRowCol(reverse: Boolean = false): List<LayoutItem> =
+fun List<GridItem>.sortLayoutItemsByRowCol(reverse: Boolean = false): List<GridItem> =
     sortedWith { a, b ->
         when {
-            a.y == b.y && a.x == b.x -> 0
-            a.y == b.y && a.x > b.x -> 1
-            if (reverse) b.y > a.y else a.y > b.y -> 1
+            a.row == b.row && a.column == b.column -> 0
+            a.row == b.row && a.column > b.column -> 1
+            if (reverse) b.row > a.row else a.row > b.row -> 1
             else -> -1
         }
     }
@@ -60,12 +61,12 @@ fun List<LayoutItem>.sortLayoutItemsByRowCol(reverse: Boolean = false): List<Lay
 /**
  * Sort layout items by column ascending then row ascending.
  */
-fun List<LayoutItem>.sortLayoutItemsByColRow(reverse: Boolean = false): List<LayoutItem> =
+fun List<GridItem>.sortLayoutItemsByColRow(reverse: Boolean = false): List<GridItem> =
     sortedWith { a, b ->
         when {
-            a.x == b.x && a.y == b.y -> 0
-            a.x == b.x && a.y > b.y -> 1
-            if (reverse) a.x > b.x else b.x > a.x -> 1
+            a.column == b.column && a.row == b.row -> 0
+            a.column == b.column && a.row > b.row -> 1
+            if (reverse) a.column > b.column else b.column > a.column -> 1
             else -> -1
         }
     }
@@ -81,14 +82,14 @@ enum class Direction(
     North(0, -1) {
         override val opposite: Direction get() = South
 
-        override fun sort(collisions: List<LayoutItem>): List<LayoutItem> =
+        override fun sort(collisions: List<GridItem>): List<GridItem> =
             collisions.sortLayoutItemsByRowCol(reverse = true)
     },
 
     South(0, 1) {
         override val opposite: Direction get() = North
 
-        override fun sort(collisions: List<LayoutItem>): List<LayoutItem> =
+        override fun sort(collisions: List<GridItem>): List<GridItem> =
             collisions.sortLayoutItemsByRowCol()
 
     },
@@ -96,7 +97,7 @@ enum class Direction(
     East(1, 0) {
         override val opposite: Direction get() = West
 
-        override fun sort(collisions: List<LayoutItem>): List<LayoutItem> =
+        override fun sort(collisions: List<GridItem>): List<GridItem> =
             collisions.sortLayoutItemsByRowCol()
 
     },
@@ -104,7 +105,7 @@ enum class Direction(
     West(-1, 0) {
         override val opposite: Direction get() = East
 
-        override fun sort(collisions: List<LayoutItem>): List<LayoutItem> =
+        override fun sort(collisions: List<GridItem>): List<GridItem> =
             collisions.sortLayoutItemsByRowCol(reverse = true)
 
     };
@@ -113,7 +114,7 @@ enum class Direction(
     val isVertical get() = yIncr != 0
     abstract val opposite: Direction
 
-    abstract fun sort(collisions: List<LayoutItem>): List<LayoutItem>
+    abstract fun sort(collisions: List<GridItem>): List<GridItem>
 
     companion object {
         fun rankedPushOptions(x: Int, y: Int): Array<Direction> {

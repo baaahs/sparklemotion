@@ -3,12 +3,13 @@ package baaahs.ui.gridlayout
 import baaahs.describe
 import baaahs.gl.override
 import baaahs.kotest.value
+import baaahs.show.GridLayout
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.*
 
-class LayoutSpec : DescribeSpec({
-    describe<Layout> {
+class GridLayoutSpec : DescribeSpec({
+    describe<GridLayout> {
         val layout by value {
             """
                 ABC.
@@ -20,7 +21,7 @@ class LayoutSpec : DescribeSpec({
         val move by value {
             { id: String, x: Int, y: Int ->
                 val item = layout.find(id)!!
-                layout.moveElement(item, item.x + x, item.y + y)
+                layout.moveElement(item, item.column + x, item.row + y)
                     .stringify()
             }
         }
@@ -99,16 +100,16 @@ class LayoutSpec : DescribeSpec({
         context("with .ABBC.") {
             override(layout) { ".ABBC.".toLayout() }
 
-            xit("moving A one space right should swap A and B") {
-                move("A", 1, 0).shouldBe(".BBAC.")
+            it("moving A one space right should make no change") {
+                move("A", 1, 0).shouldBe(".ABBC.")
             }
 
             it("moving A two spaces right should swap A and B") {
                 move("A", 2, 0).shouldBe(".BBAC.")
             }
 
-            xit("moving C one space left should swap B and C") {
-                move("C", -1, 0).shouldBe(".ACBB.")
+            it("moving C one space left should make no change") {
+                move("C", -1, 0).shouldBe(".ABBC.")
             }
 
             it("moving C two spaces left should swap B and C") {

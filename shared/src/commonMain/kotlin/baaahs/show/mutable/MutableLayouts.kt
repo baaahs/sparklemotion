@@ -333,28 +333,28 @@ interface MutableIGridLayout : MutableILayout {
 
     fun applyChanges(
         originalItems: List<OpenGridItem>,
-        newLayout: baaahs.ui.gridlayout.Layout,
+        newLayout: GridLayout,
         mutableShow: MutableShow
     ) {
         val oldItems = ArrayList(this.items)
         this.items.clear()
         newLayout.items.forEach { newLayoutItem ->
-            val oldItemIndex = originalItems.indexOfFirst { it.control.id == newLayoutItem.i }
+            val oldItemIndex = originalItems.indexOfFirst { it.control.id == newLayoutItem.controlId }
             this.items.add(
                 if (oldItemIndex == -1) {
-                    val mutableControl = mutableShow.findControl(newLayoutItem.i)
+                    val mutableControl = mutableShow.findControl(newLayoutItem.controlId)
                     MutableGridItem(
                         mutableControl,
-                        newLayoutItem.x, newLayoutItem.y,
-                        newLayoutItem.w, newLayoutItem.h,
+                        newLayoutItem.column, newLayoutItem.row,
+                        newLayoutItem.width , newLayoutItem.height,
                         if (mutableControl.hasInternalLayout) createSubLayout() else null
                     )
                 } else {
                     oldItems[oldItemIndex].apply {
-                        column = newLayoutItem.x
-                        row = newLayoutItem.y
-                        width = newLayoutItem.w
-                        height = newLayoutItem.h
+                        column = newLayoutItem.column
+                        row = newLayoutItem.row
+                        width = newLayoutItem.width
+                        height = newLayoutItem.height
                     }
                 }
             )
