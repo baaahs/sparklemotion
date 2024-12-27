@@ -297,6 +297,7 @@ interface OpenTab {
 }
 
 class OpenGridTab(
+    val gridTab: GridTab,
     override val title: String,
     override var columns: Int,
     override var rows: Int,
@@ -310,6 +311,7 @@ class OpenGridTab(
 }
 
 class OpenGridLayout(
+    val gridLayout: GridLayout,
     override val columns: Int,
     override val rows: Int,
     val matchParent: Boolean,
@@ -366,6 +368,13 @@ interface OpenIGridLayout : OpenILayout {
                 // No-op.
             }
 
+            override fun dragging(
+                viewable: OpenGridItem.GridItemViewable,
+                center: Vector2I?
+            ) {
+//                super.dragging(viewable, center)
+            }
+
             override fun resizeToMatch(viewable: Viewable) {
                 // No-op.
             }
@@ -378,6 +387,7 @@ data class GridDimens(
 )
 
 class OpenGridItem(
+    val gridItem: GridItem,
     val control: OpenControl,
     val column: Int,
     val row: Int,
@@ -385,7 +395,10 @@ class OpenGridItem(
     val height: Int,
     val layout: OpenGridLayout?
 ) {
-    val gridDimens = GridDimens(width, height)
+    val gridCells: List<Vector2I> =
+        (row until row + height - 1).flatMap { y ->
+            (column until column + width - 1).map { x -> Vector2I(x, y) }
+        }
 
     fun createViewable(viewRoot: ViewRoot, parent: Viewable): GridItemViewable =
         GridItemViewable(viewRoot, parent)
@@ -408,16 +421,26 @@ class OpenGridItem(
             }
         override val layer: Int
             get() = parent.layer + 1
-        override val children =
+        private val childViewables: Map<OpenGridItem, GridItemViewable> =
             if (layout != null && control is ControlContainer) {
-                layout.items.map { it.createViewable(viewRoot, this) }
-            } else emptyList()
+                layout.items.associateWith { gridItem ->
+                    gridItem.createViewable(viewRoot, this)
+                }
+            } else emptyMap()
+        override val children: List<GridItemViewable> =
+            childViewables.values.toList()
+        val childrenByCell: Map<Vector2I, GridItemViewable> = buildMap {
+            childViewables.forEach { (item, viewable) ->
+                item.gridCells.forEach { cell -> put(cell, viewable) }
+            }
+        }
         override val view: View
             get() = TODO("not implemented")
         override val isDragging: Boolean
             get() = draggedBy != null
         override var gridContainer: GridContainer? = null
         val gridRegion get() = GridCoords(column, row, width, height)
+        val gridTopLeft get() = Vector2I(column, row)
 
         private fun calculateGridContainer(): GridContainer? {
             val bounds = layoutBounds
@@ -449,15 +472,77 @@ class OpenGridItem(
             notifyChanged()
         }
 
-        override fun draggedBy(point: Vector2I?) {
-            if (draggedBy == point) return
+        protected fun draggedByInternal(point: Vector2I?): Boolean {
             draggedBy = point
             children.forEach {
-                it.draggedBy(point)
+                it.draggedByInternal(point)
             }
-            parent?.dragging(this, bounds?.center)
+            notifyChanged()
+            return true
+        }
+
+        override fun draggedBy(point: Vector2I?) {
+            if (draggedBy == point) return
+
+            draggedByInternal(point)
+            parent.dragging(this, bounds?.center)
             notifyChanged()
         }
+
+        override fun dragging(viewable: GridItemViewable, center: Vector2I?) {
+            if (center == null) {
+                // No longer dragging.
+            } else if (bounds?.contains(center) == true) {
+                // Dragging item over this Viewable.
+                val overCell = gridContainer?.findCell(center.x, center.y)?.cell
+                if (overCell == null) return
+
+                val overItem = findChildAt(overCell)
+                println("Over cell: $overCell; over item: $overItem")
+                // overItem.parent is always this.
+                if (viewable.parent != this) {
+                    // Remove item from its parent and add it to this.
+                    viewRoot
+                    println("Move to different parent.")
+                    return
+                } else {
+                    // Move item within this.
+                    println("Move within parent.")
+
+                    if (overCell != viewable.gridTopLeft) {
+//                        viewRoot.visit {
+//                            if (it.id == this@OpenGridItem.id) {}
+//                        }
+                        val newLayout = try {
+                            layout ?: error("Moving within a grid item without a layout?")
+                            layout.gridLayout.moveElement(viewable.id, overCell.x, overCell.y)
+                        } catch (e: ImpossibleLayoutException) {
+                            error("Huh. ImpossibleLayoutException $e")
+//                        setState {
+//                            this.notDroppableHere = true
+//                        }
+                            return // false?
+                        }
+                        viewRoot.editLayout(newLayout)
+                    }
+                    return
+                }
+
+//                if (overItem != null && overItem.parent != viewable.parent) {
+//                    // Dragging over an item with a different parent than the dragged item.
+//                    overItem.parent.dragging(viewable, center)
+//                } else {
+//                    println("dragging $viewable, within $id, over ${overItem?.id}")
+//                    //                resizeToMatch(viewable)
+//                }
+            } else {
+                println("dragging $viewable, outside $id")
+                parent.dragging(viewable, center)
+            }
+        }
+
+        override fun findChildAt(cell: Vector2I): GridItemViewable? =
+            childrenByCell[cell]
 
         override fun resizeToMatch(viewable: Viewable) {
             viewable.bounds?.let { bounds ->

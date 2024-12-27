@@ -128,5 +128,3 @@ enum class Direction(
         }
     }
 }
-
-class ImpossibleLayoutException : Exception()

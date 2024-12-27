@@ -1,11 +1,17 @@
 package baaahs.ui.gridlayout
 
+import baaahs.app.settings.Provider
+import baaahs.app.ui.editor.Editor
 import baaahs.describe
 import baaahs.geom.Vector2I
 import baaahs.gl.override
 import baaahs.kotest.value
 import baaahs.show.GridLayout
+import baaahs.show.ImpossibleLayoutException
 import baaahs.show.live.EmptyOpenContext
+import baaahs.show.live.OpenShow
+import baaahs.show.mutable.MutableIGridLayout
+import baaahs.show.mutable.MutableShow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.*
@@ -20,14 +26,21 @@ class GridLayoutViewableSpec : DescribeSpec({
                 .HI.
                 ....
                 
-                # B
+                # B:
                 WX
                 YZ
             """.trimIndent().toLayout()
         }
+        val editor by value { SpyEditor() }
         val viewRoot by value {
-            ViewRoot(layout.open(EmptyOpenContext))
-        }
+            ViewRoot(
+                layout.open(EmptyOpenContext),
+                openShow = object : Provider<OpenShow>() {
+                    override fun get(): OpenShow = TODO("not implemented")
+                },
+                editor = editor,
+                handleLayoutChange = handleLayoutChange
+            ) }
 
         val allViews by value {
             buildMap { viewRoot.visit { put(it.id, it) } }
@@ -81,7 +94,7 @@ class GridLayoutViewableSpec : DescribeSpec({
             { id: String, x: Int, y: Int ->
                 val view = find(id)
                 view.draggedBy(Vector2I(x, y))
-//                viewRoot.gridLayout.stringify()
+                viewRoot.gridLayout.stringify()
                 ""
             }
         }
@@ -190,3 +203,9 @@ class GridLayoutViewableSpec : DescribeSpec({
         }
     }
 })
+
+class SpyEditor : Editor<MutableIGridLayout> {
+    override val title: String get() = "spy editor"
+    override fun edit(mutableShow: MutableShow, block: MutableIGridLayout.() -> Unit) = TODO("edit not implemented")
+    override fun delete(mutableShow: MutableShow) = TODO("delete not implemented")
+}

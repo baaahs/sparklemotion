@@ -26,22 +26,8 @@ interface Viewable : IObservable {
 
     fun layout(bounds: Rect)
     fun draggedBy(point: Vector2I?)
-    fun dragging(viewable: OpenGridItem.GridItemViewable, center: Vector2I?) {
-        if (center != null && bounds?.contains(center) == true) {
-            val overCell = gridContainer?.findCell(center.x, center.y)
-            println("Over cell: $overCell")
-            val over = children.find { it.bounds?.contains(center) == true }
-            if (over != null && over.parent != viewable.parent) {
-                over.dragging(viewable, center)
-            } else {
-                println("dragging $viewable, within $id, over ${over?.id}")
-//                resizeToMatch(viewable)
-            }
-        } else {
-            println("dragging $viewable, outside $id")
-            parent?.dragging(viewable, center)
-        }
-    }
+    fun dragging(viewable: OpenGridItem.GridItemViewable, center: Vector2I?)
+    fun findChildAt(cell: Vector2I): OpenGridItem.GridItemViewable? = null
 
     fun resizeToMatch(viewable: Viewable)
 }

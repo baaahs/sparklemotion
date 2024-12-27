@@ -5,7 +5,7 @@ import baaahs.kotest.value
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldContainExactly
 
-class MutableLayoutSpec : DescribeSpec({
+class MutableLegacyTabSpec : DescribeSpec({
     describe<MutableLegacyTab> {
         val columns by value { mutableListOf(1.fr, 2.fr) }
         val rows by value { mutableListOf(3.fr, 4.fr) }

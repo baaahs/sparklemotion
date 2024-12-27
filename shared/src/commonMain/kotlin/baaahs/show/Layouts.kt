@@ -6,7 +6,6 @@ import baaahs.replaceAll
 import baaahs.show.live.*
 import baaahs.show.mutable.*
 import baaahs.ui.gridlayout.Direction
-import baaahs.ui.gridlayout.ImpossibleLayoutException
 import baaahs.util.Logger
 import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.SerialName
@@ -82,7 +81,7 @@ data class GridTab(
         MutableGridTab(this, mutableShow)
 
     override fun open(openContext: OpenContext): OpenGridTab =
-        OpenGridTab(title, columns, rows, items.map { it.open(openContext) })
+        OpenGridTab(this, title, columns, rows, items.map { it.open(openContext) })
 }
 
 @Serializable
@@ -96,7 +95,7 @@ data class GridLayout(
         MutableGridLayout(this, mutableShow)
 
     override fun open(openContext: OpenContext): OpenGridLayout =
-        OpenGridLayout(columns, rows, matchParent, items.map { it.open(openContext) })
+        OpenGridLayout(this, columns, rows, matchParent, items.map { it.open(openContext) })
 
     private fun updateLayout(updateItem: GridItem): GridLayout =
         GridLayout(columns, rows, matchParent, items.map {
@@ -285,6 +284,20 @@ interface IGridLayout {
     val items: List<GridItem>
 
     fun open(openContext: OpenContext): OpenIGridLayout
+
+    fun visit(visitor: (GridItem) -> Unit) {
+        items.forEach {
+            visitor(it)
+            it.layout?.visit(visitor)
+        }
+    }
+
+    fun visit(parent: GridItem?, visitor: (item: GridItem, parent: GridItem?) -> Unit) {
+        items.forEach {
+            visitor(it, parent)
+            it.layout?.visit(it, visitor)
+        }
+    }
 }
 
 @Serializable
@@ -303,6 +316,7 @@ data class GridItem(
 
     fun open(openContext: OpenContext): OpenGridItem =
         OpenGridItem(
+            this,
             openContext.getControl(controlId),
             column, row, width, height,
             layout?.open(openContext)
@@ -322,3 +336,5 @@ data class GridItem(
         return true // boxes overlap
     }
 }
+
+class ImpossibleLayoutException : Exception()

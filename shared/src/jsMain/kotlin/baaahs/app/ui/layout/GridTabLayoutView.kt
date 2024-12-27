@@ -1,17 +1,16 @@
 package baaahs.app.ui.layout
 
+import baaahs.app.settings.ObservableProvider
 import baaahs.app.ui.AppContext
 import baaahs.app.ui.appContext
 import baaahs.app.ui.editor.AddControlToGrid
 import baaahs.app.ui.editor.Editor
 import baaahs.plugin.AddControlMenuItem
+import baaahs.show.GridLayout
 import baaahs.show.live.*
 import baaahs.show.mutable.MutableIGridLayout
-import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
 import baaahs.ui.gridlayout.*
-import baaahs.unknown
-import baaahs.util.Logger
 import baaahs.util.useResizeListener
 import kotlinx.css.*
 import materialui.icon
@@ -43,17 +42,17 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
     var draggingItem by state<String?> { null }
 
     val gridLayoutEditor = props.tabEditor
-//    val handleLayoutChange by handler(gridLayout, gridLayoutEditor) { newLayout: Layout, stillDragging: Boolean ->
-//        if (stillDragging) return@handler
-//        appContext.showManager.openShow?.edit {
-//            val mutableShow = this
-//            gridLayoutEditor.edit(mutableShow) {
-//                applyChanges(gridLayout.items, newLayout, mutableShow)
-//            }
-//            appContext.showManager.onEdit(mutableShow)
-//        }
-//        Unit
-//    }
+    val handleLayoutChange by handler(gridLayout, gridLayoutEditor) { newLayout: GridLayout, stillDragging: Boolean ->
+        if (stillDragging) return@handler
+        appContext.showManager.openShow?.edit {
+            val mutableShow = this
+            gridLayoutEditor.edit(mutableShow) {
+                applyChanges(gridLayout.items, newLayout, mutableShow)
+            }
+            appContext.showManager.onEdit(mutableShow)
+        }
+        Unit
+    }
 
 //    val handleDragStart: ItemCallback by handler {
 //            layout, oldItem, newItem, placeholder, e, element ->
@@ -114,8 +113,8 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
 //        }
 //    }
 
-    val viewRoot = memo(gridLayout) {
-        ViewRoot(gridLayout, 5, 5)
+    val viewRoot = memo(gridLayout, props.tabEditor, openShow, handleLayoutChange) {
+        ViewRoot(gridLayout, 5, 5, ObservableProvider(openShow), props.tabEditor, handleLayoutChange)
     }
 //    gridModel.change {
 //        this.columns = columns
@@ -144,6 +143,7 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
                 gridRoot {
                     attrs.viewRoot = viewRoot
                     attrs.controlProps = genericControlProps
+                    attrs.onLayoutChange = handleLayoutChange
                 }
             } else {
 //                gridLayout {
@@ -211,38 +211,6 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
 //    }
 }
 
-class CellEditor(
-    control: OpenControl,
-    private val tabEditor: Editor<MutableIGridLayout>
-) : Editor<MutableIGridLayout> {
-    val gridItemId = control.id
-    override val title: String = "Grid tab layout editor for $gridItemId"
-
-    override fun edit(mutableShow: MutableShow, block: MutableIGridLayout.() -> Unit) {
-        mutableShow.editLayouts {
-            tabEditor.edit(mutableShow) {
-                val gridItem = items.firstOrNull { it.control.asBuiltId == gridItemId }
-                    ?: error(unknown("item", gridItemId, items.map { it.control.asBuiltId }))
-                val layout = gridItem.layout
-                if (layout != null) {
-                    block(layout)
-                } else {
-                    logger.error { "No layout for $gridItemId." }
-                }
-            }
-        }
-    }
-
-    override fun delete(mutableShow: MutableShow) {
-        tabEditor.edit(mutableShow) {
-            items.removeAll { it.control.asBuiltId == gridItemId }
-        }
-    }
-
-    companion object {
-        private val logger = Logger<CellEditor>()
-    }
-}
 
 class AddMenuContext(
     val anchorEl: Element,

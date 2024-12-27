@@ -291,9 +291,10 @@ tasks.withType(Test::class) {
             """
             span.code pre {
                 font-size: 0.7em;
-                height: 5em;
+                height: 10em;
                 overflow: scroll;
                 width: 85vw;
+                user-select: all;
             }
             """.trimIndent()
         )

@@ -3,6 +3,7 @@ package baaahs.ui.gridlayout
 import baaahs.app.ui.appContext
 import baaahs.geom.Vector2I
 import baaahs.only
+import baaahs.show.GridLayout
 import baaahs.show.live.ControlProps
 import baaahs.ui.JsView
 import baaahs.ui.addObserver
@@ -196,6 +197,7 @@ external interface GridRootProps : Props {
     var id: String
     var viewRoot: ViewRoot
     var controlProps: ControlProps
+    var onLayoutChange: (newLayout: GridLayout, stillDragging: Boolean) -> Unit
 }
 
 fun RBuilder.gridRoot(handler: RHandler<GridRootProps>) =

@@ -4,6 +4,7 @@ import baaahs.describe
 import baaahs.gl.override
 import baaahs.kotest.value
 import baaahs.show.GridLayout
+import baaahs.show.ImpossibleLayoutException
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.*
