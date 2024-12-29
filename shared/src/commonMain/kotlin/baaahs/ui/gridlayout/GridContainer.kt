@@ -23,7 +23,7 @@ class GridContainer(
     val rowBoundaries: Array<CellBoundaries>
 
     init {
-        println("bounds = ${bounds}")
+//        println("bounds = ${bounds}")
         val widthSansGaps = bounds.width - (columns - 1) * gap
         val columnWidth = widthSansGaps / columns.toDouble()
         val heightSansGaps = bounds.height - (rows - 1) * gap

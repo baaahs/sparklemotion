@@ -297,7 +297,7 @@ interface OpenTab {
 }
 
 class OpenGridTab(
-    val gridTab: GridTab,
+    override val gridLayout: GridTab,
     override val title: String,
     override var columns: Int,
     override var rows: Int,
@@ -311,7 +311,7 @@ class OpenGridTab(
 }
 
 class OpenGridLayout(
-    val gridLayout: GridLayout,
+    override val gridLayout: GridLayout,
     override val columns: Int,
     override val rows: Int,
     val matchParent: Boolean,
@@ -326,6 +326,7 @@ interface OpenILayout {
 }
 
 interface OpenIGridLayout : OpenILayout {
+    val gridLayout: IGridLayout
     val columns: Int
     val rows: Int
     val items: List<OpenGridItem>
@@ -336,6 +337,7 @@ interface OpenIGridLayout : OpenILayout {
 
     fun createViewable(viewRoot: ViewRoot): Viewable =
         object : Observable(), Viewable {
+            override val viewRoot: ViewRoot = viewRoot
             override val id: String
                 get() = "##VIEWROOT##"
             override val classes: Set<String> = setOf("open-grid-layout")
@@ -346,15 +348,13 @@ interface OpenIGridLayout : OpenILayout {
                 get() = null
             override val children: List<OpenGridItem.GridItemViewable> =
                 items.map { it.createViewable(viewRoot, this) }
-            override val view: View
-                get() = TODO("not implemented")
             override var gridContainer: GridContainer? = null
 
             override fun layout(bounds: Rect) {
                 if (this.bounds == bounds) return
                 this.bounds = bounds
 
-                println("$id bounds = ${bounds}")
+//                println("$id bounds = ${bounds}")
                 gridContainer = GridContainer(columns, rows, bounds.inset(viewRoot.margins), viewRoot.gap).apply {
                     children.forEach {
                         it.layout(calculateRegionBounds(it.gridRegion))
@@ -368,16 +368,19 @@ interface OpenIGridLayout : OpenILayout {
                 // No-op.
             }
 
-            override fun dragging(
-                viewable: OpenGridItem.GridItemViewable,
-                center: Vector2I?
-            ) {
-//                super.dragging(viewable, center)
-            }
+//            override fun dragging(
+//                viewable: OpenGridItem.GridItemViewable,
+//                center: Vector2I?
+//            ) {
+//                println("ViewRoot dragging ${viewable.id}... TBD")
+////                super.dragging(viewable, center)
+//            }
 
-            override fun resizeToMatch(viewable: Viewable) {
-                // No-op.
-            }
+            override fun moveElement(item: GridItem, x: Int, y: Int): IGridLayout =
+                this@OpenIGridLayout.gridLayout.moveElement(item, x, y)
+
+            override fun removeElement(item: GridItem): IGridLayout =
+                this@OpenIGridLayout.gridLayout.removeElement(item.controlId)
         }
 }
 
@@ -404,23 +407,21 @@ class OpenGridItem(
         GridItemViewable(viewRoot, parent)
 
     inner class GridItemViewable(
-        private val viewRoot: ViewRoot,
+        override val viewRoot: ViewRoot,
         override val parent: Viewable
     ) : Observable(), Viewable {
         private var layoutBounds: Rect? = null
         private var draggedBy: Vector2I? = null
 
-        override val id: String
-            get() = control.id
-        override val classes: Set<String>
-            get() = emptySet()
+        override val id: String get() = control.id
+        val gridItem: GridItem get() = this@OpenGridItem.gridItem
+        override val classes: Set<String> get() = emptySet()
         override val bounds: Rect? get() =
             layoutBounds?.let { bounds ->
                 draggedBy?.let { drag -> Rect(bounds.left + drag.x, bounds.top + drag.y, bounds.width, bounds.height) }
                     ?: bounds
             }
-        override val layer: Int
-            get() = parent.layer + 1
+        override val layer: Int get() = parent.layer + 1
         private val childViewables: Map<OpenGridItem, GridItemViewable> =
             if (layout != null && control is ControlContainer) {
                 layout.items.associateWith { gridItem ->
@@ -434,8 +435,6 @@ class OpenGridItem(
                 item.gridCells.forEach { cell -> put(cell, viewable) }
             }
         }
-        override val view: View
-            get() = TODO("not implemented")
         override val isDragging: Boolean
             get() = draggedBy != null
         override var gridContainer: GridContainer? = null
@@ -452,12 +451,12 @@ class OpenGridItem(
             } else 0
             val innerBounds = Rect(bounds.left, bounds.top + topInset, bounds.width, bounds.height - topInset)
             val insetBounds = innerBounds.inset(viewRoot.margins)
-            println("$id insetBounds = $insetBounds")
+//            println("$id insetBounds = $insetBounds")
             return GridContainer(layout.columns, layout.rows, insetBounds, viewRoot.gap)
         }
 
         override fun layout(bounds: Rect) {
-            println("$id: layout($bounds)")
+//            println("$id: layout($bounds)")
             if (this.bounds == bounds) return
             layoutBounds = bounds
             gridContainer = calculateGridContainer()
@@ -472,13 +471,12 @@ class OpenGridItem(
             notifyChanged()
         }
 
-        protected fun draggedByInternal(point: Vector2I?): Boolean {
+        protected fun draggedByInternal(point: Vector2I?) {
             draggedBy = point
             children.forEach {
                 it.draggedByInternal(point)
             }
             notifyChanged()
-            return true
         }
 
         override fun draggedBy(point: Vector2I?) {
@@ -489,62 +487,16 @@ class OpenGridItem(
             notifyChanged()
         }
 
-        override fun dragging(viewable: GridItemViewable, center: Vector2I?) {
-            if (center == null) {
-                // No longer dragging.
-            } else if (bounds?.contains(center) == true) {
-                // Dragging item over this Viewable.
-                val overCell = gridContainer?.findCell(center.x, center.y)?.cell
-                if (overCell == null) return
+        override fun moveElement(item: GridItem, x: Int, y: Int): IGridLayout =
+            gridItem.layout!!.moveElement(item, x, y)
 
-                val overItem = findChildAt(overCell)
-                println("Over cell: $overCell; over item: $overItem")
-                // overItem.parent is always this.
-                if (viewable.parent != this) {
-                    // Remove item from its parent and add it to this.
-                    viewRoot
-                    println("Move to different parent.")
-                    return
-                } else {
-                    // Move item within this.
-                    println("Move within parent.")
-
-                    if (overCell != viewable.gridTopLeft) {
-//                        viewRoot.visit {
-//                            if (it.id == this@OpenGridItem.id) {}
-//                        }
-                        val newLayout = try {
-                            layout ?: error("Moving within a grid item without a layout?")
-                            layout.gridLayout.moveElement(viewable.id, overCell.x, overCell.y)
-                        } catch (e: ImpossibleLayoutException) {
-                            error("Huh. ImpossibleLayoutException $e")
-//                        setState {
-//                            this.notDroppableHere = true
-//                        }
-                            return // false?
-                        }
-                        viewRoot.editLayout(newLayout)
-                    }
-                    return
-                }
-
-//                if (overItem != null && overItem.parent != viewable.parent) {
-//                    // Dragging over an item with a different parent than the dragged item.
-//                    overItem.parent.dragging(viewable, center)
-//                } else {
-//                    println("dragging $viewable, within $id, over ${overItem?.id}")
-//                    //                resizeToMatch(viewable)
-//                }
-            } else {
-                println("dragging $viewable, outside $id")
-                parent.dragging(viewable, center)
-            }
-        }
+        override fun removeElement(item: GridItem): IGridLayout =
+            gridItem.layout!!.removeElement(item.controlId)
 
         override fun findChildAt(cell: Vector2I): GridItemViewable? =
             childrenByCell[cell]
 
-        override fun resizeToMatch(viewable: Viewable) {
+        fun resizeToMatch(viewable: Viewable) {
             viewable.bounds?.let { bounds ->
                 val destGridSize = gridContainer?.calculateRegionBounds(0, 0, 1, 1)
                     ?: return

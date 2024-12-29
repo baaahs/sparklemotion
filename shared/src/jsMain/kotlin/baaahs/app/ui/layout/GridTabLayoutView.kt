@@ -7,6 +7,8 @@ import baaahs.app.ui.editor.AddControlToGrid
 import baaahs.app.ui.editor.Editor
 import baaahs.plugin.AddControlMenuItem
 import baaahs.show.GridLayout
+import baaahs.show.GridTab
+import baaahs.show.IGridLayout
 import baaahs.show.live.*
 import baaahs.show.mutable.MutableIGridLayout
 import baaahs.ui.*
@@ -42,8 +44,8 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
     var draggingItem by state<String?> { null }
 
     val gridLayoutEditor = props.tabEditor
-    val handleLayoutChange by handler(gridLayout, gridLayoutEditor) { newLayout: GridLayout, stillDragging: Boolean ->
-        if (stillDragging) return@handler
+    val handleLayoutChange by handler(gridLayout, gridLayoutEditor) { newLayout: IGridLayout, stillDragging: Boolean ->
+//        if (stillDragging) return@handler
         appContext.showManager.openShow?.edit {
             val mutableShow = this
             gridLayoutEditor.edit(mutableShow) {
@@ -114,7 +116,7 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
 //    }
 
     val viewRoot = memo(gridLayout, props.tabEditor, openShow, handleLayoutChange) {
-        ViewRoot(gridLayout, 5, 5, ObservableProvider(openShow), props.tabEditor, handleLayoutChange)
+        ViewRoot(gridLayout, 0, 0, ObservableProvider(openShow), props.tabEditor, handleLayoutChange)
     }
 //    gridModel.change {
 //        this.columns = columns

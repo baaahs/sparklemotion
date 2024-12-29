@@ -7,6 +7,7 @@ import baaahs.geom.Vector2I
 import baaahs.gl.override
 import baaahs.kotest.value
 import baaahs.show.GridLayout
+import baaahs.show.IGridLayout
 import baaahs.show.ImpossibleLayoutException
 import baaahs.show.live.EmptyOpenContext
 import baaahs.show.live.OpenShow
@@ -32,6 +33,7 @@ class GridLayoutViewableSpec : DescribeSpec({
             """.trimIndent().toLayout()
         }
         val editor by value { SpyEditor() }
+        val updatedLayout by value { Array<IGridLayout?>(1) { null } }
         val viewRoot by value {
             ViewRoot(
                 layout.open(EmptyOpenContext),
@@ -39,8 +41,9 @@ class GridLayoutViewableSpec : DescribeSpec({
                     override fun get(): OpenShow = TODO("not implemented")
                 },
                 editor = editor,
-                handleLayoutChange = handleLayoutChange
-            ) }
+                onLayoutChange = { newLayout, stillDragging -> updatedLayout[0] = newLayout }
+            )
+        }
 
         val allViews by value {
             buildMap { viewRoot.visit { put(it.id, it) } }
@@ -75,7 +78,7 @@ class GridLayoutViewableSpec : DescribeSpec({
                 allViews.mapValues { (_, v) -> v.bounds }
                     .shouldContainExactly(
                         mapOf(
-                            "##ROOT##" to Rect(0, 0, 400, 400),
+                            "##VIEWROOT##" to Rect(0, 0, 400, 400),
                             "A" to Rect(10, 10, 88, 88),
                             "B" to Rect(108, 10, 185, 185),
                             "D" to Rect(10, 108, 88, 87),
@@ -88,34 +91,46 @@ class GridLayoutViewableSpec : DescribeSpec({
         }
 
         val find by value {
-            { id: String -> viewRoot.find(id) ?: error("Couldn't find $id.") }
+            { id: String -> viewRoot.findViewable(id) ?: error("Couldn't find $id.") }
         }
-        val move by value {
-            { id: String, x: Int, y: Int ->
-                val view = find(id)
-                view.draggedBy(Vector2I(x, y))
-                viewRoot.gridLayout.stringify()
-                ""
+        val drag by value {
+            { itemId: String, toLayoutId: String?, x: Int, y: Int ->
+                val movingViewable = viewRoot.findViewable(itemId) ?: error("Couldn't find $itemId.")
+                movingViewable.draggedBy(Vector2I(x, y))
+//                viewRoot.moveElement(itemId, toLayoutId, Vector2I(x, y))
+//                val view = find(id)
+//                val fromLayout = view.parent
+//                val toLayout = toLayoutId?.let { find(it) } ?: viewRoot.view
+//                viewable
+//                view.draggedBy(Vector2I(x, y))
+//  TODO              viewRoot.gridLayout.stringify()
+                updatedLayout[0]?.stringify() ?: "<no update>"
             }
         }
 
         context("rearranging") {
             beforeEach {
-                viewRoot.layout(Rect(100, 100, 400, 400))
+                viewRoot.layout(Rect(0, 0, 400, 400))
             }
 
-            it("can move H down two cells") {
-                move("H", 25, 99)
+            it("throws if we attempt to move an unknown item") {
+                shouldThrow<ImpossibleLayoutException> { (drag("C", null, -1, -1)) }
+            }
+
+            it("can drag an item to an open adjacent cell") {
+                drag("H", null, 25, 100)
                     .shouldBe(
                         """
                             ABB.
                             DBBG
-                            .HI.
-                            ....
+                            ..I.
+                            .H..
+                            
+                            # B:
+                            WX
+                            YZ
                         """.trimIndent()
                 )
-
-                shouldThrow<ImpossibleLayoutException> { (move("C", -1, -1)) }
             }
 
 //            it("moving C to E's spot fails") {
@@ -125,8 +140,8 @@ class GridLayoutViewableSpec : DescribeSpec({
 //            }
         }
 
-        it("moving A two spaces down leaves the rest undisturbed") {
-            move("A", 0, 2).shouldBe(
+        it("will move an item to an open spot leaving items in between undisturbed") {
+            drag("A", null, 0, 2).shouldBe(
                 """
                     .BC.
                     DEFG
@@ -136,7 +151,7 @@ class GridLayoutViewableSpec : DescribeSpec({
         }
 
         it("moving A one space right swaps A and B") {
-            move("A", 1, 0).shouldBe(
+            drag("A", null, 1, 0).shouldBe(
                 """
                     BAC.
                     DEFG
@@ -146,7 +161,7 @@ class GridLayoutViewableSpec : DescribeSpec({
         }
 
         it("moving A two spaces right shifts C over") {
-            move("A", 2, 0).shouldBe(
+            drag("A", null, 2, 0).shouldBe(
                 """
                     BCA.
                     DEFG
@@ -156,7 +171,7 @@ class GridLayoutViewableSpec : DescribeSpec({
         }
 
         it("moving D one space right shifts E into its place") {
-            move("D", 1, 0).shouldBe(
+            drag("D", null, 1, 0).shouldBe(
                 """
                     ABC.
                     EDFG
@@ -166,7 +181,7 @@ class GridLayoutViewableSpec : DescribeSpec({
         }
 
         it("moving B one space down and left shifts E down") {
-            move("B", -1, 1).shouldBe(
+            drag("B", null, -1, 1).shouldBe(
                 """
                     A.C.
                     BEFG
@@ -178,7 +193,7 @@ class GridLayoutViewableSpec : DescribeSpec({
         context("with ABCDEF in one row") {
             override(layout) { "ABCDEF".toLayout() }
             it("moving B two spaces over") {
-                move("B", 2, 0).shouldBe("ACDBEF")
+                drag("B", null, 2, 0).shouldBe("ACDBEF")
             }
         }
 
@@ -186,19 +201,19 @@ class GridLayoutViewableSpec : DescribeSpec({
             override(layout) { ".ABBC.".toLayout() }
 
             it("moving A one space right should make no change") {
-                move("A", 1, 0).shouldBe(".ABBC.")
+                drag("A", null, 1, 0).shouldBe(".ABBC.")
             }
 
             it("moving A two spaces right should swap A and B") {
-                move("A", 2, 0).shouldBe(".BBAC.")
+                drag("A", null, 2, 0).shouldBe(".BBAC.")
             }
 
             it("moving C one space left should make no change") {
-                move("C", -1, 0).shouldBe(".ABBC.")
+                drag("C", null, -1, 0).shouldBe(".ABBC.")
             }
 
             it("moving C two spaces left should swap B and C") {
-                move("C", -2, 0).shouldBe(".ACBB.")
+                drag("C", null, -2, 0).shouldBe(".ACBB.")
             }
         }
     }

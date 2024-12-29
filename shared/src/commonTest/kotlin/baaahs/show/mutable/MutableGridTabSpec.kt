@@ -115,6 +115,7 @@ class MutableGridTabSpec : DescribeSpec({
 
                 it("modifies the MutableGridTab in place") {
                     // This seems tautological but it's ... sort of not?
+                    println("stringifiedResult = ${stringifiedResult}")
                     stringifiedResult
                         .shouldBe(rearrangedLayout.lowercase())
                 }

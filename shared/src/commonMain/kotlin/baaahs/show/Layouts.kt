@@ -73,8 +73,8 @@ data class LegacyTab(
 @Serializable @SerialName("Grid")
 data class GridTab(
     override val title: String,
-    override var columns: Int,
-    override var rows: Int,
+    override val columns: Int,
+    override val rows: Int,
     override val items: List<GridItem> = emptyList()
 ) : Tab, IGridLayout {
     override fun edit(panels: Map<String, MutablePanel>, mutableShow: MutableShow): MutableGridTab =
@@ -82,13 +82,16 @@ data class GridTab(
 
     override fun open(openContext: OpenContext): OpenGridTab =
         OpenGridTab(this, title, columns, rows, items.map { it.open(openContext) })
+
+    override fun updatedLayout(columns: Int, rows: Int, items: List<GridItem>): IGridLayout =
+        GridTab(title, columns, rows, items)
 }
 
 @Serializable
 data class GridLayout(
-    override var columns: Int,
-    override var rows: Int,
-    var matchParent: Boolean = false,
+    override val columns: Int,
+    override val rows: Int,
+    val matchParent: Boolean = false,
     override val items: List<GridItem> = emptyList()
 ) : IGridLayout {
     fun edit(mutableShow: MutableShow): MutableGridLayout =
@@ -97,13 +100,43 @@ data class GridLayout(
     override fun open(openContext: OpenContext): OpenGridLayout =
         OpenGridLayout(this, columns, rows, matchParent, items.map { it.open(openContext) })
 
-    private fun updateLayout(updateItem: GridItem): GridLayout =
-        GridLayout(columns, rows, matchParent, items.map {
+    override fun updatedLayout(columns: Int, rows: Int, items: List<GridItem>): IGridLayout =
+        GridLayout(columns, rows, matchParent, items)
+}
+
+interface IGridLayout {
+    val columns: Int
+    val rows: Int
+    val items: List<GridItem>
+
+    fun open(openContext: OpenContext): OpenIGridLayout
+
+    fun visit(visitor: (GridItem) -> Unit) {
+        items.forEach {
+            visitor(it)
+            it.layout?.visit(visitor)
+        }
+    }
+
+    fun visit(parent: GridItem?, visitor: (item: GridItem, parent: GridItem?) -> Unit) {
+        items.forEach {
+            visitor(it, parent)
+            it.layout?.visit(it, visitor)
+        }
+    }
+
+    fun updatedLayout(columns: Int, rows: Int, items: List<GridItem>): IGridLayout
+
+    fun updatedLayout(block: (GridItem) -> GridItem): IGridLayout =
+        updatedLayout(columns, rows, items.map { block(it) })
+
+    private fun updatedLayout(updateItem: GridItem): IGridLayout =
+        updatedLayout(columns, rows, items.map {
             if (it.controlId == updateItem.controlId) updateItem else it
         })
 
-    fun resetMovedFlag(): GridLayout =
-        GridLayout(columns, rows, matchParent, items.map { it.copy(moved = false) })
+    fun resetMovedFlag(): IGridLayout =
+        updatedLayout(columns, rows, items.map { it.copy(moved = false) })
 
     /**
      * Given a layout, make sure all elements fit within its bounds.
@@ -113,7 +146,7 @@ data class GridLayout(
      * @param  {Array} layout Layout array.
      * @param  {Number} cols Number of columns.
      */
-    fun correctBounds(): GridLayout {
+    fun correctBounds(): IGridLayout {
         val collidesWith = ArrayList<GridItem>()
         val newLayoutItems = ArrayList(items)
         newLayoutItems.replaceAll { l ->
@@ -128,7 +161,7 @@ data class GridLayout(
             collidesWith.add(newItem)
             newItem
         }
-        return GridLayout(columns, rows, matchParent, newLayoutItems, )
+        return updatedLayout(columns, rows, newLayoutItems)
     }
 
     /**
@@ -138,8 +171,14 @@ data class GridLayout(
      * @param  {String} id     ID
      * @return {LayoutItem}    Item at ID.
      */
-    fun find(id: String): GridItem? =
-        items.firstOrNull { it.controlId == id }
+    fun find(id: String): GridItem? {
+        items.forEach {
+            if (it.controlId == id) return it
+            val found = it.layout?.find(id)
+            if (found != null) return found
+        }
+        return null
+    }
 
     private fun anyCollisions(layoutItem: GridItem): Boolean =
         items.any { it.collidesWith(layoutItem) }
@@ -147,7 +186,7 @@ data class GridLayout(
     fun findCollisions(layoutItem: GridItem): List<GridItem> =
         items.filter { l -> l.collidesWith(layoutItem) }
 
-    fun moveElement(itemId: String, x: Int, y: Int): GridLayout =
+    fun moveElement(itemId: String, x: Int, y: Int): IGridLayout =
         moveElement(find(itemId)!!, x, y)
 
     /**
@@ -159,7 +198,7 @@ data class GridLayout(
      * @return A new layout with moved layout items.
      * @throws ImpossibleLayoutException if the move isn't possible because of collisions or constraints.
      */
-    fun moveElement(item: GridItem, x: Int, y: Int): GridLayout {
+    fun moveElement(item: GridItem, x: Int, y: Int): IGridLayout {
         for (direction in Direction.rankedPushOptions(x - item.column, y - item.row)) {
             try {
                 return moveElementInternal(item, x, y, direction)
@@ -167,10 +206,10 @@ data class GridLayout(
                 // Try again.
             }
         }
-        throw ImpossibleLayoutException()
+        throw ImpossibleLayoutException("Item ${item.controlId} can't be moved to $x,$y.")
     }
 
-    private fun moveElementInternal(l: GridItem, x: Int, y: Int, pushDirection: Direction): GridLayout {
+    private fun moveElementInternal(l: GridItem, x: Int, y: Int, pushDirection: Direction): IGridLayout {
         // Short-circuit if nothing to do.
         if (l.row == y && l.column == x) return this
 
@@ -182,11 +221,11 @@ data class GridLayout(
         return fitElement(movedItem, pushDirection)
     }
 
-    private fun fitElement(changedItem: GridItem, pushDirection: Direction): GridLayout {
+    private fun fitElement(changedItem: GridItem, pushDirection: Direction): IGridLayout {
         if (outOfBounds(changedItem))
             throw ImpossibleLayoutException()
 
-        var updatedLayout = updateLayout(changedItem)
+        var updatedLayout = updatedLayout(changedItem)
         val collisions = findCollisions(changedItem)
 
         // If it collides with anything, move it (recursively).
@@ -223,7 +262,7 @@ data class GridLayout(
      * @return A new layout with resized and possibly moved layout items.
      * @throws ImpossibleLayoutException if the move isn't possible because of collisions or constraints.
      */
-    fun resizeElement(item: GridItem, width: Int, height: Int): GridLayout {
+    fun resizeElement(item: GridItem, width: Int, height: Int): IGridLayout {
         val resizedItem = item.copy(width = width, height = height)
         for (direction in arrayOf(Direction.East, Direction.South)) {
             try {
@@ -238,8 +277,8 @@ data class GridLayout(
     private fun outOfBounds(movedItem: GridItem) =
         movedItem.column < 0 || movedItem.row < 0 || movedItem.right >= columns || movedItem.bottom >= rows
 
-    fun removeItem(id: String): GridLayout =
-        GridLayout(columns, rows, matchParent, items.filter { it.controlId != id })
+    fun removeElement(id: String): IGridLayout =
+        updatedLayout(columns, rows, items.filter { it.controlId != id })
 
     /**
      * This is where the magic needs to happen - given a collision, move an element away from the collision.
@@ -253,18 +292,17 @@ data class GridLayout(
         collidesWith: GridItem,
         itemToMove: GridItem,
         direction: Direction
-    ): GridLayout {
-        return moveElementInternal(
+    ): IGridLayout =
+        moveElementInternal(
             itemToMove,
             itemToMove.column + direction.xIncr,
             itemToMove.row + direction.yIncr,
             direction
         )
-    }
 
-    fun canonicalize(): GridLayout =
-        GridLayout(
-            columns, rows, matchParent,
+    fun canonicalize(): IGridLayout =
+        updatedLayout(
+            columns, rows,
             items.sortedWith { a, b ->
                 if (a.row > b.row ||
                     (a.row == b.row && a.column > b.column) ||
@@ -275,28 +313,6 @@ data class GridLayout(
 
     companion object {
         private val logger = Logger<GridLayout>()
-    }
-}
-
-interface IGridLayout {
-    var columns: Int
-    var rows: Int
-    val items: List<GridItem>
-
-    fun open(openContext: OpenContext): OpenIGridLayout
-
-    fun visit(visitor: (GridItem) -> Unit) {
-        items.forEach {
-            visitor(it)
-            it.layout?.visit(visitor)
-        }
-    }
-
-    fun visit(parent: GridItem?, visitor: (item: GridItem, parent: GridItem?) -> Unit) {
-        items.forEach {
-            visitor(it, parent)
-            it.layout?.visit(it, visitor)
-        }
     }
 }
 
@@ -337,4 +353,4 @@ data class GridItem(
     }
 }
 
-class ImpossibleLayoutException : Exception()
+class ImpossibleLayoutException(message: String? = null) : Exception(message)

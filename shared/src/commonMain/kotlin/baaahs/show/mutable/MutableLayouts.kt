@@ -392,7 +392,7 @@ interface MutableIGridLayout : MutableILayout {
 
     fun applyChanges(
         originalItems: List<OpenGridItem>,
-        newLayout: GridLayout,
+        newLayout: IGridLayout,
         mutableShow: MutableShow
     ) {
         val oldItems = ArrayList(this.items)

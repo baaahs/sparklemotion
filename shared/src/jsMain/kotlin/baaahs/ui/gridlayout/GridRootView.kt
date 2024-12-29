@@ -4,6 +4,7 @@ import baaahs.app.ui.appContext
 import baaahs.geom.Vector2I
 import baaahs.only
 import baaahs.show.GridLayout
+import baaahs.show.GridTab
 import baaahs.show.live.ControlProps
 import baaahs.ui.JsView
 import baaahs.ui.addObserver
