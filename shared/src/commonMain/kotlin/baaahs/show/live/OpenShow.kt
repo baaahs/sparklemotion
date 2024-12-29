@@ -2,7 +2,6 @@ package baaahs.show.live
 
 import baaahs.Gadget
 import baaahs.ShowPlayer
-import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.EditableManager
 import baaahs.app.ui.editor.Editor
 import baaahs.app.ui.editor.GridLayoutEditorPanel
@@ -298,20 +297,13 @@ class OpenGridLayout(
     override val items: List<OpenGridItem>
 ) : OpenIGridLayout
 
-interface OpenILayout {
-    fun getEditorPanel(
-        editableManager: EditableManager<*>,
-        layoutEditor: Editor<MutableILayout>
-    ): DialogPanel?
-}
-
-interface OpenIGridLayout : OpenILayout {
+interface OpenIGridLayout {
     val columns: Int
     val rows: Int
     val items: List<OpenGridItem>
     val gridDimens get() = GridDimens(columns, rows)
 
-    override fun getEditorPanel(editableManager: EditableManager<*>, layoutEditor: Editor<MutableILayout>) =
+    fun getEditorPanel(editableManager: EditableManager<*>, layoutEditor: Editor<MutableILayout>) =
         GridLayoutEditorPanel(editableManager, layoutEditor as Editor<MutableIGridLayout>)
 }
 
