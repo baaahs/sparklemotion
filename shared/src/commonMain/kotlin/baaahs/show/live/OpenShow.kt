@@ -356,21 +356,14 @@ class OpenGridLayout(
     override val items: List<OpenGridItem>
 ) : OpenIGridLayout
 
-interface OpenILayout {
-    fun getEditorPanel(
-        editableManager: EditableManager<*>,
-        layoutEditor: Editor<MutableILayout>
-    ): DialogPanel?
-}
-
-interface OpenIGridLayout : OpenILayout {
+interface OpenIGridLayout {
     val gridTab: IGridLayout
     val columns: Int
     val rows: Int
     val items: List<OpenGridItem>
     val gridDimens get() = GridDimens(columns, rows)
 
-    override fun getEditorPanel(editableManager: EditableManager<*>, layoutEditor: Editor<MutableILayout>) =
+    fun getEditorPanel(editableManager: EditableManager<*>, layoutEditor: Editor<MutableILayout>) =
         GridLayoutEditorPanel(editableManager, layoutEditor as Editor<MutableIGridLayout>)
 }
 
