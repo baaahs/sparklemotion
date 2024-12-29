@@ -1,27 +1,31 @@
 package baaahs.ui.gridlayout
 
+import baaahs.Gadget
 import baaahs.app.settings.Provider
 import baaahs.app.ui.editor.Editor
 import baaahs.geom.Vector2I
+import baaahs.show.Feed
 import baaahs.show.GridItem
-import baaahs.show.GridLayout
-import baaahs.show.GridTab
 import baaahs.show.IGridLayout
-import baaahs.show.live.OpenIGridLayout
+import baaahs.show.Panel
+import baaahs.show.live.OpenContext
+import baaahs.show.live.OpenControl
+import baaahs.show.live.OpenGridItem
+import baaahs.show.live.OpenGridTab
+import baaahs.show.live.OpenPatch
 import baaahs.show.live.OpenShow
 import baaahs.show.mutable.MutableIGridLayout
-import baaahs.show.mutable.MutableShow
 import baaahs.ui.Observable
 
 class ViewRoot(
-    private val gridLayout: OpenIGridLayout,
+    private var gridTab: OpenGridTab,
     gap: Int = 0,
     margins: Int = 0,
     private val openShow: Provider<OpenShow>,
     val editor: Editor<MutableIGridLayout>?,
     private val onLayoutChange: (IGridLayout, Boolean) -> Unit = { _, _ -> }
 ) : Observable() {
-    internal val rootViewable = gridLayout.createViewable(this)
+    internal var rootViewable = createViewable(this)
 
     val classes: Set<String> = emptySet()
     var bounds: Rect? = null
@@ -62,60 +66,74 @@ class ViewRoot(
 //            return
 //        }
 
-    fun editWith(editor: Editor<MutableIGridLayout>, block: MutableIGridLayout.() -> Unit): MutableShow =
-        openShow.get().edit { editor.edit(this, block) }
+    fun moveElement(movingId: String, toLayoutId: String, toPosition: Vector2I) {
+        val movingItem = gridTab.gridTab.find(movingId)
+            ?: error("No such item $movingId.")
+        if (movingItem.column == toPosition.x && movingItem.row == toPosition.y)
+            return
+        val newGridTab = gridTab.moveElement(movingId, toLayoutId, toPosition)
+        gridTab = newGridTab.open(ReopenContext())
+        val movedItem = gridTab.gridTab.find(movingId)!!
+        println("Moved $movingId from ${movingItem.column},${movingItem.row} to ${movedItem.column},${movedItem.row}")
+        rootViewable = createViewable(this)
+        rootViewable.layout(bounds!!)
+        notifyChanged()
+//            .also { onLayoutChange(it, true) }
+    }
 
-    fun moveElement(movingId: String, toLayoutId: String?, toPosition: Vector2I) {
-        val movingViewable = findViewable(movingId)
-        val movingGridItem = gridLayout.gridLayout.find(movingId)!!
-        val fromContainer = movingViewable.parent ?: rootViewable
+    fun createViewable(viewRoot: ViewRoot): RootViewable = RootViewable(viewRoot)
 
-        val rootViewableId = rootViewable.id
-        val allItemLayouts = buildMap {
-            put(rootViewableId, gridLayout.gridLayout)
-            gridLayout.gridLayout.visit { gridItem ->
-                put(gridItem.controlId, gridItem.layout)
+    inner class RootViewable(viewRoot: ViewRoot) : Observable(), Viewable {
+        override val viewRoot: ViewRoot = viewRoot
+        override val id: String
+            get() = "##VIEWROOT##"
+        override val classes: Set<String> = setOf("open-grid-layout")
+        override var bounds: Rect? = null
+            private set
+        override val layer: Int = 0
+        override val parent: Viewable?
+            get() = null
+        override val children: List<OpenGridItem.GridItemViewable> =
+            gridTab.items.map { it.createViewable(viewRoot, this) }
+        override var gridContainer: GridContainer? = null
+
+        override fun layout(bounds: Rect) {
+            if (this.bounds == bounds) return
+            this.bounds = bounds
+
+//                println("$id bounds = ${bounds}")
+            gridContainer = GridContainer(
+                gridTab.columns, gridTab.rows, bounds.inset(viewRoot.margins), viewRoot.gap
+            ).apply {
+                children.forEach {
+                    it.layout(calculateRegionBounds(it.gridRegion))
+                }
             }
-        }.toMutableMap()
-        val destLayoutId = toLayoutId ?: rootViewableId
-        val fromLayout = allItemLayouts[fromContainer.id]!!
-        val toLayout = allItemLayouts[destLayoutId]!!
-
-//        val fromRoot = fromContainer == rootViewable
-//        val toRoot = toLayoutId == rootViewable.id || toLayoutId == null
-        if (fromLayout == toLayout) {
-            // Within the same layout.
-            allItemLayouts[destLayoutId] = allItemLayouts[destLayoutId]!!
-                .moveElement(movingId, toPosition.x, toPosition.y) as GridLayout
-//            rootLayout = gridLayout.gridLayout.moveElement(movingId, toPosition.x, toPosition.y) as GridLayout
-//        } else if (fromRoot) {
-//            // From the root layout to another container.
-//            rootLayout = rootLayout.removeElement(movingId) as GridLayout
-//            allItemLayouts[toLayoutId!!] = allItemLayouts[toLayoutId]!!
-//                .let { it.copy(layout = it.layout!!.removeElement(movingId) as GridLayout) }
-//        } else if (toRoot) {
-//            // From another container to the root layout.
-//            allItemLayouts[fromContainer.id] = allItemLayouts[fromContainer.id]!!
-//                .let { it.copy(layout = it.layout!!.removeElement(movingId) as GridLayout) }
-//            rootLayout = gridLayout.gridLayout.moveElement(movingId, toPosition.x, toPosition.y) as GridLayout
-        } else {
-            // From one container to another container.
-            allItemLayouts[fromContainer.id] = allItemLayouts[fromContainer.id]!!
-                .removeElement(movingId) as GridLayout
-            allItemLayouts[destLayoutId] = allItemLayouts[destLayoutId]!!
-                .moveElement(movingId, toPosition.x, toPosition.y) as GridLayout
-        }
-        fun GridItem.substitute(): GridItem {
-            allItemLayouts[controlId]?.let {
-//                println("Replace ${this.controlId}'s layout with $it")
-            }
-
-            return copy(layout = allItemLayouts[controlId] as GridLayout?)
+            notifyChanged()
         }
 
-        val updatedRootLayout = allItemLayouts[rootViewableId] as GridTab
-        val updatedLayout = updatedRootLayout
-            .copy(items = updatedRootLayout.items.map { it.substitute() })
-        onLayoutChange(updatedLayout, true)
+        override fun draggedBy(point: Vector2I?) {
+            // No-op.
+        }
+    }
+
+    inner class ReopenContext : OpenContext {
+        val controls = openShow.get().allControls.associateBy { it.id }
+        override val allControls: List<OpenControl>
+            get() = TODO("not implemented")
+        override val allPatchModFeeds: List<Feed>
+            get() = TODO("not implemented")
+
+        override fun findControl(id: String): OpenControl? = controls[id]
+        override fun getControl(id: String): OpenControl =
+            findControl(id) ?: error("No control found with id $id.")
+
+        override fun getFeed(id: String): Feed = TODO("not implemented")
+        override fun getPanel(id: String): Panel = TODO("not implemented")
+        override fun getPatch(it: String): OpenPatch = TODO("not implemented")
+        override fun release() = TODO("not implemented")
+
+        override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledFeed: Feed?) =
+            TODO("not implemented")
     }
 }

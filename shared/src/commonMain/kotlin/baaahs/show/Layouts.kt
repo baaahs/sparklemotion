@@ -1,6 +1,7 @@
 package baaahs.show
 
 import baaahs.camelize
+import baaahs.geom.Vector2I
 import baaahs.getBang
 import baaahs.replaceAll
 import baaahs.show.live.*
@@ -111,7 +112,7 @@ interface IGridLayout {
 
     fun open(openContext: OpenContext): OpenIGridLayout
 
-    fun visit(visitor: (GridItem) -> Unit) {
+    fun visit(visitor: IGridLayout.(GridItem) -> Unit) {
         items.forEach {
             visitor(it)
             it.layout?.visit(visitor)
@@ -327,6 +328,7 @@ data class GridItem(
     @Transient
     val moved: Boolean = false
 ) {
+    val id = controlId
     val right: Int get() = column + width - 1
     val bottom: Int get() = row + height - 1
 

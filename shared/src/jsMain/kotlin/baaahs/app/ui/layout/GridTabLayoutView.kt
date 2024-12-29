@@ -6,8 +6,6 @@ import baaahs.app.ui.appContext
 import baaahs.app.ui.editor.AddControlToGrid
 import baaahs.app.ui.editor.Editor
 import baaahs.plugin.AddControlMenuItem
-import baaahs.show.GridLayout
-import baaahs.show.GridTab
 import baaahs.show.IGridLayout
 import baaahs.show.live.*
 import baaahs.show.mutable.MutableIGridLayout

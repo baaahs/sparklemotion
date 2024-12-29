@@ -2,9 +2,7 @@ package baaahs.ui.gridlayout
 
 import baaahs.app.ui.appContext
 import baaahs.geom.Vector2I
-import baaahs.only
 import baaahs.show.GridLayout
-import baaahs.show.GridTab
 import baaahs.show.live.ControlProps
 import baaahs.ui.JsView
 import baaahs.ui.addObserver
@@ -14,34 +12,15 @@ import baaahs.ui.xComponent
 import baaahs.util.CacheBuilder
 import baaahs.util.useResizeListener
 import kotlinx.css.*
-import kotlinx.css.Position
-import mui.material.styles.Theme
 import react.*
 import react.dom.RDOMBuilder
 import react.dom.div
-import styled.StyleSheet
 import styled.inlineStyles
 import web.events.addEventListener
 import web.events.removeEventListener
 import web.html.HTMLElement
 import web.uievents.MouseEvent
 import web.uievents.PointerEvent
-
-class Grid2Styles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = true) {
-    val gridRoot by css {
-        position = Position.absolute
-        backgroundColor = Color.lightPink
-        border = Border(1.px, BorderStyle.solid, Color.black)
-        width = 100.pct
-        height = 100.pct
-    }
-
-    val gridItem by css {
-        position = Position.absolute
-        backgroundColor = Color.pink
-        border = Border(1.px, BorderStyle.solid, Color.black)
-    }
-}
 
 class ViewableInfo(
     val viewable: Viewable,
@@ -61,6 +40,9 @@ class ViewableInfo(
         this.el = el
         if (el != null) {
             applyStyle(el)
+            if (viewable.id == "rotateTwist") {
+                println("Applied style to ${viewable.id}: ${el.style} ${viewable.bounds}")
+            }
         }
     }
 
@@ -97,8 +79,8 @@ class ViewableInfo(
 
     fun onPointerUp(e: MouseEvent) {
         println("pointer up on ${viewable.id}")
-        el!!.removeEventListener(PointerEvent.POINTER_MOVE, handlePointerMove)
-        el!!.releasePointerCapture((e as PointerEvent).pointerId)
+        el?.removeEventListener(PointerEvent.POINTER_MOVE, handlePointerMove)
+        el?.releasePointerCapture((e as PointerEvent).pointerId)
         viewable.draggedBy(null)
         pointerDown = null
         e.stopPropagation()
@@ -120,11 +102,12 @@ private val GridRootView = xComponent<GridRootProps>("GridRoot") { props ->
     val appContext = useContext(appContext)
     val openShow = appContext.showManager.openShow
     val styles = appContext.allStyles.grid2
-    val viewRoot = props.viewRoot
-    val rootView = viewRoot.children.only("child")
+    val viewRoot = observe(props.viewRoot)
+    val rootView = viewRoot.rootViewable
     val rootRef = ref<HTMLElement>()
 
     val flatViewableInfos = memo(viewRoot, rootView) {
+        println("Recaluclate flatViewableInfos")
         buildList<ViewableInfo> {
             fun Viewable.process(layer: Int = 0) {
                 val viewableInfo = ViewableInfo(this)
@@ -173,13 +156,18 @@ private val GridRootView = xComponent<GridRootProps>("GridRoot") { props ->
     }
     div(+styles.gridRoot) {
         ref = rootRef
-        viewRoot.bounds?.applyTo(this)
-        +rootView.id
 
-        flatViewableInfos.forEach { viewableInfo ->
-            div(+styles.gridItem) {
-                this.ref = viewableInfo.ref
-                controlViews[viewableInfo.viewable.id]?.let { child(it) }
+        div {
+            viewRoot.bounds?.applyTo(this)
+            +rootView.id
+
+            println("Render ${flatViewableInfos.size} viewables.")
+            flatViewableInfos.forEach { viewableInfo ->
+                div(+styles.gridItem) {
+                    this.key = viewableInfo.viewable.id
+                    this.ref = viewableInfo.ref
+                    controlViews[viewableInfo.viewable.id]?.let { child(it) }
+                }
             }
         }
     }

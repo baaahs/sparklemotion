@@ -297,7 +297,7 @@ interface OpenTab {
 }
 
 class OpenGridTab(
-    override val gridLayout: GridTab,
+    override val gridTab: GridTab,
     override val title: String,
     override var columns: Int,
     override var rows: Int,
@@ -308,10 +308,48 @@ class OpenGridTab(
             item.control.addTo(builder, depth + 1, item.layout)
         }
     }
+
+    fun moveElement(movingId: String, toLayoutId: String?, toPosition: Vector2I): GridTab {
+        var movingItem: GridItem = let {
+            var movingItem: GridItem? = null
+            gridTab.visit { item ->
+                if (item.id == movingId) movingItem = item
+            }
+            movingItem ?: error("No such element \"$movingId\".")
+        }
+
+        fun applyChanges(item: GridItem): GridItem {
+            val layout = item.layout
+            if (layout == null) return item
+            val containsItem = layout.items.contains(movingItem)
+            val movingHere = item.id == toLayoutId
+            return if (containsItem && !movingHere) {
+                item.copy(layout = layout.removeElement(movingId) as? GridLayout)
+            } else if (movingHere) {
+                item.copy(layout = layout.moveElement(movingItem, toPosition.x, toPosition.y) as GridLayout)
+            } else {
+                item.copy(layout = layout.copy(items = layout.items.map { subItem -> applyChanges(subItem) }))
+            }
+        }
+
+        fun applyChanges(gridTab: GridTab): GridTab {
+            val containsItem = gridTab.items.contains(movingItem)
+            val movingHere = toLayoutId == null
+            return if (containsItem && !movingHere) {
+                gridTab.removeElement(movingId) as GridTab
+            } else if (movingHere) {
+                gridTab.moveElement(movingItem, toPosition.x, toPosition.y) as GridTab
+            } else {
+                gridTab.copy(items = gridTab.items.map { subItem -> applyChanges(subItem) })
+            }
+        }
+
+        return applyChanges(gridTab)
+    }
 }
 
 class OpenGridLayout(
-    override val gridLayout: GridLayout,
+    override val gridTab: GridLayout,
     override val columns: Int,
     override val rows: Int,
     val matchParent: Boolean,
@@ -326,7 +364,7 @@ interface OpenILayout {
 }
 
 interface OpenIGridLayout : OpenILayout {
-    val gridLayout: IGridLayout
+    val gridTab: IGridLayout
     val columns: Int
     val rows: Int
     val items: List<OpenGridItem>
@@ -334,54 +372,6 @@ interface OpenIGridLayout : OpenILayout {
 
     override fun getEditorPanel(editableManager: EditableManager<*>, layoutEditor: Editor<MutableILayout>) =
         GridLayoutEditorPanel(editableManager, layoutEditor as Editor<MutableIGridLayout>)
-
-    fun createViewable(viewRoot: ViewRoot): Viewable =
-        object : Observable(), Viewable {
-            override val viewRoot: ViewRoot = viewRoot
-            override val id: String
-                get() = "##VIEWROOT##"
-            override val classes: Set<String> = setOf("open-grid-layout")
-            override var bounds: Rect? = null
-                private set
-            override val layer: Int = 0
-            override val parent: Viewable?
-                get() = null
-            override val children: List<OpenGridItem.GridItemViewable> =
-                items.map { it.createViewable(viewRoot, this) }
-            override var gridContainer: GridContainer? = null
-
-            override fun layout(bounds: Rect) {
-                if (this.bounds == bounds) return
-                this.bounds = bounds
-
-//                println("$id bounds = ${bounds}")
-                gridContainer = GridContainer(columns, rows, bounds.inset(viewRoot.margins), viewRoot.gap).apply {
-                    children.forEach {
-                        it.layout(calculateRegionBounds(it.gridRegion))
-                    }
-                }
-
-                notifyChanged()
-            }
-
-            override fun draggedBy(point: Vector2I?) {
-                // No-op.
-            }
-
-//            override fun dragging(
-//                viewable: OpenGridItem.GridItemViewable,
-//                center: Vector2I?
-//            ) {
-//                println("ViewRoot dragging ${viewable.id}... TBD")
-////                super.dragging(viewable, center)
-//            }
-
-            override fun moveElement(item: GridItem, x: Int, y: Int): IGridLayout =
-                this@OpenIGridLayout.gridLayout.moveElement(item, x, y)
-
-            override fun removeElement(item: GridItem): IGridLayout =
-                this@OpenIGridLayout.gridLayout.removeElement(item.controlId)
-        }
 }
 
 data class GridDimens(
@@ -458,6 +448,9 @@ class OpenGridItem(
         override fun layout(bounds: Rect) {
 //            println("$id: layout($bounds)")
             if (this.bounds == bounds) return
+            if (id == "rotateTwist") {
+                println("$id bounds = $bounds (at ${gridItem.column}, ${gridItem.row}")
+            }
             layoutBounds = bounds
             gridContainer = calculateGridContainer()
 
@@ -471,7 +464,7 @@ class OpenGridItem(
             notifyChanged()
         }
 
-        protected fun draggedByInternal(point: Vector2I?) {
+        private fun draggedByInternal(point: Vector2I?) {
             draggedBy = point
             children.forEach {
                 it.draggedByInternal(point)
@@ -487,11 +480,11 @@ class OpenGridItem(
             notifyChanged()
         }
 
-        override fun moveElement(item: GridItem, x: Int, y: Int): IGridLayout =
-            gridItem.layout!!.moveElement(item, x, y)
-
-        override fun removeElement(item: GridItem): IGridLayout =
-            gridItem.layout!!.removeElement(item.controlId)
+//        override fun moveElement(item: GridItem, x: Int, y: Int): IGridLayout =
+//            gridItem.layout!!.moveElement(item, x, y)
+//
+//        override fun removeElement(item: GridItem): IGridLayout =
+//            gridItem.layout!!.removeElement(item.controlId)
 
         override fun findChildAt(cell: Vector2I): GridItemViewable? =
             childrenByCell[cell]

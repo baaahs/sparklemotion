@@ -28,7 +28,7 @@ interface Viewable : IObservable {
     fun layout(bounds: Rect)
     fun draggedBy(point: Vector2I?)
 
-    fun dragging(viewable: OpenGridItem.GridItemViewable, center: Vector2I?) {
+    fun dragging(viewable: Viewable, center: Vector2I?) {
         if (center == null) {
             // No longer dragging.
         } else if (bounds?.contains(center) == true) {
@@ -36,10 +36,10 @@ interface Viewable : IObservable {
             val overCell = gridContainer?.findCell(center.x, center.y)?.cell
             if (overCell == null) return
 
-            val overItem = findChildAt(overCell)
+//            val overItem = findChildAt(overCell)
 //            println("Over cell: $overCell; over item: $overItem")
 
-            viewRoot.moveElement(viewable.gridItem.controlId, this.id, overCell)
+            viewRoot.moveElement(viewable.id, this.id, overCell)
         } else {
 //            println("dragging $viewable, outside $id")
             parent?.dragging(viewable, center)
@@ -48,8 +48,6 @@ interface Viewable : IObservable {
     }
 
     fun findChildAt(cell: Vector2I): OpenGridItem.GridItemViewable? = null
-    fun moveElement(item: GridItem, x: Int, y: Int): IGridLayout
-    fun removeElement(item: GridItem): IGridLayout
 }
 
 interface ViewableConstraints {
