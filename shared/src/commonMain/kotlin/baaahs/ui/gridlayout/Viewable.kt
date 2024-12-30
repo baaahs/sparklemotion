@@ -9,12 +9,14 @@ import baaahs.ui.IObservable
 interface Viewable : IObservable {
     val viewRoot: ViewRoot
     val id: String
+    val serial: Int
     val classes: Set<String>
     val bounds: Rect?
     val layer: Int
     val parent: Viewable?
     val children: List<Viewable>
     val isDragging: Boolean get() = false
+    val isContainer: Boolean
     var gridContainer: GridContainer?
 
     fun find(id: String): Viewable? =
@@ -28,7 +30,11 @@ interface Viewable : IObservable {
     fun layout(bounds: Rect)
     fun draggedBy(point: Vector2I?)
 
-    fun dragging(viewable: Viewable, center: Vector2I?) {
+    fun dragging(viewable: Viewable, center: Vector2I?, nestLevel: Int = 0) {
+        if (nestLevel > 10) {
+            error("dragging(): stack overflow imminent")
+        }
+        println("${this.id}($serial): dragging ${viewable.id}(${viewable.serial}) over $bounds.contains($center)? ${bounds?.contains(center ?: Vector2I(0,0))}")
         if (center == null) {
             // No longer dragging.
         } else if (bounds?.contains(center) == true) {
@@ -39,12 +45,16 @@ interface Viewable : IObservable {
 //            val overItem = findChildAt(overCell)
 //            println("Over cell: $overCell; over item: $overItem")
 
-            viewRoot.moveElement(viewable.id, this.id, overCell)
+            val overChild = findChildAt(overCell)
+            if (overChild != null && overChild != viewable && overChild.isContainer) {
+                overChild.dragging(viewable, center, nestLevel + 1)
+            } else {
+                viewRoot.moveElement(viewable.id, this.id, overCell)
+            }
         } else {
-//            println("dragging $viewable, outside $id")
-            parent?.dragging(viewable, center)
+            println("${this.id}($serial): dragging ${viewable.id}, not in bounds ($bounds), calling parent[${parent?.id}].dragging()")
+            parent?.dragging(viewable, center, nestLevel + 1)
         }
-
     }
 
     fun findChildAt(cell: Vector2I): OpenGridItem.GridItemViewable? = null

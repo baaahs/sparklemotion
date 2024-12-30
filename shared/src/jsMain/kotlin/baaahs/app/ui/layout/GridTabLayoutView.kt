@@ -23,6 +23,8 @@ import web.html.HTMLDivElement
 import web.html.HTMLElement
 
 private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") { props ->
+    console.log("GridTabLayoutView render ", renderCounter)
+
     val appContext = useContext(appContext)
     val showManager = observe(appContext.showManager)
     val layoutStyles = appContext.allStyles.layout

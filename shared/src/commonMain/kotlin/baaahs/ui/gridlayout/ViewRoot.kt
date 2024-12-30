@@ -8,14 +8,18 @@ import baaahs.show.Feed
 import baaahs.show.GridItem
 import baaahs.show.IGridLayout
 import baaahs.show.Panel
+import baaahs.show.live.ControlContainer
 import baaahs.show.live.OpenContext
 import baaahs.show.live.OpenControl
 import baaahs.show.live.OpenGridItem
+import baaahs.show.live.OpenGridItem.GridItemViewable
 import baaahs.show.live.OpenGridTab
 import baaahs.show.live.OpenPatch
 import baaahs.show.live.OpenShow
 import baaahs.show.mutable.MutableIGridLayout
 import baaahs.ui.Observable
+import kotlin.collections.component1
+import kotlin.collections.component2
 
 class ViewRoot(
     private var gridTab: OpenGridTab,
@@ -73,10 +77,14 @@ class ViewRoot(
             return
         val newGridTab = gridTab.moveElement(movingId, toLayoutId, toPosition)
         gridTab = newGridTab.open(ReopenContext())
-        val movedItem = gridTab.gridTab.find(movingId)!!
+        val movedItem = gridTab.gridTab.find(movingId)
+        if (movedItem == null) {
+            error("Moving item $movingId not found.")
+        }
         println("Moved $movingId from ${movingItem.column},${movingItem.row} to ${movedItem.column},${movedItem.row}")
         rootViewable = createViewable(this)
         rootViewable.layout(bounds!!)
+        println("moveElement -> layout() finished")
         notifyChanged()
 //            .also { onLayoutChange(it, true) }
     }
@@ -87,21 +95,36 @@ class ViewRoot(
         override val viewRoot: ViewRoot = viewRoot
         override val id: String
             get() = "##VIEWROOT##"
+        override val serial: Int
+            get() = -1
         override val classes: Set<String> = setOf("open-grid-layout")
         override var bounds: Rect? = null
             private set
         override val layer: Int = 0
         override val parent: Viewable?
             get() = null
-        override val children: List<OpenGridItem.GridItemViewable> =
+        private val childViewables: Map<OpenGridItem, GridItemViewable> =
+            gridTab.items.associateWith { gridItem ->
+                gridItem.createViewable(viewRoot, this)
+            }
+        override val children: List<GridItemViewable> =
             gridTab.items.map { it.createViewable(viewRoot, this) }
+        val childrenByCell: Map<Vector2I, GridItemViewable> = buildMap {
+            childViewables.forEach { (item, viewable) ->
+                println("childViewables: ${item.gridItem.id} -> ${item.gridCells}")
+                item.gridCells.forEach { cell -> put(cell, viewable) }
+            }
+        }
+        override val isContainer: Boolean
+            get() = true
         override var gridContainer: GridContainer? = null
 
         override fun layout(bounds: Rect) {
+            println("$id: bounds? = $bounds")
             if (this.bounds == bounds) return
             this.bounds = bounds
 
-//                println("$id bounds = ${bounds}")
+            println("$id: bounds = $bounds")
             gridContainer = GridContainer(
                 gridTab.columns, gridTab.rows, bounds.inset(viewRoot.margins), viewRoot.gap
             ).apply {
@@ -115,6 +138,9 @@ class ViewRoot(
         override fun draggedBy(point: Vector2I?) {
             // No-op.
         }
+
+        override fun findChildAt(cell: Vector2I): OpenGridItem.GridItemViewable? =
+            childrenByCell[cell]
     }
 
     inner class ReopenContext : OpenContext {

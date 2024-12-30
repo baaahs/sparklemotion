@@ -310,13 +310,8 @@ class OpenGridTab(
     }
 
     fun moveElement(movingId: String, toLayoutId: String?, toPosition: Vector2I): GridTab {
-        var movingItem: GridItem = let {
-            var movingItem: GridItem? = null
-            gridTab.visit { item ->
-                if (item.id == movingId) movingItem = item
-            }
-            movingItem ?: error("No such element \"$movingId\".")
-        }
+        var movingItem: GridItem = gridTab.find(movingId)
+            ?: error("No such element \"$movingId\".")
 
         fun applyChanges(item: GridItem): GridItem {
             val layout = item.layout
@@ -382,13 +377,16 @@ class OpenGridItem(
     val layout: OpenGridLayout?
 ) {
     val gridCells: List<Vector2I> =
-        (row until row + height - 1).flatMap { y ->
-            (column until column + width - 1).map { x -> Vector2I(x, y) }
+        (row until row + height).flatMap { y ->
+            (column until column + width).map { x -> Vector2I(x, y) }
         }
 
     fun createViewable(viewRoot: ViewRoot, parent: Viewable): GridItemViewable =
         GridItemViewable(viewRoot, parent)
 
+    companion object {
+        var serial = 0
+    }
     inner class GridItemViewable(
         override val viewRoot: ViewRoot,
         override val parent: Viewable
@@ -397,6 +395,11 @@ class OpenGridItem(
         private var draggedBy: Vector2I? = null
 
         override val id: String get() = control.id
+        override val serial = OpenGridItem.serial++
+        init {
+            println("New viewable for $id ($serial)")
+            if (id == "effects") Exception().printStackTrace()
+        }
         val gridItem: GridItem get() = this@OpenGridItem.gridItem
         override val classes: Set<String> get() = emptySet()
         override val bounds: Rect? get() =
@@ -415,11 +418,14 @@ class OpenGridItem(
             childViewables.values.toList()
         val childrenByCell: Map<Vector2I, GridItemViewable> = buildMap {
             childViewables.forEach { (item, viewable) ->
+                println("childViewables: ${item.gridItem.id} -> ${item.gridCells}")
                 item.gridCells.forEach { cell -> put(cell, viewable) }
             }
         }
         override val isDragging: Boolean
             get() = draggedBy != null
+        override val isContainer: Boolean
+            get() = gridItem.layout != null
         override var gridContainer: GridContainer? = null
         val gridRegion get() = GridCoords(column, row, width, height)
         val gridTopLeft get() = Vector2I(column, row)
@@ -439,7 +445,7 @@ class OpenGridItem(
         }
 
         override fun layout(bounds: Rect) {
-//            println("$id: layout($bounds)")
+            println("$id($serial): layout($bounds)")
             if (this.bounds == bounds) return
             if (id == "rotateTwist") {
                 println("$id bounds = $bounds (at ${gridItem.column}, ${gridItem.row}")
@@ -448,7 +454,7 @@ class OpenGridItem(
             gridContainer = calculateGridContainer()
 
             if (layout != null) {
-                calculateGridContainer()?.apply {
+                gridContainer?.apply {
                     children.forEach {
                         it.layout(calculateRegionBounds(it.gridRegion))
                     }

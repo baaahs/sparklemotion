@@ -44,6 +44,7 @@ class GridLayoutViewableSpec : DescribeSpec({
                 onLayoutChange = { newLayout, stillDragging -> updatedLayout[0] = newLayout }
             )
         }
+        val rootViewable by value { viewRoot.createViewable() }
 
         val allViews by value {
             buildMap { viewRoot.visit { put(it.id, it) } }

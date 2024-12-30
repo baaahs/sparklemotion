@@ -8,18 +8,34 @@ import web.events.removeEventListener
 import web.html.HTMLElement
 import web.uievents.MouseEvent
 import web.uievents.PointerEvent
+import baaahs.ui.unaryPlus
+
+class RootInfo(
+    private val viewRoot: ViewRoot,
+    val styles: Grid2Styles
+) {
+    private var rootView: Viewable? = null
+    var dragging: ViewableInfo? = null
+
+    fun rootViewChanged(rootView: ViewRoot.RootViewable) {
+        this.rootView = rootView
+    }
+}
 
 class ViewableInfo(
     val viewable: Viewable,
-    var el: HTMLElement? = null,
-    var ref: Ref<HTMLElement>? = null
+    private val rootInfo: RootInfo
 ) {
+    var el: HTMLElement? = null
+    var ref: Ref<HTMLElement>? = null
     private var pointerDown: Vector2I? = null
     private var pointerDrag: Vector2I? = null
+    private val styles = rootInfo.styles
 
     init {
         viewable.addObserver {
             el?.let { applyStyle(it) }
+            el?.classList?.toggle(+styles.dragging, rootInfo.dragging == this)
         }
     }
 
@@ -55,16 +71,21 @@ class ViewableInfo(
     private val handlePointerMove = ::onPointerMove
     private val handlePointerDown = ::onPointerDown
 
-    fun onPointerDown(e: MouseEvent) {
+    fun onPointerDown(e: PointerEvent) {
+        if (e.pointerId != 1) return
         el!!.addEventListener(PointerEvent.Companion.POINTER_MOVE, handlePointerMove)
         println("pointer down on ${viewable.id}")
         pointerDown = Vector2I(e.clientX, e.clientY)
-        el!!.setPointerCapture((e as PointerEvent).pointerId)
+        el!!.setPointerCapture(e.pointerId)
         e.stopPropagation()
         e.preventDefault()
     }
 
-    fun onPointerUp(e: MouseEvent) {
+    fun onPointerUp(e: PointerEvent) {
+        val wasDragging = rootInfo.dragging
+        if (wasDragging != this)
+            error("Huh? onPointerUp on ${viewable.id} but we were dragging ${wasDragging?.viewable?.id}.")
+
         println("pointer up on ${viewable.id}")
         el?.removeEventListener(PointerEvent.Companion.POINTER_MOVE, handlePointerMove)
         el?.releasePointerCapture((e as PointerEvent).pointerId)
@@ -75,6 +96,7 @@ class ViewableInfo(
     }
 
     fun onPointerMove(e: MouseEvent) {
+        rootInfo.dragging = this
         pointerDown?.let { pointerDown ->
             viewable.draggedBy(Vector2I(e.clientX, e.clientY) - pointerDown)
 //            pointerDrag =

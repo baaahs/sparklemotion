@@ -30,6 +30,7 @@ import web.cssom.Flex
 import web.cssom.number
 
 private val ShowLayoutView = xComponent<ShowLayoutProps>("ShowLayout") { props ->
+    console.log("ShowLayoutView render ", renderCounter)
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.appUi
 

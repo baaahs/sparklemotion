@@ -17,6 +17,7 @@ import styled.inlineStyles
 import web.html.HTMLElement
 
 private val GridRootView = xComponent<GridRootProps>("GridRoot") { props ->
+    console.log("GridRootView render ", renderCounter)
     val appContext = useContext(appContext)
     val openShow = appContext.showManager.openShow
     val styles = appContext.allStyles.grid2
@@ -24,11 +25,23 @@ private val GridRootView = xComponent<GridRootProps>("GridRoot") { props ->
     val rootView = viewRoot.rootViewable
     val rootRef = ref<HTMLElement>()
 
-    val flatViewableInfos = memo(viewRoot, rootView) {
+    var layoutPxDimens by state<Pair<Int, Int>?> { null }
+    useResizeListener(rootRef) { width, height ->
+        layoutPxDimens = width to height
+    }
+
+    val rootInfo = memo(viewRoot, props.controlProps, props.onLayoutChange) { RootInfo(viewRoot, styles) }
+    val flatViewableInfos = memo(rootInfo, rootView) {
+        println("Rebuild flatViewableInfos")
+        rootInfo.rootViewChanged(rootView)
+        layoutPxDimens?.let { (width, height) ->
+            viewRoot.layout(Rect(0, 0, width, height))
+        }
+
         println("Recaluclate flatViewableInfos")
         buildList<ViewableInfo> {
             fun Viewable.process(layer: Int = 0) {
-                val viewableInfo = ViewableInfo(this)
+                val viewableInfo = ViewableInfo(this, rootInfo)
                 val ref = RefCallback<HTMLElement> { el ->
                     viewableInfo.mounted(el)
                 }
@@ -41,10 +54,10 @@ private val GridRootView = xComponent<GridRootProps>("GridRoot") { props ->
             rootView.process()
         }
     }
-
-    var layoutPxDimens by state<Pair<Int, Int>?> { null }
-    useResizeListener(rootRef) { width, height ->
-        layoutPxDimens = width to height
+    onChange("viewRoot", viewRoot) {
+        layoutPxDimens?.let { (width, height) ->
+            viewRoot.layout(Rect(0, 0, width, height))
+        }
     }
 
     println("rootRef.current = ${rootRef.current}")
@@ -81,10 +94,14 @@ private val GridRootView = xComponent<GridRootProps>("GridRoot") { props ->
 
             println("Render ${flatViewableInfos.size} viewables.")
             flatViewableInfos.forEach { viewableInfo ->
+                val dragging = rootInfo.dragging
+                val useViewableInfo = if (viewableInfo.viewable.id == dragging?.viewable?.id)
+                    dragging else viewableInfo
+
                 div(+styles.gridItem) {
-                    this.key = viewableInfo.viewable.id
-                    this.ref = viewableInfo.ref
-                    controlViews[viewableInfo.viewable.id]?.let { child(it) }
+                    this.key = useViewableInfo.viewable.id
+                    this.ref = useViewableInfo.ref
+                    controlViews[useViewableInfo.viewable.id]?.let { child(it) }
                 }
             }
         }

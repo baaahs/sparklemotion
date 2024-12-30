@@ -39,4 +39,11 @@ class Grid2Styles(val theme: Theme) : StyleSheet("app-ui-gridlayout", isStatic =
         transition(::left, .2.s)
         transition(::right, .2.s)
     }
+
+    val dragging by css {
+        transition(::top, 0.s)
+        transition(::bottom, 0.s)
+        transition(::left, 0.s)
+        transition(::right, 0.s)
+    }
 }
