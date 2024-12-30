@@ -45,6 +45,9 @@ kotlin {
         browser {
             useCommonJs()
             binaries.executable()
+            commonWebpackConfig {
+                cssSupport { enabled = true }
+            }
         }
     }
 
@@ -180,6 +183,7 @@ kotlin {
                 implementation(npm("ace-builds", "1.28.0"))
                 implementation(npm("react-ace", "10.1.0"))
                 implementation(npm("markdown-it", "~11.0.0"))
+                implementation(npm("shepherd.js", "14.3.0"))
 
                 // To support animated GIFs:
                 implementation(npm("gifuct-js", "2.1.2"))

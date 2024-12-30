@@ -32,6 +32,8 @@ import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.div
+import web.timers.setTimeout
+import kotlin.time.Duration.Companion.seconds
 
 val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val webClient = props.webClient
@@ -193,6 +195,17 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     }
 
     val appState = AppState.getState(webClient, show, props.sceneManager.scene)
+
+    val tour = memo { AppTour(allStyles).tour }
+//    val shepherdContext = jso<ShepherdContextType> {
+//        this.Shepherd = tour
+//    }
+//    ShepherdJourneyContext.Provider {
+//        attrs.value = shepherdContext
+//    }
+    setTimeout(2.seconds) {
+        tour.start()
+    }
 
     appContext.Provider {
         attrs.value = myAppContext
