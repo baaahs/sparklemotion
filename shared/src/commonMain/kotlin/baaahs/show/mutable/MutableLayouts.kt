@@ -331,30 +331,89 @@ interface MutableIGridLayout : MutableILayout {
     fun find(control: MutableControl): MutableGridItem = items.find { it.control == control }
         ?: error("No control \"${control.title}\" among [${items.joinToString(", ") { it.control.title }}]")
 
+    fun visit(visitor: (MutableGridItem) -> Unit) {
+        items.forEach {
+            visitor(it)
+            it.layout?.visit(visitor)
+        }
+    }
+
+    fun visitLayouts(
+        parent: MutableGridItem?,
+        visitor: (layout: MutableIGridLayout, parent: MutableGridItem?) -> Unit
+    ) {
+        visitor(this, parent)
+        ArrayList(items).forEach { it.layout?.visitLayouts(it, visitor) }
+    }
+
+    /**
+     * Apply layout from [updatedGridLayout] in place.
+     *
+     * We assume that `updatedGridLayout` is a valid [IGridLayout], and that
+     * all controls within it are also in this [MutableIGridLayout].
+     */
+    fun applyChanges(
+        updatedGridLayout: IGridLayout
+    ) {
+        val allUpdatedControlsByParent = buildMap {
+            updatedGridLayout.visit(null) { item, parent ->
+                println("item ${item.controlId} is in ${parent?.controlId}")
+                getOrPut(parent?.controlId) { mutableListOf<GridItem>() }
+                    .add(item)
+            }
+        }
+
+        val allMutableItemsById = buildMap {
+            visitLayouts(null) { layout, parent ->
+                layout.items.forEach {
+                    put(it.control.asBuiltId, it)
+                }
+            }
+        }
+        visitLayouts(null) { layout, parent ->
+            println("Modifying ${parent?.control?.asBuiltId ?: "Root grid"}:")
+            println("Items were: ${layout.items.joinToString { it.control.asBuiltId ?: "?" }}:")
+            layout.items.clear()
+            val updatedItems = allUpdatedControlsByParent[parent?.control?.asBuiltId]
+            updatedItems?.forEach { updatedItem ->
+                val mutableItem = allMutableItemsById[updatedItem.controlId]
+                    ?: error("No control with id ${updatedItem.controlId}.")
+                mutableItem.apply {
+                    column = updatedItem.column
+                    row = updatedItem.row
+                    width = updatedItem.width
+                    height = updatedItem.height
+                }
+                layout.items.add(mutableItem)
+            }
+            println("Items now:  ${layout.items.joinToString { it.control.asBuiltId ?: "?" }}:")
+        }
+    }
+
     fun applyChanges(
         originalItems: List<OpenGridItem>,
-        newLayout: baaahs.ui.gridlayout.Layout,
+        newLayout: IGridLayout,
         mutableShow: MutableShow
     ) {
         val oldItems = ArrayList(this.items)
         this.items.clear()
         newLayout.items.forEach { newLayoutItem ->
-            val oldItemIndex = originalItems.indexOfFirst { it.control.id == newLayoutItem.i }
+            val oldItemIndex = originalItems.indexOfFirst { it.control.id == newLayoutItem.controlId }
             this.items.add(
                 if (oldItemIndex == -1) {
-                    val mutableControl = mutableShow.findControl(newLayoutItem.i)
+                    val mutableControl = mutableShow.findControl(newLayoutItem.controlId)
                     MutableGridItem(
                         mutableControl,
-                        newLayoutItem.x, newLayoutItem.y,
-                        newLayoutItem.w, newLayoutItem.h,
+                        newLayoutItem.column, newLayoutItem.row,
+                        newLayoutItem.width , newLayoutItem.height,
                         if (mutableControl.hasInternalLayout) createSubLayout() else null
                     )
                 } else {
                     oldItems[oldItemIndex].apply {
-                        column = newLayoutItem.x
-                        row = newLayoutItem.y
-                        width = newLayoutItem.w
-                        height = newLayoutItem.h
+                        column = newLayoutItem.column
+                        row = newLayoutItem.row
+                        width = newLayoutItem.width
+                        height = newLayoutItem.height
                     }
                 }
             )

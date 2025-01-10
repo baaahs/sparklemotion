@@ -7,20 +7,20 @@ import baaahs.app.ui.editor.Editor
 import baaahs.app.ui.editor.GridLayoutEditorPanel
 import baaahs.client.document.OpenDocument
 import baaahs.control.OpenButtonControl
+import baaahs.geom.Vector2I
 import baaahs.getBang
 import baaahs.randomId
 import baaahs.show.*
-import baaahs.show.mutable.MutableIGridLayout
-import baaahs.show.mutable.MutableILayout
-import baaahs.show.mutable.MutableShow
-import baaahs.show.mutable.ShowBuilder
+import baaahs.show.mutable.*
 import baaahs.sm.webapi.Problem
 import baaahs.sm.webapi.Severity
 import baaahs.ui.Observable
+import baaahs.ui.View
 import baaahs.ui.addObserver
 import baaahs.util.Logger
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
+import kotlinx.serialization.json.JsonElement
 
 interface OpenContext : GadgetProvider {
     val allControls: List<OpenControl>
@@ -41,7 +41,7 @@ object EmptyOpenContext : OpenContext {
 
     override fun findControl(id: String): OpenControl? = null
 
-    override fun getControl(id: String): OpenControl = error("not really an open context")
+    override fun getControl(id: String): OpenControl = FakeOpenControl(id)
 
     override fun getFeed(id: String): Feed = error("not really an open context")
 
@@ -53,6 +53,14 @@ object EmptyOpenContext : OpenContext {
         error("not really an open context")
 
     override fun release() {}
+}
+
+class FakeOpenControl(override val id: String) : OpenControl {
+    override fun getState(): Map<String, JsonElement>? = TODO("not implemented")
+    override fun applyState(state: Map<String, JsonElement>) = TODO("not implemented")
+    override fun toNewMutable(mutableShow: MutableShow): MutableControl = TODO("not implemented")
+    override fun getView(controlProps: ControlProps): View = TODO("not implemented")
+
 }
 
 class OpenShow(
@@ -278,6 +286,7 @@ interface OpenTab {
 }
 
 class OpenGridTab(
+    override val gridTab: GridTab,
     override val title: String,
     override var columns: Int,
     override var rows: Int,
@@ -288,9 +297,43 @@ class OpenGridTab(
             item.control.addTo(builder, depth + 1, item.layout)
         }
     }
+
+    fun moveElement(movingId: String, toLayoutId: String?, toPosition: Vector2I): GridTab {
+        var movingItem: GridItem = gridTab.find(movingId)
+            ?: error("No such element \"$movingId\".")
+
+        fun applyChanges(item: GridItem): GridItem {
+            val layout = item.layout
+            if (layout == null) return item
+            val containsItem = layout.items.contains(movingItem)
+            val movingHere = item.id == toLayoutId
+            return if (containsItem && !movingHere) {
+                item.copy(layout = layout.removeElement(movingId) as? GridLayout)
+            } else if (movingHere) {
+                item.copy(layout = layout.moveElement(movingItem, toPosition.x, toPosition.y) as GridLayout)
+            } else {
+                item.copy(layout = layout.copy(items = layout.items.map { subItem -> applyChanges(subItem) }))
+            }
+        }
+
+        fun applyChanges(gridTab: GridTab): GridTab {
+            val containsItem = gridTab.items.contains(movingItem)
+            val movingHere = toLayoutId == null
+            return if (containsItem && !movingHere) {
+                gridTab.removeElement(movingId) as GridTab
+            } else if (movingHere) {
+                gridTab.moveElement(movingItem, toPosition.x, toPosition.y) as GridTab
+            } else {
+                gridTab.copy(items = gridTab.items.map { subItem -> applyChanges(subItem) })
+            }
+        }
+
+        return applyChanges(gridTab)
+    }
 }
 
 class OpenGridLayout(
+    override val gridTab: GridLayout,
     override val columns: Int,
     override val rows: Int,
     val matchParent: Boolean,
@@ -298,6 +341,7 @@ class OpenGridLayout(
 ) : OpenIGridLayout
 
 interface OpenIGridLayout {
+    val gridTab: IGridLayout
     val columns: Int
     val rows: Int
     val items: List<OpenGridItem>
@@ -313,12 +357,11 @@ data class GridDimens(
 )
 
 class OpenGridItem(
+    val gridItem: GridItem,
     val control: OpenControl,
     val column: Int,
     val row: Int,
     val width: Int,
     val height: Int,
     val layout: OpenGridLayout?
-) {
-    val gridDimens = GridDimens(width, height)
-}
+)

@@ -66,6 +66,7 @@ class XBuilder(val logger: Logger) : react.RBuilderImpl() {
     private val counter = external.react.rawUseState { counterIncr.component1().next() }
     private var inRender = true
     private var stateHasChanged = false
+    val renderCounter get() = counter.component1()
 
     init {
         react.useEffectOnceWithCleanup {
