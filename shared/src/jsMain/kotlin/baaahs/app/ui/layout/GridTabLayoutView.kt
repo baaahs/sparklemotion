@@ -10,16 +10,15 @@ import baaahs.show.live.OpenGridTab
 import baaahs.show.mutable.MutableGridTab
 import baaahs.show.mutable.MutableIGridLayout
 import baaahs.ui.*
-import baaahs.ui.gridlayout.GridModel
-import baaahs.ui.gridlayout.applyChanges
-import baaahs.ui.gridlayout.createModel
-import baaahs.ui.gridlayout.gridManager
+import baaahs.ui.gridlayout.*
 import baaahs.util.useResizeListener
 import kotlinx.css.*
 import materialui.icon
+import mui.icons.material.Add
 import mui.material.*
 import react.*
 import react.dom.div
+import react.dom.onClick
 import styled.StyleSheet
 import web.dom.Element
 import web.html.HTMLDivElement
@@ -37,14 +36,11 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
 
     var layoutPxDimens by state<Pair<Int, Int>?> { null }
     val gridLayout = props.tab
-    val columns = gridLayout.columns
-    val rows = gridLayout.rows
 
     var showAddMenu by state<AddMenuContext?> { null }
     val closeAddMenu by handler { showAddMenu = null }
 
     val editMode = observe(appContext.showManager.editMode)
-    var draggingItem by state<String?> { null }
 
     val gridLayoutEditor = props.tabEditor
     val handleLayoutChange by handler(gridLayout, gridLayoutEditor) { newGridModel: GridModel/*, stillDragging: Boolean*/ ->
@@ -71,12 +67,15 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
 //        draggingItem = null
 //    }
 
-    val handleEmptyGridCellClick by eventHandler { e ->
+    val handleEmptyGridCellClick by eventHandler(editMode) { e ->
+        if (editMode.isOff) return@eventHandler
+
         val target = e.currentTarget as HTMLElement
         val dataset = target.dataset.asDynamic()
+        val nodeId = dataset.cellParentNodeId as String
         val x = (dataset.cellX as String).toInt()
         val y = (dataset.cellY as String).toInt()
-        showAddMenu = AddMenuContext(target, x, y, 1, 1)
+        showAddMenu = AddMenuContext(target, nodeId, x, y, 1, 1)
     }
 
     val containerDiv = ref<HTMLDivElement>()
@@ -97,19 +96,41 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
 
     val gridModel = memo(props.tab.gridTab) { props.tab.gridTab.createModel() }
 
-    val doRender: (String) -> ReactNode by handler(openShow) { id: String ->
+    val doRender: (String) -> ReactNode by handler(openShow, props.controlProps) { id: String ->
         val openControl = openShow.allControls.find { it.id == id }
         if (openControl == null)
             println("GridRootView: No control found with id \"$id\"")
 
         openControl?.let { openControl ->
             buildElement {
+                gridItem {
+                    attrs.control = openControl
+                    attrs.controlProps = genericControlProps
+                }
                 (openControl.getView(props.controlProps) as JsView)
                     .render(this)
             }
         } ?: "".asTextNode()
     }
 
+    val doRenderEmptyCell: RenderEmptyCell = memo(handleEmptyGridCellClick) {
+        RenderEmptyCell { parentNode, cell, ref ->
+            buildElement {
+                div(+layoutStyles.emptyGridCell) {
+                    this.ref = ref
+
+                    attrs["data-cell-parent-node-id"] = parentNode.id
+                    attrs["data-cell-x"] = cell.x
+                    attrs["data-cell-y"] = cell.y
+
+                    attrs.onClick = handleEmptyGridCellClick.withMouseEvent()
+
+                    icon(Add)
+                }
+            }
+
+        }
+    }
 //    gridModel.change {
 //        this.columns = columns
 //        this.rows = rows
@@ -121,31 +142,14 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
         ref = containerDiv
 
         layoutPxDimens?.let { layoutDimens ->
-            val (layoutWidth, layoutHeight) = layoutDimens
-            val gridRowHeight = (layoutHeight.toDouble() - margin) / rows - itemPadding
+            gridManager {
+                attrs.gridModel = gridModel
+                attrs.render = doRender
+                attrs.isEditable = editMode.isOn
+                attrs.onChange = handleLayoutChange
+                attrs.renderEmptyCell = doRenderEmptyCell
+            }
 
-//            gridBackground {
-//                attrs.layoutGrid = layoutGrid
-//                attrs.margin = margin
-//                attrs.itemPadding = itemPadding
-//                attrs.layoutWidth = layoutWidth
-//                attrs.gridRowHeight = gridRowHeight
-//                attrs.onGridCellClick = handleEmptyGridCellClick
-//            }
-
-            if (true) {
-//                gridRoot {
-//                    attrs.gridContext = gridContext
-//                    attrs.controlProps = genericControlProps
-//                    attrs.onLayoutChange = handleLayoutChange
-//                }
-                gridManager {
-                    attrs.gridModel = gridModel
-                    attrs.render = doRender
-                    attrs.isEditable = editMode.isOn
-                    attrs.onChange = handleLayoutChange
-                }
-            } else {
 //                gridLayout {
 //                    attrs.id = "top"
 //                    attrs.className = +layoutStyles.gridContainer
@@ -181,7 +185,6 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
 //                        }
 //                    }
 //                }
-            }
         }
     }
 
@@ -214,6 +217,7 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
 
 class AddMenuContext(
     val anchorEl: Element,
+    val parentNodeId: String,
     val column: Int,
     val row: Int,
     val width: Int = 1,

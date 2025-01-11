@@ -4,6 +4,7 @@ import baaahs.geom.Vector2I
 import baaahs.ui.unaryPlus
 import js.objects.jso
 import react.ReactNode
+import react.Ref
 import react.RefCallback
 import react.buildElement
 import react.dom.div
@@ -22,6 +23,7 @@ class ReactGridManager(
     val styles: Grid2Styles,
     private val debugFn: (String) -> Unit,
     val render: (String) -> ReactNode,
+    val renderEmptyCell: RenderEmptyCell?,
     onChange: (GridModel) -> Unit
 ) : GridManager(model, onChange) {
     init {
@@ -61,11 +63,45 @@ class ReactGridManager(
         }
     }
 
+    inner class EmptyCellWrapper(
+        parentNode: Node,
+        val cell: Vector2I,
+        renderEmptyCell: RenderEmptyCell
+    ) {
+        val ref = RefCallback<HTMLElement> { el -> this.mounted(el) }
+        var el: HTMLElement? = null
+        val reactNode = renderEmptyCell.render(parentNode, cell, ref)
+        private var layoutBounds: Rect? = null
+
+        fun mounted(el: HTMLElement?) {
+            this.el?.let { if (it != el) unmount(it) }
+            this.el = el
+            if (el != null) {
+                applyStyle()
+            }
+        }
+
+        fun unmount(el: HTMLElement) {
+        }
+
+        fun layout(container: GridContainer) {
+            layoutBounds = container.calculateRegionBounds(cell.x, cell.y, 1, 1)
+            applyStyle()
+        }
+
+        fun applyStyle() {
+            val el = el ?: return
+            val bounds = layoutBounds ?: return
+            el.applyBounds(bounds)
+        }
+    }
+
     inner class ReactNodeWrapper(
         node: Node
     ) : NodeWrapper(node) {
         val ref = RefCallback<HTMLElement> { el -> this.mounted(el) }
         var el: HTMLElement? = null
+        // Must be lazy, or outer class won't be initialized yet.
         val reactNode by lazy {
             buildElement {
                 div(+styles.gridItem) {
@@ -74,6 +110,21 @@ class ReactGridManager(
                     child(render(node.id))
                 }
             }
+        }
+        // Must be lazy, or outer class won't be initialized yet.
+        val emptyCells by lazy {
+            renderEmptyCell?.let { render ->
+                node.layout?.let { layout ->
+                    buildList {
+                        for (row in 0 until layout.rows) {
+                            for (column in 0 until layout.columns) {
+                                val cell = Vector2I(column, row)
+                                add(EmptyCellWrapper(node, cell, render))
+                            }
+                        }
+                    }
+                }
+            } ?: emptyList()
         }
         private var listenersRegistered = false
 
@@ -126,6 +177,14 @@ class ReactGridManager(
             //        el.addEventListener(DragEvent.DRAG_START, ::onDragStart)
         }
 
+        override fun layoutContainer(container: GridContainer) {
+            super.layoutContainer(container)
+
+            emptyCells.forEach { emptyCellWrapper ->
+                emptyCellWrapper.layout(container)
+            }
+        }
+
         private val preventDefault = { e: Event -> e.preventDefault() }
         fun onPointerDown(e: PointerEvent) {
             println("isEditable = $isEditable button = ${e.button}")
@@ -173,4 +232,8 @@ class ReactGridManager(
         style.width = "${bounds.width}px"
         style.height = "${bounds.height}px"
     }
+}
+
+fun interface RenderEmptyCell {
+    fun render(parentNode: Node, cell: Vector2I, ref: Ref<HTMLElement>): ReactNode
 }

@@ -1,7 +1,6 @@
 package baaahs.ui.gridlayout
 
 import baaahs.app.ui.appContext
-import baaahs.document
 import baaahs.geom.Vector2I
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
@@ -27,7 +26,7 @@ private val GridManagerView = xComponent<GridManagerProps>("GridManager") { prop
 //            }
         }
         console.log("New ReactGridManager")
-        ReactGridManager(props.gridModel, grid2Styles, debugFn, props.render) {
+        ReactGridManager(props.gridModel, grid2Styles, debugFn, props.render, props.renderEmptyCell) {
             console.log("Grid changed!")
             console.log(it.rootNode.stringify())
             props.onChange(it)
@@ -51,6 +50,7 @@ private val GridManagerView = xComponent<GridManagerProps>("GridManager") { prop
 
         gridManager.reactNodeWrappers.forEach { (_, nodeWrapper) ->
             child(nodeWrapper.reactNode)
+            nodeWrapper.emptyCells.forEach { cell -> child(cell.reactNode) }
         }
 
         child(gridManager.placeholder.reactNode)
@@ -60,6 +60,7 @@ private val GridManagerView = xComponent<GridManagerProps>("GridManager") { prop
 external interface GridManagerProps : Props {
     var gridModel: GridModel
     var render: (String) -> ReactNode
+    var renderEmptyCell: RenderEmptyCell?
     var isEditable: Boolean?
     var onChange: (GridModel) -> Unit
 }

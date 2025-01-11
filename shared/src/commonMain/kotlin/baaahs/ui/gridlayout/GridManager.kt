@@ -171,7 +171,7 @@ abstract class GridManager(
 
         abstract fun applyStyle()
 
-        fun layout(bounds: Rect, layer: Int = 0) {
+        open fun layout(bounds: Rect, layer: Int = 0) {
             if (isDragging) {
                 placeholder.layout(bounds)
                 return
@@ -187,16 +187,20 @@ abstract class GridManager(
                 val layout = node.layout!!
                 val gridContainer = GridContainer(layout.columns, layout.rows, bounds.inset(margin), gap)
                 this.gridContainer = gridContainer
-                forChildren { child ->
-                    val childBounds = try {
-                        with (child.node) {
-                            gridContainer.calculateRegionBounds(left, top, width, height)
-                        }
-                    } catch (e: Exception) {
-                        throw Exception("Failed to calculate region bounds for ${child.node.id} in ${node.id}: ${e.message}", e)
+                layoutContainer(gridContainer)
+            }
+        }
+
+        open fun layoutContainer(gridContainer: GridContainer) {
+            forChildren { child ->
+                val childBounds = try {
+                    with(child.node) {
+                        gridContainer.calculateRegionBounds(left, top, width, height)
                     }
-                    child.layout(childBounds, layer + 1)
+                } catch (e: Exception) {
+                    throw Exception("Failed to calculate region bounds for ${child.node.id} in ${node.id}: ${e.message}", e)
                 }
+                child.layout(childBounds, layer + 1)
             }
         }
 
