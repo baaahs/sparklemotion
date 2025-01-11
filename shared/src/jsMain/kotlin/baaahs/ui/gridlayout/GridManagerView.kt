@@ -12,11 +12,15 @@ import web.html.HTMLElement
 private val GridManagerView = xComponent<GridManagerProps>("GridManager") { props ->
     console.log("GridManagerView render ", renderCounter)
     val appContext = useContext(appContext)
-    val layoutStyles = appContext.allStyles.layout
     val grid2Styles = appContext.allStyles.grid2
 
+    val rootRef = ref<HTMLElement>()
     val rootSize = ref<Vector2I>(null)
-    val gridManager = memo(props.gridModel, props.render, props.onChange) {
+    val gridManager = memo(
+        props.gridModel,
+        props.renderNode, props.renderContainerNode, props.renderEmptyCell,
+        props.onChange
+    ) {
         val debugFn = { s: String ->
 //            val el = document.getElementsByClassName("app-ui-gridlayout-debugBox")[0] as HTMLElement
 //            if (s.startsWith('\n')) {
@@ -26,31 +30,49 @@ private val GridManagerView = xComponent<GridManagerProps>("GridManager") { prop
 //            }
         }
         console.log("New ReactGridManager")
-        ReactGridManager(props.gridModel, grid2Styles, debugFn, props.render, props.renderEmptyCell) {
+        ReactGridManager(
+            props.gridModel,
+            grid2Styles,
+            debugFn,
+            props.renderNode,
+            props.renderContainerNode,
+            props.renderEmptyCell,
+            rootRef
+        ) {
             console.log("Grid changed!")
             console.log(it.rootNode.stringify())
             props.onChange(it)
         }.also {
-            rootSize.current?.let { size -> it.onResize(size.x, size.y) }
+            it.withTransitionsDisabled {
+                rootSize.current?.let { size -> it.onResize(size.x, size.y) }
+            }
         }
     }
 
     gridManager.editable(props.isEditable == true)
 
-    val rootRef = ref<HTMLElement>()
     useResizeListener(rootRef) { width, height ->
-        rootSize.current = Vector2I(width, height)
-        gridManager.onResize(width, height)
+        gridManager.withTransitionsDisabled {
+            rootSize.current = Vector2I(width, height)
+            val rect = (rootRef.current ?: error("No root ref?"))
+                .getBoundingClientRect()
+            gridManager.onMove(rect.x.toInt(), rect.y.toInt())
+            gridManager.onResize(width, height)
+        }
     }
 
     div(+grid2Styles.debugBox) {}
 
-    div(+layoutStyles.gridOuterContainer) {
+    div(+grid2Styles.gridOuterContainer) {
         ref = rootRef
 
         gridManager.reactNodeWrappers.forEach { (_, nodeWrapper) ->
             child(nodeWrapper.reactNode)
-            nodeWrapper.emptyCells.forEach { cell -> child(cell.reactNode) }
+            if (nodeWrapper.emptyCells.isNotEmpty()) {
+                div(+grid2Styles.gridEmptyCells) {
+                    nodeWrapper.emptyCells.forEach { cell -> child(cell.reactNode) }
+                }
+            }
         }
 
         child(gridManager.placeholder.reactNode)
@@ -59,7 +81,8 @@ private val GridManagerView = xComponent<GridManagerProps>("GridManager") { prop
 
 external interface GridManagerProps : Props {
     var gridModel: GridModel
-    var render: (String) -> ReactNode
+    var renderNode: RenderNode
+    var renderContainerNode: RenderContainerNode
     var renderEmptyCell: RenderEmptyCell?
     var isEditable: Boolean?
     var onChange: (GridModel) -> Unit

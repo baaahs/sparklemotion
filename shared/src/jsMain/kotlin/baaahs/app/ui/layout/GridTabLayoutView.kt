@@ -4,6 +4,7 @@ import baaahs.app.ui.AppContext
 import baaahs.app.ui.appContext
 import baaahs.app.ui.editor.AddControlToGrid
 import baaahs.app.ui.editor.Editor
+import baaahs.control.OpenButtonGroupControl
 import baaahs.plugin.AddControlMenuItem
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenGridTab
@@ -18,6 +19,7 @@ import mui.icons.material.Add
 import mui.material.*
 import react.*
 import react.dom.div
+import react.dom.header
 import react.dom.onClick
 import styled.StyleSheet
 import web.dom.Element
@@ -96,24 +98,58 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
 
     val gridModel = memo(props.tab.gridTab) { props.tab.gridTab.createModel() }
 
-    val doRender: (String) -> ReactNode by handler(openShow, props.controlProps) { id: String ->
-        val openControl = openShow.allControls.find { it.id == id }
-        if (openControl == null)
-            println("GridRootView: No control found with id \"$id\"")
+    val renderNode: RenderNode = memo(openShow, props.controlProps, genericControlProps) {
+        RenderNode { node: Node ->
+            val id = node.id
+            val openControl = openShow.allControls.find { it.id == id }
+            if (openControl == null)
+                println("GridRootView: No control found with id \"$id\"")
 
-        openControl?.let { openControl ->
-            buildElement {
-                gridItem {
-                    attrs.control = openControl
-                    attrs.controlProps = genericControlProps
+            openControl?.let { openControl ->
+                buildElement {
+                    gridItem {
+                        attrs.control = openControl
+                        attrs.controlProps = genericControlProps
+                    }
                 }
-                (openControl.getView(props.controlProps) as JsView)
-                    .render(this)
-            }
-        } ?: "".asTextNode()
+            } ?: "".asTextNode()
+        }
     }
 
-    val doRenderEmptyCell: RenderEmptyCell = memo(handleEmptyGridCellClick) {
+    val renderContainerNode: RenderContainerNode = memo(openShow, gridModel, layoutStyles, editMode, props.tab.gridTab, props.controlProps) {
+        RenderContainerNode { node: Node, childNode: ReactNode ->
+            val id = node.id
+
+            buildElement {
+                if (node == gridModel.rootNode) {
+                    div(+layoutStyles.rootGrid) {
+                        child(childNode)
+                    }
+                } else {
+                    val openControl = openShow.allControls.find { it.id == id }
+                        ?: error("Control $id not found.")
+                    openControl as? OpenButtonGroupControl
+                        ?: error("Control $id is ${this::class.simpleName}, not OpenButtonGroupControl.")
+                    Card {
+                        attrs.className = -layoutStyles.buttonGroupCard and
+                                (+if (editMode.isOn) layoutStyles.editModeOn else layoutStyles.editModeOff) // and
+
+                        if (openControl.title.isNotBlank() && openControl.showTitle) {
+                            header(+layoutStyles.buttonGroupHeader) {
+                                +openControl.title
+                            }
+                        }
+
+                        div(+layoutStyles.buttonGroupGrid) {
+                            child(childNode)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    val renderEmptyCell: RenderEmptyCell = memo(handleEmptyGridCellClick) {
         RenderEmptyCell { parentNode, cell, ref ->
             buildElement {
                 div(+layoutStyles.emptyGridCell) {
@@ -144,10 +180,11 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
         layoutPxDimens?.let { layoutDimens ->
             gridManager {
                 attrs.gridModel = gridModel
-                attrs.render = doRender
+                attrs.renderNode = renderNode
+                attrs.renderContainerNode = renderContainerNode
+                attrs.renderEmptyCell = renderEmptyCell
                 attrs.isEditable = editMode.isOn
                 attrs.onChange = handleLayoutChange
-                attrs.renderEmptyCell = doRenderEmptyCell
             }
 
 //                gridLayout {

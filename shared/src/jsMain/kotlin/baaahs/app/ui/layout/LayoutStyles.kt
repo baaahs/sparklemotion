@@ -271,31 +271,32 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
         opacity = "calc((1 - var(--dimmer-level)) / 2 + .5)".unsafeCast<Number>()
     }
 
+    val rootGrid by css {
+        flex = Flex.GROW
+        display = Display.grid
+    }
+
     val buttonGroupGrid by css {
         flex = Flex.GROW
 
         display = Display.grid
-        gridTemplateRows = GridTemplateRows(GridAutoRows.minContent, GridAutoRows.auto)
+//        gridTemplateRows = GridTemplateRows(GridAutoRows.minContent, GridAutoRows.auto)
         overflowY = Overflow.scroll
-        backgroundColor = if (SparkleMotion.USE_CSS_TRANSFORM) {
-            Color("#0000007f")
-        } else {
-            theme.paperLowContrast
-        }
+        backgroundColor = theme.paperLowContrast
 
-        descendants(Styles, Styles::controlButton) {
-            transition(::transform, duration = Styles.editTransitionDuration, timing = Timing.linear)
-        }
-
-        child(this@LayoutStyles, this@LayoutStyles::gridContainer) {
-            gridColumn = GridColumn("1")
-            gridRow = GridRow("2")
-        }
-        child(this@LayoutStyles, this@LayoutStyles::gridBackground) {
-            gridColumn = GridColumn("1")
-            gridRow = GridRow("2")
-            position = Position.relative
-        }
+//        descendants(Styles, Styles::controlButton) {
+//            transition(::transform, duration = Styles.editTransitionDuration, timing = Timing.linear)
+//        }
+//
+//        child(this@LayoutStyles, this@LayoutStyles::gridContainer) {
+//            gridColumn = GridColumn("1")
+//            gridRow = GridRow("2")
+//        }
+//        child(this@LayoutStyles, this@LayoutStyles::gridBackground) {
+//            gridColumn = GridColumn("1")
+//            gridRow = GridRow("2")
+//            position = Position.relative
+//        }
     }
 
     val global = CssBuilder().apply {

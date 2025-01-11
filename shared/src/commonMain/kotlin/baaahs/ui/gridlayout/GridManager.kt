@@ -23,6 +23,7 @@ abstract class GridManager(
 
     internal var draggingNode: NodeWrapper? = null
 
+    var rootPosition: Vector2I? = null
     var margin = 5
     var gap = 5
 
@@ -33,6 +34,10 @@ abstract class GridManager(
         for (nodeWrapper in nodeWrappers.values) {
             nodeWrapper.updateEditable()
         }
+    }
+
+    fun onMove(x: Int, y: Int) {
+        rootPosition = Vector2I(x, y)
     }
 
     fun onResize(width: Int, height: Int) {
@@ -171,27 +176,19 @@ abstract class GridManager(
 
         abstract fun applyStyle()
 
-        open fun layout(bounds: Rect, layer: Int = 0) {
+        fun layout(bounds: Rect) {
             if (isDragging) {
                 placeholder.layout(bounds)
                 return
             }
 
-            if (node.id == "ripple") {
-                println("layout ${node.id} $bounds")
-            }
             this.layoutBounds = bounds
             applyStyle()
-
-            if (node.isContainer) {
-                val layout = node.layout!!
-                val gridContainer = GridContainer(layout.columns, layout.rows, bounds.inset(margin), gap)
-                this.gridContainer = gridContainer
-                layoutContainer(gridContainer)
-            }
         }
 
         open fun layoutContainer(gridContainer: GridContainer) {
+            this.gridContainer = gridContainer
+
             forChildren { child ->
                 val childBounds = try {
                     with(child.node) {
@@ -200,7 +197,7 @@ abstract class GridManager(
                 } catch (e: Exception) {
                     throw Exception("Failed to calculate region bounds for ${child.node.id} in ${node.id}: ${e.message}", e)
                 }
-                child.layout(childBounds, layer + 1)
+                child.layout(childBounds)
             }
         }
 

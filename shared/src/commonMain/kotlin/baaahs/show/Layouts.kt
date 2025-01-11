@@ -1,7 +1,6 @@
 package baaahs.show
 
 import baaahs.camelize
-import baaahs.geom.Vector2I
 import baaahs.getBang
 import baaahs.replaceAll
 import baaahs.show.live.*
