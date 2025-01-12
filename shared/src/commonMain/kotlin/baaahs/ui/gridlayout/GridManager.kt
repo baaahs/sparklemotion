@@ -23,7 +23,6 @@ abstract class GridManager(
 
     internal var draggingNode: NodeWrapper? = null
 
-    var rootPosition: Vector2I? = null
     var margin = 5
     var gap = 5
 
@@ -34,10 +33,6 @@ abstract class GridManager(
         for (nodeWrapper in nodeWrappers.values) {
             nodeWrapper.updateEditable()
         }
-    }
-
-    fun onMove(x: Int, y: Int) {
-        rootPosition = Vector2I(x, y)
     }
 
     fun onResize(width: Int, height: Int) {
@@ -70,14 +65,12 @@ abstract class GridManager(
 
     fun move(movingNode: Node, intoNode: Node, cell: Vector2I, directions: Array<Direction>): GridModel {
         return try {
-            debug("move on current model")
-            baseModel.moveElement(movingNode, intoNode, cell, directions)
+            model.moveElement(movingNode, intoNode, cell, directions)
         } catch (e: ImpossibleLayoutException) {
             debug("move failed: ${e.message}")
             null
         } ?: try {
-            debug("move on base model")
-            model.moveElement(movingNode, intoNode, cell, directions)
+            baseModel.moveElement(movingNode, intoNode, cell, directions)
         } catch (e: ImpossibleLayoutException) {
             debug("move failed: ${e.message}")
             null
@@ -184,6 +177,12 @@ abstract class GridManager(
 
             this.layoutBounds = bounds
             applyStyle()
+
+            if (node.isContainer) {
+                gridContainer?.let { gridContainer ->
+                    layoutContainer(gridContainer)
+                }
+            }
         }
 
         open fun layoutContainer(gridContainer: GridContainer) {

@@ -44,7 +44,9 @@ private val GridManagerView = xComponent<GridManagerProps>("GridManager") { prop
             props.onChange(it)
         }.also {
             it.withTransitionsDisabled {
-                rootSize.current?.let { size -> it.onResize(size.x, size.y) }
+                rootSize.current?.let { size ->
+                    it.onResize(size.x, size.y)
+                }
             }
         }
     }
@@ -54,9 +56,6 @@ private val GridManagerView = xComponent<GridManagerProps>("GridManager") { prop
     useResizeListener(rootRef) { width, height ->
         gridManager.withTransitionsDisabled {
             rootSize.current = Vector2I(width, height)
-            val rect = (rootRef.current ?: error("No root ref?"))
-                .getBoundingClientRect()
-            gridManager.onMove(rect.x.toInt(), rect.y.toInt())
             gridManager.onResize(width, height)
         }
     }
@@ -68,6 +67,7 @@ private val GridManagerView = xComponent<GridManagerProps>("GridManager") { prop
 
         gridManager.reactNodeWrappers.forEach { (_, nodeWrapper) ->
             child(nodeWrapper.reactNode)
+
             if (nodeWrapper.emptyCells.isNotEmpty()) {
                 div(+grid2Styles.gridEmptyCells) {
                     nodeWrapper.emptyCells.forEach { cell -> child(cell.reactNode) }

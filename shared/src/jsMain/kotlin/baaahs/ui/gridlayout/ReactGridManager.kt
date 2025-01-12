@@ -4,14 +4,12 @@ import baaahs.geom.Vector2I
 import baaahs.ui.and
 import baaahs.ui.unaryPlus
 import js.objects.jso
-import react.MutableRefObject
 import react.ReactNode
 import react.Ref
 import react.RefCallback
 import react.RefObject
 import react.buildElement
 import react.dom.div
-import web.animations.requestAnimationFrame
 import web.dom.document
 import web.dom.observers.ResizeObserver
 import web.events.Event
@@ -27,7 +25,6 @@ import web.uievents.PointerEvent
 import web.uievents.TouchEvent
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.Duration.Companion.seconds
 
 class ReactGridManager(
     model: GridModel,
@@ -137,10 +134,16 @@ class ReactGridManager(
                                 if (el != null) {
                                     resizeObserver = ResizeObserver { _, _ ->
                                         val rect = el.getBoundingClientRect()
-                                        val rootPosition = rootPosition ?: Vector2I.origin
-//                                        queueMicrotask {}
+                                        val rootEl = (rootRef.current ?: error("No root ref?"))
+                                        val rootRect = rootEl.getBoundingClientRect()
+                                        val adjustedBounds = Rect(
+                                            (rect.x - rootRect.x).roundToInt(),
+                                            (rect.y - rootRect.y).roundToInt(),
+                                            rect.width.roundToInt(),
+                                            rect.height.roundToInt()
+                                        )
                                         setTimeout(0.milliseconds) {
-                                            setContainerBounds(Rect(rect.x.roundToInt() - rootPosition.x, rect.y.roundToInt() - rootPosition.y, rect.width.roundToInt(), rect.height.roundToInt()))
+                                            setContainerBounds(adjustedBounds)
                                         }
                                     }.also { it.observe(el) }
                                 } else {
@@ -189,6 +192,7 @@ class ReactGridManager(
         }
 
         fun setContainerBounds(innerBounds: Rect) {
+            if (innerBounds.width == 0 || innerBounds.height == 0) return
             val layout = node.layout!!
             val gridContainer = GridContainer(layout.columns, layout.rows, innerBounds.inset(margin), gap)
             layoutContainer(gridContainer)
