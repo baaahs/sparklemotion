@@ -1,5 +1,6 @@
 package baaahs.ui.gridlayout
 
+import baaahs.geom.Vector2
 import baaahs.geom.Vector2I
 
 data class Rect(
@@ -10,8 +11,9 @@ data class Rect(
 ) {
     val right get() = left + width
     val bottom get() = top + height
-    val size: GridSize get() = GridSize(width, height)
-    val center: Vector2I get() = Vector2I(left + width / 2, top + height / 2)
+    val topLeft get() = Vector2I(left, top)
+    val size get() = Vector2I(width, height)
+    val center get() = Vector2I(left + width / 2, top + height / 2)
 
     val edges get() = "Rect($left,$top — $right,$bottom)"
     fun contains(point: Vector2I): Boolean =
@@ -29,11 +31,14 @@ data class Rect(
             }
     }
 
+    operator fun plus(other: Rect): Rect =
+        Rect(left + other.left, top + other.top, width + other.width, top + other.top)
+
     operator fun plus(by: Vector2I): Rect =
         Rect(left + by.x, top + by.y, width, height)
 
     operator fun minus(other: Rect): Rect =
-        Rect(left - other.left, top - other.top, left + width, top + other.height)
+        Rect(left - other.left, top - other.top, width - other.width, top - other.top)
 
     operator fun div(divisor: Int): Rect =
         Rect(left / divisor, top / divisor, width / divisor, top / divisor)

@@ -3,14 +3,15 @@ package baaahs.ui.gridlayout
 import baaahs.geom.Vector2I
 import baaahs.show.ImpossibleLayoutException
 import baaahs.show.NoChangesException
+import baaahs.show.OutOfBoundsException
 import kotlin.math.min
 
-class GridModel(
+data class GridModel(
     val rootNode: Node
 ) {
-    val parents = buildMap {
-        visit(null) { node, parent -> put(node, parent) }
-    }
+//    val parents = buildMap {
+//        visit(null) { node, parent -> put(node, parent) }
+//    }
 
     fun visit(visitor: (Node) -> Unit) {
         rootNode.visit(visitor)
@@ -31,7 +32,10 @@ class GridModel(
             throw NoChangesException()
         }
 
-        return GridModel(rootNode.moveElement(node, toContainer, cell, directions))
+        return GridModel(
+            rootNode.moveElement(node, toContainer, cell, directions)
+                .canonicalize()
+        )
 
 //        return try {
 //            return GridModel(rootNode.moveElement(node, toContainer, cell))
@@ -39,6 +43,9 @@ class GridModel(
 //            this
 //        }
     }
+
+    fun canonicalize(): GridModel =
+        copy(rootNode = rootNode.canonicalize())
 }
 
 data class Node(
@@ -47,9 +54,11 @@ data class Node(
     val top: Int,
     val width: Int,
     val height: Int,
-    val layout: Layout?,
-    val moved: Boolean = false
+    val layout: Layout?
 ) {
+    var moved: Boolean = false
+    var dragging: Boolean = false
+
     val right get() = left + width - 1
     val bottom get() = top + height - 1
     val size: GridSize get() = GridSize(width, height)
@@ -88,11 +97,11 @@ data class Node(
     }
 
     fun findCollisions(node: Node): List<Node> =
-        layout?.children?.filter { child -> child.collidesWith(node) }
+        layout?.children?.filter { child -> !child.dragging && child.collidesWith(node) }
             ?: emptyList()
 
     /**
-     * Move an element. Responsible for doing cascading movements of other elements.
+     * Move an element within this grid. Responsible for doing cascading movements of other elements.
      *
      * @param movingNode Element to move.
      * @param x X position in grid units.
@@ -101,11 +110,14 @@ data class Node(
      * @throws ImpossibleLayoutException if the move isn't possible because of collisions or constraints.
      */
     fun attemptToPlace(movingNode: Node, x: Int, y: Int, directions: Array<Direction>): Node {
+        val movedNode = movingNode.copy(left = x, top = y).apply { dragging = true }
         for (direction in directions) {
             try {
-                return moveElementInternal(movingNode, x, y, direction)
+                print("-> Try moving node ${movedNode.id} ${direction}ward $id[${movedNode.left},${movedNode.top}] -> $id[$x,$y]: ")
+                return fitElement(movedNode, direction)
+                    .also { println(" worked!") }
             } catch (e: ImpossibleLayoutException) {
-                e.printStackTrace()
+                println(" failed!")
                 // Try again.
             }
         }
@@ -115,36 +127,34 @@ data class Node(
     private fun moveElementInternal(movingNode: Node, x: Int, y: Int, pushDirection: Direction): Node {
         // Short-circuit if nothing to do.
 //        if (movingNode.left == x && movingNode.top == y) return this
-
-        println("Moving node ${movingNode.id} from $id[${movingNode.left},${movingNode.top}] to $id[$x,$y]")
-
-        val movedItem = movingNode.copy(left = x, top = y, moved = true)
+        val movedItem = movingNode.copy(left = x, top = y).apply { moved = true }
         return fitElement(movedItem, pushDirection)
     }
 
     private fun fitElement(movingNode: Node, pushDirection: Direction): Node {
         layout!!
-        val fitMovingNode = movingNode.constrainSize(layout.columns, layout.rows)
+//        val movingNode = movingNode.constrainSize(layout.columns, layout.rows)
 
-        if (outOfBounds(fitMovingNode))
-            throw ImpossibleLayoutException("out of bounds, $pushDirection")
+        if (outOfBounds(movingNode))
+            throw OutOfBoundsException("out of bounds, $pushDirection")
 
-        var updatedLayout = updatedLayout(fitMovingNode)
-        val collisions = findCollisions(fitMovingNode)
+        var updatedLayout = updatedLayout(movingNode)
+        var collisions = findCollisions(movingNode)
 
         // If it collides with anything, move it (recursively).
-        if (collisions.isNotEmpty()) {
+        while (collisions.isNotEmpty()) {
             // When doing this comparison, we have to sort the items we compare with
             // to ensure, in the case of multiple collisions, that we're getting the
             // nearest collision.
             for (collision in pushDirection.sort(collisions)) {
-                println("Resolving collision between ${fitMovingNode.id} at [${fitMovingNode.left},${fitMovingNode.top}] and ${collision.id} at [${collision.left},${collision.top}]")
+                println("Resolving collision between ${movingNode.id} at [${movingNode.left},${movingNode.top}] and ${collision.id} at [${collision.left},${collision.top}]")
 
                 // Short circuit so we can't infinitely loop
-                if (collision.moved) throw ImpossibleLayoutException("collision ${collision.id} $pushDirection")
+//                if (collision.moved) throw ImpossibleLayoutException("collision ${collision.id} $pushDirection")
 
                 updatedLayout =
-                    updatedLayout.pushCollidingElement(fitMovingNode, collision, pushDirection)
+                    updatedLayout.pushCollidingElement(movingNode, collision, pushDirection)
+                collisions = updatedLayout.findCollisions(movingNode)
             }
         }
 
@@ -185,17 +195,14 @@ data class Node(
             direction
         )
 
-    fun canonicalize(): Node = Node(
-        id,
-        left, top, right, bottom,
+    fun canonicalize(): Node = copy(
         layout = layout?.copy(
-            layout.columns, layout.rows,
-            layout.children.sortedWith { a, b ->
+            children = layout.children.sortedWith { a, b ->
                 if (a.top > b.top ||
                     (a.top == b.top && a.left > b.left) ||
                     (a.top == b.top && a.left == b.left && a.id > b.id)
                 ) 1 else -1
-            }
+            }.map { it.canonicalize() }
         )
     )
 
@@ -215,22 +222,22 @@ data class Node(
         )
 
     fun moveElement(
-        movingNode: Node, toContainer: Node, cell: Vector2I, directions: Array<Direction>
+        movingNode: Node, toContainer: Node, topLeft: Vector2I, directions: Array<Direction>
     ): Node {
         if (layout == null) return this
         val containsItem = contains(movingNode)
         val movingHere = toContainer == this
         var newNode = this
-        println("moveElement(${movingNode.id}, ${toContainer.id}, [${cell.x}, ${cell.y}])")
+        println("moveElement(${movingNode.id}, ${toContainer.id}, [${topLeft.x}, ${topLeft.y}])")
         if (movingHere) {
             if (!containsItem) {
                 newNode = newNode.addNode(movingNode)
             }
-            newNode = newNode.attemptToPlace(movingNode, cell.x, cell.y, directions).let { it ->
+            newNode = newNode.attemptToPlace(movingNode, topLeft.x, topLeft.y, directions).let { it ->
                 it.copy(
                     layout = it.layout?.copy(
                         children = it.layout.children
-                            .map { it.moveElement(movingNode, toContainer, cell, directions) }
+                            .map { it.moveElement(movingNode, toContainer, topLeft, directions) }
                     )
                 )
             }
@@ -243,7 +250,7 @@ data class Node(
                 layout = newNode.layout.copy(
                     children = newNode.layout.children
                         .filter { it != movingNode }
-                        .map { it.moveElement(movingNode, toContainer, cell, directions) }
+                        .map { it.moveElement(movingNode, toContainer, topLeft, directions) }
                 )
             )
         }

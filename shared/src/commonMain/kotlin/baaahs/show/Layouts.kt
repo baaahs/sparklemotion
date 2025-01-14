@@ -355,5 +355,7 @@ data class GridItem(
     }
 }
 
-class ImpossibleLayoutException(message: String? = null) : Exception(message)
+class CollisionsException(message: String? = null) : Exception(message)
+class OutOfBoundsException(message: String? = null) : ImpossibleLayoutException(message)
+open class ImpossibleLayoutException(message: String? = null) : Exception(message)
 class NoChangesException(message: String? = null) : Exception(message)

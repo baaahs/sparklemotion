@@ -156,7 +156,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     }
 
     onMount(keyboard) {
-        keyboard.listen(window)
+//        keyboard.listen(window)
         withCleanup { keyboard.unlisten(window) }
     }
 

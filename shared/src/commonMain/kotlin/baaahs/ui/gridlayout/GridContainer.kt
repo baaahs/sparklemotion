@@ -13,7 +13,7 @@ data class CellBoundaries(
     val center: Int get() = (end - start) / 2 + start
 }
 
-class GridContainer(
+data class GridContainer(
     val columns: Int,
     val rows: Int,
     val bounds: Rect,
@@ -89,7 +89,7 @@ class GridContainer(
         return GridPosition(column, row, quadrant)
     }
 
-    fun boundsOfTopLeftCell() =
+    fun originCellBounds() =
         Rect(
             columnsBoundaries[0].start, rowBoundaries[0].start,
             columnsBoundaries[0].end, rowBoundaries[0].end

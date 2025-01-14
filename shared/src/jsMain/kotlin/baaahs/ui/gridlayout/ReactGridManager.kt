@@ -3,6 +3,7 @@ package baaahs.ui.gridlayout
 import baaahs.geom.Vector2I
 import baaahs.ui.and
 import baaahs.ui.unaryPlus
+import baaahs.util.JsPlatform
 import js.objects.jso
 import react.ReactNode
 import react.Ref
@@ -10,6 +11,7 @@ import react.RefCallback
 import react.RefObject
 import react.buildElement
 import react.dom.div
+import react.dom.img
 import web.dom.document
 import web.dom.observers.ResizeObserver
 import web.events.Event
@@ -19,6 +21,7 @@ import web.html.HTMLElement
 import web.timers.Timeout
 import web.timers.clearTimeout
 import web.timers.setTimeout
+import web.uievents.KeyboardEvent
 import web.uievents.MouseButton
 import web.uievents.MouseEvent
 import web.uievents.PointerEvent
@@ -36,6 +39,17 @@ class ReactGridManager(
     private val rootRef: RefObject<HTMLElement>,
     onChange: (GridModel) -> Unit
 ) : GridManager(model, onChange) {
+    private var selectedNodeId: String? = null
+        set(value) {
+            field = value
+            reactNodeWrappers.values.forEach { it.applyStyle() }
+        }
+
+    var editMode = false
+        set(value) {
+            field = value
+            reactNodeWrappers.values.forEach { it.applyStyle() }
+        }
     init {
         println("XXX New ReactGridManager!!!")
         println(model.stringify())
@@ -92,6 +106,16 @@ class ReactGridManager(
         var el: HTMLElement? = null
         val reactNode = renderEmptyCell.render(parentNode, cell, ref)
         private var layoutBounds: Rect? = null
+        private var dragOffset: Vector2I? = null
+        private val isDragging get() = dragOffset != null
+
+        val effectiveBounds
+            get() =
+                layoutBounds?.let { layoutBounds ->
+                    dragOffset?.let { dragOffset ->
+                        layoutBounds + dragOffset
+                    } ?: layoutBounds
+                }
 
         fun mounted(el: HTMLElement?) {
             this.el?.let { if (it != el) unmount(it) }
@@ -109,10 +133,15 @@ class ReactGridManager(
             applyStyle()
         }
 
+        fun dragChildren(offset: Vector2I?) {
+            dragOffset = offset
+            applyStyle()
+        }
+
         fun applyStyle() {
             val el = el ?: return
-            val bounds = layoutBounds ?: return
-            el.applyBounds(bounds)
+            val bounds = effectiveBounds ?: return
+            el.applyBounds(bounds, if (isDragging) 100 else null)
         }
     }
 
@@ -157,6 +186,13 @@ class ReactGridManager(
                     } else {
                         child(renderNode.render(node))
                     }
+
+                    img(classes = +styles.gridResizeHandleTopLeft) {
+                        attrs.src = JsPlatform.imageUrl("/assets/resize-top-left-corner.svg")
+                    }
+                    img(classes = +styles.gridResizeHandleBottomRight) {
+                        attrs.src = JsPlatform.imageUrl("/assets/resize-bottom-right-corner.svg")
+                    }
                 }
             }
         }
@@ -181,6 +217,7 @@ class ReactGridManager(
         private val handlePointerMove: (PointerEvent) -> Unit = ::onPointerMove
         private val handlePointerUp: (PointerEvent) -> Unit = ::onPointerUp
         private val handlePointerCancel: (PointerEvent) -> Unit = ::onPointerCancel
+        private val handleKeyDown: (KeyboardEvent) -> Unit = ::onKeyDown
 
         fun mounted(el: HTMLElement?) {
             this.el?.let { if (it != el) unmount(it) }
@@ -192,6 +229,7 @@ class ReactGridManager(
         }
 
         fun setContainerBounds(innerBounds: Rect) {
+            containerInset = layoutBounds!! - innerBounds
             if (innerBounds.width == 0 || innerBounds.height == 0) return
             val layout = node.layout!!
             val gridContainer = GridContainer(layout.columns, layout.rows, innerBounds.inset(margin), gap)
@@ -223,14 +261,20 @@ class ReactGridManager(
             manageEventListeners(enabled = false)
         }
 
+        override fun dragChildren(offset: Vector2I?) {
+            super.dragChildren(offset)
+            emptyCells.forEach { cell -> cell.dragChildren(offset) }
+        }
+
         override fun applyStyle() {
             val el = el ?: return
             setTimeout(50.milliseconds) {
                 el.classList.toggle(+styles.notYetLayedOut, layoutBounds == null)
             }
             val bounds = effectiveBounds ?: return
-            el.applyBounds(bounds)
+            el.applyBounds(bounds, if (isDragging) 100 else null)
             el.classList.toggle(+styles.dragging, isDragging)
+            el.classList.toggle(+styles.editing, node.id == selectedNodeId)
 
 //            el.style.zIndex = (viewable.layer + if (viewable.isDragging) 100 else 0).toString()
             //        el.addEventListener(DragEvent.DRAG_START, ::onDragStart)
@@ -244,13 +288,17 @@ class ReactGridManager(
             }
         }
 
+        override fun mayContain(otherNodeWrapper: NodeWrapper): Boolean =
+            node.isContainer && !otherNodeWrapper.node.isContainer
+
         private val preventDefault = { e: Event -> e.preventDefault() }
         fun onPointerDown(e: PointerEvent) {
             println("isEditable = $isEditable button = ${e.button}")
+            selectedNodeId = null
             if (e.button != MouseButton.MAIN) return
+
             if (onPointerDown(Vector2I(e.clientX, e.clientY))) {
-                document.addEventListener(TouchEvent.TOUCH_MOVE, preventDefault, jso { passive = false })
-                el!!.addEventListener(PointerEvent.Companion.POINTER_MOVE, handlePointerMove)
+                addDraggingListeners()
                 println("\npointer down on ${node.id}")
                 println("pointerDown $pointerDown")
                 el!!.setPointerCapture(e.pointerId)
@@ -260,6 +308,7 @@ class ReactGridManager(
         }
 
         fun onPointerMove(e: MouseEvent) {
+            selectedNodeId = node.id
             onPointerMove(Vector2I(e.clientX, e.clientY))
             e.stopPropagation()
             e.preventDefault()
@@ -267,29 +316,55 @@ class ReactGridManager(
 
         fun onPointerUp(e: PointerEvent) {
             println("\npointer up on ${node.id}")
+            selectedNodeId = node.id
             onPointerUp(Vector2I(e.clientX, e.clientY))
-            document.removeEventListener(TouchEvent.TOUCH_MOVE, preventDefault, jso { passive = false })
-            el?.removeEventListener(PointerEvent.Companion.POINTER_MOVE, handlePointerMove)
+            removeDraggingListeners()
             el?.releasePointerCapture(e.pointerId)
             e.stopPropagation()
             e.preventDefault()
+        }
+
+        override fun onPointerCancel() {
+            removeDraggingListeners()
+            super.onPointerCancel()
         }
 
         fun onPointerCancel(e: PointerEvent) {
             println("\npointer cancel on ${node.id}")
-            onPointerCancel()
-            el?.removeEventListener(PointerEvent.Companion.POINTER_MOVE, handlePointerMove)
             el?.releasePointerCapture(e.pointerId)
+            super.onPointerCancel()
             e.stopPropagation()
             e.preventDefault()
         }
+
+        fun onKeyDown(e: KeyboardEvent) {
+            console.log("onKeyDown", e)
+            if (e.key == "Escape") {
+                onPointerCancel()
+                e.stopPropagation()
+                e.preventDefault()
+            }
+        }
+
+        private fun addDraggingListeners() {
+            document.addEventListener(TouchEvent.TOUCH_MOVE, preventDefault, jso { passive = false })
+            el!!.addEventListener(PointerEvent.POINTER_MOVE, handlePointerMove)
+            document!!.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown)
+        }
+
+        private fun removeDraggingListeners() {
+            document.removeEventListener(TouchEvent.TOUCH_MOVE, preventDefault, jso { passive = false })
+            el?.removeEventListener(PointerEvent.Companion.POINTER_MOVE, handlePointerMove)
+            document?.removeEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown)
+        }
     }
 
-    fun HTMLElement.applyBounds(bounds: Rect) {
+    fun HTMLElement.applyBounds(bounds: Rect, zIndex: Int? = null) {
         style.left = "${bounds.left}px"
         style.top = "${bounds.top}px"
         style.width = "${bounds.width}px"
         style.height = "${bounds.height}px"
+        style.zIndex = zIndex?.toString() ?: ""
     }
 }
 

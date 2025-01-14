@@ -25,7 +25,7 @@ fun GridTab.createModel(): GridModel =
             layout = Layout(columns, rows, items.map { item ->
                 item.createModel()
             })
-        )
+        ).canonicalize()
     )
 
 fun MutableGridTab.applyChanges(model: GridModel) {

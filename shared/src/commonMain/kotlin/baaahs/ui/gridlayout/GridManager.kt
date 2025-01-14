@@ -39,24 +39,21 @@ abstract class GridManager(
         rootNodeWrapper.layout(Rect(0, 0, width, height))
     }
 
-    fun dragging(draggingNodeWrapper: NodeWrapper, center: Vector2I?, previousPosition: Vector2I?): GridModel {
-        debug("Dragging ${draggingNodeWrapper.node.id} center=$center")
-        if (center == null) {
+    fun dragging(draggingNodeWrapper: NodeWrapper, originCellCenter: Vector2I?, previousPosition: Vector2I?): GridModel {
+        debug("Dragging ${draggingNodeWrapper.node.id} center=$originCellCenter")
+        if (originCellCenter == null) {
             draggingNode = null
             // No longer dragging.
             return model
         }
 
-        val targetNodeWrapper = findDeepestContainingNode(center)
+        val targetNodeWrapper = findDeepestContainingNode(originCellCenter)
         if (draggingNodeWrapper.node.id == targetNodeWrapper.node.id) {
-            debug("huh?!??!?")
+            error("Dragging node onto itself? That's unpossible!")
         }
-        val draggingNodeTopLeft = draggingNodeWrapper.effectiveBounds!!.let {
-            Vector2I(it.left, it.top)
-        }
-        val targetPosition = targetNodeWrapper.findPositionForPx(draggingNodeTopLeft)!!
-        debug("-> to ${targetNodeWrapper.node.id} $targetPosition")
-        val directions = Direction.rankedPushOptions(center - (previousPosition ?: center))
+        val targetPosition = targetNodeWrapper.findPositionForPx(originCellCenter)!!
+        println("-> to ${targetNodeWrapper.node.id} $targetPosition")
+        val directions = Direction.rankedPushOptions(originCellCenter - (previousPosition ?: originCellCenter))
         return move(draggingNodeWrapper.node, targetNodeWrapper.node, targetPosition.cell, directions)
             .also {
                 debug(it.stringify())
@@ -91,8 +88,12 @@ abstract class GridManager(
         model = updatedModel
 
 //        println(rootNodeWrapper.dump())
-        debug(rootNodeWrapper.dump())
+//        debug(rootNodeWrapper.dump())
         rootNodeWrapper.relayout()
+    }
+
+    fun cancelChanges() {
+        updateFromModel(baseModel)
     }
 
     class Target(
@@ -114,15 +115,18 @@ abstract class GridManager(
 //            }
 
             overItem = currentContainer.findChildAt(position.cell)
-            if (overItem?.node?.isContainer == true && overItem != draggingNode) {
+            if (overItem?.node?.isContainer == true
+                && overItem != draggingNode
+                && draggingNode?.let { overItem.mayContain(it) } ?: false
+            ) {
                 currentContainer = overItem
             } else break
         }
         return currentContainer
     }
 
-    private fun wrapperFor(childNode: Node): NodeWrapper =
-        nodeWrappers.getBang(childNode.id, "node wrappers")
+    private fun wrapperFor(childNode: Node): NodeWrapper? =
+        nodeWrappers[childNode.id]
 
     abstract fun debug(s: String)
 
@@ -134,10 +138,18 @@ abstract class GridManager(
 
         internal var layoutBounds: Rect? = null
         internal var layer: Int = 0
+        protected var containerInset: Rect? = null
         private var gridContainer: GridContainer? = null
         protected var pointerDown: Vector2I? = null
-        private var dragOffset: Vector2I? = null
+        protected var dragOffset: Vector2I? = null
         val isDragging get() = dragOffset != null
+        val isMultiCell get() = node.width > 1 || node.height > 1
+        val cellSize get() = Vector2I(node.width, node.height)
+
+        val originCellCenter get() =
+            if (isMultiCell) {
+                layoutBounds!!.size / cellSize / 2 + layoutBounds!!.topLeft
+            } else layoutBounds!!.center
 
         val effectiveBounds
             get() =
@@ -175,11 +187,30 @@ abstract class GridManager(
                 return
             }
 
+            val oldLayoutBounds = layoutBounds
             this.layoutBounds = bounds
             applyStyle()
 
             if (node.isContainer) {
-                gridContainer?.let { gridContainer ->
+                val sizeIsUnchanged =
+                    layoutBounds?.size == bounds.size
+                val gridContainer = gridContainer
+                if (sizeIsUnchanged == false && gridContainer != null) {
+                    val shift = bounds.topLeft - (oldLayoutBounds?.topLeft ?: Vector2I.origin)
+                    val newInnerBounds = layoutBounds!! + containerInset!!
+                    println("ZZZ layout(${node.id}, $sizeIsUnchanged, ")
+                    this.gridContainer = gridContainer.copy(
+                        bounds = newInnerBounds
+//                            Rect(
+//                                oldInnerBounds.left + shift.x,
+//                                oldInnerBounds.top + shift.y,
+//                                oldInnerBounds.width,
+//                                oldInnerBounds.height
+//                            )
+                    )
+                }
+
+                this.gridContainer?.let { gridContainer ->
                     layoutContainer(gridContainer)
                 }
             }
@@ -196,15 +227,12 @@ abstract class GridManager(
                 } catch (e: Exception) {
                     throw Exception("Failed to calculate region bounds for ${child.node.id} in ${node.id}: ${e.message}", e)
                 }
-                child.layout(childBounds)
+                child.layout(childBounds + (dragOffset ?: Vector2I.origin))
             }
         }
 
         fun findPositionForPx(pxCoord: Vector2I): GridPosition? =
             gridContainer?.findCell(pxCoord.x, pxCoord.y)
-
-        fun boundsOfTopLeftCell(): Rect? =
-            gridContainer?.boundsOfTopLeftCell()
 
         fun onPointerDown(point: Vector2I): Boolean {
             if (!isEditable) return false
@@ -230,17 +258,18 @@ abstract class GridManager(
             placeholder.layout(null)
         }
 
-        fun onPointerCancel() {
+        open fun onPointerCancel() {
             draggedBy(null)
             pointerDown = null
             placeholder.layout(null)
+            cancelChanges()
         }
 
-        private fun draggedByInternal(offset: Vector2I?) {
+        open fun dragChildren(offset: Vector2I?) {
             dragOffset = offset
             if (node.layout != null) {
                 forChildren { child ->
-                    child.draggedByInternal(offset)
+                    child.dragChildren(offset)
                 }
             }
             applyStyle()
@@ -249,10 +278,10 @@ abstract class GridManager(
 
         /** @param offset Distance from the node's original position when dragging started. */
         fun draggedBy(offset: Vector2I?) {
-            val previousPosition = effectiveBounds?.center
-            draggedByInternal(offset)
+            val previousPosition = originCellCenter?.plus(dragOffset ?: Vector2I.origin)
+            dragChildren(offset)
             try {
-                val updatedModel = dragging(this, effectiveBounds?.center, previousPosition)
+                val updatedModel = dragging(this, originCellCenter?.plus(dragOffset ?: Vector2I.origin), previousPosition)
                 updateFromModel(updatedModel)
             } catch (_: NoChangesException) {
                 // No changes, ignore.
@@ -262,10 +291,10 @@ abstract class GridManager(
 
         /** @param offset Distance from original position. */
         fun droppedAt(offset: Vector2I) {
-            val previousPosition = effectiveBounds?.center
-            draggedByInternal(offset)
+            val previousPosition = originCellCenter?.plus(dragOffset ?: Vector2I.origin)
+            dragChildren(offset)
             try {
-                val updatedModel = dragging(this, effectiveBounds?.center, previousPosition)
+                val updatedModel = dragging(this, originCellCenter?.plus(dragOffset ?: Vector2I.origin), previousPosition)
                 println("XXX updatedModel: ${updatedModel.stringify()}")
                 updateFromModel(updatedModel)
             } catch (_: NoChangesException) {
@@ -275,18 +304,20 @@ abstract class GridManager(
             if (model != baseModel) {
                 onChange(model)
             }
-            draggedByInternal(null)
+            dragChildren(null)
             applyStyle()
         }
 
         fun findChildAt(cell: Vector2I): NodeWrapper? =
             childrenByCell[cell]?.let { wrapperFor(it) }
 
+        open fun mayContain(otherNodeWrapper: NodeWrapper) = true
+
         private fun forChildren(callback: (NodeWrapper) -> Unit) {
             val layout = node.layout ?: return
             for (childNode in layout.children) {
-                val childWrapper = wrapperFor(childNode)
-                callback(childWrapper)
+                wrapperFor(childNode)
+                    ?.let { callback(it) }
             }
         }
 

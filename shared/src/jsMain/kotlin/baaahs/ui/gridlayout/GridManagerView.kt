@@ -12,6 +12,7 @@ import web.html.HTMLElement
 private val GridManagerView = xComponent<GridManagerProps>("GridManager") { props ->
     console.log("GridManagerView render ", renderCounter)
     val appContext = useContext(appContext)
+    val editMode = appContext.showManager.editMode
     val grid2Styles = appContext.allStyles.grid2
 
     val rootRef = ref<HTMLElement>()
@@ -37,12 +38,13 @@ private val GridManagerView = xComponent<GridManagerProps>("GridManager") { prop
             props.renderNode,
             props.renderContainerNode,
             props.renderEmptyCell,
-            rootRef
+            rootRef,
         ) {
             console.log("Grid changed!")
             console.log(it.rootNode.stringify())
             props.onChange(it)
         }.also {
+            it.editMode = editMode.isOn
             it.withTransitionsDisabled {
                 rootSize.current?.let { size ->
                     it.onResize(size.x, size.y)
@@ -52,6 +54,7 @@ private val GridManagerView = xComponent<GridManagerProps>("GridManager") { prop
     }
 
     gridManager.editable(props.isEditable == true)
+    gridManager.editMode = props.isEditable == true
 
     useResizeListener(rootRef) { width, height ->
         gridManager.withTransitionsDisabled {

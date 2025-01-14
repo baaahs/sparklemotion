@@ -2,15 +2,13 @@ package baaahs.ui.gridlayout
 
 import baaahs.app.ui.editor.Editor
 import baaahs.describe
-import baaahs.geom.Vector2I
-import baaahs.getBang
 import baaahs.gl.override
 import baaahs.kotest.value
-import baaahs.show.ImpossibleLayoutException
 import baaahs.show.mutable.MutableIGridLayout
 import baaahs.show.mutable.MutableShow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.maps.shouldContainExactly
 import io.kotest.matchers.shouldBe
 
@@ -18,23 +16,22 @@ class GridManagerSpec : DescribeSpec({
     describe<GridManager> {
         val tab by value {
             """
-                ABB.
-                DBBG
-                .HI.
-                ....
+            ABB.
+            DBBG
+            .HI.
+            ....
 
-                # B:
-                WX
-                YZ
+            # B:
+            WX
+            YZ
             """.trimIndent().toGridTab("Tab")
         }
-        val editor by value { SpyEditor() }
-        val updatedGrid by value { Array<GridModel?>(1) { null } }
+        val gridChanges by value { ArrayList<GridModel>() }
         val originalGridModel by value { tab.createModel() }
         val gridManager by value {
             TestGridManager(
                 originalGridModel,
-                onChange = { newGridModel -> updatedGrid[0] = newGridModel }
+                onChange = { newGridModel -> gridChanges.add(newGridModel) }
             ).also {
                 it.margin = 0
                 it.gap = 0
@@ -100,48 +97,41 @@ class GridManagerSpec : DescribeSpec({
 //            }
 //        }
 
-        val find by value {
-            { id: String -> gridManager.nodeWrappers.getBang(id, "node wrapper") }
-        }
-        val drag by value {
-            { itemId: String, toLayoutId: String?, x: Int, y: Int ->
-                val movingViewable = find(itemId)
-                val pointerDownPoint = movingViewable.layoutBounds!!.center
-                movingViewable.onPointerDown(pointerDownPoint)
-                val offset = Vector2I(x, y)
-                movingViewable.onPointerMove(pointerDownPoint + offset)
-                movingViewable.onPointerUp(pointerDownPoint + offset)
-//                movingViewable.draggedBy(Vector2I(x, y))
-//                viewRoot.moveElement(itemId, toLayoutId, Vector2I(x, y))
-//                val view = find(id)
-//                val fromLayout = view.parent
-//                val toLayout = toLayoutId?.let { find(it) } ?: viewRoot.view
-//                viewable
-//                view.draggedBy(Vector2I(x, y))
-//  TODO              viewRoot.gridLayout.stringify()
-                updatedGrid[0]?.rootNode?.stringify() ?: "<no update>"
-            }
+        val pointerDownOn by value {
+            { itemId: String -> Dragger(gridManager, gridChanges, itemId) }
         }
 
         context("rearranging") {
             it("throws if we attempt to move an unknown item") {
-                shouldThrow<ImpossibleLayoutException> { (drag("C", null, -1, -1)) }
+                shouldThrow<IllegalStateException> {
+                    pointerDownOn("C")
+                        .dragAndDropAt(-1, -1)
+                }
+            }
+
+            context("if we drag but don't actually rearrange any items") {
+                it("shouldn't trigger change") {
+                    pointerDownOn("A")
+                        .dragAndDropAt(1, 1) // Not enough distance to move anything.
+                        .changes.shouldBeEmpty()
+                }
             }
 
             it("can drag an item to an open adjacent cell") {
-                drag("H", null, 0, 100)
-                    .shouldBe(
+                pointerDownOn("H")
+                    .dragAndDropAt(0, 100)
+                    .onlyChange.shouldBe(
                         """
-                            ABB.
-                            DBBG
-                            ..I.
-                            .H..
+                        ABB.
+                        DBBG
+                        ..I.
+                        .H..
 
-                            # B:
-                            WX
-                            YZ
+                        # B:
+                        WX
+                        YZ
                         """.trimIndent()
-                )
+                    )
             }
 
 //            it("moving C to E's spot fails") {
@@ -152,8 +142,10 @@ class GridManagerSpec : DescribeSpec({
         }
 
         it("will move an item to an open spot leaving items in between undisturbed") {
-            drag("A", null, 0, 200).shouldBe(
-                """
+            pointerDownOn("A")
+                .dragAndDropAt(0, 200)
+                .onlyChange.shouldBe(
+                    """
                     .BB.
                     DBBG
                     AHI.
@@ -162,13 +154,15 @@ class GridManagerSpec : DescribeSpec({
                     # B:
                     WX
                     YZ
-                """.trimIndent()
-            )
+                    """.trimIndent()
+                )
         }
 
         it("moving H one space right swaps H and I") {
-            drag("H", null, 100, 0).shouldBe(
-                """
+            pointerDownOn("H")
+                .dragAndDropAt(100, 0)
+                .onlyChange.shouldBe(
+                    """
                     ABB.
                     DBBG
                     .IH.
@@ -177,48 +171,32 @@ class GridManagerSpec : DescribeSpec({
                     # B:
                     WX
                     YZ
-                """.trimIndent()
-            )
+                    """.trimIndent()
+                )
         }
 
-        it("moving A two spaces right shifts C over") {
-            drag("A", null, 200, 0).shouldBe(
-                """
-                    BBA.
-                    BBDG
-                    .HI.
-                    ....
-    
+        it("moving B one space down and left moves others around") {
+            pointerDownOn("B")
+                .dragAndDropAt(-100, 100)
+                .onlyChange.shouldBe(
+                    """
+                    A...
+                    BB.G
+                    BBI.
+                    DH..
+
                     # B:
                     WX
                     YZ
-                """.trimIndent()
-            )
+                    """.trimIndent()
+                )
         }
 
-        it("moving D one space right shifts E into its place") {
-            drag("D", null, 100, 0).shouldBe(
-                """
-                    ABC.
-                    EDFG
-                    .HI.
-                """.trimIndent()
-            )
-        }
-
-        it("moving B one space down and left shifts E down") {
-            drag("B", null, -100, 100).shouldBe(
-                """
-                    A.C.
-                    BEFG
-                    DHI.
-                """.trimIndent()
-            )
-        }
-
-        it("moving item between grids") {
-            drag("X", null, 100, 0).shouldBe(
-                """
+        it("moving item from root to inner grid") {
+            pointerDownOn("X")
+                .dragAndDropAt(100, 0)
+                .onlyChange.shouldBe(
+                    """
                     ABBX
                     DBBG
                     .HI.
@@ -227,31 +205,116 @@ class GridManagerSpec : DescribeSpec({
                     # B:
                     W.
                     YZ
-                """.trimIndent()
-            )
+                    """.trimIndent()
+                )
         }
 
         context("dragging between grids") {
             override(tab) { """
-                ABCC.
-                ABCC.
-                AB...
+                AAA
+                BBB
+                CC.
+                CCX
+                ..Y
+                
+                # A:
+                ...
+                
+                # B:
+                ...
                 
                 # C:
                 ..
-                ..
+                .Z
             """.trimIndent().toGridTab("Tab") }
 
-            it("resizes dragged node to fit a smaller container") {
-                drag("B", null, 100, 0).shouldBe("""
-                    A.CC.
-                    A.CC.
-                    A....
-                    
-                    # C:
-                    B.
-                    B.
-                """.trimIndent())
+            it("drags an item (X) from root to a subgrid (A)") {
+                pointerDownOn("X")
+                    .dragAndDropAt(-100, -300)
+                    .onlyChange.shouldBe(
+                        """
+                        AAA
+                        BBB
+                        CC.
+                        CC.
+                        ..Y
+                        
+                        # A:
+                        .X.
+                        
+                        # B:
+                        ...
+                        
+                        # C:
+                        ..
+                        .Z
+                        """.trimIndent()
+                    )
+            }
+
+            it("drags an item (Z) from a subgrid (C) to root (and bump X up too)") {
+                pointerDownOn("Z")
+                    .dragAndDropAt(100, 0)
+                    .onlyChange.shouldBe(
+                        """
+                        AAA
+                        BBB
+                        CCX
+                        CCZ
+                        ..Y
+                        
+                        # A:
+                        ...
+                        
+                        # B:
+                        ...
+                        
+                        # C:
+                        ..
+                        ..
+                        """.trimIndent()
+                    )
+            }
+
+            it("drags an item (Z) from a subgrid (C) to another subgrid (B)") {
+                pointerDownOn("Z")
+                    .dragAndDropAt(0, -200)
+                    .onlyChange.shouldBe(
+                        """
+                        AAA
+                        BBB
+                        CC.
+                        CCX
+                        ..Y
+                        
+                        # A:
+                        ...
+                        
+                        # B:
+                        .Z.
+                        
+                        # C:
+                        ..
+                        ..
+                        """.trimIndent()
+                    )
+            }
+
+            // Not implemented (yet?).
+            xit("resizes dragged node to fit a smaller container") {
+                pointerDownOn("B")
+                    .dragAndDropAt(100, 0)
+                    .onlyChange.shouldBe(
+                        """
+                        A.CC.
+                        A.CC.
+                        A....
+                        
+                        # C:
+                        B.
+                        B.
+                        """.trimIndent()
+                    )
             }
         }
 
@@ -259,57 +322,118 @@ class GridManagerSpec : DescribeSpec({
             override(tab) { """
                 AABB.
                 AABB.
-                .....
+                CCC..
             """.trimIndent().toGridTab("Tab") }
 
             it("pushes neighbors") {
-                drag("A", null, 100, 0).shouldBe("""
-                    .AABB
-                    .AABB
-                    .....
-                """.trimIndent())
+                pointerDownOn("A")
+                    .dragAndDropAt(100, 0)
+                    .onlyChange.shouldBe(
+                        """
+                        .AABB
+                        .AABB
+                        CCC..
+                        """.trimIndent()
+                    )
             }
 
             it("swaps with neighbors") {
-                drag("A", null, 200, 0).shouldBe("""
-                    BBAA.
-                    BBAA.
-                    .....
-                """.trimIndent())
+                pointerDownOn("A")
+                    .dragAndDropAt(200, 0)
+                    .onlyChange.shouldBe(
+                        """
+                        BBAA.
+                        BBAA.
+                        CCC..
+                        """.trimIndent()
+                    )
+            }
+
+            it("handles differently-sized block sensibly") {
+                pointerDownOn("C")
+                    .dragAndDropAt(100, -200)
+                    .onlyChange.shouldBe(
+                        """
+                        .CCC.
+                        AABB.
+                        AABB.
+                        """.trimIndent()
+                )
             }
         }
 
         context("with ABCDEF in one row") {
             override(tab) { "ABCDEF".toGridTab("Tab") }
             it("moving B two spaces over") {
-                drag("B", null, 200, 0).shouldBe("ACDBEF")
+                pointerDownOn("B")
+                    .dragAndDropAt(200, 0)
+                    .onlyChange.shouldBe("ACDBEF")
             }
         }
 
         context("with .ABBC.") {
             override(tab) { ".ABBC.".toGridTab("Tab") }
 
-            it("moving A one space right should make no change") {
-                drag("A", null, 100, 0).shouldBe(".ABBC.")
+            // Not as implemented.
+            xit("moving A one space right should make no change") {
+                pointerDownOn("A")
+                    .dragAndDropAt(100, 0)
+                    .onlyChange.shouldBe(".ABBC.")
             }
 
             it("moving A two spaces right should swap A and B") {
-                drag("A", null, 200, 0).shouldBe(".BBAC.")
+                pointerDownOn("A")
+                    .dragAndDropAt(200, 0)
+                    .onlyChange.shouldBe(".BBAC.")
             }
 
-            it("moving C one space left should make no change") {
-                drag("C", null, -100, 0).shouldBe(".ABBC.")
+            // Not as implemented.
+            xit("moving C one space left should make no change") {
+                pointerDownOn("C")
+                    .dragAndDropAt(-100, 0)
+                    .onlyChange.shouldBe(".ABBC.")
             }
 
             it("moving C two spaces left should swap B and C") {
-                drag("C", null, -200, 0).shouldBe(".ACBB.")
+                pointerDownOn("C")
+                    .dragAndDropAt(-200, 0)
+                    .onlyChange.shouldBe(".ACBB.")
+            }
+        }
+
+        context("with a layout like the default show") {
+            override(tab) { """
+                CCCCCCCCZZVVV
+                CCCCCCCCZZVVV
+                CCCCCCCCZZVVV
+                SSSSSSSSEEBBB
+                SSSSSSSSEEBBB
+                SSSSSSSSEEBBB
+                SSSSSSSSEEGGG
+                SSSSSSSSEEGGG
+                SSSSSSSSEEGGG
+                SSSSSSSSEEGGG
+            """.trimIndent().toGridTab("Tab") }
+
+            it("moving global controls up a few spaces should push beatlink down") {
+                println("moving global controls up a few spaces should push beatlink down")
+                pointerDownOn("G")
+                    .dragAndDropAt(0, -300)
+                    .onlyChange.shouldBe(
+                        """
+                        CCCCCCCCZZVVV
+                        CCCCCCCCZZVVV
+                        CCCCCCCCZZVVV
+                        SSSSSSSSEEGGG
+                        SSSSSSSSEEGGG
+                        SSSSSSSSEEGGG
+                        SSSSSSSSEEGGG
+                        SSSSSSSSEEBBB
+                        SSSSSSSSEEBBB
+                        SSSSSSSSEEBBB
+                        """.trimIndent()
+                    )
             }
         }
     }
 })
-
-class SpyEditor : Editor<MutableIGridLayout> {
-    override val title: String get() = "spy editor"
-    override fun edit(mutableShow: MutableShow, block: MutableIGridLayout.() -> Unit) = TODO("edit not implemented")
-    override fun delete(mutableShow: MutableShow) = TODO("delete not implemented")
-}

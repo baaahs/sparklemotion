@@ -1,6 +1,8 @@
 package baaahs.ui.gridlayout
 
 import baaahs.geom.Vector2I
+import baaahs.getBang
+import baaahs.only
 import baaahs.show.GridItem
 import baaahs.show.GridLayout
 import baaahs.show.GridTab
@@ -135,5 +137,25 @@ class TestGridManager(
 
     inner class TestPlaceholder : Placeholder() {
         override fun applyStyle() {}
+    }
+}
+
+class Dragger(
+    val gridManager: GridManager,
+    val gridChanges: MutableList<GridModel>,
+    val id: String
+) {
+    val dragging = gridManager.nodeWrappers.getBang(id, "node wrapper")
+    val onlyChange get() = gridChanges.only("change").stringify()
+    val changes get() = gridChanges
+
+    /** Drag and drop within the same container node. */
+    fun dragAndDropAt(xPx: Int, yPx: Int): Dragger {
+        val pointerDownPoint = dragging.layoutBounds!!.center
+        dragging.onPointerDown(pointerDownPoint)
+        val offset = Vector2I(xPx, yPx)
+        dragging.onPointerMove(pointerDownPoint + offset)
+        dragging.onPointerUp(pointerDownPoint + offset)
+        return this
     }
 }

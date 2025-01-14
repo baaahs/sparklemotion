@@ -295,6 +295,7 @@ tasks.withType(Test::class) {
                 overflow: scroll;
                 width: 85vw;
                 user-select: all;
+                resize: both;
             }
             """.trimIndent()
         )
