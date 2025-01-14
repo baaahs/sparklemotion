@@ -2,6 +2,7 @@ package baaahs.app.ui.controls
 
 import baaahs.SparkleMotion
 import baaahs.app.ui.appContext
+import baaahs.app.ui.layout.MayHaveButtonMutex
 import baaahs.app.ui.patchmod.patchMod
 import baaahs.app.ui.shaderPreview
 import baaahs.control.ButtonControl.ActivationType.Momentary
@@ -31,14 +32,19 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
     val buttonControl = props.buttonControl
     observe(buttonControl.switch.observable)
 
+    val controlContext = useContext(controlContext)
+    val parentControl = controlContext.parentControl
+    val buttonMutex = if (parentControl is MayHaveButtonMutex) parentControl.buttonMutex else null
+
     val showPreview = appContext.uiSettings.renderButtonPreviews
     val patchForPreview = if (showPreview) buttonControl.patchForPreview() else null
 
     val isPressed = ref(false)
 
-    val handleToggleRelease by pointerEventHandler(buttonControl) { e ->
+    val handleToggleRelease by pointerEventHandler(buttonControl, buttonMutex) { e ->
         if (isPressed.current == true) {
             buttonControl.click()
+            buttonMutex?.selectedControlId = buttonControl.id
             redispatchAsMouseClick(e)
         }
     }
@@ -71,8 +77,20 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
         }
     }
 
-    val handlePatchModSwitch by handler(buttonControl) {
+    buttonMutex?.let {
+        observe(it) {
+            if (it.selectedControlId != buttonControl.id) {
+                buttonControl.isPressed = false
+            }
+        }
+    }
+    observe(buttonControl.switch) {}
+
+    val handlePatchModSwitch by handler(buttonControl, buttonMutex) {
         buttonControl.click()
+        if (buttonControl.isActive()) {
+            buttonMutex?.selectedControlId = buttonControl.id
+        }
     }
 
     val buttonRef = ref<HTMLButtonElement>()

@@ -1,6 +1,8 @@
 package baaahs.app.ui.layout
 
 import baaahs.app.ui.appContext
+import baaahs.app.ui.controls.ControlContext
+import baaahs.app.ui.controls.controlContext
 import baaahs.app.ui.controls.problemBadge
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenControl
@@ -9,6 +11,7 @@ import baaahs.ui.and
 import baaahs.ui.render
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
+import js.objects.jso
 import materialui.icon
 import mui.material.ListItemText
 import mui.material.Menu
@@ -66,8 +69,17 @@ private val GridItemView = xComponent<GridItemProps>("GridItem") { props ->
         menuAnchor = null
     }
 
-    control.getView(props.controlProps)
-        .render(this)
+    val controlContextValue = memo(props.parentControl) {
+        jso<ControlContext> {
+            this.parentControl = props.parentControl
+        }
+    }
+    controlContext.Provider {
+        attrs.value = controlContextValue
+
+        control.getView(props.controlProps)
+            .render(this)
+    }
 
     problemBadge(control)
 
@@ -123,6 +135,7 @@ private val GridItemView = xComponent<GridItemProps>("GridItem") { props ->
 
 external interface GridItemProps : PropsWithClassName, PropsWithStyle {
     var control: OpenControl
+    var parentControl: OpenControl?
     var controlProps: ControlProps
 }
 

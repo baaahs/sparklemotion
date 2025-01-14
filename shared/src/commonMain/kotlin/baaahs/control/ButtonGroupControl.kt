@@ -4,6 +4,8 @@ import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.ButtonGroupPropsEditor
 import baaahs.app.ui.editor.EditableManager
 import baaahs.app.ui.editor.GenericPropertiesEditorPanel
+import baaahs.app.ui.layout.ButtonMutex
+import baaahs.app.ui.layout.MayHaveButtonMutex
 import baaahs.camelize
 import baaahs.randomId
 import baaahs.show.Control
@@ -102,7 +104,7 @@ class OpenButtonGroupControl(
     override val id: String,
     private val buttonGroupControl: ButtonGroupControl,
     openContext: OpenContext
-) : OpenControl, ControlContainer {
+) : OpenControl, ControlContainer, MayHaveButtonMutex {
     val title: String
         get() = buttonGroupControl.title
 
@@ -119,6 +121,8 @@ class OpenButtonGroupControl(
     }
 
     val allowMultiple get() = buttonGroupControl.allowMultiple == true
+
+    override val buttonMutex = if (!allowMultiple) ButtonMutex(id) else null
 
     override fun containedControls(): List<OpenControl> = buttons
 

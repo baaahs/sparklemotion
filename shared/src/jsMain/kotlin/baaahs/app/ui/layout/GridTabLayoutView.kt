@@ -97,6 +97,13 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
     val genericControlProps = memo(controlDisplay) { ControlProps(openShow) }
 
     val gridModel = memo(props.tab.gridTab) { props.tab.gridTab.createModel() }
+    val parents = memo(props.tab.gridTab) {
+        buildMap {
+            props.tab.gridTab.visit(null) { item, parent ->
+                if (parent != null) put(item.id, parent.id)
+            }
+        }
+    }
 
     val renderNode: RenderNode = memo(openShow, props.controlProps, genericControlProps) {
         RenderNode { node: Node ->
@@ -105,10 +112,13 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
             if (openControl == null)
                 println("GridRootView: No control found with id \"$id\"")
 
+            val parentId = parents[id]
+            val parentControl = openShow.allControls.find { it.id == parentId }
             openControl?.let { openControl ->
                 buildElement {
                     gridItem {
                         attrs.control = openControl
+                        attrs.parentControl = parentControl
                         attrs.controlProps = genericControlProps
                     }
                 }
