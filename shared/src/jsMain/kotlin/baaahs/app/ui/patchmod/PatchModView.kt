@@ -34,10 +34,15 @@ private val PatchModView = xComponent<PatchModProps>("PatchMod") { props ->
     }
 
     val openShow = appContext.showManager.openShow
+    var open by state { true }
 
     Dialog {
-        attrs.open = true
-        attrs.onClose = { _, _ -> props.onClose() }
+        attrs.open = open
+        attrs.onClose = { _, _ ->
+            open = false
+            props.onClose()
+        }
+        attrs.TransitionComponent = Zoom
 
         header {
             FormControlLabel {

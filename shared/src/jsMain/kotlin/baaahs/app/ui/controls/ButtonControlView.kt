@@ -22,9 +22,11 @@ import web.events.EventType
 import web.events.addEventListener
 import web.html.HTMLButtonElement
 import web.html.HTMLDivElement
+import web.timers.setTimeout
 import web.uievents.MouseButton
 import web.uievents.MouseEvent
 import web.uievents.MouseEventInit
+import kotlin.time.Duration.Companion.milliseconds
 
 private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props ->
     val appContext = useContext(appContext)
@@ -155,13 +157,21 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
         }
     }
 
-    if (lightboxOpen && patchForPreview != null) {
+    val lightboxClosing = ref(false)
+    if ((lightboxOpen || lightboxClosing.current == true) && patchForPreview != null) {
         patchMod {
             attrs.title = buttonControl.title
             attrs.patchHolder = buttonControl
             attrs.isActive = buttonControl.isPressed
             attrs.onToggle = handlePatchModSwitch
-            attrs.onClose = { lightboxOpen = false }
+            attrs.onClose = {
+                lightboxClosing.current = true
+                lightboxOpen = false
+                setTimeout(500.milliseconds) {
+                    lightboxClosing.current = false
+                    this@xComponent.forceRender()
+                }
+            }
         }
     }
 }
