@@ -123,7 +123,14 @@ class TestGridManager(
 
     inner class TestNodeWrapper(node: Node) : NodeWrapper(node) {
         override fun updateEditable() {}
-        override fun applyStyle() {}
+        override fun applyStyle() {
+            // Automatically lay out children if we're a container.
+            val layoutBounds = layoutBounds
+            val layout = node.layout
+            if (layoutBounds != null && layout != null) {
+                layoutContainer(GridContainer(layout.columns, layout.rows, layoutBounds, 0))
+            }
+        }
     }
 
     inner class TestPlaceholder : Placeholder() {
