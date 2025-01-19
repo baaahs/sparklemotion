@@ -278,10 +278,14 @@ abstract class GridManager(
 
         /** @param offset Distance from the node's original position when dragging started. */
         fun draggedBy(offset: Vector2I?) {
-            val previousPosition = originCellCenter?.plus(dragOffset ?: Vector2I.origin)
+            val previousPosition = originCellCenter.plus(dragOffset ?: Vector2I.origin)
             dragChildren(offset)
             try {
-                val updatedModel = dragging(this, originCellCenter?.plus(dragOffset ?: Vector2I.origin), previousPosition)
+                val updatedModel = dragging(
+                    draggingNodeWrapper = this,
+                    originCellCenter.plus(dragOffset ?: Vector2I.origin),
+                    previousPosition
+                )
                 updateFromModel(updatedModel)
             } catch (_: NoChangesException) {
                 // No changes, ignore.
@@ -291,10 +295,14 @@ abstract class GridManager(
 
         /** @param offset Distance from original position. */
         fun droppedAt(offset: Vector2I) {
-            val previousPosition = originCellCenter?.plus(dragOffset ?: Vector2I.origin)
+            val previousPosition = originCellCenter.plus(dragOffset ?: Vector2I.origin)
             dragChildren(offset)
             try {
-                val updatedModel = dragging(this, originCellCenter?.plus(dragOffset ?: Vector2I.origin), previousPosition)
+                val updatedModel = dragging(
+                    draggingNodeWrapper = this,
+                    originCellCenter.plus(dragOffset ?: Vector2I.origin),
+                    previousPosition
+                )
                 println("XXX updatedModel: ${updatedModel.stringify()}")
                 updateFromModel(updatedModel)
             } catch (_: NoChangesException) {

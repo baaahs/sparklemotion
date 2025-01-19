@@ -20,17 +20,7 @@ class MutableGridTabSpec : DescribeSpec({
         val initialLayout by value { "" }
         val initialGridTab by value { initialLayout.toGridTab("Tab") }
         val showBuilder by value { ShowBuilder() }
-        val mutableGridTab by value {
-            val mutableShow = Show.EmptyShow.edit().apply {
-                initialGridTab.visit {
-                    controls[it.controlId] = MutableDummyControl(it.controlId)
-                        .also { it.build(showBuilder) }
-                }
-            }
-            initialGridTab.edit(emptyMap(), mutableShow).also {
-                println("it = ${it}")
-            }
-        }
+        val mutableGridTab by value { initialGridTab.editForSpec(showBuilder) }
         val rearrangedLayout by value { "" }
         val rearrangedGridTab by value { rearrangedLayout.toGridTab("Tab") }
         val stringifiedResult by value { (mutableGridTab.build(showBuilder) as GridTab).stringify() }
@@ -146,4 +136,16 @@ data class DummyControl(
 
     override fun open(id: String, openContext: OpenContext): OpenControl =
         TODO("not implemented")
+}
+
+fun GridTab.editForSpec(showBuilder: ShowBuilder = ShowBuilder()): MutableGridTab {
+    val mutableShow = Show.EmptyShow.edit().apply {
+        visit {
+            controls[it.controlId] = MutableDummyControl(it.controlId)
+                .also { it.build(showBuilder) }
+        }
+    }
+    return edit(emptyMap(), mutableShow).also {
+        println("it = ${it}")
+    }
 }

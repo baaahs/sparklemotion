@@ -17,6 +17,7 @@ import web.dom.observers.ResizeObserver
 import web.events.Event
 import web.events.addEventListener
 import web.events.removeEventListener
+import web.geometry.DOMRect
 import web.html.HTMLElement
 import web.timers.Timeout
 import web.timers.clearTimeout
@@ -150,6 +151,8 @@ class ReactGridManager(
     ) : NodeWrapper(node) {
         val ref = RefCallback<HTMLElement> { el -> this.mounted(el) }
         var el: HTMLElement? = null
+        private var resizeObserver: ResizeObserver? = null
+
         // Must be lazy, or outer class won't be initialized yet.
         val reactNode by lazy {
             buildElement {
@@ -162,18 +165,8 @@ class ReactGridManager(
                             val innerMountedRef = RefCallback<HTMLElement> { el ->
                                 if (el != null) {
                                     resizeObserver = ResizeObserver { _, _ ->
-                                        val rect = el.getBoundingClientRect()
-                                        val rootEl = (rootRef.current ?: error("No root ref?"))
-                                        val rootRect = rootEl.getBoundingClientRect()
-                                        val adjustedBounds = Rect(
-                                            (rect.x - rootRect.x).roundToInt(),
-                                            (rect.y - rootRect.y).roundToInt(),
-                                            rect.width.roundToInt(),
-                                            rect.height.roundToInt()
-                                        )
-                                        setTimeout(0.milliseconds) {
-                                            setContainerBounds(adjustedBounds)
-                                        }
+                                        println("${node.id}.resizeObserver bounds:${el?.getBoundingClientRect()?.toRect()}")
+                                        onResizeInnerContainer(el)
                                     }.also { it.observe(el) }
                                 } else {
                                     resizeObserver?.disconnect()
@@ -196,6 +189,7 @@ class ReactGridManager(
                 }
             }
         }
+
         // Must be lazy, or outer class won't be initialized yet.
         val emptyCells by lazy {
             renderEmptyCell?.let { render ->
@@ -220,6 +214,7 @@ class ReactGridManager(
         private val handleKeyDown: (KeyboardEvent) -> Unit = ::onKeyDown
 
         fun mounted(el: HTMLElement?) {
+            println("${node.id}.mounted($el) bounds:${el?.getBoundingClientRect()?.toRect()}")
             this.el?.let { if (it != el) unmount(it) }
             this.el = el
             if (el != null) {
@@ -228,10 +223,26 @@ class ReactGridManager(
             }
         }
 
+        private fun onResizeInnerContainer(el: HTMLElement) {
+            val rect = el.getBoundingClientRect()
+            val rootEl = rootRef.current ?: error("No root ref?")
+            val rootRect = rootEl.getBoundingClientRect()
+            val adjustedBounds = Rect(
+                (rect.x - rootRect.x).roundToInt(),
+                (rect.y - rootRect.y).roundToInt(),
+                rect.width.roundToInt(),
+                rect.height.roundToInt()
+            )
+            setTimeout(0.milliseconds) {
+                setContainerBounds(adjustedBounds)
+            }
+        }
+
         fun setContainerBounds(innerBounds: Rect) {
-            containerInset = layoutBounds!! - innerBounds
+            val layoutBounds = layoutBounds ?: error("${node.id}.setContainerBounds($innerBounds): No layout bounds?!")
+            containerInset = layoutBounds - innerBounds
             if (innerBounds.width == 0 || innerBounds.height == 0) return
-            val layout = node.layout!!
+            val layout = node.layout ?: error("${node.id}.setContainerBounds($innerBounds): No layout?!")
             val gridContainer = GridContainer(layout.columns, layout.rows, innerBounds.inset(margin), gap)
             layoutContainer(gridContainer)
         }
@@ -357,6 +368,9 @@ class ReactGridManager(
             el?.removeEventListener(PointerEvent.Companion.POINTER_MOVE, handlePointerMove)
             document?.removeEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown)
         }
+
+        override fun toString(): String =
+            "ReactNodeWrapper(node=${node.id} @${node.left},${node.top})"
     }
 
     fun HTMLElement.applyBounds(bounds: Rect, zIndex: Int? = null) {
@@ -379,3 +393,6 @@ fun interface RenderContainerNode {
 fun interface RenderEmptyCell {
     fun render(parentNode: Node, cell: Vector2I, ref: Ref<HTMLElement>): ReactNode
 }
+
+fun DOMRect.toRect(): Rect =
+    Rect(left.toInt(), top.toInt(), width.toInt(), height.toInt())

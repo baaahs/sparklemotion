@@ -1,6 +1,5 @@
 package baaahs.ui.gridlayout
 
-import baaahs.geom.Vector2I
 import baaahs.show.GridItem
 import baaahs.show.GridLayout
 import io.kotest.core.spec.style.DescribeSpec

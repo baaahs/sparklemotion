@@ -40,6 +40,11 @@ fun MutableGridTab.applyChanges(model: GridModel) {
             val layout = node.layout!!
             mutableRoot.columns = layout.columns
             mutableRoot.rows = layout.rows
+            mutableRoot.items.clear()
+            for (child in layout.children) {
+                val item = mutableNodes[child.id] ?: error("No node with id ${child.id} (inside ${node.id}).")
+                mutableRoot.items.add(item)
+            }
         } else {
             val mutableNode = mutableNodes[node.id]!!
             mutableNode.column = node.left
@@ -52,7 +57,8 @@ fun MutableGridTab.applyChanges(model: GridModel) {
                     mutableLayout.rows = layout.rows
                     mutableLayout.items.clear()
                     for (child in layout.children) {
-                        mutableLayout.items.add(mutableNodes[child.id]!!)
+                        val item = mutableNodes[child.id] ?: error("No node with id ${child.id} (inside ${node.id}).")
+                        mutableLayout.items.add(item)
                     }
                 }
             }

@@ -53,6 +53,9 @@ private val GridManagerView = xComponent<GridManagerProps>("GridManager") { prop
         }
     }
 
+//    onChange("props.gridModel", props.gridModel) {
+//        gridManager.updateFromModel()
+//    }
     gridManager.editable(props.isEditable == true)
     gridManager.editMode = props.isEditable == true
 

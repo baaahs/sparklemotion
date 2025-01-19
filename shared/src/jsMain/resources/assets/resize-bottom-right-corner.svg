@@ -3,6 +3,6 @@
      viewBox="0 0 20 20" width="20" height="20"
      preserveAspectRatio="none">
     <path stroke="#222" d="M 7 18 L 18 18 L 18 7" stroke-width="4" stroke-linecap="round" fill="none" opacity="1"/>
-    <path stroke="#6600ff" d="M 7 18 L 18 18 L 18 7" stroke-width="2" stroke-linecap="round" fill="none" opacity="1"/>
-    <path stroke="#FFF" d="M 7 17.8 L 17.8 17.8 L 17.8 7" stroke-width="1.5" stroke-linecap="round" fill="none" opacity=".5"/>
+    <path stroke="#60f" d="M 7 18 L 18 18 L 18 7" stroke-width="2" stroke-linecap="round" fill="none" opacity="1"/>
+    <path stroke="#90F" d="M 7 17.8 L 17.8 17.8 L 17.8 7" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="1"/>
 </svg>
