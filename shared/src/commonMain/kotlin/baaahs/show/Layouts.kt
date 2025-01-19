@@ -328,6 +328,7 @@ data class GridItem(
     @Transient
     val moved: Boolean = false
 ) {
+    @Transient
     val id = controlId
     val right: Int get() = column + width - 1
     val bottom: Int get() = row + height - 1
