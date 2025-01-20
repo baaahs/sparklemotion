@@ -186,7 +186,6 @@
    * @returns {void}
    */
   function clearLongPressTimer(e) {
-    console.log("clearLongPressTimer", e);
     clearRequestTimeout(timer);
     timer = null;
   }
