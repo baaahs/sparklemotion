@@ -79,11 +79,9 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
         }
     }
 
-    buttonMutex?.let {
-        observe(it) {
-            if (it.selectedControlId != buttonControl.id) {
-                buttonControl.isPressed = false
-            }
+    observe(buttonMutex) {
+        if (buttonMutex?.selectedControlId != buttonControl.id) {
+            buttonControl.isPressed = false
         }
     }
 

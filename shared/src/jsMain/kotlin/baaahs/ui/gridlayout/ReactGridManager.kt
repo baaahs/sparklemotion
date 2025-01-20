@@ -151,7 +151,6 @@ class ReactGridManager(
     ) : NodeWrapper(node) {
         val ref = RefCallback<HTMLElement> { el -> this.mounted(el) }
         var el: HTMLElement? = null
-        private var resizeObserver: ResizeObserver? = null
 
         // Must be lazy, or outer class won't be initialized yet.
         val reactNode by lazy {
@@ -165,7 +164,7 @@ class ReactGridManager(
                             val innerMountedRef = RefCallback<HTMLElement> { el ->
                                 if (el != null) {
                                     resizeObserver = ResizeObserver { _, _ ->
-                                        println("${node.id}.resizeObserver bounds:${el?.getBoundingClientRect()?.toRect()}")
+                                        println("${node.id}.resizeObserver bounds:${el.getBoundingClientRect().toRect()}")
                                         onResizeInnerContainer(el)
                                     }.also { it.observe(el) }
                                 } else {
