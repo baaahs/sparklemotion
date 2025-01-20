@@ -313,16 +313,16 @@ class ReactGridManager(
                 println("\npointer down on ${node.id}")
                 println("pointerDown $pointerDown")
                 el!!.setPointerCapture(e.pointerId)
-                e.stopPropagation()
-                e.preventDefault()
+//                e.stopPropagation()
+//                e.preventDefault()
             }
         }
 
         fun onPointerMove(e: MouseEvent) {
             selectedNodeId = node.id
             onPointerMove(Vector2I(e.clientX, e.clientY))
-            e.stopPropagation()
-            e.preventDefault()
+//            e.stopPropagation()
+//            e.preventDefault()
         }
 
         fun onPointerUp(e: PointerEvent) {
@@ -331,8 +331,8 @@ class ReactGridManager(
             onPointerUp(Vector2I(e.clientX, e.clientY))
             removeDraggingListeners()
             el?.releasePointerCapture(e.pointerId)
-            e.stopPropagation()
-            e.preventDefault()
+//            e.stopPropagation()
+//            e.preventDefault()
         }
 
         override fun onPointerCancel() {
@@ -344,8 +344,8 @@ class ReactGridManager(
             println("\npointer cancel on ${node.id}")
             el?.releasePointerCapture(e.pointerId)
             super.onPointerCancel()
-            e.stopPropagation()
-            e.preventDefault()
+//            e.stopPropagation()
+//            e.preventDefault()
         }
 
         fun onKeyDown(e: KeyboardEvent) {
@@ -360,13 +360,13 @@ class ReactGridManager(
         private fun addDraggingListeners() {
             document.addEventListener(TouchEvent.TOUCH_MOVE, preventDefault, jso { passive = false })
             el!!.addEventListener(PointerEvent.POINTER_MOVE, handlePointerMove)
-            document!!.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown)
+            document.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown)
         }
 
         private fun removeDraggingListeners() {
             document.removeEventListener(TouchEvent.TOUCH_MOVE, preventDefault, jso { passive = false })
             el?.removeEventListener(PointerEvent.Companion.POINTER_MOVE, handlePointerMove)
-            document?.removeEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown)
+            document.removeEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown)
         }
 
         override fun toString(): String =

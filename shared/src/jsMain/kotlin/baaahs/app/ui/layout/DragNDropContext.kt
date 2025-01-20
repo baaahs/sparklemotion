@@ -5,6 +5,7 @@ import baaahs.util.Logger
 import js.objects.jso
 import react.createContext
 
+// TODO: kill.
 val dragNDropContext = createContext<DragNDropContext>(jso { })
 
 external interface DragNDropContext {

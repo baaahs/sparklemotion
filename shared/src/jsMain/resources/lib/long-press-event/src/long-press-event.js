@@ -186,6 +186,7 @@
    * @returns {void}
    */
   function clearLongPressTimer(e) {
+    console.log("clearLongPressTimer", e);
     clearRequestTimeout(timer);
     timer = null;
   }
@@ -207,6 +208,7 @@
    * @returns {void}
    */
   function mouseDownHandler(e) {
+    console.log("mouseDownHandler", e);
     startX = e.clientX;
     startY = e.clientY;
     startLongPressTimer(e);
@@ -255,7 +257,7 @@
 
   // hook events that clear a pending long press event
   document.addEventListener(mouseUp, clearLongPressTimer, true);
-  document.addEventListener(mouseLeave, clearLongPressTimer, true);
+  // document.addEventListener(mouseLeave, clearLongPressTimer, true);
   document.addEventListener(mouseMove, mouseMoveHandler, true);
   document.addEventListener('wheel', clearLongPressTimer, true);
   document.addEventListener('scroll', clearLongPressTimer, true);

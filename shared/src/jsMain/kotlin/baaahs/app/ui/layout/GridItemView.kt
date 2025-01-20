@@ -1,30 +1,32 @@
 package baaahs.app.ui.layout
 
+import baaahs.SparkleMotion
+import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.appContext
 import baaahs.app.ui.controls.ControlContext
 import baaahs.app.ui.controls.controlContext
 import baaahs.app.ui.controls.problemBadge
+import baaahs.app.ui.editor.Editor
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenControl
-import baaahs.show.mutable.MutableShow
-import baaahs.ui.and
+import baaahs.show.live.OpenTab
+import baaahs.show.mutable.MutableIGridLayout
 import baaahs.ui.render
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import js.objects.jso
 import materialui.icon
+import mui.material.ListItemIcon
 import mui.material.ListItemText
 import mui.material.Menu
 import mui.material.MenuItem
 import react.*
 import react.dom.div
-import react.dom.events.MouseEvent
-import react.dom.onClick
-import react.dom.onMouseDown
-import react.dom.onTouchEnd
 import web.dom.Element
-
-private val showItemControlsMenu = true
+import web.events.EventType
+import web.events.addEventListener
+import web.html.HTMLElement
+import web.uievents.MouseButton
 
 private val GridItemView = xComponent<GridItemProps>("GridItem") { props ->
     val appContext = useContext(appContext)
@@ -32,37 +34,28 @@ private val GridItemView = xComponent<GridItemProps>("GridItem") { props ->
     val showManager = appContext.showManager
 
     val control = props.control
-    val layout = props.controlProps.layout
-    val layoutEditor = props.controlProps.layoutEditor
+    val tab = props.tab
     val editMode = observe(appContext.showManager.editMode)
 
     var menuAnchor by state<Element?> { null }
 
-    // We're inside a draggable; prevent the mousedown from starting a drag.
-    val handleItemControlsMouseDown by mouseEventHandler { e: MouseEvent<*, *> -> e.stopPropagation() }
-    val handleEditMouseDown by mouseEventHandler { e: MouseEvent<*, *> -> e.stopPropagation() }
-    val handleDeleteMouseDown by mouseEventHandler { e: MouseEvent<*, *> -> e.stopPropagation() }
-
-    val handleItemControlsButtonClick by mouseEventHandler(control, layout, layoutEditor) { event ->
-        menuAnchor = event.target as Element?
-        event.preventDefault()
-    }
     val handleMenuClose by handler {
         menuAnchor = null
     }
 
-    val handleEditButtonClick by mouseEventHandler(control, layout, layoutEditor) { event ->
+    val handleEditMenuClick by mouseEventHandler(control, tab) { event ->
         control.getEditIntent()
-            ?.withLayout(layout, layoutEditor)
             ?.let { appContext.openEditor(it) }
 
         event.preventDefault()
         menuAnchor = null
     }
 
-    val handleDeleteButtonClick by mouseEventHandler(control, layoutEditor, showManager.show) { event ->
-        val mutableShow = MutableShow(showManager.show!!)
-        layoutEditor!!.delete(mutableShow)
+    val handleDeleteMenuClick by mouseEventHandler(control, showManager.show, tab, props.tabEditor) { event ->
+        val mutableShow = showManager.show!!.edit()
+        props.tabEditor.edit(mutableShow) {
+            removeControl(control.id)
+        }
         showManager.onEdit(mutableShow, true)
 
         event.preventDefault()
@@ -74,59 +67,48 @@ private val GridItemView = xComponent<GridItemProps>("GridItem") { props ->
             this.parentControl = props.parentControl
         }
     }
-    controlContext.Provider {
-        attrs.value = controlContextValue
 
-        control.getView(props.controlProps)
-            .render(this)
+    div(+styles.gridItem) {
+        ref = RefCallback<HTMLElement> { el ->
+            el?.setAttribute("data-long-press-delay", SparkleMotion.LONG_PRESS_DELAY_MS.toString())
+            el?.addEventListener(EventType("long-press"), { e ->
+                val originalEvent = e.asDynamic().detail.originalEvent as web.uievents.PointerEvent
+                val isPrimaryButton = originalEvent.button == MouseButton.MAIN && !originalEvent.ctrlKey
+                if (isPrimaryButton && appContext.showManager.editMode.isOn) {
+                    menuAnchor = el
+                }
+            })
+        }
+
+        controlContext.Provider {
+            attrs.value = controlContextValue
+
+            control.getView(props.controlProps)
+                .render(this)
+        }
     }
 
     problemBadge(control)
 
-    if (editMode.isAvailable) {
-        if (showItemControlsMenu) {
-            div(+styles.itemControlsButton and styles.itemControlsModeControl) {
-                attrs.onMouseDown = handleItemControlsMouseDown
-                attrs.onClick = handleItemControlsButtonClick
-                // onClick doesn't work on iOS but onTouchEnd does.
-                attrs.onTouchEnd = handleItemControlsButtonClick.asDynamic()
-
-                icon(mui.icons.material.Settings)
-            }
-        } else {
-            div(+styles.deleteButton and styles.deleteModeControl) {
-                attrs.onMouseDown = handleDeleteMouseDown
-                attrs.onClick = handleDeleteButtonClick
-                // onClick doesn't work on iOS but onTouchEnd does.
-                attrs.onTouchEnd = handleDeleteButtonClick.asDynamic()
-
-                icon(mui.icons.material.Delete)
-            }
-
-            div(+styles.editButton and styles.editModeControl) {
-                attrs.onMouseDown = handleEditMouseDown
-                attrs.onClick = handleEditButtonClick
-                // onClick doesn't work on iOS but onTouchEnd does.
-                attrs.onTouchEnd = handleEditButtonClick.asDynamic()
-
-                icon(mui.icons.material.Edit)
-            }
-        }
-    }
-
     if (menuAnchor != null) {
         Menu {
             attrs.anchorEl = menuAnchor.asDynamic()
+            attrs.anchorOrigin = jso {
+                horizontal = "center"
+                vertical = "center"
+            }
             attrs.open = true
             attrs.onClose = handleMenuClose
 
             MenuItem {
-                attrs.onClick = handleEditButtonClick
+                attrs.onClick = handleEditMenuClick
+                ListItemIcon { icon(CommonIcons.Edit) }
                 ListItemText { +"Edit" }
             }
 
             MenuItem {
-                attrs.onClick = handleDeleteButtonClick
+                attrs.onClick = handleDeleteMenuClick
+                ListItemIcon { icon(CommonIcons.Delete) }
                 ListItemText { +"Delete" }
             }
         }
@@ -134,6 +116,8 @@ private val GridItemView = xComponent<GridItemProps>("GridItem") { props ->
 }
 
 external interface GridItemProps : PropsWithClassName, PropsWithStyle {
+    var tab: OpenTab
+    var tabEditor: Editor<MutableIGridLayout>
     var control: OpenControl
     var parentControl: OpenControl?
     var controlProps: ControlProps

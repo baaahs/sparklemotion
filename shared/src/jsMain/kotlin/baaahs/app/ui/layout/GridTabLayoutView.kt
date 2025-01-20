@@ -105,7 +105,7 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
         }
     }
 
-    val renderNode: RenderNode = memo(openShow, props.controlProps, genericControlProps) {
+    val renderNode: RenderNode = memo(openShow, props.tabEditor, genericControlProps) {
         RenderNode { node: Node ->
             val id = node.id
             val openControl = openShow.allControls.find { it.id == id }
@@ -117,6 +117,8 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
             openControl?.let { openControl ->
                 buildElement {
                     gridItem {
+                        attrs.tab = gridLayout
+                        attrs.tabEditor = props.tabEditor
                         attrs.control = openControl
                         attrs.parentControl = parentControl
                         attrs.controlProps = genericControlProps

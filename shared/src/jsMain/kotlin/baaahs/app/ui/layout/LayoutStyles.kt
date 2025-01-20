@@ -42,6 +42,10 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
         }
     }
 
+    val gridItem by css {
+        display = Display.grid
+    }
+
     val gridCell by css {
         display = Display.grid
 
@@ -127,16 +131,6 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
         flex = Flex(0, 0, FlexBasis.auto)
 
         hover {
-            child(deleteButton.selector) {
-                opacity = .7
-                filter = "drop-shadow(0px 0px 2px black)"
-            }
-
-            child(editButton.selector) {
-                opacity = .7
-                filter = "drop-shadow(0px 0px 2px black)"
-            }
-
             child(Styles.dragHandle.selector) {
                 opacity = 1
                 filter = "drop-shadow(0px 0px 2px black)"
@@ -169,47 +163,6 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
     }
     val editModeControl by css {
         transition(::opacity, duration = Styles.editTransitionDuration, timing = Timing.linear)
-    }
-
-    val itemControlsButton by css {
-        position = Position.absolute
-        right = 1.em
-        bottom = (-2).px + 1.em
-        zIndex = StyleConstants.Layers.aboveSharedGlCanvas
-        filter = "drop-shadow(1px 1px 2px rgba(0, 0, 0, .9))"
-        cursor = Cursor.default
-
-        child("svg") {
-            width = .75.em
-            height = .75.em
-        }
-    }
-
-    val deleteButton by css {
-        position = Position.absolute
-        right = 1.em
-        bottom = (-2).px + (2.5).em
-        zIndex = StyleConstants.Layers.aboveSharedGlCanvas
-        filter = "drop-shadow(1px 1px 2px rgba(0, 0, 0, .9))"
-        cursor = Cursor.default
-
-        child("svg") {
-            width = .75.em
-            height = .75.em
-        }
-    }
-    val editButton by css {
-        position = Position.absolute
-        right = 1.em
-        bottom = (-2).px + 1.em
-        zIndex = StyleConstants.Layers.aboveSharedGlCanvas
-        filter = "drop-shadow(1px 1px 2px rgba(0, 0, 0, .9))"
-        cursor = Cursor.default
-
-        child("svg") {
-            width = .75.em
-            height = .75.em
-        }
     }
 
     val editModeOff by css {

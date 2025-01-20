@@ -130,8 +130,8 @@ class Grid2Styles(val theme: Theme) : StyleSheet("app-ui-gridlayout", isStatic =
         position = Position.absolute
         display = Display.none
         outlineWidth = 4.px
-        put("outlineStyle", "dashed")
-        outlineColor = Color.orange // theme.palette.text.primary.asColor().withAlpha(.5)
+        outlineStyle = OutlineStyle.dashed
+        outlineColor = Color("#9900FF") // theme.palette.text.primary.asColor().withAlpha(.5)
         outlineOffset = (-6).px
         put("-webkit-transition", "-webkit-transform 0.2s")
         transition(::transform, 0.05.s)

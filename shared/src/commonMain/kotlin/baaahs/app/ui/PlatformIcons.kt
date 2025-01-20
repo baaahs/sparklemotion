@@ -6,6 +6,8 @@ import baaahs.ui.Icon
 @Suppress("PropertyName")
 interface PlatformIcons {
     val Add: Icon
+    val Edit: Icon
+    val Delete: Icon
     val Download: Icon
     val Upload: Icon
     val Reload: Icon
@@ -49,6 +51,8 @@ interface PlatformIcons {
 
 object PlaceholderIcons : PlatformIcons {
     override val Add: Icon = PlaceholderIcon
+    override val Edit: Icon = PlaceholderIcon
+    override val Delete: Icon = PlaceholderIcon
     override val Download: Icon = PlaceholderIcon
     override val Upload: Icon = PlaceholderIcon
     override val Reload: Icon = PlaceholderIcon

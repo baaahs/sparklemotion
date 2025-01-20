@@ -422,6 +422,13 @@ interface MutableIGridLayout : MutableILayout {
 
     fun createSubLayout(): MutableGridLayout =
         MutableGridLayout(1, 1)
+
+    fun removeControl(id: String) {
+        items.removeAll {
+            it.layout?.removeControl(id)
+            it.control.asBuiltId == id
+        }
+    }
 }
 
 data class MutableLayoutDimen(var scalar: Number, var unit: String) {

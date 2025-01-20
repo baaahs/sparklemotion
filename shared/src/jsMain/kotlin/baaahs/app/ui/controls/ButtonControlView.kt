@@ -86,7 +86,6 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
             }
         }
     }
-    observe(buttonControl.switch) {}
 
     val handlePatchModSwitch by handler(buttonControl, buttonMutex) {
         buttonControl.click()
@@ -107,6 +106,7 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
         if (buttonControl.expandsOnLongPress && buttonEl != null) {
             buttonEl.setAttribute("data-long-press-delay", SparkleMotion.LONG_PRESS_DELAY_MS.toString())
             buttonEl.addEventListener(EventType("long-press"), { e ->
+                console.log("long-press for button")
                 val originalEvent = e.asDynamic().detail.originalEvent as web.uievents.PointerEvent
                 val isPrimaryButton = originalEvent.button == MouseButton.MAIN && !originalEvent.ctrlKey
                 if (isPrimaryButton && appContext.showManager.editMode.isOff) {
