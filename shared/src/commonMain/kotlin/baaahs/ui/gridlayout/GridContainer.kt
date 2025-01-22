@@ -1,6 +1,7 @@
 package baaahs.ui.gridlayout
 
 import baaahs.clamp
+import baaahs.geom.Vector2I
 import kotlin.math.roundToInt
 
 data class CellBoundaries(
@@ -95,8 +96,16 @@ data class GridContainer(
             columnsBoundaries[0].end, rowBoundaries[0].end
         )
 
-    enum class Quadrant {
-        TopLeft, TopRight, BottomLeft, BottomRight;
+    enum class Quadrant(
+        val roundUpX: Int, val roundUpY: Int
+    ) {
+        TopLeft(0, 0),
+        TopRight(1, 0),
+        BottomLeft(0, 1),
+        BottomRight(1, 1);
+
+        fun round(vec: Vector2I): Vector2I =
+            Vector2I(vec.x + roundUpX, vec.y + roundUpY)
 
         companion object {
             fun from(isLeft: Boolean, isTop: Boolean): Quadrant =

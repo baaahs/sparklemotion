@@ -9,9 +9,9 @@ import kotlin.math.min
 data class GridModel(
     val rootNode: Node
 ) {
-//    val parents = buildMap {
-//        visit(null) { node, parent -> put(node, parent) }
-//    }
+    val parents = buildMap {
+        visit(null) { node, parent -> put(node, parent) }
+    }
 
     fun visit(visitor: (Node) -> Unit) {
         rootNode.visit(visitor)
@@ -22,26 +22,26 @@ data class GridModel(
     }
 
     fun moveElement(
-        node: Node, toContainer: Node, cell: Vector2I, directions: Array<Direction>
+        node: Node, toContainer: Node, cell: Vector2I, size: Vector2I, directions: Array<Direction>
     ): GridModel {
-        if (toContainer.contains(node)
+        if (toContainer.contains(node.id)
             && node.left == cell.x
             && node.top == cell.y
+            && node.width == size.x
+            && node.height == size.y
         ) {
             // No change, bail.
             throw NoChangesException()
         }
 
+        val movingNode = node.copy(
+            left = cell.x, top = cell.y,
+            width = size.x, height = size.y
+        )
         return GridModel(
-            rootNode.moveElement(node, toContainer, cell, directions)
+            rootNode.placeElement(movingNode, toContainer, directions)
                 .canonicalize()
         )
-
-//        return try {
-//            return GridModel(rootNode.moveElement(node, toContainer, cell))
-//        } catch (_: ImpossibleLayoutException) {
-//            this
-//        }
     }
 
     fun canonicalize(): GridModel =
@@ -61,7 +61,8 @@ data class Node(
 
     val right get() = left + width - 1
     val bottom get() = top + height - 1
-    val size: GridSize get() = GridSize(width, height)
+    val topLeft get() = Vector2I(left, top)
+    val size get() = Vector2I(width, height)
 
     val gridCells
         get() = (top until top + height).flatMap { y ->
@@ -70,8 +71,11 @@ data class Node(
 
     val isContainer get() = layout != null
 
-    fun contains(node: Node) =
-        layout?.children?.contains(node) == true
+    fun findNode(nodeId: String) =
+        layout?.children?.find { it.id == nodeId }
+
+    fun contains(nodeId: String) =
+        layout?.children?.any { it.id == nodeId } == true
 
     fun collidesWith(other: Node): Boolean {
         if (id == other.id) return false // same element
@@ -103,17 +107,15 @@ data class Node(
     /**
      * Move an element within this grid. Responsible for doing cascading movements of other elements.
      *
-     * @param movingNode Element to move.
-     * @param x X position in grid units.
-     * @param y Y position in grid units.
+     * @param movingNode Element to place, with updated position and size..
      * @return A new layout with moved layout items.
      * @throws ImpossibleLayoutException if the move isn't possible because of collisions or constraints.
      */
-    fun attemptToPlace(movingNode: Node, x: Int, y: Int, directions: Array<Direction>): Node {
-        val movedNode = movingNode.copy(left = x, top = y).apply { dragging = true }
+    fun attemptToPlace(movingNode: Node, directions: Array<Direction>): Node {
+        val movedNode = movingNode.copy().apply { dragging = true }
         for (direction in directions) {
             try {
-                print("-> Try moving node ${movedNode.id} ${direction}ward $id[${movedNode.left},${movedNode.top}] -> $id[$x,$y]: ")
+                print("-> Try moving node ${movedNode.id} ${direction}ward $id[${movedNode.left},${movedNode.top}]: ")
                 return fitElement(movedNode, direction)
                     .also { println(" worked!") }
             } catch (e: ImpossibleLayoutException) {
@@ -121,7 +123,7 @@ data class Node(
                 // Try again.
             }
         }
-        throw ImpossibleLayoutException("Item ${movingNode.id} can't be moved to $x,$y.")
+        throw ImpossibleLayoutException("Item ${movingNode.id} can't be placed at ${movedNode.topLeft} size=${movedNode.size}.")
     }
 
     private fun moveElementInternal(movingNode: Node, x: Int, y: Int, pushDirection: Direction): Node {
@@ -221,23 +223,23 @@ data class Node(
             )
         )
 
-    fun moveElement(
-        movingNode: Node, toContainer: Node, topLeft: Vector2I, directions: Array<Direction>
+    fun placeElement(
+        movingNode: Node, toContainer: Node, directions: Array<Direction>
     ): Node {
         if (layout == null) return this
-        val containsItem = contains(movingNode)
+        val containsItem = contains(movingNode.id)
         val movingHere = toContainer == this
         var newNode = this
-        println("moveElement(${movingNode.id}, ${toContainer.id}, [${topLeft.x}, ${topLeft.y}])")
+//        println("moveElement(${movingNode.id}, ${toContainer.id}, [${topLeft.x}, ${topLeft.y}])")
         if (movingHere) {
             if (!containsItem) {
                 newNode = newNode.addNode(movingNode)
             }
-            newNode = newNode.attemptToPlace(movingNode, topLeft.x, topLeft.y, directions).let { it ->
+            newNode = newNode.attemptToPlace(movingNode, directions).let { it ->
                 it.copy(
                     layout = it.layout?.copy(
                         children = it.layout.children
-                            .map { it.moveElement(movingNode, toContainer, topLeft, directions) }
+                            .map { it.placeElement(movingNode, toContainer, directions) }
                     )
                 )
             }
@@ -249,8 +251,8 @@ data class Node(
             newNode = newNode.copy(
                 layout = newNode.layout.copy(
                     children = newNode.layout.children
-                        .filter { it != movingNode }
-                        .map { it.moveElement(movingNode, toContainer, topLeft, directions) }
+                        .filter { it.id != movingNode.id }
+                        .map { it.placeElement(movingNode, toContainer, directions) }
                 )
             )
         }

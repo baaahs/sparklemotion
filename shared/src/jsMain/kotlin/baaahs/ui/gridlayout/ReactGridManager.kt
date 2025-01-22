@@ -12,6 +12,7 @@ import react.RefObject
 import react.buildElement
 import react.dom.div
 import react.dom.img
+import react.dom.onPointerDown
 import web.dom.document
 import web.dom.observers.ResizeObserver
 import web.events.Event
@@ -24,7 +25,6 @@ import web.timers.clearTimeout
 import web.timers.setTimeout
 import web.uievents.KeyboardEvent
 import web.uievents.MouseButton
-import web.uievents.MouseEvent
 import web.uievents.PointerEvent
 import web.uievents.TouchEvent
 import kotlin.math.roundToInt
@@ -179,11 +179,13 @@ class ReactGridManager(
                         child(renderNode.render(node))
                     }
 
-                    img(classes = +styles.gridResizeHandleTopLeft) {
-                        attrs.src = JsPlatform.imageUrl("/assets/resize-top-left-corner.svg")
-                    }
+//                    img(classes = +styles.gridResizeHandleTopLeft) {
+//                        attrs.src = JsPlatform.imageUrl("/assets/resize-top-left-corner.svg")
+//                        attrs.onPointerDown = ::onTopLeftResizeHandlePointerDown
+//                    }
                     img(classes = +styles.gridResizeHandleBottomRight) {
                         attrs.src = JsPlatform.imageUrl("/assets/resize-bottom-right-corner.svg")
+                        attrs.onPointerDown = ::onBottomRightResizeHandlePointerDown
                     }
                 }
             }
@@ -238,7 +240,12 @@ class ReactGridManager(
         }
 
         fun setContainerBounds(innerBounds: Rect) {
-            val layoutBounds = layoutBounds ?: error("${node.id}.setContainerBounds($innerBounds): No layout bounds?!")
+            val layoutBounds = layoutBounds
+            if (layoutBounds == null) {
+                console.error("${node.id}.setContainerBounds($innerBounds): No layout bounds?!")
+                return
+            }
+
             containerInset = layoutBounds - innerBounds
             if (innerBounds.width == 0 || innerBounds.height == 0) return
             val layout = node.layout ?: error("${node.id}.setContainerBounds($innerBounds): No layout?!")
@@ -284,6 +291,7 @@ class ReactGridManager(
             val bounds = effectiveBounds ?: return
             el.applyBounds(bounds, if (isDragging) 100 else null)
             el.classList.toggle(+styles.dragging, isDragging)
+            el.classList.toggle(+styles.resizing, isResizing)
             el.classList.toggle(+styles.editing, node.id == selectedNodeId)
 
 //            el.style.zIndex = (viewable.layer + if (viewable.isDragging) 100 else 0).toString()
@@ -302,6 +310,7 @@ class ReactGridManager(
             node.isContainer && !otherNodeWrapper.node.isContainer
 
         private val preventDefault = { e: Event -> e.preventDefault() }
+
         fun onPointerDown(e: PointerEvent) {
             println("isEditable = $isEditable button = ${e.button}")
             selectedNodeId = null
@@ -317,7 +326,28 @@ class ReactGridManager(
             }
         }
 
-        fun onPointerMove(e: MouseEvent) {
+        fun onTopLeftResizeHandlePointerDown(e: react.dom.events.PointerEvent<*>) {
+            console.log("onTopLeftResizeHandlePointerDown")
+            onResizePointerDown(e, DraggingState.ResizeFromTopLeft)
+        }
+
+        fun onBottomRightResizeHandlePointerDown(e: react.dom.events.PointerEvent<*>) {
+            console.log("onBottomRightResizeHandlePointerDown")
+            onResizePointerDown(e, DraggingState.ResizeFromBottomRight)
+        }
+
+        private fun onResizePointerDown(e: react.dom.events.PointerEvent<*>, state: DraggingState) {
+            selectedNodeId = null
+            if (e.button != MouseButton.MAIN) return
+            if (onPointerDown(Vector2I(e.clientX, e.clientY), state)) {
+                addDraggingListeners()
+                el!!.setPointerCapture(e.pointerId)
+//                e.stopPropagation()
+                e.preventDefault()
+            }
+        }
+
+        fun onPointerMove(e: PointerEvent) {
             selectedNodeId = node.id
             onPointerMove(Vector2I(e.clientX, e.clientY))
 //            e.stopPropagation()

@@ -12,6 +12,7 @@ data class Rect(
     val right get() = left + width
     val bottom get() = top + height
     val topLeft get() = Vector2I(left, top)
+    val bottomRight get() = Vector2I(right, bottom)
     val size get() = Vector2I(width, height)
     val center get() = Vector2I(left + width / 2, top + height / 2)
 
@@ -21,6 +22,9 @@ data class Rect(
 
     fun inset(length: Int): Rect =
         Rect(left + length, top + length, width - length * 2, height - length * 2)
+
+    fun resizeBy(offset: Vector2I) =
+        Rect(left, top, width + offset.x, height + offset.y)
 
     fun resizeFromCenter(newSize: Rect): Rect {
         val deltaX = (newSize.width - width) / 2

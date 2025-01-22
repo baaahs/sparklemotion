@@ -15,7 +15,7 @@ class NodeSpec : DescribeSpec({
            it("will place the item if there are no collisions") {
                val newNode = Node("D", 1, 1, 1, 1, null)
                val result = grid.rootNode.addNode(newNode).attemptToPlace(
-                   newNode, 1, 1, arrayOf(Direction.West)
+                   newNode.copy(left = 1, top = 1), arrayOf(Direction.West)
                )
                result.stringify().shouldBe("""
                    AB
@@ -26,7 +26,7 @@ class NodeSpec : DescribeSpec({
            it("attempts to find a place for a new node") {
                val newNode = Node("D", 1, 0, 1, 1, null)
                val result = grid.rootNode.addNode(newNode).attemptToPlace(
-                   newNode, 0, 1, arrayOf(Direction.West, Direction.East)
+                   newNode.copy(left = 0, top = 1), arrayOf(Direction.West, Direction.East)
                )
                result.stringify().shouldBe("""
                    AB

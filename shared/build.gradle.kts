@@ -286,7 +286,7 @@ tasks.withType(Test::class) {
 
     doLast {
         val reportDir = file("build/reports/tests/")
-        val cssFile = file("${reportDir}/style.css")
+        val cssFile = file("${reportDir}/jvmTest/css/style.css")
         cssFile.appendText(
             """
             span.code pre {

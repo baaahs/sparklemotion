@@ -47,7 +47,7 @@ private val GridManagerView = xComponent<GridManagerProps>("GridManager") { prop
             it.editMode = editMode.isOn
             it.withTransitionsDisabled {
                 rootSize.current?.let { size ->
-                    it.onResize(size.x, size.y)
+                    it.onNodeResize(size.x, size.y)
                 }
             }
         }
@@ -62,7 +62,7 @@ private val GridManagerView = xComponent<GridManagerProps>("GridManager") { prop
     useResizeListener(rootRef) { width, height ->
         gridManager.withTransitionsDisabled {
             rootSize.current = Vector2I(width, height)
-            gridManager.onResize(width, height)
+            gridManager.onNodeResize(width, height)
         }
     }
 

@@ -116,6 +116,7 @@ class TestGridManager(
             nodeWrappers[movingNode]!!.node,
             nodeWrappers[intoNode]!!.node,
             Vector2I(column, row),
+            nodeWrappers[movingNode]!!.node.size,
             directions as Array<Direction>
         )
     }
@@ -141,21 +142,44 @@ class TestGridManager(
 }
 
 class Dragger(
-    val gridManager: GridManager,
+    gridManager: GridManager,
     val gridChanges: MutableList<GridModel>,
     val id: String
 ) {
     val dragging = gridManager.nodeWrappers.getBang(id, "node wrapper")
     val onlyChange get() = gridChanges.only("change").stringify()
     val changes get() = gridChanges
+    var pointerDownPoint: Vector2I = Vector2I(-1, -1)
 
     /** Drag and drop within the same container node. */
     fun dragAndDropAt(xPx: Int, yPx: Int): Dragger {
-        val pointerDownPoint = dragging.layoutBounds!!.center
+        dragBy(xPx, yPx)
+        dropAt(xPx, yPx)
+        return this
+    }
+
+    fun pointerDown(): Dragger {
+        pointerDownPoint = dragging.layoutBounds!!.center
         dragging.onPointerDown(pointerDownPoint)
+        return this
+    }
+
+    fun pointerDownOnBottomRightResizeHandle(): Dragger {
+        pointerDownPoint = dragging.layoutBounds!!.bottomRight
+        dragging.onPointerDown(pointerDownPoint, DraggingState.ResizeFromBottomRight)
+        return this
+    }
+
+    fun dragBy(xPx: Int, yPx: Int): Dragger {
         val offset = Vector2I(xPx, yPx)
         dragging.onPointerMove(pointerDownPoint + offset)
+        return this
+    }
+
+    fun dropAt(xPx: Int, yPx: Int): Dragger {
+        val offset = Vector2I(xPx, yPx)
         dragging.onPointerUp(pointerDownPoint + offset)
+        pointerDownPoint = Vector2I(-1, -1)
         return this
     }
 }

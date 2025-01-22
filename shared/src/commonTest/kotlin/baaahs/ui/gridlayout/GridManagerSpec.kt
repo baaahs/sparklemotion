@@ -1,11 +1,8 @@
 package baaahs.ui.gridlayout
 
-import baaahs.app.ui.editor.Editor
 import baaahs.describe
 import baaahs.gl.override
 import baaahs.kotest.value
-import baaahs.show.mutable.MutableIGridLayout
-import baaahs.show.mutable.MutableShow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldBeEmpty
@@ -46,7 +43,7 @@ class GridManagerSpec : DescribeSpec({
         beforeEach {
             // Make each cell 100x100px.
             val gridRootLayout = originalGridModel.rootNode.layout!!
-            gridManager.onResize(
+            gridManager.onNodeResize(
                 gridRootLayout.columns * 100,
                 gridRootLayout.rows * 100,
             )
@@ -54,7 +51,7 @@ class GridManagerSpec : DescribeSpec({
 
         context("with no margin or gap") {
             it("lays out grid") {
-                gridManager.onResize(400, 400)
+                gridManager.onNodeResize(400, 400)
                 allViews.mapValues { (_, v) -> v.effectiveBounds }
                     .shouldContainExactly(
                         mapOf(
@@ -98,7 +95,18 @@ class GridManagerSpec : DescribeSpec({
 //        }
 
         val pointerDownOn by value {
-            { itemId: String -> Dragger(gridManager, gridChanges, itemId) }
+            { itemId: String ->
+                Dragger(gridManager, gridChanges, itemId)
+                    .pointerDown()
+            }
+        }
+
+        context("tapping an item without moving it") {
+            it("should not move anything") {
+                pointerDownOn("X")
+                    .dropAt(0, 0)
+                    .changes.shouldBeEmpty()
+            }
         }
 
         context("rearranging") {
@@ -431,6 +439,36 @@ class GridManagerSpec : DescribeSpec({
                         SSSSSSSSEEBBB
                         SSSSSSSSEEBBB
                         SSSSSSSSEEBBB
+                        """.trimIndent()
+                    )
+            }
+        }
+
+        context("resizing") {
+            it("resizes only when dragged past the middle of a cell") {
+                pointerDownOn("B")
+                    .pointerDownOnBottomRightResizeHandle()
+                    .dragBy(-49, -49)
+                    .dropAt(-49, -49)
+                    .changes.shouldBeEmpty()
+
+            }
+
+            it("resizes a node smaller") {
+                pointerDownOn("B")
+                    .pointerDownOnBottomRightResizeHandle()
+                    .dragBy(-60, -60)
+                    .dropAt(-60, -60)
+                    .onlyChange.shouldBe(
+                        """
+                        AB..
+                        D..G
+                        .HI.
+                        ....
+            
+                        # B:
+                        WX
+                        YZ
                         """.trimIndent()
                     )
             }

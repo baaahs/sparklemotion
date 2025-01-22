@@ -1,36 +1,14 @@
 package baaahs.ui.gridlayout
 
-import baaahs.app.ui.StyleConstants
 import baaahs.ui.descendants
 import baaahs.ui.important
 import baaahs.ui.selector
-import kotlinx.css.Border
-import kotlinx.css.BorderStyle
-import kotlinx.css.Color
-import kotlinx.css.Position
-import kotlinx.css.backgroundColor
-import kotlinx.css.border
-import kotlinx.css.height
-import kotlinx.css.pct
-import kotlinx.css.position
-import kotlinx.css.px
+import baaahs.ui.transition
 import kotlinx.css.*
-import kotlinx.css.width
+import kotlinx.css.Position
+import kotlinx.css.properties.s
 import mui.material.styles.Theme
 import styled.StyleSheet
-import baaahs.ui.transition
-import baaahs.util.JsPlatform
-import kotlinx.css.bottom
-import kotlinx.css.left
-import kotlinx.css.properties.deg
-import kotlinx.css.properties.rotate
-import kotlinx.css.properties.s
-import kotlinx.css.right
-import kotlinx.css.top
-import web.cssom.BackgroundImage
-import web.cssom.PropertyName.Companion.backgroundImage
-import web.cssom.PropertyName.Companion.opacity
-import web.cssom.PropertyName.Companion.rotate
 
 class Grid2Styles(val theme: Theme) : StyleSheet("app-ui-gridlayout", isStatic = true) {
     val gridRoot by css {
@@ -57,6 +35,9 @@ class Grid2Styles(val theme: Theme) : StyleSheet("app-ui-gridlayout", isStatic =
         position = Position.absolute
         width = 100.pct
         height = 100.pct
+        userSelect = UserSelect.none
+        declarations["-webkit-user-select"] = "none" // Disable text selection.
+        declarations["-webkit-touch-callout"] = "none" // Disable the callout menu.
     }
 
     val gridEmptyCells by css {}
@@ -111,6 +92,13 @@ class Grid2Styles(val theme: Theme) : StyleSheet("app-ui-gridlayout", isStatic =
     }
 
     val dragging by css {
+        transition(::top, 0.s)
+        transition(::bottom, 0.s)
+        transition(::left, 0.s)
+        transition(::right, 0.s)
+    }
+
+    val resizing by css {
         transition(::top, 0.s)
         transition(::bottom, 0.s)
         transition(::left, 0.s)

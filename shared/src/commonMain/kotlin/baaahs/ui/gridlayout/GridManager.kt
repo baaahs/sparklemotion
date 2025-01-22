@@ -4,6 +4,7 @@ import baaahs.geom.Vector2I
 import baaahs.getBang
 import baaahs.show.ImpossibleLayoutException
 import baaahs.show.NoChangesException
+import kotlin.math.max
 
 abstract class GridManager(
     model: GridModel,
@@ -22,6 +23,8 @@ abstract class GridManager(
     private var rootNodeWrapper = nodeWrappers[model.rootNode.id]!!
 
     internal var draggingNode: NodeWrapper? = null
+    internal var resizingNode: NodeWrapper? = null
+    internal var draggingState: DraggingState? = null
 
     var margin = 5
     var gap = 5
@@ -35,7 +38,7 @@ abstract class GridManager(
         }
     }
 
-    fun onResize(width: Int, height: Int) {
+    fun onNodeResize(width: Int, height: Int) {
         rootNodeWrapper.layout(Rect(0, 0, width, height))
     }
 
@@ -54,20 +57,32 @@ abstract class GridManager(
         val targetPosition = targetNodeWrapper.findPositionForPx(originCellCenter)!!
         println("-> to ${targetNodeWrapper.node.id} $targetPosition")
         val directions = Direction.rankedPushOptions(originCellCenter - (previousPosition ?: originCellCenter))
-        return move(draggingNodeWrapper.node, targetNodeWrapper.node, targetPosition.cell, directions)
+        return move(draggingNodeWrapper.node, targetNodeWrapper.node, targetPosition.cell, draggingNodeWrapper.node.size, directions)
             .also {
                 debug(it.stringify())
             }
     }
 
-    fun move(movingNode: Node, intoNode: Node, cell: Vector2I, directions: Array<Direction>): GridModel {
+    fun resizing(draggingNodeWrapper: NodeWrapper, handlePosition: Vector2I, previousPosition: Vector2I?): GridModel {
+        val parentNodeWrapper = draggingNodeWrapper.parent
+            ?: error("Parent for ${draggingNodeWrapper.node.id} not found.")
+        val overCell = parentNodeWrapper.findCornerForPx(handlePosition)
+        if (overCell == null) error("Whut?")
+        val size = (overCell - draggingNodeWrapper.node.topLeft).let {
+            Vector2I(max(it.x, 1), max(it.y, 1))
+        }
+        val directions = Direction.rankedPushOptions(handlePosition - (previousPosition ?: Vector2I.origin))
+        return move(draggingNodeWrapper.node, parentNodeWrapper.node, draggingNodeWrapper.node.topLeft, size, directions)
+    }
+
+    fun move(movingNode: Node, intoNode: Node, cell: Vector2I, size: Vector2I, directions: Array<Direction>): GridModel {
         return try {
-            model.moveElement(movingNode, intoNode, cell, directions)
+            model.moveElement(movingNode, intoNode, cell, size, directions)
         } catch (e: ImpossibleLayoutException) {
             debug("move failed: ${e.message}")
             null
         } ?: try {
-            baseModel.moveElement(movingNode, intoNode, cell, directions)
+            baseModel.moveElement(movingNode, intoNode, cell, size, directions)
         } catch (e: ImpossibleLayoutException) {
             debug("move failed: ${e.message}")
             null
@@ -135,6 +150,8 @@ abstract class GridManager(
     ) {
         var node: Node = node
             private set
+        val parent: NodeWrapper?
+            get() = model.parents[node]?.id?.let { nodeWrappers[it] }
 
         internal var layoutBounds: Rect? = null
         internal var layer: Int = 0
@@ -143,6 +160,9 @@ abstract class GridManager(
         protected var pointerDown: Vector2I? = null
         protected var dragOffset: Vector2I? = null
         val isDragging get() = dragOffset != null
+        protected var resizeOriginalSize: Vector2I? = null
+        protected var resizeDelta: Vector2I? = null
+        var isResizing: Boolean = false
         val isMultiCell get() = node.width > 1 || node.height > 1
         val cellSize get() = Vector2I(node.width, node.height)
 
@@ -154,9 +174,14 @@ abstract class GridManager(
         val effectiveBounds
             get() =
                 layoutBounds?.let { layoutBounds ->
-                    dragOffset?.let { dragOffset ->
+                    val dragged = (dragOffset?.let { dragOffset ->
                         layoutBounds + dragOffset
-                    } ?: layoutBounds
+                    } ?: layoutBounds)
+
+                    resizeDelta?.let { resizeDelta ->
+                        Rect(dragged.left, dragged.top, resizeOriginalSize!!.x, resizeOriginalSize!!.y)
+                            .resizeBy(resizeDelta)
+                    } ?: dragged
                 }
 
         private val childrenByCell: Map<Vector2I, Node> = buildMap {
@@ -233,9 +258,13 @@ abstract class GridManager(
 
         fun findPositionForPx(pxCoord: Vector2I): GridPosition? =
             gridContainer?.findCell(pxCoord.x, pxCoord.y)
+        fun findCornerForPx(pxCoord: Vector2I): Vector2I? =
+            findPositionForPx(pxCoord)?.let { it.quadrant.round(it.cell) }
 
-        fun onPointerDown(point: Vector2I): Boolean {
+        fun onPointerDown(point: Vector2I, draggingState: DraggingState = DraggingState.Move): Boolean {
             if (!isEditable) return false
+            this@GridManager.draggingState = draggingState
+            resizeOriginalSize = layoutBounds?.size ?: Vector2I.origin
             pointerDown = point
             placeholder.layout(layoutBounds)
             return true
@@ -243,17 +272,29 @@ abstract class GridManager(
 
         fun onPointerMove(point: Vector2I) {
             pointerDown?.let { pointerDown ->
-                debug("\npointer move on ${node.id}")
-                draggingNode = this
-                draggedBy(point - pointerDown)
+                if (draggingState == DraggingState.Move) {
+                    debug("\npointer move on ${node.id}")
+                    draggingNode = this
+                    draggedBy(point - pointerDown)
+                } else {
+                    resizingNode = this
+                    resizedBy(point - pointerDown)
+                }
             }
         }
 
         fun onPointerUp(point: Vector2I) {
             pointerDown?.let { pointerDown ->
-                droppedAt(point - pointerDown)
+                if (draggingState == DraggingState.Move) {
+                    if (draggingNode != null)
+                        droppedAt(point - pointerDown)
+                    draggingNode = null
+                } else {
+                    if (resizingNode != null)
+                        resizedTo(point - pointerDown)
+                    resizingNode = null
+                }
             }
-            draggingNode = null
             pointerDown = null
             placeholder.layout(null)
         }
@@ -275,6 +316,18 @@ abstract class GridManager(
             applyStyle()
         }
 
+        open fun visualResize(offset: Vector2I?) {
+            resizeDelta = offset
+            visualResizeChildren(offset != null)
+        }
+
+        fun visualResizeChildren(isResizing: Boolean) {
+            this.isResizing = isResizing
+            if (node.layout != null) {
+                forChildren { child -> child.visualResizeChildren(isResizing) }
+            }
+            applyStyle()
+        }
 
         /** @param offset Distance from the node's original position when dragging started. */
         fun draggedBy(offset: Vector2I?) {
@@ -295,24 +348,37 @@ abstract class GridManager(
 
         /** @param offset Distance from original position. */
         fun droppedAt(offset: Vector2I) {
-            val previousPosition = originCellCenter.plus(dragOffset ?: Vector2I.origin)
-            dragChildren(offset)
-            try {
-                val updatedModel = dragging(
-                    draggingNodeWrapper = this,
-                    originCellCenter.plus(dragOffset ?: Vector2I.origin),
-                    previousPosition
-                )
-                println("XXX updatedModel: ${updatedModel.stringify()}")
-                updateFromModel(updatedModel)
-            } catch (_: NoChangesException) {
-                println("XXX no changes!")
-                // No changes, ignore.
-            }
+            draggedBy(offset)
             if (model != baseModel) {
                 onChange(model)
             }
             dragChildren(null)
+            applyStyle()
+        }
+
+        /** @param offset Distance from the pointer-down position when resizing started. */
+        fun resizedBy(offset: Vector2I?) {
+            val previousPosition = dragOffset
+            visualResize(offset)
+            try {
+                val updatedModel = resizing(
+                    draggingNodeWrapper = this,
+                    pointerDown!! + (offset ?: Vector2I.origin),
+                    previousPosition
+                )
+                updateFromModel(updatedModel)
+            } catch (_: NoChangesException) {
+                // No changes, ignore.
+            }
+            applyStyle()
+        }
+
+        fun resizedTo(offset: Vector2I) {
+            resizedBy(offset)
+            if (model != baseModel) {
+                onChange(model)
+            }
+            visualResize(null)
             applyStyle()
         }
 
@@ -353,4 +419,10 @@ abstract class GridManager(
             applyStyle()
         }
     }
+}
+
+enum class DraggingState {
+    Move,
+    ResizeFromTopLeft,
+    ResizeFromBottomRight
 }
