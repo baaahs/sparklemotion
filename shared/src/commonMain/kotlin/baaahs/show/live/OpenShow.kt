@@ -7,7 +7,6 @@ import baaahs.app.ui.editor.Editor
 import baaahs.app.ui.editor.GridLayoutEditorPanel
 import baaahs.client.document.OpenDocument
 import baaahs.control.OpenButtonControl
-import baaahs.geom.Vector2I
 import baaahs.getBang
 import baaahs.randomId
 import baaahs.show.*
@@ -296,39 +295,6 @@ class OpenGridTab(
         items.forEach { item ->
             item.control.addTo(builder, depth + 1, item.layout)
         }
-    }
-
-    fun moveElement(movingId: String, toLayoutId: String?, toPosition: Vector2I): GridTab {
-        var movingItem: GridItem = gridTab.find(movingId)
-            ?: error("No such element \"$movingId\".")
-
-        fun applyChanges(item: GridItem): GridItem {
-            val layout = item.layout
-            if (layout == null) return item
-            val containsItem = layout.items.contains(movingItem)
-            val movingHere = item.id == toLayoutId
-            return if (containsItem && !movingHere) {
-                item.copy(layout = layout.removeElement(movingId) as? GridLayout)
-            } else if (movingHere) {
-                item.copy(layout = layout.moveElement(movingItem, toPosition.x, toPosition.y) as GridLayout)
-            } else {
-                item.copy(layout = layout.copy(items = layout.items.map { subItem -> applyChanges(subItem) }))
-            }
-        }
-
-        fun applyChanges(gridTab: GridTab): GridTab {
-            val containsItem = gridTab.items.contains(movingItem)
-            val movingHere = toLayoutId == null
-            return if (containsItem && !movingHere) {
-                gridTab.removeElement(movingId) as GridTab
-            } else if (movingHere) {
-                gridTab.moveElement(movingItem, toPosition.x, toPosition.y) as GridTab
-            } else {
-                gridTab.copy(items = gridTab.items.map { subItem -> applyChanges(subItem) })
-            }
-        }
-
-        return applyChanges(gridTab)
     }
 }
 

@@ -10,7 +10,7 @@ import kotlinx.css.properties.s
 import mui.material.styles.Theme
 import styled.StyleSheet
 
-class Grid2Styles(val theme: Theme) : StyleSheet("app-ui-gridlayout", isStatic = true) {
+class GridManagerStyles(val theme: Theme) : StyleSheet("app-ui-gridlayout", isStatic = true) {
     val gridRoot by css {
         position = Position.absolute
         backgroundColor = Color.Companion.darkGray
@@ -106,7 +106,7 @@ class Grid2Styles(val theme: Theme) : StyleSheet("app-ui-gridlayout", isStatic =
     }
 
     val disableTransitions by css {
-        descendants(this@Grid2Styles, ::gridItem) {
+        descendants(this@GridManagerStyles, ::gridItem) {
             transition(::top, 0.s).important
             transition(::bottom, 0.s).important
             transition(::left, 0.s).important

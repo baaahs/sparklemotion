@@ -33,9 +33,6 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
     val showManager = observe(appContext.showManager)
     val layoutStyles = appContext.allStyles.layout
 
-    val gridLayoutContext = useContext(dragNDropContext).gridLayoutContext
-    observe(gridLayoutContext)
-
     var layoutPxDimens by state<Pair<Int, Int>?> { null }
     val gridLayout = props.tab
 
@@ -184,8 +181,7 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
 //        this.rows = rows
 //    }
     div(+layoutStyles.gridOuterContainer and
-            (+if (editMode.isOn) layoutStyles.editModeOn else layoutStyles.editModeOff) and
-            +if (gridLayoutContext.dragging) layoutStyles.dragging else layoutStyles.notDragging
+            (+if (editMode.isOn) layoutStyles.editModeOn else layoutStyles.editModeOff)
     ) {
         ref = containerDiv
 

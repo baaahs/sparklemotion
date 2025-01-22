@@ -1,6 +1,5 @@
 package external.react_resizable
 
-import baaahs.ui.gridlayout.Position
 import js.objects.jso
 import mui.material.SvgIcon
 import react.ReactElement

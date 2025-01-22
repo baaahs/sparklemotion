@@ -1,11 +1,9 @@
 package baaahs.app.ui
 
-import baaahs.app.ui.layout.gridItem
 import baaahs.show.live.ControlProps
 import baaahs.show.live.ControlsInfo
 import baaahs.show.live.OpenShow
 import baaahs.ui.and
-import baaahs.ui.gridlayout.LayoutItem
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent

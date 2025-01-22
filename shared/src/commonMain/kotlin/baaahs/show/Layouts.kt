@@ -180,137 +180,8 @@ interface IGridLayout {
         return null
     }
 
-    private fun anyCollisions(layoutItem: GridItem): Boolean =
-        items.any { it.collidesWith(layoutItem) }
-
-    fun moveElement(itemId: String, x: Int, y: Int): IGridLayout =
-        moveElement(find(itemId)!!, x, y)
-
-    fun findCollisions(layoutItem: GridItem): List<GridItem> =
-        items.filter { l -> l.collidesWith(layoutItem) }
-
-    /**
-     * Move an element. Responsible for doing cascading movements of other elements.
-     *
-     * @param item Element to move.
-     * @param x X position in grid units.
-     * @param y Y position in grid units.
-     * @return A new layout with moved layout items.
-     * @throws ImpossibleLayoutException if the move isn't possible because of collisions or constraints.
-     */
-    fun moveElement(item: GridItem, x: Int, y: Int): IGridLayout {
-        for (direction in Direction.rankedPushOptions(x - item.column, y - item.row)) {
-            try {
-                return moveElementInternal(item, x, y, direction)
-            } catch (e: ImpossibleLayoutException) {
-                e.printStackTrace()
-                // Try again.
-            }
-        }
-        throw ImpossibleLayoutException("Item ${item.controlId} can't be moved to $x,$y.")
-    }
-
-    private fun moveElementInternal(l: GridItem, x: Int, y: Int, pushDirection: Direction): IGridLayout {
-        // Short-circuit if nothing to do.
-        if (l.row == y && l.column == x) return this
-
-        logger.debug {
-            "Moving element ${l.controlId} to [$x,$y] from [${l.column},${l.row}]"
-        }
-
-        val movedItem = l.movedTo(x, y)
-        return fitElement(movedItem, pushDirection)
-    }
-
-    private fun fitElement(changedItem: GridItem, pushDirection: Direction): IGridLayout {
-        if (outOfBounds(changedItem))
-            throw ImpossibleLayoutException("out of bounds, $pushDirection")
-
-        var updatedLayout = updatedLayout(changedItem)
-        val collisions = findCollisions(changedItem)
-
-        // If it collides with anything, move it (recursively).
-        if (collisions.isNotEmpty()) {
-            // When doing this comparison, we have to sort the items we compare with
-            // to ensure, in the case of multiple collisions, that we're getting the
-            // nearest collision.
-//            for (collision in pushDirection.sort(collisions)) {
-//                logger.info {
-//                    "Resolving collision between ${changedItem.controlId} at [${changedItem.column},${changedItem.row}] and ${collision.controlId} at [${collision.column},${collision.row}]"
-//                }
-//
-//                // Short circuit so we can't infinitely loop
-//                if (collision.moved) throw ImpossibleLayoutException("collision ${collision.id} $pushDirection")
-//
-//                updatedLayout =
-//                    updatedLayout.pushCollidingElement(changedItem, collision, pushDirection)
-//            }
-        }
-
-        return updatedLayout
-    }
-
-    fun resizeElement(itemId: String, w: Int, h: Int) =
-        resizeElement(find(itemId)!!, w,h )
-
-
-    /**
-     * Resize an element. Responsible for doing cascading movements of other elements.
-     *
-     * @param item Element to move.
-     * @param width X position in grid units.
-     * @param y Y position in grid units.
-     * @return A new layout with resized and possibly moved layout items.
-     * @throws ImpossibleLayoutException if the move isn't possible because of collisions or constraints.
-     */
-    fun resizeElement(item: GridItem, width: Int, height: Int): IGridLayout {
-        val resizedItem = item.copy(width = width, height = height)
-        for (direction in arrayOf(Direction.East, Direction.South)) {
-            try {
-                return fitElement(resizedItem, direction)
-            } catch (e: ImpossibleLayoutException) {
-                // Try again.
-            }
-        }
-        throw ImpossibleLayoutException()
-    }
-
-    private fun outOfBounds(movedItem: GridItem) =
-        movedItem.column < 0 || movedItem.row < 0 || movedItem.right > columns || movedItem.bottom > rows
-
     fun removeElement(id: String): IGridLayout =
         updatedLayout(columns, rows, items.filter { it.controlId != id })
-
-    /**
-     * This is where the magic needs to happen - given a collision, move an element away from the collision.
-     * We attempt to move it up if there's room, otherwise it goes below.
-     *
-     * @param  {Array} layout            Full layout to modify.
-     * @param  {GridItem} collidesWith Layout item we're colliding with.
-     * @param  {GridItem} itemToMove   Layout item we're moving.
-     */
-    private fun pushCollidingElement(
-        collidesWith: GridItem,
-        itemToMove: GridItem,
-        direction: Direction
-    ): IGridLayout =
-        moveElementInternal(
-            itemToMove,
-            itemToMove.column + direction.xIncr,
-            itemToMove.row + direction.yIncr,
-            direction
-        )
-
-    fun canonicalize(): IGridLayout =
-        updatedLayout(
-            columns, rows,
-            items.sortedWith { a, b ->
-                if (a.row > b.row ||
-                    (a.row == b.row && a.column > b.column) ||
-                    (a.row == b.row && a.column == b.column && a.controlId > b.controlId)
-                ) 1 else -1
-            }
-        )
 
     companion object {
         private val logger = Logger<GridLayout>()
@@ -356,7 +227,6 @@ data class GridItem(
     }
 }
 
-class CollisionsException(message: String? = null) : Exception(message)
 class OutOfBoundsException(message: String? = null) : ImpossibleLayoutException(message)
 open class ImpossibleLayoutException(message: String? = null) : Exception(message)
 class NoChangesException(message: String? = null) : Exception(message)

@@ -61,7 +61,7 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
     var showAddMenu by state<AddMenuContext?> { null }
     val closeAddMenu by handler {
         showAddMenu = null
-        appContext.gridLayoutContext.draggingDisabled = false
+//        appContext.gridLayoutContext.draggingDisabled = false
     }
 
     var draggingItem by state<String?> { null }
@@ -82,7 +82,7 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
         showAddMenu = AddMenuContext(target, error("gebroiken"), x, y, 1, 1)
 
         // Ignore dragstart events in GridItem while a menu is visible.
-        appContext.gridLayoutContext.draggingDisabled = true
+//        appContext.gridLayoutContext.draggingDisabled = true
         e.stopPropagation()
     }
 

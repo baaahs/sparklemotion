@@ -18,7 +18,7 @@ import baaahs.ui.components.CollapsibleSearchBoxStyles
 import baaahs.ui.components.ListAndDetailStyles
 import baaahs.ui.components.UiComponentStyles
 import baaahs.ui.diagnostics.DiagnosticsStyles
-import baaahs.ui.gridlayout.Grid2Styles
+import baaahs.ui.gridlayout.GridManagerStyles
 import mui.material.styles.Theme
 import styled.StyleSheet
 import styled.injectGlobal
@@ -43,7 +43,7 @@ class AllStyles(val theme: Theme) {
     val diagnosticsStyles by lazy { inject(DiagnosticsStyles(theme)) }
     val patchModStyles by lazy { inject(PatchModStyles(theme)) }
     val numberInput by lazy { inject(NumberInputStyles(theme)) }
-    val grid2 by lazy { inject(Grid2Styles(theme)) }
+    val gridManager by lazy { inject(GridManagerStyles(theme)) }
 
     fun injectGlobals() {
         injectGlobal(Styles.global)

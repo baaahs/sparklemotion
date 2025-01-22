@@ -10,8 +10,3 @@ data class GridPosition(
 ) {
     val cell: Vector2I get() = Vector2I(x, y)
 }
-
-data class GridSize(
-    val width: Int,
-    val height: Int
-)

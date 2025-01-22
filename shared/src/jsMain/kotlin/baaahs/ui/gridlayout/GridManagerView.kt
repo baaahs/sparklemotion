@@ -10,10 +10,9 @@ import react.dom.div
 import web.html.HTMLElement
 
 private val GridManagerView = xComponent<GridManagerProps>("GridManager") { props ->
-    console.log("GridManagerView render ", renderCounter)
     val appContext = useContext(appContext)
     val editMode = appContext.showManager.editMode
-    val grid2Styles = appContext.allStyles.grid2
+    val gridManagerStyles = appContext.allStyles.gridManager
 
     val rootRef = ref<HTMLElement>()
     val rootSize = ref<Vector2I>(null)
@@ -30,18 +29,15 @@ private val GridManagerView = xComponent<GridManagerProps>("GridManager") { prop
 //                el.innerText += "\n$s"
 //            }
         }
-        console.log("New ReactGridManager")
         ReactGridManager(
             props.gridModel,
-            grid2Styles,
+            gridManagerStyles,
             debugFn,
             props.renderNode,
             props.renderContainerNode,
             props.renderEmptyCell,
             rootRef,
         ) {
-            console.log("Grid changed!")
-            console.log(it.rootNode.stringify())
             props.onChange(it)
         }.also {
             it.editMode = editMode.isOn
@@ -66,16 +62,16 @@ private val GridManagerView = xComponent<GridManagerProps>("GridManager") { prop
         }
     }
 
-    div(+grid2Styles.debugBox) {}
+    div(+gridManagerStyles.debugBox) {}
 
-    div(+grid2Styles.gridOuterContainer) {
+    div(+gridManagerStyles.gridOuterContainer) {
         ref = rootRef
 
         gridManager.reactNodeWrappers.forEach { (_, nodeWrapper) ->
             child(nodeWrapper.reactNode)
 
             if (nodeWrapper.emptyCells.isNotEmpty()) {
-                div(+grid2Styles.gridEmptyCells) {
+                div(+gridManagerStyles.gridEmptyCells) {
                     nodeWrapper.emptyCells.forEach { cell -> child(cell.reactNode) }
                 }
             }

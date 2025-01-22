@@ -32,7 +32,7 @@ import kotlin.time.Duration.Companion.milliseconds
 
 class ReactGridManager(
     model: GridModel,
-    val styles: Grid2Styles,
+    val styles: GridManagerStyles,
     private val debugFn: (String) -> Unit,
     val renderNode: RenderNode,
     val renderContainerNode: RenderContainerNode,

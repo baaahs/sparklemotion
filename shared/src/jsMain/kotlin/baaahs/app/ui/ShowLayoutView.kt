@@ -2,8 +2,6 @@ package baaahs.app.ui
 
 import baaahs.app.ui.editor.Editor
 import baaahs.app.ui.editor.layout.legacyLayoutWarning
-import baaahs.app.ui.layout.DragNDropContext
-import baaahs.app.ui.layout.dragNDropContext
 import baaahs.app.ui.layout.gridTabLayout
 import baaahs.show.LegacyTab
 import baaahs.show.live.OpenGridTab
@@ -30,7 +28,6 @@ import web.cssom.Flex
 import web.cssom.number
 
 private val ShowLayoutView = xComponent<ShowLayoutProps>("ShowLayout") { props ->
-    console.log("ShowLayoutView render ", renderCounter)
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.appUi
 
@@ -66,29 +63,21 @@ private val ShowLayoutView = xComponent<ShowLayoutProps>("ShowLayout") { props -
     val tabs = layout.tabs
     val currentTab = layout.currentTab
 
-    val myDragNDropContext = memo<DragNDropContext>(currentTab) {
-        jso { this.gridLayoutContext = appContext.gridLayoutContext }
-    }
-
     sharedGlContext {
         attrs.inlineStyles = StyleElement {
             flex = kotlinx.css.Flex(1.0, 0.0, FlexBasis.zero)
             position = Position.relative
         }
 
-        dragNDropContext.Provider {
-            attrs.value = myDragNDropContext
-
-            when (currentTab) {
-                is LegacyTab ->
-                    legacyLayoutWarning {}
-                is OpenGridTab ->
-                    gridTabLayout {
-                        attrs.tab = currentTab
-                        attrs.tabEditor = tabEditor
-                    }
-                null -> { +"No tabs?" }
-            }
+        when (currentTab) {
+            is LegacyTab ->
+                legacyLayoutWarning {}
+            is OpenGridTab ->
+                gridTabLayout {
+                    attrs.tab = currentTab
+                    attrs.tabEditor = tabEditor
+                }
+            null -> { +"No tabs?" }
         }
     }
 

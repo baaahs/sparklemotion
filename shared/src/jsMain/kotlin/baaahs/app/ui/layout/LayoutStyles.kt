@@ -18,13 +18,6 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
         height = 100.pct
     }
 
-    val gridBackground by css {
-        position = Position.absolute
-        width = 100.pct
-        height = 100.pct
-        transition(::opacity, duration = Styles.editTransitionDuration, timing = Timing.linear)
-    }
-
     val gridContainer by css {
         position = Position.relative
         width = 100.pct
@@ -167,7 +160,6 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
 
     val editModeOff by css {
         descendants(
-            selector(::gridBackground),
             selector(::itemControlsModeControl),
             selector(::deleteModeControl),
             selector(::editModeControl),
@@ -200,14 +192,6 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
                 border = Border(3.px, baaahs.ui.inset, emptyCellColor)
             }
         }
-    }
-
-    val dragging by css {
-        descendants(selector(::gridContainer)) {
-            pointerEvents = PointerEvents.auto
-        }
-    }
-    val notDragging by css {
     }
 
     val buttonGroupCard by css {
@@ -253,20 +237,6 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
     }
 
     val global = CssBuilder().apply {
-        ".react-grid-placeholder" {
-            +dropPlaceholder
-        }
-
-        ".app-ui-layout-resize-handle" {
-            position = Position.absolute
-            right = (-12).px
-            bottom = (-12).px
-        }
-
-        ".react-resizable-hide > .app-ui-layout-resize-handle" {
-            display = Display.none
-        }
-
         ".react-grid-item.resizing.grid-item-resizing" {
             zIndex = StyleConstants.Layers.aboveSharedGlCanvas + 1
         }
@@ -286,18 +256,6 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
             height = 5.px
             borderRight = Border(2.px, BorderStyle.solid, rgba(0, 0, 0, 0.4))
             borderBottom = Border(2.px, BorderStyle.solid, rgba(0, 0, 0, 0.4))
-        }
-
-        ".react-draggable > .app-ui-controls-controlRoot" {
-            pointerEvents = PointerEvents.none
-        }
-
-        ".react-draggable.react-draggable-dragging, .react-draggable.react-draggable-dragging *" {
-            pointerEvents = PointerEvents.none
-            transition(::top, 0.s)
-            transition(::left, 0.s)
-            transition(::width, 0.s)
-            transition(::height, 0.s)
         }
 
         ".react-draggable" {
