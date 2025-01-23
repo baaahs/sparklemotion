@@ -104,9 +104,8 @@ fun IGridLayout.stringify(): String {
 class TestGridManager(
     model: GridModel,
     onChange: (GridModel) -> Unit
-    ) : GridManager(model, onChange) {
-    override val placeholder: Placeholder
-        get() = TestPlaceholder()
+) : GridManager(model, onChange) {
+    override val placeholder: Placeholder = TestPlaceholder()
 
     override fun createNodeWrapper(node: Node): NodeWrapper =
         TestNodeWrapper(node)
@@ -141,45 +140,62 @@ class TestGridManager(
     }
 }
 
-class Dragger(
-    gridManager: GridManager,
-    val gridChanges: MutableList<GridModel>,
-    val id: String
+class Gesture(
+    val gridManager: GridManager,
+    val gridChanges: MutableList<GridModel>
 ) {
-    val dragging = gridManager.nodeWrappers.getBang(id, "node wrapper")
+    lateinit var nodeId: String
+    lateinit var nodeWrapper: GridManager.NodeWrapper
     val onlyChange get() = gridChanges.only("change").stringify()
     val changes get() = gridChanges
-    var pointerDownPoint: Vector2I = Vector2I(-1, -1)
+    lateinit var pointerDownPx: Vector2I
+    lateinit var pointerCurrentPx: Vector2I
+    val effectiveBounds get() = nodeWrapper.effectiveBounds
+
+    fun onNode(id: String): Gesture {
+        nodeId = id
+        nodeWrapper = gridManager.nodeWrappers.getBang(id, "node wrapper")
+        return this
+    }
+
+    fun pointerDownOnBottomRightResizeHandle(): Gesture =
+        pointerDown(
+            nodeWrapper.layoutBounds!!.bottomRight,
+            DraggingState.ResizeFromBottomRight
+        )
+
+    fun pointerDown(
+        position: Vector2I = nodeWrapper.layoutBounds!!.center,
+        draggingState: DraggingState = DraggingState.Move
+    ): Gesture {
+        pointerDownPx = position
+        pointerCurrentPx = position
+        nodeWrapper.onPointerDown(position, draggingState)
+        return this
+    }
 
     /** Drag and drop within the same container node. */
-    fun dragAndDropAt(xPx: Int, yPx: Int): Dragger {
+    fun dragAndDropAt(xPx: Int, yPx: Int): Gesture {
         dragBy(xPx, yPx)
-        dropAt(xPx, yPx)
+        dropThere()
         return this
     }
 
-    fun pointerDown(): Dragger {
-        pointerDownPoint = dragging.layoutBounds!!.center
-        dragging.onPointerDown(pointerDownPoint)
+    fun dragBy(xPx: Int, yPx: Int): Gesture {
+        pointerCurrentPx += Vector2I(xPx, yPx)
+        nodeWrapper.onPointerMove(pointerCurrentPx)
         return this
     }
 
-    fun pointerDownOnBottomRightResizeHandle(): Dragger {
-        pointerDownPoint = dragging.layoutBounds!!.bottomRight
-        dragging.onPointerDown(pointerDownPoint, DraggingState.ResizeFromBottomRight)
-        return this
+    fun dropAt(xPx: Int, yPx: Int): Gesture {
+        pointerCurrentPx += Vector2I(xPx, yPx)
+        return dropThere()
     }
 
-    fun dragBy(xPx: Int, yPx: Int): Dragger {
-        val offset = Vector2I(xPx, yPx)
-        dragging.onPointerMove(pointerDownPoint + offset)
-        return this
-    }
-
-    fun dropAt(xPx: Int, yPx: Int): Dragger {
-        val offset = Vector2I(xPx, yPx)
-        dragging.onPointerUp(pointerDownPoint + offset)
-        pointerDownPoint = Vector2I(-1, -1)
+    fun dropThere(): Gesture {
+        nodeWrapper.onPointerUp(pointerCurrentPx)
+        pointerDownPx = Vector2I(-1, -1)
+        pointerCurrentPx = Vector2I(-1, -1)
         return this
     }
 }

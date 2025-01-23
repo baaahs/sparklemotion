@@ -215,7 +215,7 @@ class ReactGridManager(
         private val handleKeyDown: (KeyboardEvent) -> Unit = ::onKeyDown
 
         fun mounted(el: HTMLElement?) {
-            println("${node.id}.mounted($el) bounds:${el?.getBoundingClientRect()?.toRect()}")
+//            println("${node.id}.mounted() bounds:${el?.getBoundingClientRect()?.toRect()}")
             this.el?.let { if (it != el) unmount(it) }
             this.el = el
             if (el != null) {
@@ -278,8 +278,8 @@ class ReactGridManager(
             manageEventListeners(enabled = false)
         }
 
-        override fun dragChildren(offset: Vector2I?) {
-            super.dragChildren(offset)
+        override fun visualDragChildren(offset: Vector2I?) {
+            super.visualDragChildren(offset)
             emptyCells.forEach { cell -> cell.dragChildren(offset) }
         }
 

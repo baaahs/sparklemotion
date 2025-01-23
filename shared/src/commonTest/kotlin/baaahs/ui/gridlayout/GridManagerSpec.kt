@@ -94,9 +94,11 @@ class GridManagerSpec : DescribeSpec({
 //            }
 //        }
 
+        val gesture by value {Gesture(gridManager, gridChanges) }
+
         val pointerDownOn by value {
             { itemId: String ->
-                Dragger(gridManager, gridChanges, itemId)
+                gesture.onNode(itemId)
                     .pointerDown()
             }
         }
@@ -104,7 +106,7 @@ class GridManagerSpec : DescribeSpec({
         context("tapping an item without moving it") {
             it("should not move anything") {
                 pointerDownOn("X")
-                    .dropAt(0, 0)
+                    .dropThere()
                     .changes.shouldBeEmpty()
             }
         }
@@ -449,18 +451,22 @@ class GridManagerSpec : DescribeSpec({
                 pointerDownOn("B")
                     .pointerDownOnBottomRightResizeHandle()
                     .dragBy(-49, -49)
-                    .dropAt(-49, -49)
+                    .dropThere()
                     .changes.shouldBeEmpty()
 
             }
 
-            it("resizes a node smaller") {
-                pointerDownOn("B")
-                    .pointerDownOnBottomRightResizeHandle()
-                    .dragBy(-60, -60)
-                    .dropAt(-60, -60)
-                    .onlyChange.shouldBe(
-                        """
+            context("resizing a node smaller") {
+                beforeEach {
+                    gesture.onNode("B")
+                        .pointerDownOnBottomRightResizeHandle()
+                        .dragBy(-60, -60)
+                }
+
+                it("will make the node smaller") {
+                    gesture.dropThere()
+                        .onlyChange.shouldBe(
+                            """
                         AB..
                         D..G
                         .HI.
@@ -470,14 +476,35 @@ class GridManagerSpec : DescribeSpec({
                         WX
                         YZ
                         """.trimIndent()
-                    )
+                        )
+                }
+
+                it("moves the placeholder to preview the new size") {
+                    println("moves the placeholder to preview the new size: $gridManager ${gridManager.placeholder} -> ${gridManager.placeholder.bounds}")
+                    gridManager.placeholder
+                        .bounds shouldBe
+                            Rect(100, 0, 100, 100)
+                }
+
+                it("scales the DOM node to match during the gesture") {
+                    gesture
+                        .effectiveBounds shouldBe
+                            Rect(100, 0, 140, 140)
+                }
+
+                it("won't scale the DOM node smaller than .75x.75 of a 1x1 grid cell") {
+                    gesture
+                        .dragBy(-100, -100) // Cumulatively -160, -160.
+                        .effectiveBounds shouldBe
+                            Rect(100, 0, 75, 75)
+                }
             }
 
             it("won't resize to smaller than 1x1") {
                 pointerDownOn("B")
                     .pointerDownOnBottomRightResizeHandle()
                     .dragBy(-160, -160)
-                    .dropAt(-160, -160)
+                    .dropThere()
                     .onlyChange.shouldBe(
                         """
                         AB..
@@ -496,7 +523,7 @@ class GridManagerSpec : DescribeSpec({
                 pointerDownOn("B")
                     .pointerDownOnBottomRightResizeHandle()
                     .dragBy(0, 60)
-                    .dropAt(0, 60)
+                    .dropThere()
                     .onlyChange.shouldBe(
                         """
                         ABB.
@@ -515,7 +542,7 @@ class GridManagerSpec : DescribeSpec({
                 pointerDownOn("B")
                     .pointerDownOnBottomRightResizeHandle()
                     .dragBy(0, 60)
-                    .dropAt(0, 60)
+                    .dropThere()
                     .onlyChange.shouldBe(
                         """
                         ABB.
@@ -534,7 +561,7 @@ class GridManagerSpec : DescribeSpec({
                 pointerDownOn("B")
                     .pointerDownOnBottomRightResizeHandle()
                     .dragBy(60, 60)
-                    .dropAt(60, 60)
+                    .dropThere()
                     .onlyChange.shouldBe(
                         """
                         ABBB
@@ -553,7 +580,7 @@ class GridManagerSpec : DescribeSpec({
                 pointerDownOn("B")
                     .pointerDownOnBottomRightResizeHandle()
                     .dragBy(160, 160)
-                    .dropAt(160, 160)
+                    .dropThere()
                     .changes.shouldBeEmpty()
             }
         }
