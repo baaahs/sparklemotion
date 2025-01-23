@@ -472,6 +472,90 @@ class GridManagerSpec : DescribeSpec({
                         """.trimIndent()
                     )
             }
+
+            it("won't resize to smaller than 1x1") {
+                pointerDownOn("B")
+                    .pointerDownOnBottomRightResizeHandle()
+                    .dragBy(-160, -160)
+                    .dropAt(-160, -160)
+                    .onlyChange.shouldBe(
+                        """
+                        AB..
+                        D..G
+                        .HI.
+                        ....
+            
+                        # B:
+                        WX
+                        YZ
+                        """.trimIndent()
+                    )
+            }
+
+            it("resizes a node bigger vertically") {
+                pointerDownOn("B")
+                    .pointerDownOnBottomRightResizeHandle()
+                    .dragBy(0, 60)
+                    .dropAt(0, 60)
+                    .onlyChange.shouldBe(
+                        """
+                        ABB.
+                        DBBG
+                        .BB.
+                        .HI.
+            
+                        # B:
+                        WX
+                        YZ
+                        """.trimIndent()
+                    )
+            }
+
+            it("resizes a node bigger horizontally") {
+                pointerDownOn("B")
+                    .pointerDownOnBottomRightResizeHandle()
+                    .dragBy(0, 60)
+                    .dropAt(0, 60)
+                    .onlyChange.shouldBe(
+                        """
+                        ABB.
+                        DBBG
+                        .BB.
+                        .HI.
+            
+                        # B:
+                        WX
+                        YZ
+                        """.trimIndent()
+                    )
+            }
+
+            it("resizes a node bigger bidirectionally") {
+                pointerDownOn("B")
+                    .pointerDownOnBottomRightResizeHandle()
+                    .dragBy(60, 60)
+                    .dropAt(60, 60)
+                    .onlyChange.shouldBe(
+                        """
+                        ABBB
+                        DBBB
+                        .BBB
+                        .HIG
+            
+                        # B:
+                        WX
+                        YZ
+                        """.trimIndent()
+                    )
+            }
+
+            it("refuses to resizes a node bigger than will fit in the grid") {
+                pointerDownOn("B")
+                    .pointerDownOnBottomRightResizeHandle()
+                    .dragBy(160, 160)
+                    .dropAt(160, 160)
+                    .changes.shouldBeEmpty()
+            }
         }
     }
 })
