@@ -103,6 +103,14 @@ class GridManagerSpec : DescribeSpec({
             }
         }
 
+        context("dragging the root node") {
+            it("is not allowed") {
+                gesture.onRootNode()
+                    .pointerDown()
+                gridManager.draggingState shouldBe null
+            }
+        }
+
         context("tapping an item without moving it") {
             it("should not move anything") {
                 pointerDownOn("X")
@@ -576,12 +584,64 @@ class GridManagerSpec : DescribeSpec({
                     )
             }
 
+            it("refuses to resizes a node if it would push other nodes out of bounds") {
+                pointerDownOn("B")
+                    .pointerDownOnBottomRightResizeHandle()
+                    .dragBy(0, 160)
+                    .dropThere()
+                    .changes.shouldBeEmpty()
+            }
+
             it("refuses to resizes a node bigger than will fit in the grid") {
                 pointerDownOn("B")
                     .pointerDownOnBottomRightResizeHandle()
                     .dragBy(160, 160)
                     .dropThere()
                     .changes.shouldBeEmpty()
+            }
+
+            context("with multiple drags") {
+                it("will resize") {
+                    pointerDownOn("B")
+                        .pointerDownOnBottomRightResizeHandle()
+                        .dragBy(0, 60)
+                        .dragBy(60, 0)
+                        .dragBy(1, 1)
+                        .dropThere()
+                        .onlyChange.shouldBe(
+                            """
+                            ABBB
+                            DBBB
+                            .BBB
+                            .HIG
+                
+                            # B:
+                            WX
+                            YZ
+                            """.trimIndent()
+                        )
+                }
+
+                it("won't resize a node past where it would push other nodes out of bounds") {
+                    pointerDownOn("B")
+                        .pointerDownOnBottomRightResizeHandle()
+                        .dragBy(0, 60)
+                        .dragBy(60, 0)
+                        .dragBy(1, 100)
+                        .dropThere()
+                        .onlyChange.shouldBe(
+                            """
+                            ABBB
+                            DBBB
+                            .BBB
+                            .HIG
+                
+                            # B:
+                            WX
+                            YZ
+                            """.trimIndent()
+                        )
+                }
             }
         }
     }

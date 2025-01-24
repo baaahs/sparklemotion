@@ -8,6 +8,8 @@ import baaahs.show.GridLayout
 import baaahs.show.GridTab
 import baaahs.show.IGridLayout
 
+val rootNodeName = "_ROOT_"
+
 fun String.toGridTab(name: String): GridTab =
     toLayout().let {
         GridTab(name, it.columns, it.rows, it.items)
@@ -21,7 +23,7 @@ fun String.toLayout(): GridLayout {
         val gridIndex = gridStrings.lastIndex - index
         val isRoot = gridIndex == 0
 
-        var gridName = "ROOT"
+        var gridName = rootNodeName
         val lines = gridString.trim().split("\n").let {
             if (isRoot) it else {
                 val firstLine = it.first().trim()
@@ -62,7 +64,7 @@ fun String.toLayout(): GridLayout {
             )
         )
     }
-    return grids["ROOT"] ?: error("No root grid?")
+    return grids[rootNodeName] ?: error("No root grid?")
 }
 
 fun IGridLayout.stringify(): String {
@@ -156,6 +158,10 @@ class Gesture(
         nodeId = id
         nodeWrapper = gridManager.nodeWrappers.getBang(id, "node wrapper")
         return this
+    }
+
+    fun onRootNode(): Gesture {
+        return onNode(gridManager.model.rootNode.id)
     }
 
     fun pointerDownOnBottomRightResizeHandle(): Gesture =

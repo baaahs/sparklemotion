@@ -265,6 +265,8 @@ abstract class GridManager(
 
         fun onPointerDown(point: Vector2I, draggingState: DraggingState = DraggingState.Move): Boolean {
             if (!isEditable) return false
+            if (node == model.rootNode) return false
+
             this@GridManager.draggingState = draggingState
             resizeOriginalSize = layoutBounds?.size ?: Vector2I.origin
             pointerDown = point

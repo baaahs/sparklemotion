@@ -41,7 +41,11 @@ data class GridModel(
         return GridModel(
             rootNode.placeElement(movingNode, toContainer, directions)
                 .canonicalize()
-        )
+        ).also { it.validate() }
+    }
+
+    fun validate() {
+        rootNode.validate()
     }
 
     fun canonicalize(): GridModel =
@@ -70,6 +74,22 @@ data class Node(
         }
 
     val isContainer get() = layout != null
+
+    fun validate() {
+        layout?.let { layout ->
+            layout.children.forEach {
+                if (!it.fitsWithin(layout))
+                    throw ImpossibleLayoutException("${it.id} doesn't fit inside $id.")
+                it.validate()
+            }
+        }
+    }
+
+    fun fitsWithin(layout: Layout): Boolean =
+        left >= 0 && left < layout.columns &&
+                top >= 0 && top < layout.rows &&
+                left + width <= layout.columns &&
+                top + height <= layout.rows
 
     fun findNode(nodeId: String) =
         layout?.children?.find { it.id == nodeId }
@@ -228,7 +248,7 @@ data class Node(
     ): Node {
         if (layout == null) return this
         val containsItem = contains(movingNode.id)
-        val movingHere = toContainer == this
+        val movingHere = toContainer.id == this.id
         var newNode = this
 //        println("moveElement(${movingNode.id}, ${toContainer.id}, [${topLeft.x}, ${topLeft.y}])")
         if (movingHere) {
