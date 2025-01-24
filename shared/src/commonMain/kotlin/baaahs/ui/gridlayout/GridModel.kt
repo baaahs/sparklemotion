@@ -4,6 +4,7 @@ import baaahs.geom.Vector2I
 import baaahs.show.ImpossibleLayoutException
 import baaahs.show.NoChangesException
 import baaahs.show.OutOfBoundsException
+import baaahs.util.Logger
 import kotlin.math.min
 
 data class GridModel(
@@ -137,9 +138,9 @@ data class Node(
             try {
                 print("-> Try moving node ${movedNode.id} ${direction}ward $id[${movedNode.left},${movedNode.top}]: ")
                 return fitElement(movedNode, direction)
-                    .also { println(" worked!") }
+                    .also { logger.debug { " worked!" } }
             } catch (e: ImpossibleLayoutException) {
-                println(" failed!")
+                logger.debug { " failed!" }
                 // Try again.
             }
         }
@@ -169,7 +170,7 @@ data class Node(
             // to ensure, in the case of multiple collisions, that we're getting the
             // nearest collision.
             for (collision in pushDirection.sort(collisions)) {
-                println("Resolving collision between ${movingNode.id} at [${movingNode.left},${movingNode.top}] and ${collision.id} at [${collision.left},${collision.top}]")
+                logger.debug { "Resolving collision between ${movingNode.id} at [${movingNode.left},${movingNode.top}] and ${collision.id} at [${collision.left},${collision.top}]" }
 
                 // Short circuit so we can't infinitely loop
 //                if (collision.moved) throw ImpossibleLayoutException("collision ${collision.id} $pushDirection")
@@ -263,9 +264,9 @@ data class Node(
                     )
                 )
             }
-            println("Moved ${movingNode.id} to $id:")
+            logger.debug { "Moved ${movingNode.id} to $id:" }
             newNode.layout?.children?.forEach { child ->
-                println("- ${child.id} ${child.left},${child.top} ${child.width}x${child.height}")
+                logger.debug { "- ${child.id} ${child.left},${child.top} ${child.width}x${child.height}" }
             }
         } else {
             newNode = newNode.copy(
@@ -291,6 +292,10 @@ data class Node(
                 children = layout.children + listOf(movingNode)
             )
         )
+
+    companion object {
+        private val logger = Logger<Node>()
+    }
 }
 
 /**

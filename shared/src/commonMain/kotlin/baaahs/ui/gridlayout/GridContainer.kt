@@ -24,7 +24,6 @@ data class GridContainer(
     val rowBoundaries: Array<CellBoundaries>
 
     init {
-//        println("bounds = ${bounds}")
         val widthSansGaps = bounds.width - (columns - 1) * gap
         val columnWidth = widthSansGaps / columns.toDouble()
         val heightSansGaps = bounds.height - (rows - 1) * gap
@@ -54,9 +53,6 @@ data class GridContainer(
 
         }.toTypedArray()
     }
-
-//    fun calculateRegionBounds(gridRegion: GridCoords): Rect =
-//        calculateRegionBounds(gridRegion.left, gridRegion.top, gridRegion.width, gridRegion.height)
 
     fun calculateRegionBounds(column: Int, row: Int, width: Int, height: Int): Rect {
         if (column < 0 || column >= columns)
@@ -89,12 +85,6 @@ data class GridContainer(
         val quadrant = Quadrant.from(isLeft, isTop)
         return GridPosition(column, row, quadrant)
     }
-
-    fun originCellBounds() =
-        Rect(
-            columnsBoundaries[0].start, rowBoundaries[0].start,
-            columnsBoundaries[0].end, rowBoundaries[0].end
-        )
 
     enum class Quadrant(
         val roundUpX: Int, val roundUpY: Int

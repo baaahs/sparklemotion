@@ -122,7 +122,7 @@ class TestGridManager(
         )
     }
 
-    override fun debug(s: String) {
+    fun debug(s: String) {
     }
 
     inner class TestNodeWrapper(node: Node) : NodeWrapper(node) {

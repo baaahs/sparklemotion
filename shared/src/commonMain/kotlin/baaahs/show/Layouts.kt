@@ -127,43 +127,6 @@ interface IGridLayout {
 
     fun updatedLayout(columns: Int, rows: Int, items: List<GridItem>): IGridLayout
 
-    fun updatedLayout(block: (GridItem) -> GridItem): IGridLayout =
-        updatedLayout(columns, rows, items.map { block(it) })
-
-    private fun updatedLayout(updateItem: GridItem): IGridLayout =
-        updatedLayout(columns, rows, items.map {
-            if (it.controlId == updateItem.controlId) updateItem else it
-        })
-
-    fun resetMovedFlag(): IGridLayout =
-        updatedLayout(columns, rows, items.map { it.copy(moved = false) })
-
-    /**
-     * Given a layout, make sure all elements fit within its bounds.
-     *
-     * Modifies layout items.
-     *
-     * @param  {Array} layout Layout array.
-     * @param  {Number} cols Number of columns.
-     */
-    fun correctBounds(): IGridLayout {
-        val collidesWith = ArrayList<GridItem>()
-        val newLayoutItems = ArrayList(items)
-        newLayoutItems.replaceAll { l ->
-            var newItem = l
-
-            // Overflows right
-            if (newItem.column + newItem.width > columns) newItem = newItem.copy(width = columns - newItem.width)
-            // Overflows left
-            if (newItem.column < 0) {
-                newItem = newItem.copy(column = 0, width = columns)
-            }
-            collidesWith.add(newItem)
-            newItem
-        }
-        return updatedLayout(columns, rows, newLayoutItems)
-    }
-
     /**
      * Get a layout item by ID. Used so we can override later on if necessary.
      *
@@ -178,13 +141,6 @@ interface IGridLayout {
             if (found != null) return found
         }
         return null
-    }
-
-    fun removeElement(id: String): IGridLayout =
-        updatedLayout(columns, rows, items.filter { it.controlId != id })
-
-    companion object {
-        private val logger = Logger<GridLayout>()
     }
 }
 
@@ -214,17 +170,6 @@ data class GridItem(
 
     fun edit(mutableShow: MutableShow): MutableGridItem =
         MutableGridItem(this, mutableShow)
-
-    fun movedTo(column: Int, row: Int) = copy(column = column, row = row)
-
-    fun collidesWith(other: GridItem): Boolean {
-        if (controlId === other.controlId) return false // same element
-        if (column + width <= other.column) return false // this is left of other
-        if (column >= other.column + other.width) return false // this is right of other
-        if (row + height <= other.row) return false // this is above other
-        if (row >= other.row + other.height) return false // this is below other
-        return true // boxes overlap
-    }
 }
 
 class OutOfBoundsException(message: String? = null) : ImpossibleLayoutException(message)

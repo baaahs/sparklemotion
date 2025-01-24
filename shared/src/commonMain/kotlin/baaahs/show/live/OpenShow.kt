@@ -33,33 +33,25 @@ interface OpenContext : GadgetProvider {
     fun release()
 }
 
-object EmptyOpenContext : OpenContext {
+object PreviewOpenContext : OpenContext {
     override val allControls: List<OpenControl> get() = emptyList()
-
     override val allPatchModFeeds: List<Feed> get() = emptyList()
 
     override fun findControl(id: String): OpenControl? = null
-
-    override fun getControl(id: String): OpenControl = FakeOpenControl(id)
-
+    override fun getControl(id: String): OpenControl = PreviewOpenControl(id)
     override fun getFeed(id: String): Feed = error("not really an open context")
-
     override fun getPanel(id: String): Panel = error("not really an open context")
-
     override fun getPatch(it: String): OpenPatch = error("not really an open context")
-
     override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledFeed: Feed?) =
         error("not really an open context")
-
     override fun release() {}
-}
 
-class FakeOpenControl(override val id: String) : OpenControl {
-    override fun getState(): Map<String, JsonElement>? = TODO("not implemented")
-    override fun applyState(state: Map<String, JsonElement>) = TODO("not implemented")
-    override fun toNewMutable(mutableShow: MutableShow): MutableControl = TODO("not implemented")
-    override fun getView(controlProps: ControlProps): View = TODO("not implemented")
-
+    class PreviewOpenControl(override val id: String) : OpenControl {
+        override fun getState(): Map<String, JsonElement>? = error("not really an open control")
+        override fun applyState(state: Map<String, JsonElement>) = error("not really an open control")
+        override fun toNewMutable(mutableShow: MutableShow): MutableControl = error("not really an open control")
+        override fun getView(controlProps: ControlProps): View = error("not really an open control")
+    }
 }
 
 class OpenShow(

@@ -21,18 +21,9 @@ private val GridManagerView = xComponent<GridManagerProps>("GridManager") { prop
         props.renderNode, props.renderContainerNode, props.renderEmptyCell,
         props.onChange
     ) {
-        val debugFn = { s: String ->
-//            val el = document.getElementsByClassName("app-ui-gridlayout-debugBox")[0] as HTMLElement
-//            if (s.startsWith('\n')) {
-//                el.innerText = s.substring(1)
-//            } else {
-//                el.innerText += "\n$s"
-//            }
-        }
         ReactGridManager(
             props.gridModel,
             gridManagerStyles,
-            debugFn,
             props.renderNode,
             props.renderContainerNode,
             props.renderEmptyCell,
@@ -61,8 +52,6 @@ private val GridManagerView = xComponent<GridManagerProps>("GridManager") { prop
             gridManager.onNodeResize(width, height)
         }
     }
-
-    div(+gridManagerStyles.debugBox) {}
 
     div(+gridManagerStyles.gridOuterContainer) {
         ref = rootRef

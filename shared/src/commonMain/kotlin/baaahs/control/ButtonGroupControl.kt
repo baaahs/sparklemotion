@@ -86,7 +86,7 @@ data class MutableButtonGroupControl(
 
     override fun previewOpen(): OpenControl {
         val buttonGroupControl = buildControl(ShowBuilder())
-        return OpenButtonGroupControl(randomId(title.camelize()), buttonGroupControl, EmptyOpenContext)
+        return OpenButtonGroupControl(randomId(title.camelize()), buttonGroupControl, PreviewOpenContext)
     }
 
     override fun accept(visitor: MutableShowVisitor, log: VisitationLog) {

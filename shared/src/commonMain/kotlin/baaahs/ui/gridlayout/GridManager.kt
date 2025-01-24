@@ -4,6 +4,8 @@ import baaahs.geom.Vector2I
 import baaahs.getBang
 import baaahs.show.ImpossibleLayoutException
 import baaahs.show.NoChangesException
+import baaahs.util.LogLevel
+import baaahs.util.Logger
 
 abstract class GridManager(
     model: GridModel,
@@ -42,8 +44,12 @@ abstract class GridManager(
         rootNodeWrapper.layout(Rect(0, 0, width, height))
     }
 
-    fun dragging(draggingNodeWrapper: NodeWrapper, originCellCenter: Vector2I?, previousPosition: Vector2I?): GridModel {
-        debug("Dragging ${draggingNodeWrapper.node.id} center=$originCellCenter")
+    fun dragging(
+        draggingNodeWrapper: NodeWrapper,
+        originCellCenter: Vector2I?,
+        previousPosition: Vector2I?
+    ): GridModel {
+        logger.debug { "Dragging ${draggingNodeWrapper.node.id} center=$originCellCenter" }
         if (originCellCenter == null) {
             draggingNode = null
             // No longer dragging.
@@ -55,12 +61,16 @@ abstract class GridManager(
             error("Dragging node onto itself? That's unpossible!")
         }
         val targetPosition = targetNodeWrapper.findPositionForPx(originCellCenter)!!
-        println("-> to ${targetNodeWrapper.node.id} $targetPosition")
+        logger.debug { "-> to ${targetNodeWrapper.node.id} $targetPosition" }
         val directions = Direction.rankedPushOptions(originCellCenter - (previousPosition ?: originCellCenter))
-        return move(draggingNodeWrapper.node, targetNodeWrapper.node, targetPosition.cell, draggingNodeWrapper.node.size, directions)
-            .also {
-                debug(it.stringify())
-            }
+        return move(
+            draggingNodeWrapper.node,
+            targetNodeWrapper.node,
+            targetPosition.cell,
+            draggingNodeWrapper.node.size,
+            directions
+        )
+            .also { logger.debug { it.stringify() } }
     }
 
     fun resizing(draggingNodeWrapper: NodeWrapper, handlePosition: Vector2I, previousPosition: Vector2I?): GridModel {
@@ -78,23 +88,29 @@ abstract class GridManager(
         return move(draggingNodeWrapper.node, parentNodeWrapper.node, cellTopLeft, size, directions)
     }
 
-    fun move(movingNode: Node, intoNode: Node, cell: Vector2I, size: Vector2I, directions: Array<Direction>): GridModel {
+    fun move(
+        movingNode: Node,
+        intoNode: Node,
+        cell: Vector2I,
+        size: Vector2I,
+        directions: Array<Direction>
+    ): GridModel {
         return try {
             model.moveElement(movingNode, intoNode, cell, size, directions)
         } catch (e: ImpossibleLayoutException) {
-            debug("move failed: ${e.message}")
+            logger.debug { "model move failed: ${e.message}" }
             null
         } ?: try {
             baseModel.moveElement(movingNode, intoNode, cell, size, directions)
         } catch (e: ImpossibleLayoutException) {
-            debug("move failed: ${e.message}")
+            logger.debug { "baseModel move failed: ${e.message}" }
             null
         } ?: throw NoChangesException()
     }
 
     fun updateFromModel(updatedModel: GridModel) {
-        println("XXX updateFromModel!")
-        println(updatedModel.stringify())
+        logger.debug { "updateFromModel!" }
+        logger.debug { (updatedModel.stringify()) }
         nodeWrappers = buildMap {
             updatedModel.visit { node ->
                 val wrapper = nodeWrappers[node.id]?.apply { updateNode(node) }
@@ -105,8 +121,7 @@ abstract class GridManager(
         rootNodeWrapper = nodeWrappers.getBang(updatedModel.rootNode.id, "node wrapper")
         model = updatedModel
 
-//        println(rootNodeWrapper.dump())
-//        debug(rootNodeWrapper.dump())
+        logger.debug { (rootNodeWrapper.dump()) }
         rootNodeWrapper.relayout()
     }
 
@@ -125,7 +140,7 @@ abstract class GridManager(
         var overItem: NodeWrapper? = null
 
         while (currentContainer.node.isContainer) {
-             position = currentContainer.findPositionForPx(center)
+            position = currentContainer.findPositionForPx(center)
                 ?: error("Can't find target in ${currentContainer.node.id}.")
 //            if (position == null) {
 //                debug("Found no cell in ${currentContainer.node.id}? bounds: ${currentContainer.layoutBounds}")
@@ -145,8 +160,6 @@ abstract class GridManager(
 
     private fun wrapperFor(childNode: Node): NodeWrapper? =
         nodeWrappers[childNode.id]
-
-    abstract fun debug(s: String)
 
     abstract inner class NodeWrapper(
         node: Node
@@ -169,10 +182,11 @@ abstract class GridManager(
         val isMultiCell get() = node.width > 1 || node.height > 1
         val cellSize get() = Vector2I(node.width, node.height)
 
-        val originCellCenter get() =
-            if (isMultiCell) {
-                layoutBounds!!.size / cellSize / 2 + layoutBounds!!.topLeft
-            } else layoutBounds!!.center
+        val originCellCenter
+            get() =
+                if (isMultiCell) {
+                    layoutBounds!!.size / cellSize / 2 + layoutBounds!!.topLeft
+                } else layoutBounds!!.center
 
         val effectiveBounds
             get() =
@@ -223,17 +237,9 @@ abstract class GridManager(
                     layoutBounds?.size == bounds.size
                 val gridContainer = gridContainer
                 if (sizeIsUnchanged == false && gridContainer != null) {
-                    val shift = bounds.topLeft - (oldLayoutBounds?.topLeft ?: Vector2I.origin)
                     val newInnerBounds = layoutBounds!! + containerInset!!
-                    println("ZZZ layout(${node.id}, $sizeIsUnchanged, ")
                     this.gridContainer = gridContainer.copy(
                         bounds = newInnerBounds
-//                            Rect(
-//                                oldInnerBounds.left + shift.x,
-//                                oldInnerBounds.top + shift.y,
-//                                oldInnerBounds.width,
-//                                oldInnerBounds.height
-//                            )
                     )
                 }
 
@@ -252,7 +258,10 @@ abstract class GridManager(
                         gridContainer.calculateRegionBounds(left, top, width, height)
                     }
                 } catch (e: Exception) {
-                    throw Exception("Failed to calculate region bounds for ${child.node.id} in ${node.id}: ${e.message}", e)
+                    throw Exception(
+                        "Failed to calculate region bounds for ${child.node.id} in ${node.id}: ${e.message}",
+                        e
+                    )
                 }
                 child.layout(childBounds + (dragOffset ?: Vector2I.origin))
             }
@@ -260,6 +269,7 @@ abstract class GridManager(
 
         fun findPositionForPx(pxCoord: Vector2I): GridPosition? =
             gridContainer?.findCell(pxCoord.x, pxCoord.y)
+
         fun findCornerForPx(pxCoord: Vector2I): Vector2I? =
             findPositionForPx(pxCoord)?.let { it.quadrant.round(it.cell) }
 
@@ -277,7 +287,7 @@ abstract class GridManager(
         fun onPointerMove(point: Vector2I) {
             pointerDown?.let { pointerDown ->
                 if (draggingState == DraggingState.Move) {
-                    debug("\npointer move on ${node.id}")
+                    logger.debug { "pointer move on ${node.id}" }
                     draggingNode = this
                     draggedBy(point - pointerDown)
                 } else {
@@ -411,8 +421,10 @@ abstract class GridManager(
         fun dump() = buildString { dump(this) }
 
         private fun dump(buf: StringBuilder, level: Int = 0) {
-            with (node) {
-                debug("${"  ".repeat(level)}$id: $left,$top:$width,$height ($effectiveBounds)")
+            if (!logger.enabled(LogLevel.DEBUG)) return
+
+            with(node) {
+                logger.debug { "${"  ".repeat(level)}$id: $left,$top:$width,$height ($effectiveBounds)" }
                 layout?.children?.forEach { child ->
                     val childWrapper = nodeWrappers.getBang(child.id, "node wrappers")
                     childWrapper.dump(buf, level + 1)
@@ -433,7 +445,11 @@ abstract class GridManager(
         }
     }
 
-    private fun <T: Any> T?.bang(s: String) = this ?: error("Expected value for $s.")
+    private fun <T : Any> T?.bang(s: String) = this ?: error("Expected value for $s.")
+
+    companion object {
+        private val logger = Logger<GridManager>()
+    }
 }
 
 enum class DraggingState {

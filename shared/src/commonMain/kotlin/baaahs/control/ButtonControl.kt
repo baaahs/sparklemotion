@@ -73,7 +73,7 @@ class MutableButtonControl(
 
     override fun previewOpen(): OpenControl {
         val buttonControl = buildControl(ShowBuilder())
-        return OpenButtonControl(randomId(title.camelize()), buttonControl, EmptyOpenContext, controlledFeed)
+        return OpenButtonControl(randomId(title.camelize()), buttonControl, PreviewOpenContext, controlledFeed)
     }
 
     override fun accept(visitor: MutableShowVisitor, log: VisitationLog) {

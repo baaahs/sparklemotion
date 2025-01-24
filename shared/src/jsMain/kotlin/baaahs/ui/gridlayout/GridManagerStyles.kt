@@ -127,19 +127,4 @@ class GridManagerStyles(val theme: Theme) : StyleSheet("app-ui-gridlayout", isSt
     val placeholderActive by css(/*gridItem*/) {
         display = Display.inherit
     }
-
-    val debugBox by css {
-        position = Position.fixed
-        fontFamily = "monospace"
-        fontSize = .6.rem
-        whiteSpace = WhiteSpace.pre
-        bottom = 0.px
-        left = 0.px
-        backgroundColor = Color.orange
-        color = Color.black
-        width = 600.px
-        maxHeight = 90.em
-        overflow = Overflow.auto
-        zIndex = 1000
-    }
 }

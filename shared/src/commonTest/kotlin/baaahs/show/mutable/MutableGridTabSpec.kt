@@ -6,7 +6,9 @@ import baaahs.describe
 import baaahs.gl.override
 import baaahs.kotest.value
 import baaahs.show.Control
+import baaahs.show.GridItem
 import baaahs.show.GridTab
+import baaahs.show.IGridLayout
 import baaahs.show.Show
 import baaahs.show.live.OpenContext
 import baaahs.show.live.OpenControl
@@ -145,7 +147,49 @@ fun GridTab.editForSpec(showBuilder: ShowBuilder = ShowBuilder()): MutableGridTa
                 .also { it.build(showBuilder) }
         }
     }
-    return edit(emptyMap(), mutableShow).also {
-        println("it = ${it}")
+    return edit(emptyMap(), mutableShow)
+}
+
+/**
+ * Apply layout from [updatedGridLayout] in place.
+ *
+ * We assume that `updatedGridLayout` is a valid [IGridLayout], and that
+ * all controls within it are also in this [MutableIGridLayout].
+ */
+fun MutableGridTab.applyChanges(
+    updatedGridLayout: IGridLayout
+) {
+    val allUpdatedControlsByParent = buildMap {
+        updatedGridLayout.visit(null) { item, parent ->
+            println("item ${item.controlId} is in ${parent?.controlId}")
+            getOrPut(parent?.controlId) { mutableListOf<GridItem>() }
+                .add(item)
+        }
+    }
+
+    val allMutableItemsById = buildMap {
+        visitLayouts(null) { layout, parent ->
+            layout.items.forEach {
+                put(it.control.asBuiltId, it)
+            }
+        }
+    }
+    visitLayouts(null) { layout, parent ->
+        println("Modifying ${parent?.control?.asBuiltId ?: "Root grid"}:")
+        println("Items were: ${layout.items.joinToString { it.control.asBuiltId ?: "?" }}:")
+        layout.items.clear()
+        val updatedItems = allUpdatedControlsByParent[parent?.control?.asBuiltId]
+        updatedItems?.forEach { updatedItem ->
+            val mutableItem = allMutableItemsById[updatedItem.controlId]
+                ?: error("No control with id ${updatedItem.controlId}.")
+            mutableItem.apply {
+                column = updatedItem.column
+                row = updatedItem.row
+                width = updatedItem.width
+                height = updatedItem.height
+            }
+            layout.items.add(mutableItem)
+        }
+        println("Items now:  ${layout.items.joinToString { it.control.asBuiltId ?: "?" }}:")
     }
 }

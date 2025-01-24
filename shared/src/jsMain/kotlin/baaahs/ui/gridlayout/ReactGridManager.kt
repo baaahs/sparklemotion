@@ -4,6 +4,7 @@ import baaahs.geom.Vector2I
 import baaahs.ui.and
 import baaahs.ui.unaryPlus
 import baaahs.util.JsPlatform
+import baaahs.util.Logger
 import js.objects.jso
 import react.ReactNode
 import react.Ref
@@ -33,7 +34,6 @@ import kotlin.time.Duration.Companion.milliseconds
 class ReactGridManager(
     model: GridModel,
     val styles: GridManagerStyles,
-    private val debugFn: (String) -> Unit,
     val renderNode: RenderNode,
     val renderContainerNode: RenderContainerNode,
     val renderEmptyCell: RenderEmptyCell?,
@@ -52,8 +52,8 @@ class ReactGridManager(
             reactNodeWrappers.values.forEach { it.applyStyle() }
         }
     init {
-        println("XXX New ReactGridManager!!!")
-        println(model.stringify())
+        logger.debug { "XXX New ReactGridManager!!!" }
+        logger.debug { (model.stringify()) }
     }
     val reactNodeWrappers get() = nodeWrappers
         .mapValues { (_, nodeWrapper) -> nodeWrapper as ReactNodeWrapper }
@@ -71,8 +71,6 @@ class ReactGridManager(
         }
         block()
     }
-
-    override fun debug(s: String) = debugFn(s)
 
     inner class ReactPlaceholder : Placeholder() {
         val ref = RefCallback<HTMLElement> { el -> this.mounted(el) }
@@ -164,7 +162,9 @@ class ReactGridManager(
                             val innerMountedRef = RefCallback<HTMLElement> { el ->
                                 if (el != null) {
                                     resizeObserver = ResizeObserver { _, _ ->
-                                        println("${node.id}.resizeObserver bounds:${el.getBoundingClientRect().toRect()}")
+                                        logger.debug {
+                                            "${node.id}.resizeObserver bounds:${el.getBoundingClientRect().toRect()}"
+                                        }
                                         onResizeInnerContainer(el)
                                     }.also { it.observe(el) }
                                 } else {
@@ -312,14 +312,14 @@ class ReactGridManager(
         private val preventDefault = { e: Event -> e.preventDefault() }
 
         fun onPointerDown(e: PointerEvent) {
-            println("isEditable = $isEditable button = ${e.button}")
+            logger.debug { "isEditable = $isEditable button = ${e.button}" }
             selectedNodeId = null
             if (e.button != MouseButton.MAIN) return
 
             if (onPointerDown(Vector2I(e.clientX, e.clientY))) {
                 addDraggingListeners()
-                println("\npointer down on ${node.id}")
-                println("pointerDown $pointerDown")
+                logger.debug { "\npointer down on ${node.id}" }
+                logger.debug { "pointerDown $pointerDown" }
                 el!!.setPointerCapture(e.pointerId)
 //                e.stopPropagation()
 //                e.preventDefault()
@@ -355,7 +355,7 @@ class ReactGridManager(
         }
 
         fun onPointerUp(e: PointerEvent) {
-            println("\npointer up on ${node.id}")
+            logger.debug { "\npointer up on ${node.id}" }
             selectedNodeId = node.id
             onPointerUp(Vector2I(e.clientX, e.clientY))
             removeDraggingListeners()
@@ -370,7 +370,7 @@ class ReactGridManager(
         }
 
         fun onPointerCancel(e: PointerEvent) {
-            println("\npointer cancel on ${node.id}")
+            logger.debug { "\npointer cancel on ${node.id}" }
             el?.releasePointerCapture(e.pointerId)
             super.onPointerCancel()
 //            e.stopPropagation()
@@ -408,6 +408,10 @@ class ReactGridManager(
         style.width = "${bounds.width}px"
         style.height = "${bounds.height}px"
         style.zIndex = zIndex?.toString() ?: ""
+    }
+
+    companion object {
+        private val logger = Logger<ReactGridManager>()
     }
 }
 
