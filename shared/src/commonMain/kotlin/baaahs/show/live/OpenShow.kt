@@ -2,7 +2,6 @@ package baaahs.show.live
 
 import baaahs.Gadget
 import baaahs.ShowPlayer
-import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.EditableManager
 import baaahs.app.ui.editor.Editor
 import baaahs.app.ui.editor.GridLayoutEditorPanel
@@ -11,17 +10,16 @@ import baaahs.control.OpenButtonControl
 import baaahs.getBang
 import baaahs.randomId
 import baaahs.show.*
-import baaahs.show.mutable.MutableIGridLayout
-import baaahs.show.mutable.MutableILayout
-import baaahs.show.mutable.MutableShow
-import baaahs.show.mutable.ShowBuilder
+import baaahs.show.mutable.*
 import baaahs.sm.webapi.Problem
 import baaahs.sm.webapi.Severity
 import baaahs.ui.Observable
+import baaahs.ui.View
 import baaahs.ui.addObserver
 import baaahs.util.Logger
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
+import kotlinx.serialization.json.JsonElement
 
 interface OpenContext : GadgetProvider {
     val allControls: List<OpenControl>
@@ -35,25 +33,25 @@ interface OpenContext : GadgetProvider {
     fun release()
 }
 
-object EmptyOpenContext : OpenContext {
+object PreviewOpenContext : OpenContext {
     override val allControls: List<OpenControl> get() = emptyList()
-
     override val allPatchModFeeds: List<Feed> get() = emptyList()
 
     override fun findControl(id: String): OpenControl? = null
-
-    override fun getControl(id: String): OpenControl = error("not really an open context")
-
+    override fun getControl(id: String): OpenControl = PreviewOpenControl(id)
     override fun getFeed(id: String): Feed = error("not really an open context")
-
     override fun getPanel(id: String): Panel = error("not really an open context")
-
     override fun getPatch(it: String): OpenPatch = error("not really an open context")
-
     override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledFeed: Feed?) =
         error("not really an open context")
-
     override fun release() {}
+
+    class PreviewOpenControl(override val id: String) : OpenControl {
+        override fun getState(): Map<String, JsonElement>? = error("not really an open control")
+        override fun applyState(state: Map<String, JsonElement>) = error("not really an open control")
+        override fun toNewMutable(mutableShow: MutableShow): MutableControl = error("not really an open control")
+        override fun getView(controlProps: ControlProps): View = error("not really an open control")
+    }
 }
 
 class OpenShow(
@@ -279,6 +277,7 @@ interface OpenTab {
 }
 
 class OpenGridTab(
+    override val gridTab: GridTab,
     override val title: String,
     override var columns: Int,
     override var rows: Int,
@@ -292,26 +291,21 @@ class OpenGridTab(
 }
 
 class OpenGridLayout(
+    override val gridTab: GridLayout,
     override val columns: Int,
     override val rows: Int,
     val matchParent: Boolean,
     override val items: List<OpenGridItem>
 ) : OpenIGridLayout
 
-interface OpenILayout {
-    fun getEditorPanel(
-        editableManager: EditableManager<*>,
-        layoutEditor: Editor<MutableILayout>
-    ): DialogPanel?
-}
-
-interface OpenIGridLayout : OpenILayout {
+interface OpenIGridLayout {
+    val gridTab: IGridLayout
     val columns: Int
     val rows: Int
     val items: List<OpenGridItem>
     val gridDimens get() = GridDimens(columns, rows)
 
-    override fun getEditorPanel(editableManager: EditableManager<*>, layoutEditor: Editor<MutableILayout>) =
+    fun getEditorPanel(editableManager: EditableManager<*>, layoutEditor: Editor<MutableILayout>) =
         GridLayoutEditorPanel(editableManager, layoutEditor as Editor<MutableIGridLayout>)
 }
 
@@ -321,12 +315,11 @@ data class GridDimens(
 )
 
 class OpenGridItem(
+    val gridItem: GridItem,
     val control: OpenControl,
     val column: Int,
     val row: Int,
     val width: Int,
     val height: Int,
     val layout: OpenGridLayout?
-) {
-    val gridDimens = GridDimens(width, height)
-}
+)

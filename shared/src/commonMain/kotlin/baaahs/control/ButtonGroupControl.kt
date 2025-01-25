@@ -4,6 +4,8 @@ import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.ButtonGroupPropsEditor
 import baaahs.app.ui.editor.EditableManager
 import baaahs.app.ui.editor.GenericPropertiesEditorPanel
+import baaahs.app.ui.layout.ButtonMutex
+import baaahs.app.ui.layout.MayHaveButtonMutex
 import baaahs.camelize
 import baaahs.randomId
 import baaahs.show.Control
@@ -48,6 +50,7 @@ data class MutableButtonGroupControl(
     var direction: ButtonGroupControl.Direction = ButtonGroupControl.Direction.Vertical,
     var showTitle: Boolean? = false,
     var allowMultiple: Boolean? = false,
+    @Deprecated("Nested controls are now handled by GridLayout and descendents.")
     val buttons: MutableList<MutableButtonControl> = arrayListOf(),
     val mutableShow: MutableShow
 ) : MutableControl {
@@ -55,6 +58,7 @@ data class MutableButtonGroupControl(
     override val hasInternalLayout: Boolean
         get() = true
 
+    @Deprecated("Nested controls are now handled by GridLayout and descendents.")
     fun addButton(title: String, block: MutableButtonControl.() -> Unit): MutableButtonControl {
         val control = MutableButtonControl(ButtonControl(title), mutableShow)
         control.block()
@@ -62,6 +66,7 @@ data class MutableButtonGroupControl(
         return control
     }
 
+    @Deprecated("Layout is now handled by GridLayout and descendents.")
     override fun getEditorPanels(editableManager: EditableManager<*>): List<DialogPanel> {
         return listOf(
             GenericPropertiesEditorPanel(
@@ -71,6 +76,7 @@ data class MutableButtonGroupControl(
         )
     }
 
+    @Deprecated("Nested controls are now handled by GridLayout and descendents.")
     override fun buildControl(showBuilder: ShowBuilder): ButtonGroupControl =
         ButtonGroupControl(title, direction, showTitle, allowMultiple,
             buttons.map { mutableButtonControl ->
@@ -80,7 +86,7 @@ data class MutableButtonGroupControl(
 
     override fun previewOpen(): OpenControl {
         val buttonGroupControl = buildControl(ShowBuilder())
-        return OpenButtonGroupControl(randomId(title.camelize()), buttonGroupControl, EmptyOpenContext)
+        return OpenButtonGroupControl(randomId(title.camelize()), buttonGroupControl, PreviewOpenContext)
     }
 
     override fun accept(visitor: MutableShowVisitor, log: VisitationLog) {
@@ -88,6 +94,7 @@ data class MutableButtonGroupControl(
         buttons.forEach { it.accept(visitor, log) }
     }
 
+    @Deprecated("Nested controls are now handled by GridLayout and descendents.")
     fun moveButton(fromIndex: Int, toIndex: Int) {
         buttons.add(toIndex, buttons.removeAt(fromIndex))
     }
@@ -97,7 +104,7 @@ class OpenButtonGroupControl(
     override val id: String,
     private val buttonGroupControl: ButtonGroupControl,
     openContext: OpenContext
-) : OpenControl, ControlContainer {
+) : OpenControl, ControlContainer, MayHaveButtonMutex {
     val title: String
         get() = buttonGroupControl.title
 
@@ -114,6 +121,8 @@ class OpenButtonGroupControl(
     }
 
     val allowMultiple get() = buttonGroupControl.allowMultiple == true
+
+    override val buttonMutex = if (!allowMultiple) ButtonMutex(id) else null
 
     override fun containedControls(): List<OpenControl> = buttons
 

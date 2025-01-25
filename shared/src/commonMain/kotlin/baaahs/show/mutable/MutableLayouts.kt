@@ -3,7 +3,6 @@ package baaahs.show.mutable
 import baaahs.control.*
 import baaahs.getBang
 import baaahs.show.*
-import baaahs.show.live.OpenGridItem
 
 class MutableLayouts(
     val panels: MutableMap<String, MutablePanel> = mutableMapOf(),
@@ -331,38 +330,30 @@ interface MutableIGridLayout : MutableILayout {
     fun find(control: MutableControl): MutableGridItem = items.find { it.control == control }
         ?: error("No control \"${control.title}\" among [${items.joinToString(", ") { it.control.title }}]")
 
-    fun applyChanges(
-        originalItems: List<OpenGridItem>,
-        newLayout: baaahs.ui.gridlayout.Layout,
-        mutableShow: MutableShow
-    ) {
-        val oldItems = ArrayList(this.items)
-        this.items.clear()
-        newLayout.items.forEach { newLayoutItem ->
-            val oldItemIndex = originalItems.indexOfFirst { it.control.id == newLayoutItem.i }
-            this.items.add(
-                if (oldItemIndex == -1) {
-                    val mutableControl = mutableShow.findControl(newLayoutItem.i)
-                    MutableGridItem(
-                        mutableControl,
-                        newLayoutItem.x, newLayoutItem.y,
-                        newLayoutItem.w, newLayoutItem.h,
-                        if (mutableControl.hasInternalLayout) createSubLayout() else null
-                    )
-                } else {
-                    oldItems[oldItemIndex].apply {
-                        column = newLayoutItem.x
-                        row = newLayoutItem.y
-                        width = newLayoutItem.w
-                        height = newLayoutItem.h
-                    }
-                }
-            )
+    fun visit(visitor: (MutableGridItem) -> Unit) {
+        items.forEach {
+            visitor(it)
+            it.layout?.visit(visitor)
         }
+    }
+
+    fun visitLayouts(
+        parent: MutableGridItem?,
+        visitor: (layout: MutableIGridLayout, parent: MutableGridItem?) -> Unit
+    ) {
+        visitor(this, parent)
+        ArrayList(items).forEach { it.layout?.visitLayouts(it, visitor) }
     }
 
     fun createSubLayout(): MutableGridLayout =
         MutableGridLayout(1, 1)
+
+    fun removeControl(id: String) {
+        items.removeAll {
+            it.layout?.removeControl(id)
+            it.control.asBuiltId == id
+        }
+    }
 }
 
 data class MutableLayoutDimen(var scalar: Number, var unit: String) {

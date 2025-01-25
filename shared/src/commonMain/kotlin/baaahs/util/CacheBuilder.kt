@@ -13,6 +13,11 @@ class CacheBuilder<K, V>(val createFn: (K) -> V) {
         return map.getOrPut(key) { createFn(key) }
     }
 
+    /** Explicitly add a cache entry. Warning: use sparingly! */
+    operator fun set(key: K, value: V) {
+        map[key] = value
+    }
+
     fun getBang(key: K, type: String): V = get(key) ?: error(unknown(type, key, map.keys))
 
     fun clear() {

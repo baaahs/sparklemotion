@@ -12,13 +12,15 @@ external val Resizable : ElementType<ResizableProps>
 
 external interface ResizeCallbackData {
     var node: HTMLElement
-    var size: Size // {width: number, height: number}
+    var size: Position // {width: number, height: number}
     var handle: ResizeHandleAxis
 }
 
-external interface Size {
-    var width: Int
-    var height: Int
+external interface Position {
+    val left: Int
+    val top: Int
+    val width: Int
+    val height: Int
 }
 
 //external enum class ResizeHandleAxis {

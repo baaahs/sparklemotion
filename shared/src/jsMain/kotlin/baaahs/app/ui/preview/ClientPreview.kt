@@ -40,7 +40,7 @@ class ClientPreview(
 
     // TODO: This is super janky.
     private val targetFramerate
-        get() = (kotlinx.browser.document["clientPreviewTargetFramerate"] as Number?)?.toFloat() ?: 15f
+        get() = (kotlinx.browser.document["clientPreviewTargetFramerate"] as Number?)?.toFloat() ?: 5f
 
     val visualizer: Visualizer.Facade get() = theVisualizer.facade
     val renderPlanMonitor get() = fixtureManager.facade.renderPlanMonitor
