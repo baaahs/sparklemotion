@@ -102,9 +102,9 @@ private val PatchesOverview = xComponent<PatchesOverviewProps>("PatchesOverview"
                     shaderCard {
                         key = mutablePatch.id
                         attrs.mutablePatch = mutablePatch
+                        attrs.toolchain = toolchain
                         attrs.onSelect = handleShaderSelect[mutablePatch]
                         attrs.onDelete = handleShaderDelete[mutablePatch]
-                        attrs.toolchain = toolchain
                     }
                 }
 

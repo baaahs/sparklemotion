@@ -9,6 +9,7 @@ import baaahs.gl.openShader
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
+import baaahs.gl.shader.ShaderStatementRewriter
 import baaahs.gl.shader.ShaderSubstitutions
 import baaahs.gl.testToolchain
 import baaahs.kotest.value

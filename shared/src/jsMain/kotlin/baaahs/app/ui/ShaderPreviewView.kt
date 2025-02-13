@@ -107,7 +107,7 @@ private val ShaderPreviewView = xComponent<ShaderPreviewProps>("ShaderPreview") 
         gl?.let {
             props.previewShaderBuilder
                 ?: props.shader?.let { shader ->
-                    PreviewShaderBuilder(shader, toolchain, appContext.webClient.sceneProvider)
+                    PreviewShaderBuilder(shader, toolchain, appContext.sceneProvider)
                 }
         }
     }
@@ -122,12 +122,20 @@ private val ShaderPreviewView = xComponent<ShaderPreviewProps>("ShaderPreview") 
         props.onRenderCallback?.invoke(it)
     }
 
-    onChange("different builder", gl, shaderPreview, builder, props.adjustGadgets) {
+    onChange("different builder", gl, shaderPreview, builder, props.adjustGadgets, props.onShaderStateChange) {
         if (gl == null) return@onChange
         if (shaderPreview == null) return@onChange
         if (builder == null) return@onChange
 
         val observer = builder.addObserver(fireImmediately = true) {
+            props.onShaderStateChange?.let { callback ->
+                try {
+                    callback.invoke(it.state)
+                } catch (e: Exception) {
+                    logger.warn(e) { "Error in shader state change callback." }
+                }
+            }
+
             when (it.state) {
                 ShaderBuilder.State.Linked -> {
                     shaderPreview?.let { shaderPreview ->
@@ -245,6 +253,7 @@ object ShaderPreviewStyles : StyleSheet("ui-ShaderPreview", isStatic = true) {
         position = Position.relative
         width = 100.pct
         height = 100.pct
+        margin = Margin(LinearDimension.auto)
         userSelect = UserSelect.none
 
         child(this@ShaderPreviewStyles, ::canvas) {
@@ -325,6 +334,7 @@ external interface ShaderPreviewProps : Props {
     var toolchain: Toolchain?
     var dumpShader: Boolean?
     var noSharedGlContext: Boolean?
+    var onShaderStateChange: ((ShaderBuilder.State) -> Unit)?
     var onRenderCallback: ((ShaderPreview) -> Unit)?
 }
 

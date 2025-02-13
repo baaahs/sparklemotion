@@ -8,6 +8,7 @@ import baaahs.gl.data.singleUniformFeedContext
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
+import baaahs.plugin.PluginRef
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
 import baaahs.show.Feed
@@ -51,13 +52,14 @@ data class ColorPickerFeed(
         override val resourceName: String get() = "ColorPicker"
         override val contentType: ContentType get() = ContentType.Color
         override val serializerRegistrar get() = classSerializer(serializer())
+        val pluginRef = PluginRef(CorePlugin.id, resourceName)
 
         override fun build(inputPort: InputPort): ColorPickerFeed {
             val default = inputPort.pluginConfig?.get("default")?.jsonPrimitive?.contentOrNull
 
             return ColorPickerFeed(
                 inputPort.title,
-                initialValue = default?.let { Color.Companion.from(it) } ?: Color.WHITE
+                initialValue = default?.let { Color.from(it) } ?: Color.WHITE
             )
         }
 

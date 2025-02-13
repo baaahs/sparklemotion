@@ -6,7 +6,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-fun Float?.percent() = this?.let { "${(it * 100f).roundToInt()}%" } ?: "—%"
+fun Float?.percent() = this?.let { "${(it * 100).roundToInt()}%" } ?: "—%"
+fun Double?.percent() = this?.let { "${(it * 100).roundToInt()}%" } ?: "—%"
 
 fun globalLaunch(block: suspend CoroutineScope.() -> Unit) =
     GlobalScope.launch(coroutineExceptionHandler) {

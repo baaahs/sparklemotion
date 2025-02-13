@@ -4,6 +4,11 @@ abstract class GlslException(message: String) : Exception(message) {
     abstract val errors: List<GlslError>
 }
 
+class WrappedException(e: Exception) : GlslException(e.message ?: e.toString()) {
+    override val errors: List<GlslError>
+        get() = listOf(GlslError(message!!))
+}
+
 class LinkException(
     message: String, row: Int? = null
 ) : GlslException("Shader link error: $message") {

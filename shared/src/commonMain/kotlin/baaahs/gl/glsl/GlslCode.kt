@@ -63,38 +63,30 @@ class GlslCode(
 
     companion object {
         private val logger = Logger<GlslCode>()
-
-        fun rewriteFunctionBody(originalText: String, symbolSubstitutionFn: (String) -> String): String {
-            val buf = StringBuilder()
-
-            var inComment = false
-            var inDotTraversal = false
-            GlslParser.Tokenizer().tokenize(originalText).forEach { str ->
-                when (str) {
-                    "//" -> {
-                        inComment = true; buf.append(str)
-                    }
-                    "." -> {
-                        if (!inComment) inDotTraversal = true; buf.append(str)
-                    }
-                    "\n" -> {
-                        inComment = false; buf.append(str)
-                    }
-                    else -> {
-                        buf.append(
-                            if (inComment || inDotTraversal) str
-                            else symbolSubstitutionFn(str)
-                        )
-                        inDotTraversal = false
-                    }
-                }
-            }
-            return buf.toString()
-        }
     }
 
-    fun interface Substitutions {
-        fun substitute(word: String): String
+    interface StatementRewriter : GlslParser.Tokenizer.State {
+        fun substitute(text: String): String
+
+        /** Yuck, this is horrible. */
+        fun drain(): String
+    }
+
+    class TokenRewriter(
+        private val substitutionFn: (String) -> String
+    ) : StatementRewriter {
+        private val buf: StringBuilder = StringBuilder()
+
+        override fun substitute(text: String): String =
+            substitutionFn.invoke(text)
+
+        override fun visit(token: String): GlslParser.Tokenizer.State {
+            buf.append(substitute(token))
+            return this
+        }
+
+        override fun drain(): String =
+            buf.toString().also { buf.clear() }
     }
 
     interface GlslStatement {
@@ -103,13 +95,18 @@ class GlslCode(
         val lineNumber: Int?
         val comments: List<String>
 
-        fun toGlsl(fileNumber: Int?, substitutions: Substitutions): String {
-            return substituteGlsl(fullText, substitutions, fileNumber)
+        fun toGlsl(fileNumber: Int?, statementRewriter: StatementRewriter): String {
+            return substituteGlsl(fullText, statementRewriter, fileNumber)
         }
 
-        fun substituteGlsl(text: String, substitutions: Substitutions, fileNumber: Int?): String {
-            return lineNumber?.let { "\n#line $lineNumber${fileNumber?.let { " $it" } ?: ""}\n" } +
-                    rewriteFunctionBody(text) { substitutions.substitute(it) }
+        fun substituteGlsl(text: String, statementRewriter: StatementRewriter, fileNumber: Int?): String = buildString {
+            if (lineNumber != null) {
+                append("\n#line $lineNumber${fileNumber?.let { " $it" } ?: ""}")
+            }
+
+            GlslParser.Tokenizer().processTokens(text, statementRewriter)
+            append("\n")
+            append(statementRewriter.drain())
         }
     }
 
@@ -171,16 +168,16 @@ class GlslCode(
         override val hint: Hint? by lazy { Hint.parse(comments.joinToString(" ") { it.trim() }, lineNumber) }
         val deferInitialization: Boolean = !isConst && initExpr != null
 
-        fun declarationToGlsl(fileNumber: Int?, substitutions: Substitutions): String {
+        override fun toGlsl(fileNumber: Int?, statementRewriter: StatementRewriter): String {
             val declaration = if (deferInitialization) {
                 fullText.substring(0, fullText.indexOf(initExpr!!)) + ";"
             } else fullText
-            return substituteGlsl(declaration, substitutions, fileNumber)
+            return substituteGlsl(declaration, statementRewriter, fileNumber)
         }
 
-        fun assignmentToGlsl(fileNumber: Int?, substitutions: Substitutions): String {
+        fun assignmentToGlsl(fileNumber: Int?, statementRewriter: StatementRewriter): String {
             val assignment = "  $name$initExpr;"
-            return substituteGlsl(assignment, substitutions, fileNumber)
+            return substituteGlsl(assignment, statementRewriter, fileNumber)
         }
     }
 
@@ -252,12 +249,12 @@ class GlslCode(
         override val fullText: String,
         override val lineNumber: Int? = null,
         override val comments: List<String> = emptyList(),
-        val isAbstract: Boolean = false
+        val isAbstract: Boolean = false,
+        override val isGlobalInput: Boolean = false
     ) : GlslStatement, GlslArgSite {
         override val title: String get() = name.englishize()
         override val type: GlslType get() = returnType
         override val isVarying: Boolean get() = true
-        override val isGlobalInput: Boolean get() = false
         override val isAbstractFunction: Boolean get() = isAbstract
 
         override val hint: Hint? by lazy { Hint.from(comments, lineNumber) }
@@ -266,9 +263,9 @@ class GlslCode(
             return params.associate { it.name to (it.findContentType(plugins, this) ?: ContentType.Unknown) }
         }
 
-        override fun toGlsl(fileNumber: Int?, substitutions: Substitutions): String {
+        override fun toGlsl(fileNumber: Int?, statementRewriter: StatementRewriter): String {
             // Chomp trailing ';' if it's an abstract method.
-            return super.toGlsl(fileNumber, substitutions)
+            return super.toGlsl(fileNumber, statementRewriter)
                 .let { if (isAbstract) it.trimEnd(';') else it }
         }
 

@@ -147,7 +147,10 @@ data class Surfaces(
 data class Shader(
     val title: String,
     /**language=glsl*/
-    val src: String
+    val src: String,
+    val description: String? = null,
+    val author: String? = null,
+    val tags: List<String> = emptyList()
 ) {
     fun suggestId(): String = title.camelize()
 }

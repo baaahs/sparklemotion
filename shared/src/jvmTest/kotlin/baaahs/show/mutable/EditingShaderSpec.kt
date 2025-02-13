@@ -1,8 +1,8 @@
 package baaahs.show.mutable
 
 import baaahs.TestModel
-import baaahs.app.ui.editor.LinkOption
 import baaahs.app.ui.editor.PortLinkOption
+import baaahs.app.ui.editor.stringify
 import baaahs.describe
 import baaahs.expectEmptyMap
 import baaahs.gl.RootToolchain
@@ -459,22 +459,3 @@ class EditingShaderSpec : DescribeSpec({
         }
     }
 })
-
-fun List<LinkOption>?.stringify(): String {
-    if (this == null) return "no options!"
-
-    val lines = arrayListOf<String>()
-    var groupName: String? = null
-    sortedWith(
-        compareBy<LinkOption> { it.groupName }.thenBy { it.title }
-    ).forEach { linkOption ->
-        if (linkOption.groupName != groupName) {
-            groupName = linkOption.groupName
-            groupName?.let { lines.add(it) }
-        }
-        val selected = if (linkOption == first()) "*" else "-"
-        val advanced = if (linkOption.isAdvanced) " (advanced)" else ""
-        lines.add("$selected ${linkOption.title}$advanced")
-    }
-    return lines.joinToString("\n")
-}

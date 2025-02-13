@@ -1,0 +1,3323 @@
+{
+  "title": "ISF Files",
+  "entries": [
+    {
+      "id": "3d-rotate",
+      "title": "3d Rotate",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Geometry Adjustment",
+        "Utility"
+      ],
+      "srcFile": "3d Rotate.fs"
+    },
+    {
+      "id": "angular",
+      "title": "Angular",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe"
+      ],
+      "srcFile": "Angular.fs"
+    },
+    {
+      "id": "apply-alpha",
+      "title": "Apply Alpha",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Adjustment",
+        "Masking",
+        "Utility"
+      ],
+      "srcFile": "Apply Alpha.fs"
+    },
+    {
+      "id": "ascii-art",
+      "title": "ASCII Art",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Stylize",
+        "Retro"
+      ],
+      "srcFile": "ASCII Art.fs"
+    },
+    {
+      "id": "auto-color-tone",
+      "title": "Auto Color Tone",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Effect"
+      ],
+      "srcFile": "Auto Color Tone.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "auto-colors-histogram",
+      "title": "Auto Colors Histogram",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Adjustment",
+        "Histogram"
+      ],
+      "srcFile": "Auto Colors Histogram.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "auto-levels",
+      "title": "Auto Levels",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Effect"
+      ],
+      "srcFile": "Auto Levels.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "bad-tv",
+      "title": "Bad TV",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Glitch",
+        "Retro"
+      ],
+      "srcFile": "Bad TV.fs"
+    },
+    {
+      "id": "basic-shape",
+      "title": "Basic Shape",
+      "tags": [
+        "@type=Paint",
+        "@filter",
+        "Geometry"
+      ],
+      "srcFile": "Basic Shape.fs"
+    },
+    {
+      "id": "bloom",
+      "title": "Bloom",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Blur",
+        "Film"
+      ],
+      "srcFile": "Bloom.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "bounce",
+      "title": "Bounce",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe"
+      ],
+      "srcFile": "Bounce.fs"
+    },
+    {
+      "id": "bow-tie-horizontal",
+      "title": "Bow Tie Horizontal",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe"
+      ],
+      "srcFile": "Bow Tie Horizontal.fs"
+    },
+    {
+      "id": "bow-tie-vertical",
+      "title": "Bow Tie Vertical",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe"
+      ],
+      "srcFile": "Bow Tie Vertical.fs"
+    },
+    {
+      "id": "boxinator",
+      "title": "Boxinator",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Stylize"
+      ],
+      "srcFile": "Boxinator.fs"
+    },
+    {
+      "id": "brick-pattern",
+      "title": "Brick Pattern",
+      "tags": [
+        "@type=Paint",
+        "@filter",
+        "Pattern",
+        "Color"
+      ],
+      "srcFile": "Brick Pattern.fs"
+    },
+    {
+      "id": "bright",
+      "title": "Bright",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Adjustment"
+      ],
+      "srcFile": "Bright.fs"
+    },
+    {
+      "id": "broken-lcd",
+      "title": "Broken LCD",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Glitch",
+        "Stylize"
+      ],
+      "srcFile": "Broken LCD.fs"
+    },
+    {
+      "id": "bump-distortion",
+      "title": "Bump Distortion",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion Effect"
+      ],
+      "srcFile": "Bump Distortion.fs"
+    },
+    {
+      "id": "burn",
+      "title": "Burn",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Dissolve"
+      ],
+      "srcFile": "Burn.fs"
+    },
+    {
+      "id": "butterfly-wave-scrawler",
+      "title": "Butterfly Wave Scrawler",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion"
+      ],
+      "srcFile": "Butterfly Wave Scrawler.fs"
+    },
+    {
+      "id": "channel-slide",
+      "title": "Channel Slide",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Effect"
+      ],
+      "srcFile": "Channel Slide.fs"
+    },
+    {
+      "id": "checkerboard",
+      "title": "Checkerboard",
+      "tags": [
+        "@type=Paint",
+        "@filter",
+        "Pattern",
+        "Color"
+      ],
+      "srcFile": "Checkerboard.fs"
+    },
+    {
+      "id": "chroma-desaturation-mask",
+      "title": "Chroma Desaturation Mask",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Masking",
+        "Color Effect"
+      ],
+      "srcFile": "Chroma Desaturation Mask.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "chroma-mask",
+      "title": "Chroma Mask",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Masking",
+        "Color Effect"
+      ],
+      "srcFile": "Chroma Mask.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "chroma-zoom",
+      "title": "Chroma Zoom",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Effect",
+        "Stylize"
+      ],
+      "srcFile": "Chroma Zoom.fs"
+    },
+    {
+      "id": "circle",
+      "title": "Circle",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe"
+      ],
+      "srcFile": "Circle.fs"
+    },
+    {
+      "id": "circle-crop",
+      "title": "Circle Crop",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe"
+      ],
+      "srcFile": "Circle Crop.fs"
+    },
+    {
+      "id": "circle-open",
+      "title": "Circle Open",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe"
+      ],
+      "srcFile": "Circle Open.fs"
+    },
+    {
+      "id": "circle-splash-distortion",
+      "title": "Circle Splash Distortion",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion Effect"
+      ],
+      "srcFile": "Circle Splash Distortion.fs"
+    },
+    {
+      "id": "circle-trails",
+      "title": "Circle Trails",
+      "tags": [
+        "@type=Paint",
+        "@filter",
+        "Drawing"
+      ],
+      "srcFile": "Circle Trails.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "circle-warp",
+      "title": "Circle Warp",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion Effect"
+      ],
+      "srcFile": "Circle Warp.fs"
+    },
+    {
+      "id": "circle-wrap-distortion",
+      "title": "Circle Wrap Distortion",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion Effect"
+      ],
+      "srcFile": "Circle Wrap Distortion.fs"
+    },
+    {
+      "id": "circular-feedback-mask",
+      "title": "Circular Feedback Mask",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Feedback"
+      ],
+      "srcFile": "Circular Feedback Mask.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "circular-screen",
+      "title": "Circular Screen",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Halftone Effect"
+      ],
+      "srcFile": "Circular Screen.fs"
+    },
+    {
+      "id": "city-lights",
+      "title": "City Lights",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Stylize"
+      ],
+      "srcFile": "City Lights.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "cmyk-halftone",
+      "title": "CMYK Halftone",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Halftone Effect",
+        "Retro"
+      ],
+      "srcFile": "CMYK Halftone.fs"
+    },
+    {
+      "id": "cmyk-halftone-lookaround",
+      "title": "CMYK Halftone-Lookaround",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Halftone Effect",
+        "Retro"
+      ],
+      "srcFile": "CMYK Halftone-Lookaround.fs"
+    },
+    {
+      "id": "collage",
+      "title": "Collage",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Geometry Adjustment"
+      ],
+      "srcFile": "Collage.fs"
+    },
+    {
+      "id": "color-bars",
+      "title": "Color Bars",
+      "tags": [
+        "@type=Paint",
+        "Utility"
+      ],
+      "srcFile": "Color Bars.fs"
+    },
+    {
+      "id": "color-blowout",
+      "title": "Color Blowout",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Effect"
+      ],
+      "srcFile": "Color Blowout.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "color-controls",
+      "title": "Color Controls",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Adjustment",
+        "Utility"
+      ],
+      "srcFile": "Color Controls.fs"
+    },
+    {
+      "id": "color-history",
+      "title": "Color History",
+      "tags": [
+        "@type=Paint",
+        "@filter",
+        "Color"
+      ],
+      "srcFile": "Color History.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "color-invert",
+      "title": "Color Invert",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Effect",
+        "Utility"
+      ],
+      "srcFile": "Color Invert.fs"
+    },
+    {
+      "id": "color-levels",
+      "title": "Color Levels",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Adjustment"
+      ],
+      "srcFile": "Color Levels.fs"
+    },
+    {
+      "id": "color-monochrome",
+      "title": "Color Monochrome",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Effect",
+        "Retro"
+      ],
+      "srcFile": "Color Monochrome.fs"
+    },
+    {
+      "id": "color-organ-polyphonic",
+      "title": "Color Organ Polyphonic",
+      "tags": [
+        "@type=Paint",
+        "@filter",
+        "Color"
+      ],
+      "srcFile": "Color Organ Polyphonic.fs"
+    },
+    {
+      "id": "color-phase",
+      "title": "Color Phase",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Dissolve"
+      ],
+      "srcFile": "Color Phase.fs"
+    },
+    {
+      "id": "color-posterize",
+      "title": "Color Posterize",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Effect",
+        "Retro"
+      ],
+      "srcFile": "Color Posterize.fs"
+    },
+    {
+      "id": "color-relookup",
+      "title": "Color Relookup",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Glitch"
+      ],
+      "srcFile": "Color Relookup.fs"
+    },
+    {
+      "id": "color-replacement",
+      "title": "Color Replacement",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Effect"
+      ],
+      "srcFile": "Color Replacement.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "color-scales",
+      "title": "Color Scales",
+      "tags": [
+        "@type=Paint",
+        "Color"
+      ],
+      "srcFile": "Color Scales.fs"
+    },
+    {
+      "id": "color-schemes",
+      "title": "Color Schemes",
+      "tags": [
+        "@type=Paint",
+        "@filter",
+        "Color"
+      ],
+      "srcFile": "Color Schemes.fs"
+    },
+    {
+      "id": "color-test-grid",
+      "title": "Color Test Grid",
+      "tags": [
+        "@type=Paint",
+        "Color",
+        "Utility"
+      ],
+      "srcFile": "Color Test Grid.fs"
+    },
+    {
+      "id": "colour-distance",
+      "title": "Colour Distance",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Dissolve",
+        "Wipe"
+      ],
+      "srcFile": "Colour Distance.fs"
+    },
+    {
+      "id": "comet-tails",
+      "title": "Comet Tails",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Feedback",
+        "Glitch"
+      ],
+      "srcFile": "Comet Tails.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "convergence",
+      "title": "Convergence",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Glitch",
+        "Color Effect"
+      ],
+      "srcFile": "Convergence.fs"
+    },
+    {
+      "id": "corner-color-tint",
+      "title": "Corner Color Tint",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Effect"
+      ],
+      "srcFile": "Corner Color Tint.fs"
+    },
+    {
+      "id": "corner-colors",
+      "title": "Corner Colors",
+      "tags": [
+        "@type=Paint",
+        "@filter",
+        "Color"
+      ],
+      "srcFile": "Corner Colors.fs"
+    },
+    {
+      "id": "crazy-parametric-fun",
+      "title": "Crazy Parametric Fun",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion"
+      ],
+      "srcFile": "Crazy Parametric Fun.fs"
+    },
+    {
+      "id": "cross-zoom",
+      "title": "CrossZoom",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Dissolve"
+      ],
+      "srcFile": "CrossZoom.fs"
+    },
+    {
+      "id": "crosshatch",
+      "title": "Crosshatch",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Dissolve"
+      ],
+      "srcFile": "Crosshatch.fs"
+    },
+    {
+      "id": "crosswarp",
+      "title": "Crosswarp",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion"
+      ],
+      "srcFile": "Crosswarp.fs"
+    },
+    {
+      "id": "cube",
+      "title": "cube",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe",
+        "Distortion"
+      ],
+      "srcFile": "cube.fs"
+    },
+    {
+      "id": "cubic-warp",
+      "title": "Cubic Warp",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion Effect"
+      ],
+      "srcFile": "Cubic Warp.fs"
+    },
+    {
+      "id": "deinterlace",
+      "title": "Deinterlace",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Utility"
+      ],
+      "srcFile": "Deinterlace.fs"
+    },
+    {
+      "id": "diagonal-blur",
+      "title": "Diagonal Blur",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Blur"
+      ],
+      "srcFile": "Diagonal Blur.fs"
+    },
+    {
+      "id": "diagonalize",
+      "title": "Diagonalize",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Stylize",
+        "Distortion Effect"
+      ],
+      "srcFile": "Diagonalize.fs"
+    },
+    {
+      "id": "digital-clock",
+      "title": "Digital Clock",
+      "tags": [
+        "@type=Paint",
+        "@filter",
+        "Utility"
+      ],
+      "srcFile": "Digital Clock.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "dilate",
+      "title": "Dilate",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Blur"
+      ],
+      "srcFile": "Dilate.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "dilate-fast",
+      "title": "Dilate-Fast",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Blur"
+      ],
+      "srcFile": "Dilate-Fast.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "directional",
+      "title": "Directional",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe"
+      ],
+      "srcFile": "Directional.fs"
+    },
+    {
+      "id": "directional-warp",
+      "title": "Directional Warp",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion"
+      ],
+      "srcFile": "Directional Warp.fs"
+    },
+    {
+      "id": "directional-wipe",
+      "title": "Directional Wipe",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe"
+      ],
+      "srcFile": "Directional Wipe.fs"
+    },
+    {
+      "id": "dirty-lens",
+      "title": "Dirty Lens",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Film",
+        "Masking"
+      ],
+      "srcFile": "Dirty Lens.fs"
+    },
+    {
+      "id": "displace",
+      "title": "Displace",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion Effect"
+      ],
+      "srcFile": "Displace.fs"
+    },
+    {
+      "id": "displacement",
+      "title": "Displacement",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion"
+      ],
+      "srcFile": "Displacement.fs"
+    },
+    {
+      "id": "dither-bayer",
+      "title": "Dither-Bayer",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Halftone Effect",
+        "Retro"
+      ],
+      "srcFile": "Dither-Bayer.fs"
+    },
+    {
+      "id": "doom-screen-transition",
+      "title": "Doom Screen Transition",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe"
+      ],
+      "srcFile": "Doom Screen Transition.fs"
+    },
+    {
+      "id": "doorway",
+      "title": "Doorway",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe"
+      ],
+      "srcFile": "Doorway.fs"
+    },
+    {
+      "id": "dot-screen",
+      "title": "Dot Screen",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Halftone Effect",
+        "Retro"
+      ],
+      "srcFile": "Dot Screen.fs"
+    },
+    {
+      "id": "double-vision",
+      "title": "Double Vision",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Stylize"
+      ],
+      "srcFile": "Double Vision.fs"
+    },
+    {
+      "id": "dreamy",
+      "title": "Dreamy",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion"
+      ],
+      "srcFile": "Dreamy.fs"
+    },
+    {
+      "id": "dreamy-zoom",
+      "title": "Dreamy Zoom",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion"
+      ],
+      "srcFile": "Dreamy Zoom.fs"
+    },
+    {
+      "id": "dual-side-scroller-and-flip",
+      "title": "Dual Side Scroller And Flip",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Geometry Adjustment"
+      ],
+      "srcFile": "Dual Side Scroller And Flip.fs"
+    },
+    {
+      "id": "duotone",
+      "title": "Duotone",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Effect"
+      ],
+      "srcFile": "Duotone.fs"
+    },
+    {
+      "id": "duotone-from-histogram",
+      "title": "Duotone From Histogram",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Effect",
+        "Histogram"
+      ],
+      "srcFile": "Duotone From Histogram.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "echo-trace",
+      "title": "Echo Trace",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Feedback"
+      ],
+      "srcFile": "Echo Trace.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "edge-blowout",
+      "title": "Edge Blowout",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Stylize"
+      ],
+      "srcFile": "Edge Blowout.fs"
+    },
+    {
+      "id": "edge-blur",
+      "title": "Edge Blur",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Blur"
+      ],
+      "srcFile": "Edge Blur.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "edge-distort",
+      "title": "Edge Distort",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion Effect"
+      ],
+      "srcFile": "Edge Distort.fs"
+    },
+    {
+      "id": "edge-trace",
+      "title": "Edge Trace",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Stylize"
+      ],
+      "srcFile": "Edge Trace.fs"
+    },
+    {
+      "id": "edges",
+      "title": "Edges",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Stylize"
+      ],
+      "srcFile": "Edges.fs"
+    },
+    {
+      "id": "emboss",
+      "title": "Emboss",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Stylize"
+      ],
+      "srcFile": "Emboss.fs"
+    },
+    {
+      "id": "erode",
+      "title": "Erode",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Blur"
+      ],
+      "srcFile": "Erode.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "erode-fast",
+      "title": "Erode-Fast",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Blur"
+      ],
+      "srcFile": "Erode-Fast.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "etch-a-sketch",
+      "title": "Etch-a-Sketch",
+      "tags": [
+        "@type=Paint",
+        "@filter",
+        "Drawing"
+      ],
+      "srcFile": "Etch-a-Sketch.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "exposure-adjust",
+      "title": "Exposure Adjust",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Adjustment"
+      ],
+      "srcFile": "Exposure Adjust.fs"
+    },
+    {
+      "id": "fade",
+      "title": "Fade",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Dissolve"
+      ],
+      "srcFile": "Fade.fs"
+    },
+    {
+      "id": "fade-color",
+      "title": "Fade Color",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Dissolve"
+      ],
+      "srcFile": "Fade Color.fs"
+    },
+    {
+      "id": "fade-gray-scale",
+      "title": "Fade Gray Scale",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Dissolve"
+      ],
+      "srcFile": "Fade Gray Scale.fs"
+    },
+    {
+      "id": "false-color",
+      "title": "False Color",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Effect"
+      ],
+      "srcFile": "False Color.fs"
+    },
+    {
+      "id": "fast-blur",
+      "title": "Fast Blur",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Blur"
+      ],
+      "srcFile": "Fast Blur.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "fast-mosh",
+      "title": "FastMosh",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Feedback",
+        "Glitch"
+      ],
+      "srcFile": "FastMosh.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "fft-color-lines",
+      "title": "FFT Color Lines",
+      "tags": [
+        "@type=Paint",
+        "@filter",
+        "Audio Visualizer"
+      ],
+      "srcFile": "FFT Color Lines.fs"
+    },
+    {
+      "id": "fft-filled-waveform",
+      "title": "FFT Filled Waveform",
+      "tags": [
+        "@type=Paint",
+        "@filter",
+        "Audio Visualizer"
+      ],
+      "srcFile": "FFT Filled Waveform.fs"
+    },
+    {
+      "id": "fft-spectrogram",
+      "title": "FFT Spectrogram",
+      "tags": [
+        "@type=Paint",
+        "@filter",
+        "Audio Visualizer"
+      ],
+      "srcFile": "FFT Spectrogram.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "film-burn",
+      "title": "Film Burn",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Dissolve"
+      ],
+      "srcFile": "Film Burn.fs"
+    },
+    {
+      "id": "flip-h",
+      "title": "Flip H",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Geometry Adjustment"
+      ],
+      "srcFile": "Flip H.fs"
+    },
+    {
+      "id": "flip-v",
+      "title": "Flip V",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Geometry Adjustment"
+      ],
+      "srcFile": "Flip V.fs"
+    },
+    {
+      "id": "flipbook",
+      "title": "Flipbook",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Stylize"
+      ],
+      "srcFile": "Flipbook.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "fly-eye",
+      "title": "Fly Eye",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion"
+      ],
+      "srcFile": "Fly Eye.fs"
+    },
+    {
+      "id": "freeze-frame",
+      "title": "Freeze Frame",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Utility"
+      ],
+      "srcFile": "Freeze Frame.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "frosted-glass",
+      "title": "Frosted Glass",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Stylize",
+        "Blur"
+      ],
+      "srcFile": "Frosted Glass.fs"
+    },
+    {
+      "id": "gamma-correction",
+      "title": "Gamma Correction",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Adjustment",
+        "Utility"
+      ],
+      "srcFile": "Gamma Correction.fs"
+    },
+    {
+      "id": "ghosting",
+      "title": "Ghosting",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Stylize",
+        "Feedback",
+        "Color Effect"
+      ],
+      "srcFile": "Ghosting.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "glitch-displace",
+      "title": "Glitch Displace",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion"
+      ],
+      "srcFile": "Glitch Displace.fs"
+    },
+    {
+      "id": "glitch-memories",
+      "title": "Glitch Memories",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion",
+        "Glitch"
+      ],
+      "srcFile": "Glitch Memories.fs"
+    },
+    {
+      "id": "glitch-shifter",
+      "title": "Glitch Shifter",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Glitch"
+      ],
+      "srcFile": "Glitch Shifter.fs"
+    },
+    {
+      "id": "gloom",
+      "title": "Gloom",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Blur",
+        "Film"
+      ],
+      "srcFile": "Gloom.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "glow",
+      "title": "Glow",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Stylize"
+      ],
+      "srcFile": "Glow.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "glow-fast",
+      "title": "Glow-Fast",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Stylize"
+      ],
+      "srcFile": "Glow-Fast.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "god-rays",
+      "title": "God Rays",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Stylize"
+      ],
+      "srcFile": "God Rays.fs"
+    },
+    {
+      "id": "graph-paper",
+      "title": "Graph Paper",
+      "tags": [
+        "@type=Paint",
+        "@filter",
+        "Pattern",
+        "Color"
+      ],
+      "srcFile": "Graph Paper.fs"
+    },
+    {
+      "id": "grid-flip",
+      "title": "Grid Flip",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe"
+      ],
+      "srcFile": "Grid Flip.fs"
+    },
+    {
+      "id": "grid-warp",
+      "title": "Grid Warp",
+      "tags": [
+        "@type=Paint",
+        "@filter",
+        "Geometry"
+      ],
+      "srcFile": "Grid Warp.fs"
+    },
+    {
+      "id": "hatch-blur",
+      "title": "Hatch Blur",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Blur"
+      ],
+      "srcFile": "Hatch Blur.fs"
+    },
+    {
+      "id": "heart",
+      "title": "Heart",
+      "tags": [
+        "@type=Paint",
+        "@filter",
+        "Geometry"
+      ],
+      "srcFile": "Heart.fs"
+    },
+    {
+      "id": "heart-transition",
+      "title": "Heart Transition",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe",
+        "Retro"
+      ],
+      "srcFile": "Heart Transition.fs"
+    },
+    {
+      "id": "hexagonalize",
+      "title": "Hexagonalize",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion"
+      ],
+      "srcFile": "Hexagonalize.fs"
+    },
+    {
+      "id": "histogram-viewer",
+      "title": "Histogram Viewer",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Histogram",
+        "Utility"
+      ],
+      "srcFile": "Histogram Viewer.fs"
+    },
+    {
+      "id": "horiz-vert-hold",
+      "title": "HorizVertHold",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Geometry Adjustment"
+      ],
+      "srcFile": "HorizVertHold.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "hsvto-rgb",
+      "title": "HSVtoRGB",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Effect",
+        "Utility"
+      ],
+      "srcFile": "HSVtoRGB.fs"
+    },
+    {
+      "id": "hyperspace",
+      "title": "Hyperspace",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion Effect"
+      ],
+      "srcFile": "Hyperspace.fs"
+    },
+    {
+      "id": "interlace",
+      "title": "Interlace",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Glitch",
+        "Retro"
+      ],
+      "srcFile": "Interlace.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "interlace-mirror",
+      "title": "Interlace Mirror",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Glitch",
+        "Retro"
+      ],
+      "srcFile": "Interlace Mirror.fs"
+    },
+    {
+      "id": "inverted-page-curl",
+      "title": "Inverted Page Curl",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe",
+        "Retro"
+      ],
+      "srcFile": "Inverted Page Curl.fs"
+    },
+    {
+      "id": "kaleidoscope",
+      "title": "Kaleidoscope",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Kaleidoscope",
+        "Stylize"
+      ],
+      "srcFile": "Kaleidoscope.fs"
+    },
+    {
+      "id": "kaleidoscope-tile",
+      "title": "Kaleidoscope Tile",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Kaleidoscope",
+        "Tile Effect"
+      ],
+      "srcFile": "Kaleidoscope Tile.fs"
+    },
+    {
+      "id": "kaleidoscope-transition",
+      "title": "Kaleidoscope Transition",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion"
+      ],
+      "srcFile": "Kaleidoscope Transition.fs"
+    },
+    {
+      "id": "key-frame-artifacts",
+      "title": "Key Frame Artifacts",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Glitch"
+      ],
+      "srcFile": "Key Frame Artifacts.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "layer-mask",
+      "title": "Layer Mask",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Masking",
+        "Color Effect",
+        "Utility"
+      ],
+      "srcFile": "Layer Mask.fs"
+    },
+    {
+      "id": "layer-position",
+      "title": "Layer Position",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Geometry Adjustment",
+        "Utility"
+      ],
+      "srcFile": "Layer Position.fs"
+    },
+    {
+      "id": "lens-flare",
+      "title": "Lens Flare",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Film"
+      ],
+      "srcFile": "Lens Flare.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "life",
+      "title": "Life",
+      "tags": [
+        "@type=Paint",
+        "Noise"
+      ],
+      "srcFile": "Life.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "line-screen",
+      "title": "Line Screen",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Halftone Effect"
+      ],
+      "srcFile": "Line Screen.fs"
+    },
+    {
+      "id": "linear-blur",
+      "title": "Linear Blur",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Dissolve"
+      ],
+      "srcFile": "Linear Blur.fs"
+    },
+    {
+      "id": "linear-gradient",
+      "title": "Linear Gradient",
+      "tags": [
+        "@type=Paint",
+        "@filter",
+        "Color"
+      ],
+      "srcFile": "Linear Gradient.fs"
+    },
+    {
+      "id": "lines",
+      "title": "Lines",
+      "tags": [
+        "@type=Paint",
+        "@filter",
+        "Geometry"
+      ],
+      "srcFile": "Lines.fs"
+    },
+    {
+      "id": "long-exposure",
+      "title": "Long Exposure",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Effect",
+        "Feedback",
+        "Film"
+      ],
+      "srcFile": "Long Exposure.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "luma-transition",
+      "title": "Luma Transition",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Dissolve"
+      ],
+      "srcFile": "Luma Transition.fs"
+    },
+    {
+      "id": "luminance-melt",
+      "title": "Luminance Melt",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Dissolve"
+      ],
+      "srcFile": "Luminance Melt.fs"
+    },
+    {
+      "id": "luminance-posterize",
+      "title": "Luminance Posterize",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Effect",
+        "Retro"
+      ],
+      "srcFile": "Luminance Posterize.fs"
+    },
+    {
+      "id": "maximum-component",
+      "title": "Maximum Component",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Effect",
+        "Utility"
+      ],
+      "srcFile": "Maximum Component.fs"
+    },
+    {
+      "id": "median",
+      "title": "Median",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Blur"
+      ],
+      "srcFile": "Median.fs"
+    },
+    {
+      "id": "meta-image",
+      "title": "Meta Image",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Stylize",
+        "Tile Effect"
+      ],
+      "srcFile": "Meta Image.fs"
+    },
+    {
+      "id": "micro-buffer",
+      "title": "Micro Buffer",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Glitch"
+      ],
+      "srcFile": "Micro Buffer.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "micro-buffer-rgb",
+      "title": "Micro Buffer RGB",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Glitch"
+      ],
+      "srcFile": "Micro Buffer RGB.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "minimum-component",
+      "title": "Minimum Component",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Effect",
+        "Utility"
+      ],
+      "srcFile": "Minimum Component.fs"
+    },
+    {
+      "id": "mirror",
+      "title": "Mirror",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Geometry Adjustment"
+      ],
+      "srcFile": "Mirror.fs"
+    },
+    {
+      "id": "mirror-edge",
+      "title": "Mirror Edge",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Tile Effect"
+      ],
+      "srcFile": "Mirror Edge.fs"
+    },
+    {
+      "id": "morph",
+      "title": "Morph",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion"
+      ],
+      "srcFile": "Morph.fs"
+    },
+    {
+      "id": "mosaic",
+      "title": "Mosaic",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe"
+      ],
+      "srcFile": "Mosaic.fs"
+    },
+    {
+      "id": "motion-heat-map",
+      "title": "Motion Heat Map",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Effect",
+        "Utility"
+      ],
+      "srcFile": "Motion Heat Map.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "motion-mask",
+      "title": "Motion Mask",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Masking"
+      ],
+      "srcFile": "Motion Mask.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "multi-frame-2x2",
+      "title": "MultiFrame 2x2",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Tile Effect",
+        "Stylize"
+      ],
+      "srcFile": "MultiFrame 2x2.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "multi-frame-3x3",
+      "title": "MultiFrame 3x3",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Tile Effect",
+        "Stylize"
+      ],
+      "srcFile": "MultiFrame 3x3.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "multi-gradient",
+      "title": "Multi Gradient",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color"
+      ],
+      "srcFile": "Multi Gradient.fs"
+    },
+    {
+      "id": "multi-hue-shift",
+      "title": "Multi Hue Shift",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Effect"
+      ],
+      "srcFile": "Multi Hue Shift.fs"
+    },
+    {
+      "id": "multi-pass-gaussian-blur",
+      "title": "Multi Pass Gaussian Blur",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Blur"
+      ],
+      "srcFile": "Multi Pass Gaussian Blur.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "multi-pixellate",
+      "title": "Multi-Pixellate",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Stylize"
+      ],
+      "srcFile": "Multi-Pixellate.fs"
+    },
+    {
+      "id": "multiply-blend",
+      "title": "Multiply Blend",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Dissolve"
+      ],
+      "srcFile": "Multiply Blend.fs"
+    },
+    {
+      "id": "neon",
+      "title": "Neon",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Stylize"
+      ],
+      "srcFile": "Neon.fs"
+    },
+    {
+      "id": "night-vision",
+      "title": "Night Vision",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Stylize"
+      ],
+      "srcFile": "Night Vision.fs"
+    },
+    {
+      "id": "noise",
+      "title": "Noise",
+      "tags": [
+        "@type=Paint",
+        "Noise"
+      ],
+      "srcFile": "Noise.fs"
+    },
+    {
+      "id": "noise-adapt",
+      "title": "Noise Adapt",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Noise"
+      ],
+      "srcFile": "Noise Adapt.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "noise-displace",
+      "title": "Noise Displace",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion Effect",
+        "Noise"
+      ],
+      "srcFile": "Noise Displace.fs"
+    },
+    {
+      "id": "noise-pixellate",
+      "title": "Noise Pixellate",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Stylize",
+        "Noise"
+      ],
+      "srcFile": "Noise Pixellate.fs"
+    },
+    {
+      "id": "optical-flow-distort",
+      "title": "Optical Flow Distort",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion Effect",
+        "Stylize"
+      ],
+      "srcFile": "Optical Flow Distort.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "optical-flow-generator",
+      "title": "Optical Flow Generator",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Masking",
+        "Utility"
+      ],
+      "srcFile": "Optical Flow Generator.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "perlin-transition",
+      "title": "Perlin Transition",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe"
+      ],
+      "srcFile": "Perlin Transition.fs"
+    },
+    {
+      "id": "pinwheel",
+      "title": "Pinwheel",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe"
+      ],
+      "srcFile": "Pinwheel.fs"
+    },
+    {
+      "id": "pixel-shifter",
+      "title": "Pixel Shifter",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion Effect"
+      ],
+      "srcFile": "Pixel Shifter.fs"
+    },
+    {
+      "id": "pixelize",
+      "title": "Pixelize",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion"
+      ],
+      "srcFile": "Pixelize.fs"
+    },
+    {
+      "id": "pixellate",
+      "title": "Pixellate",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Stylize"
+      ],
+      "srcFile": "Pixellate.fs"
+    },
+    {
+      "id": "polar-function",
+      "title": "Polar Function",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe"
+      ],
+      "srcFile": "Polar Function.fs"
+    },
+    {
+      "id": "polka-dots-curtain",
+      "title": "Polka Dots Curtain",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe"
+      ],
+      "srcFile": "Polka Dots Curtain.fs"
+    },
+    {
+      "id": "poly-glitch",
+      "title": "Poly Glitch",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Stylize",
+        "Glitch"
+      ],
+      "srcFile": "Poly Glitch.fs"
+    },
+    {
+      "id": "poly-star",
+      "title": "Poly Star",
+      "tags": [
+        "@type=Paint",
+        "@filter",
+        "Geometry"
+      ],
+      "srcFile": "Poly Star.fs"
+    },
+    {
+      "id": "posterize",
+      "title": "Posterize",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Retro",
+        "Stylize",
+        "Color Effect"
+      ],
+      "srcFile": "Posterize.fs"
+    },
+    {
+      "id": "power-warp",
+      "title": "Power Warp",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion Effect"
+      ],
+      "srcFile": "Power Warp.fs"
+    },
+    {
+      "id": "quad-mask",
+      "title": "Quad Mask",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Masking",
+        "Geometry Adjustment"
+      ],
+      "srcFile": "Quad Mask.fs"
+    },
+    {
+      "id": "quad-tile",
+      "title": "Quad Tile",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Tile Effect"
+      ],
+      "srcFile": "Quad Tile.fs"
+    },
+    {
+      "id": "radial",
+      "title": "Radial",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe"
+      ],
+      "srcFile": "Radial.fs"
+    },
+    {
+      "id": "radial-gradient",
+      "title": "Radial Gradient",
+      "tags": [
+        "@type=Paint",
+        "@filter",
+        "Color"
+      ],
+      "srcFile": "Radial Gradient.fs"
+    },
+    {
+      "id": "radial-replicate",
+      "title": "Radial Replicate",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Kaleidoscope"
+      ],
+      "srcFile": "Radial Replicate.fs"
+    },
+    {
+      "id": "radial-spectrogram",
+      "title": "Radial Spectrogram",
+      "tags": [
+        "@type=Paint",
+        "Audio Visualizer"
+      ],
+      "srcFile": "Radial Spectrogram.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "random-checkerboard",
+      "title": "Random Checkerboard",
+      "tags": [
+        "@type=Paint",
+        "Pattern",
+        "Color"
+      ],
+      "srcFile": "Random Checkerboard.fs"
+    },
+    {
+      "id": "random-freeze",
+      "title": "Random Freeze",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Glitch"
+      ],
+      "srcFile": "Random Freeze.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "random-lines",
+      "title": "Random Lines",
+      "tags": [
+        "@type=Paint",
+        "Geometry"
+      ],
+      "srcFile": "Random Lines.fs"
+    },
+    {
+      "id": "random-shape",
+      "title": "Random Shape",
+      "tags": [
+        "@type=Paint",
+        "Geometry"
+      ],
+      "srcFile": "Random Shape.fs"
+    },
+    {
+      "id": "random-shape-blast",
+      "title": "Random Shape Blast",
+      "tags": [
+        "@type=Paint",
+        "Geometry"
+      ],
+      "srcFile": "Random Shape Blast.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "random-squares",
+      "title": "Random Squares",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Dissolve"
+      ],
+      "srcFile": "Random Squares.fs"
+    },
+    {
+      "id": "random-squares-mask",
+      "title": "Random Squares Mask",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Masking"
+      ],
+      "srcFile": "Random Squares Mask.fs"
+    },
+    {
+      "id": "random-stripes",
+      "title": "Random Stripes",
+      "tags": [
+        "@type=Paint",
+        "Pattern",
+        "Color"
+      ],
+      "srcFile": "Random Stripes.fs"
+    },
+    {
+      "id": "re-rgb-gradient-generator",
+      "title": "RE RGB Gradient Generator",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color",
+        "Utility"
+      ],
+      "srcFile": "RE RGB Gradient Generator.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "replicate",
+      "title": "Replicate",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Tile Effect"
+      ],
+      "srcFile": "Replicate.fs"
+    },
+    {
+      "id": "replicate-random",
+      "title": "Replicate Random",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Tile Effect"
+      ],
+      "srcFile": "Replicate Random.fs"
+    },
+    {
+      "id": "resize-glitch",
+      "title": "Resize Glitch",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Glitch",
+        "Geometry Adjustment"
+      ],
+      "srcFile": "Resize Glitch.fs"
+    },
+    {
+      "id": "rgb-eq",
+      "title": "RGB EQ",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Adjustment"
+      ],
+      "srcFile": "RGB EQ.fs"
+    },
+    {
+      "id": "rgb-halftone",
+      "title": "RGB Halftone",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Halftone Effect",
+        "Retro"
+      ],
+      "srcFile": "RGB Halftone.fs"
+    },
+    {
+      "id": "rgb-halftone-lookaround",
+      "title": "RGB Halftone-lookaround",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Halftone Effect",
+        "Retro"
+      ],
+      "srcFile": "RGB Halftone-lookaround.fs"
+    },
+    {
+      "id": "rgb-invert",
+      "title": "RGB Invert",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Effect",
+        "Utility"
+      ],
+      "srcFile": "RGB Invert.fs"
+    },
+    {
+      "id": "rgb-strobe",
+      "title": "RGB Strobe",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Effect"
+      ],
+      "srcFile": "RGB Strobe.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "rgb-trails-3-0",
+      "title": "RGB Trails 3.0",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Effect",
+        "Blur"
+      ],
+      "srcFile": "RGB Trails 3.0.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "rgba-swap",
+      "title": "RGBA Swap",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Effect"
+      ],
+      "srcFile": "RGBA Swap.fs"
+    },
+    {
+      "id": "rgbto-hsv",
+      "title": "RGBtoHSV",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Effect",
+        "Utility"
+      ],
+      "srcFile": "RGBtoHSV.fs"
+    },
+    {
+      "id": "ripple-transition",
+      "title": "Ripple Transition",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion",
+        "Dissolve"
+      ],
+      "srcFile": "Ripple Transition.fs"
+    },
+    {
+      "id": "ripples",
+      "title": "Ripples",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion Effect"
+      ],
+      "srcFile": "Ripples.fs"
+    },
+    {
+      "id": "rotate",
+      "title": "Rotate",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Geometry Adjustment",
+        "Utility"
+      ],
+      "srcFile": "Rotate.fs"
+    },
+    {
+      "id": "rotate-scale-fade",
+      "title": "Rotate Scale Fade",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion"
+      ],
+      "srcFile": "Rotate Scale Fade.fs"
+    },
+    {
+      "id": "saturation-bleed",
+      "title": "Saturation Bleed",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Effect"
+      ],
+      "srcFile": "Saturation Bleed.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "sepia-tone",
+      "title": "Sepia Tone",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Effect",
+        "Retro"
+      ],
+      "srcFile": "Sepia Tone.fs"
+    },
+    {
+      "id": "set-alpha",
+      "title": "Set Alpha",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Adjustment",
+        "Utility"
+      ],
+      "srcFile": "Set Alpha.fs"
+    },
+    {
+      "id": "shake",
+      "title": "Shake",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Noise",
+        "Geometry Adjustment"
+      ],
+      "srcFile": "Shake.fs"
+    },
+    {
+      "id": "shape-mask",
+      "title": "Shape Mask",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Masking"
+      ],
+      "srcFile": "Shape Mask.fs"
+    },
+    {
+      "id": "shape-morph-feedback-mask",
+      "title": "Shape Morph Feedback Mask",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Feedback"
+      ],
+      "srcFile": "Shape Morph Feedback Mask.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "shape-morph-wrap",
+      "title": "Shape Morph Wrap",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion Effect"
+      ],
+      "srcFile": "Shape Morph Wrap.fs"
+    },
+    {
+      "id": "sharpen-luminance",
+      "title": "Sharpen Luminance",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Sharpen"
+      ],
+      "srcFile": "Sharpen Luminance.fs"
+    },
+    {
+      "id": "sharpen-rgb",
+      "title": "Sharpen RGB",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Sharpen"
+      ],
+      "srcFile": "Sharpen RGB.fs"
+    },
+    {
+      "id": "shockwave",
+      "title": "Shockwave",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion Effect"
+      ],
+      "srcFile": "Shockwave.fs"
+    },
+    {
+      "id": "shockwave-pulse",
+      "title": "Shockwave Pulse",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion Effect"
+      ],
+      "srcFile": "Shockwave Pulse.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "show-alpha",
+      "title": "Show Alpha",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Utility"
+      ],
+      "srcFile": "Show Alpha.fs"
+    },
+    {
+      "id": "side-scroller-and-flip",
+      "title": "Side Scroller And Flip",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Geometry Adjustment"
+      ],
+      "srcFile": "Side Scroller And Flip.fs"
+    },
+    {
+      "id": "simple-zoom-transition",
+      "title": "Simple Zoom Transition",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion",
+        "Dissolve"
+      ],
+      "srcFile": "Simple Zoom Transition.fs"
+    },
+    {
+      "id": "sine-warp-gradient",
+      "title": "Sine Warp Gradient",
+      "tags": [
+        "@type=Paint",
+        "@filter",
+        "Color"
+      ],
+      "srcFile": "Sine Warp Gradient.fs"
+    },
+    {
+      "id": "sine-warp-tile",
+      "title": "Sine Warp Tile",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Kaleidoscope",
+        "Tile Effect"
+      ],
+      "srcFile": "Sine Warp Tile.fs"
+    },
+    {
+      "id": "sketch",
+      "title": "Sketch",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Stylize"
+      ],
+      "srcFile": "Sketch.fs"
+    },
+    {
+      "id": "sliding-strips",
+      "title": "Sliding Strips",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Geometry Adjustment"
+      ],
+      "srcFile": "Sliding Strips.fs"
+    },
+    {
+      "id": "slit-scan",
+      "title": "Slit Scan",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Glitch"
+      ],
+      "srcFile": "Slit Scan.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "slit-scan-mask",
+      "title": "Slit Scan Mask",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Masking"
+      ],
+      "srcFile": "Slit Scan Mask.fs"
+    },
+    {
+      "id": "smoke-screen",
+      "title": "Smoke Screen",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Stylize"
+      ],
+      "srcFile": "Smoke Screen.fs"
+    },
+    {
+      "id": "smudged-lens",
+      "title": "Smudged Lens",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Film",
+        "Blur"
+      ],
+      "srcFile": "Smudged Lens.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "soft-blur",
+      "title": "Soft Blur",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Blur"
+      ],
+      "srcFile": "Soft Blur.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "soft-flip",
+      "title": "Soft Flip",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Geometry Adjustment"
+      ],
+      "srcFile": "Soft Flip.fs"
+    },
+    {
+      "id": "solarize",
+      "title": "Solarize",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Effect"
+      ],
+      "srcFile": "Solarize.fs"
+    },
+    {
+      "id": "solid-color",
+      "title": "Solid Color",
+      "tags": [
+        "@type=Paint",
+        "@filter",
+        "Color",
+        "Utility"
+      ],
+      "srcFile": "Solid Color.fs"
+    },
+    {
+      "id": "sorting-smear",
+      "title": "Sorting Smear",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Glitch",
+        "Feedback"
+      ],
+      "srcFile": "Sorting Smear.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "sphere-map",
+      "title": "Sphere Map",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion Effect"
+      ],
+      "srcFile": "Sphere Map.fs"
+    },
+    {
+      "id": "spiral",
+      "title": "Spiral",
+      "tags": [
+        "@type=Paint",
+        "@filter",
+        "Geometry"
+      ],
+      "srcFile": "Spiral.fs"
+    },
+    {
+      "id": "squares-wire",
+      "title": "Squares Wire",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe"
+      ],
+      "srcFile": "Squares Wire.fs"
+    },
+    {
+      "id": "squeeze",
+      "title": "Squeeze",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe"
+      ],
+      "srcFile": "Squeeze.fs"
+    },
+    {
+      "id": "star",
+      "title": "Star",
+      "tags": [
+        "@type=Paint",
+        "@filter",
+        "Geometry"
+      ],
+      "srcFile": "Star.fs"
+    },
+    {
+      "id": "stereo-viewer",
+      "title": "Stereo Viewer",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe",
+        "Retro"
+      ],
+      "srcFile": "Stereo Viewer.fs"
+    },
+    {
+      "id": "stripes",
+      "title": "Stripes",
+      "tags": [
+        "@type=Paint",
+        "@filter",
+        "Geometry"
+      ],
+      "srcFile": "Stripes.fs"
+    },
+    {
+      "id": "strobe",
+      "title": "Strobe",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Effect"
+      ],
+      "srcFile": "Strobe.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "swap-transition",
+      "title": "Swap Transition",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe",
+        "Retro"
+      ],
+      "srcFile": "Swap Transition.fs"
+    },
+    {
+      "id": "swirl",
+      "title": "Swirl",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion"
+      ],
+      "srcFile": "Swirl.fs"
+    },
+    {
+      "id": "thermal-camera",
+      "title": "Thermal Camera",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Stylize",
+        "Color Effect"
+      ],
+      "srcFile": "Thermal Camera.fs"
+    },
+    {
+      "id": "time-glitch-rgb",
+      "title": "Time Glitch RGB",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Glitch"
+      ],
+      "srcFile": "Time Glitch RGB.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "toon",
+      "title": "Toon",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Stylize"
+      ],
+      "srcFile": "Toon.fs"
+    },
+    {
+      "id": "trail-mask",
+      "title": "Trail Mask",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Glitch"
+      ],
+      "srcFile": "Trail Mask.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "trapezoid-distortion",
+      "title": "Trapezoid Distortion",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion Effect"
+      ],
+      "srcFile": "Trapezoid Distortion.fs"
+    },
+    {
+      "id": "triangle",
+      "title": "Triangle",
+      "tags": [
+        "@type=Paint",
+        "@filter",
+        "Geometry"
+      ],
+      "srcFile": "Triangle.fs"
+    },
+    {
+      "id": "triangle-warp",
+      "title": "Triangle Warp",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion Effect"
+      ],
+      "srcFile": "Triangle Warp.fs"
+    },
+    {
+      "id": "triangles",
+      "title": "Triangles",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Stylize"
+      ],
+      "srcFile": "Triangles.fs"
+    },
+    {
+      "id": "trio-tone",
+      "title": "Trio Tone",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Effect"
+      ],
+      "srcFile": "Trio Tone.fs"
+    },
+    {
+      "id": "triple-rotate",
+      "title": "Triple Rotate",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Geometry Adjustment"
+      ],
+      "srcFile": "Triple Rotate.fs"
+    },
+    {
+      "id": "truchet-tile",
+      "title": "Truchet Tile",
+      "tags": [
+        "@type=Paint",
+        "@filter",
+        "Geometry"
+      ],
+      "srcFile": "Truchet Tile.fs"
+    },
+    {
+      "id": "tv-static",
+      "title": "TV Static",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe"
+      ],
+      "srcFile": "TV Static.fs"
+    },
+    {
+      "id": "twirl",
+      "title": "Twirl",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion Effect"
+      ],
+      "srcFile": "Twirl.fs"
+    },
+    {
+      "id": "undulating-burn-out",
+      "title": "Undulating Burn Out",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe"
+      ],
+      "srcFile": "Undulating Burn Out.fs"
+    },
+    {
+      "id": "unsharp-mask",
+      "title": "Unsharp Mask",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Sharpen"
+      ],
+      "srcFile": "Unsharp Mask.fs"
+    },
+    {
+      "id": "v002-bleach-bypass",
+      "title": "v002 Bleach Bypass",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Adjustment",
+        "Film",
+        "v002"
+      ],
+      "srcFile": "v002 Bleach Bypass.fs"
+    },
+    {
+      "id": "v002-crosshatch",
+      "title": "v002 Crosshatch",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Halftone Effect",
+        "v002"
+      ],
+      "srcFile": "v002 Crosshatch.fs"
+    },
+    {
+      "id": "v002-crt-displacement",
+      "title": "v002-CRT-Displacement",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion Effect",
+        "Retro",
+        "v002"
+      ],
+      "srcFile": "v002-CRT-Displacement.fs"
+    },
+    {
+      "id": "v002-crt-mask",
+      "title": "v002-CRT-Mask",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Retro",
+        "v002"
+      ],
+      "srcFile": "v002-CRT-Mask.fs"
+    },
+    {
+      "id": "v002-dilate",
+      "title": "v002 Dilate",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Blur",
+        "v002"
+      ],
+      "srcFile": "v002 Dilate.fs"
+    },
+    {
+      "id": "v002-erode",
+      "title": "v002 Erode",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Blur",
+        "v002"
+      ],
+      "srcFile": "v002 Erode.fs"
+    },
+    {
+      "id": "v002-light-leak",
+      "title": "v002 Light Leak",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Film",
+        "Stylize",
+        "v002"
+      ],
+      "srcFile": "v002 Light Leak.fs"
+    },
+    {
+      "id": "v002-technicolor",
+      "title": "v002 Technicolor",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Stylize",
+        "Film",
+        "Color Effect",
+        "v002"
+      ],
+      "srcFile": "v002 Technicolor.fs"
+    },
+    {
+      "id": "v002-vignette",
+      "title": "v002 Vignette",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Film",
+        "v002"
+      ],
+      "srcFile": "v002 Vignette.fs"
+    },
+    {
+      "id": "vertex-manipulator",
+      "title": "Vertex Manipulator",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Geometry Adjustment"
+      ],
+      "srcFile": "Vertex Manipulator.fs"
+    },
+    {
+      "id": "vertical-tearing",
+      "title": "Vertical Tearing",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Glitch"
+      ],
+      "srcFile": "Vertical Tearing.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "vhs-glitch",
+      "title": "VHS Glitch",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Glitch",
+        "Retro"
+      ],
+      "srcFile": "VHS Glitch.fs"
+    },
+    {
+      "id": "vibrance",
+      "title": "Vibrance",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Adjustment"
+      ],
+      "srcFile": "Vibrance.fs"
+    },
+    {
+      "id": "vu-meter",
+      "title": "VU Meter",
+      "tags": [
+        "@type=Paint",
+        "@filter",
+        "Geometry"
+      ],
+      "srcFile": "VU Meter.fs"
+    },
+    {
+      "id": "vvmotion-blur-3-0",
+      "title": "VVMotionBlur 3.0",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Blur"
+      ],
+      "srcFile": "VVMotionBlur 3.0.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "water-drop",
+      "title": "Water Drop",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Distortion"
+      ],
+      "srcFile": "Water Drop.fs"
+    },
+    {
+      "id": "waveform-displace",
+      "title": "Waveform Displace",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Audio Visualizer",
+        "Distortion Effect"
+      ],
+      "srcFile": "Waveform Displace.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "white-point-adjust",
+      "title": "White Point Adjust",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Color Adjustment"
+      ],
+      "srcFile": "White Point Adjust.fs"
+    },
+    {
+      "id": "wind",
+      "title": "Wind",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe"
+      ],
+      "srcFile": "Wind.fs"
+    },
+    {
+      "id": "window-blinds",
+      "title": "Window Blinds",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Dissolve"
+      ],
+      "srcFile": "Window Blinds.fs"
+    },
+    {
+      "id": "window-slice",
+      "title": "Window Slice",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe"
+      ],
+      "srcFile": "Window Slice.fs"
+    },
+    {
+      "id": "wipe-down",
+      "title": "Wipe Down",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe"
+      ],
+      "srcFile": "Wipe Down.fs"
+    },
+    {
+      "id": "wipe-left",
+      "title": "Wipe Left",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe"
+      ],
+      "srcFile": "Wipe Left.fs"
+    },
+    {
+      "id": "wipe-right",
+      "title": "Wipe Right",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe"
+      ],
+      "srcFile": "Wipe Right.fs"
+    },
+    {
+      "id": "wipe-up",
+      "title": "Wipe Up",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe"
+      ],
+      "srcFile": "Wipe Up.fs"
+    },
+    {
+      "id": "xyzoom",
+      "title": "XYZoom",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Geometry Adjustment"
+      ],
+      "srcFile": "XYZoom.fs"
+    },
+    {
+      "id": "y-c-time-blur",
+      "title": "Y-C Time Blur",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Blur",
+        "Glitch"
+      ],
+      "srcFile": "Y-C Time Blur.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "zoom",
+      "title": "Zoom",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Geometry Adjustment"
+      ],
+      "srcFile": "Zoom.fs"
+    },
+    {
+      "id": "zoom-in-circles",
+      "title": "Zoom In Circles",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Wipe"
+      ],
+      "srcFile": "Zoom In Circles.fs"
+    },
+    {
+      "id": "zooming-feedback",
+      "title": "Zooming Feedback",
+      "tags": [
+        "@type=Filter",
+        "@filter",
+        "Retro",
+        "Feedback"
+      ],
+      "srcFile": "Zooming Feedback.fs",
+      "errors": [
+        "GlslError(message=Multiple passes aren't supported., row=-1, fileId=-1)"
+      ]
+    }
+  ]
+}

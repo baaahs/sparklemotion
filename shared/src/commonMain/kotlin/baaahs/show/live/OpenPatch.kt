@@ -30,6 +30,10 @@ class OpenPatch(
     val title get() = shader.title
     val serial = nextSerial++
 
+    /**
+     * True iff any port's content type matches the output content type, AND that port's source
+     * is the same stream as this patch.
+     */
     val isFilter: Boolean
         get() = with(shader) {
             inputPorts.any {

@@ -1,3 +1,4 @@
+// Second Reality Plasma
 // Based on https://www.shadertoy.com/view/MdBGzK
 
 #define DPII (3.1415926535*2.0)
