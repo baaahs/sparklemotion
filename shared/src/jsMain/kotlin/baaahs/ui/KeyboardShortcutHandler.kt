@@ -1,5 +1,8 @@
 package baaahs.ui
 
+import js.objects.jso
+import web.dom.document
+import web.events.AddEventListenerOptions
 import web.events.Event
 import web.events.EventTarget
 import web.events.addEventListener
@@ -8,9 +11,11 @@ import web.html.HTMLElement
 import web.html.HTMLInputElement
 import web.html.HTMLTextAreaElement
 import web.uievents.KeyboardEvent
+import web.uievents.PointerEvent
 
 class KeyboardShortcutHandler(val target: EventTarget? = null) {
     private val handlers = arrayListOf<Handler>()
+    private var pointersDown = 0
 
     init {
         if (target != null) {
@@ -23,13 +28,17 @@ class KeyboardShortcutHandler(val target: EventTarget? = null) {
     private val handleKeyDown = { e: Event ->
         e as KeyboardEvent
 
-        when (e.target) {
+        when {
 //            is HTMLButtonElement,
-            is HTMLInputElement,
-//            is HTMLSelectElement,
-//            is HTMLOptionElement,
-            is HTMLTextAreaElement -> {
-            } // Ignore
+            e.target is HTMLInputElement
+//                  || e.target is HTMLSelectElement,
+//                  || e.target is HTMLOptionElement,
+                    || e.target is HTMLTextAreaElement -> {
+            } // Ignore.
+
+            e.key == "Escape" && pointersDown > 0 -> {
+                document.dispatchEvent(PointerEvent(PointerEvent.POINTER_CANCEL))
+            } // Ignore.
 
             else -> {
                 val keypress = with(e) { Keypress(code as String, metaKey, ctrlKey, shiftKey) }
@@ -44,15 +53,24 @@ class KeyboardShortcutHandler(val target: EventTarget? = null) {
                 }
             }
         }
+        Unit
     }
+
+    private val handlePointerDown = { e: PointerEvent -> pointersDown++; Unit }
+    private val handlePointerUp = { e: PointerEvent -> pointersDown--; Unit }
+    private val capture = jso<AddEventListenerOptions> { capture = true}
 
     fun listen(target: EventTarget): EventTarget {
         target.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown)
+        target.addEventListener(PointerEvent.POINTER_DOWN, handlePointerDown, capture)
+        target.addEventListener(PointerEvent.POINTER_UP, handlePointerUp, capture)
         return target
     }
 
     fun unlisten(target: EventTarget) {
         target.removeEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown)
+        target.removeEventListener(PointerEvent.POINTER_DOWN, handlePointerDown, capture)
+        target.removeEventListener(PointerEvent.POINTER_UP, handlePointerUp, capture)
     }
 
     fun release() {

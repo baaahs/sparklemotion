@@ -2,6 +2,7 @@ package baaahs.app.ui.controls
 
 import baaahs.SparkleMotion
 import baaahs.app.ui.appContext
+import baaahs.app.ui.layout.MayHaveButtonMutex
 import baaahs.app.ui.patchmod.patchMod
 import baaahs.app.ui.shaderPreview
 import baaahs.control.ButtonControl.ActivationType.Momentary
@@ -21,9 +22,11 @@ import web.events.EventType
 import web.events.addEventListener
 import web.html.HTMLButtonElement
 import web.html.HTMLDivElement
+import web.timers.setTimeout
 import web.uievents.MouseButton
 import web.uievents.MouseEvent
 import web.uievents.MouseEventInit
+import kotlin.time.Duration.Companion.milliseconds
 
 private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props ->
     val appContext = useContext(appContext)
@@ -31,14 +34,19 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
     val buttonControl = props.buttonControl
     observe(buttonControl.switch.observable)
 
+    val controlContext = useContext(controlContext)
+    val parentControl = controlContext.parentControl
+    val buttonMutex = if (parentControl is MayHaveButtonMutex) parentControl.buttonMutex else null
+
     val showPreview = appContext.uiSettings.renderButtonPreviews
     val patchForPreview = if (showPreview) buttonControl.patchForPreview() else null
 
     val isPressed = ref(false)
 
-    val handleToggleRelease by pointerEventHandler(buttonControl) { e ->
+    val handleToggleRelease by pointerEventHandler(buttonControl, buttonMutex) { e ->
         if (isPressed.current == true) {
             buttonControl.click()
+            buttonMutex?.selectedControlId = buttonControl.id
             redispatchAsMouseClick(e)
         }
     }
@@ -71,8 +79,17 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
         }
     }
 
-    val handlePatchModSwitch by handler(buttonControl) {
+    observe(buttonMutex) {
+        if (buttonMutex?.selectedControlId != buttonControl.id) {
+            buttonControl.isPressed = false
+        }
+    }
+
+    val handlePatchModSwitch by handler(buttonControl, buttonMutex) {
         buttonControl.click()
+        if (buttonControl.isActive()) {
+            buttonMutex?.selectedControlId = buttonControl.id
+        }
     }
 
     val buttonRef = ref<HTMLButtonElement>()
@@ -87,6 +104,7 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
         if (buttonControl.expandsOnLongPress && buttonEl != null) {
             buttonEl.setAttribute("data-long-press-delay", SparkleMotion.LONG_PRESS_DELAY_MS.toString())
             buttonEl.addEventListener(EventType("long-press"), { e ->
+                console.log("long-press for button")
                 val originalEvent = e.asDynamic().detail.originalEvent as web.uievents.PointerEvent
                 val isPrimaryButton = originalEvent.button == MouseButton.MAIN && !originalEvent.ctrlKey
                 if (isPrimaryButton && appContext.showManager.editMode.isOff) {
@@ -137,13 +155,21 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
         }
     }
 
-    if (lightboxOpen && patchForPreview != null) {
+    val lightboxClosing = ref(false)
+    if ((lightboxOpen || lightboxClosing.current == true) && patchForPreview != null) {
         patchMod {
             attrs.title = buttonControl.title
             attrs.patchHolder = buttonControl
             attrs.isActive = buttonControl.isPressed
             attrs.onToggle = handlePatchModSwitch
-            attrs.onClose = { lightboxOpen = false }
+            attrs.onClose = {
+                lightboxClosing.current = true
+                lightboxOpen = false
+                setTimeout(500.milliseconds) {
+                    lightboxClosing.current = false
+                    this@xComponent.forceRender()
+                }
+            }
         }
     }
 }

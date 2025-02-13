@@ -18,13 +18,6 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
         height = 100.pct
     }
 
-    val gridBackground by css {
-        position = Position.absolute
-        width = 100.pct
-        height = 100.pct
-        transition(::opacity, duration = Styles.editTransitionDuration, timing = Timing.linear)
-    }
-
     val gridContainer by css {
         position = Position.relative
         width = 100.pct
@@ -42,6 +35,10 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
         }
     }
 
+    val gridItem by css {
+        display = Display.grid
+    }
+
     val gridCell by css {
         display = Display.grid
 
@@ -56,6 +53,19 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
         transition(::left, .125.s)
         transition(::width, .125.s)
         transition(::height, .125.s)
+
+        "&.react-draggable-dragging" {
+            transition(::top, 0.s)
+            transition(::left, 0.s)
+            transition(::width, 0.s)
+            transition(::height, 0.s)
+        }
+        "&.grid-item-resizing" {
+            transition(::top, 0.s)
+            transition(::left, 0.s)
+            transition(::width, 0.s)
+            transition(::height, 0.s)
+        }
     }
 
     val groupGridCell by css {
@@ -114,16 +124,6 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
         flex = Flex(0, 0, FlexBasis.auto)
 
         hover {
-            child(deleteButton.selector) {
-                opacity = .7
-                filter = "drop-shadow(0px 0px 2px black)"
-            }
-
-            child(editButton.selector) {
-                opacity = .7
-                filter = "drop-shadow(0px 0px 2px black)"
-            }
-
             child(Styles.dragHandle.selector) {
                 opacity = 1
                 filter = "drop-shadow(0px 0px 2px black)"
@@ -158,50 +158,8 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
         transition(::opacity, duration = Styles.editTransitionDuration, timing = Timing.linear)
     }
 
-    val itemControlsButton by css {
-        position = Position.absolute
-        right = 1.em
-        bottom = (-2).px + 1.em
-        zIndex = StyleConstants.Layers.aboveSharedGlCanvas
-        filter = "drop-shadow(1px 1px 2px rgba(0, 0, 0, .9))"
-        cursor = Cursor.default
-
-        child("svg") {
-            width = .75.em
-            height = .75.em
-        }
-    }
-
-    val deleteButton by css {
-        position = Position.absolute
-        right = 1.em
-        bottom = (-2).px + (2.5).em
-        zIndex = StyleConstants.Layers.aboveSharedGlCanvas
-        filter = "drop-shadow(1px 1px 2px rgba(0, 0, 0, .9))"
-        cursor = Cursor.default
-
-        child("svg") {
-            width = .75.em
-            height = .75.em
-        }
-    }
-    val editButton by css {
-        position = Position.absolute
-        right = 1.em
-        bottom = (-2).px + 1.em
-        zIndex = StyleConstants.Layers.aboveSharedGlCanvas
-        filter = "drop-shadow(1px 1px 2px rgba(0, 0, 0, .9))"
-        cursor = Cursor.default
-
-        child("svg") {
-            width = .75.em
-            height = .75.em
-        }
-    }
-
     val editModeOff by css {
         descendants(
-            selector(::gridBackground),
             selector(::itemControlsModeControl),
             selector(::deleteModeControl),
             selector(::editModeControl),
@@ -236,14 +194,6 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
         }
     }
 
-    val dragging by css {
-        descendants(selector(::gridContainer)) {
-            pointerEvents = PointerEvents.auto
-        }
-    }
-    val notDragging by css {
-    }
-
     val buttonGroupCard by css {
         display = Display.flex
         flexDirection = FlexDirection.column
@@ -258,48 +208,35 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
         opacity = "calc((1 - var(--dimmer-level)) / 2 + .5)".unsafeCast<Number>()
     }
 
+    val rootGrid by css {
+        flex = Flex.GROW
+        display = Display.grid
+    }
+
     val buttonGroupGrid by css {
         flex = Flex.GROW
 
         display = Display.grid
-        gridTemplateRows = GridTemplateRows(GridAutoRows.minContent, GridAutoRows.auto)
+//        gridTemplateRows = GridTemplateRows(GridAutoRows.minContent, GridAutoRows.auto)
         overflowY = Overflow.scroll
-        backgroundColor = if (SparkleMotion.USE_CSS_TRANSFORM) {
-            Color("#0000007f")
-        } else {
-            theme.paperLowContrast
-        }
+        backgroundColor = theme.paperLowContrast
 
-        descendants(Styles, Styles::controlButton) {
-            transition(::transform, duration = Styles.editTransitionDuration, timing = Timing.linear)
-        }
-
-        child(this@LayoutStyles, this@LayoutStyles::gridContainer) {
-            gridColumn = GridColumn("1")
-            gridRow = GridRow("2")
-        }
-        child(this@LayoutStyles, this@LayoutStyles::gridBackground) {
-            gridColumn = GridColumn("1")
-            gridRow = GridRow("2")
-            position = Position.relative
-        }
+//        descendants(Styles, Styles::controlButton) {
+//            transition(::transform, duration = Styles.editTransitionDuration, timing = Timing.linear)
+//        }
+//
+//        child(this@LayoutStyles, this@LayoutStyles::gridContainer) {
+//            gridColumn = GridColumn("1")
+//            gridRow = GridRow("2")
+//        }
+//        child(this@LayoutStyles, this@LayoutStyles::gridBackground) {
+//            gridColumn = GridColumn("1")
+//            gridRow = GridRow("2")
+//            position = Position.relative
+//        }
     }
 
     val global = CssBuilder().apply {
-        ".react-grid-placeholder" {
-            +dropPlaceholder
-        }
-
-        ".app-ui-layout-resize-handle" {
-            position = Position.absolute
-            right = (-12).px
-            bottom = (-12).px
-        }
-
-        ".react-resizable-hide > .app-ui-layout-resize-handle" {
-            display = Display.none
-        }
-
         ".react-grid-item.resizing.grid-item-resizing" {
             zIndex = StyleConstants.Layers.aboveSharedGlCanvas + 1
         }
@@ -319,18 +256,6 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
             height = 5.px
             borderRight = Border(2.px, BorderStyle.solid, rgba(0, 0, 0, 0.4))
             borderBottom = Border(2.px, BorderStyle.solid, rgba(0, 0, 0, 0.4))
-        }
-
-        ".react-draggable > .app-ui-controls-controlRoot" {
-            pointerEvents = PointerEvents.none
-        }
-
-        ".react-draggable.react-draggable-dragging, .react-draggable.react-draggable-dragging *" {
-            pointerEvents = PointerEvents.none
-            transition(::top, 0.s)
-            transition(::left, 0.s)
-            transition(::width, 0.s)
-            transition(::height, 0.s)
         }
 
         ".react-draggable" {

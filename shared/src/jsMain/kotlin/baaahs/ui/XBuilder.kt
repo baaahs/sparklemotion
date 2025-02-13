@@ -66,6 +66,7 @@ class XBuilder(val logger: Logger) : react.RBuilderImpl() {
     private val counter = external.react.rawUseState { counterIncr.component1().next() }
     private var inRender = true
     private var stateHasChanged = false
+    val renderCounter get() = counter.component1()
 
     init {
         react.useEffectOnceWithCleanup {
@@ -109,14 +110,18 @@ class XBuilder(val logger: Logger) : react.RBuilderImpl() {
         }
     }
 
-    fun <T: IObservable> observe(
+    /**
+     * Accepts nullable observables to comply with React rule that hooks must
+     * be unconditionally present on every render.
+     */
+    fun <T: IObservable?> observe(
         item: T,
         vararg otherWatch: Any,
         callback: () -> Unit = { forceRender() }
     ): T {
         onChange("observe", item, *otherWatch) {
-            val observer = item.addObserver { callback.invoke() }
-            withCleanup { observer.remove() }
+            val observer = item?.addObserver { callback.invoke() }
+            withCleanup { observer?.remove() }
         }
         return item
     }
