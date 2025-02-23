@@ -51,6 +51,11 @@ private val ControllerListView = xComponent<DeviceListProps>("ControllerList") {
     val handleSearchRequest by handler { value: String -> }
     val handleSearchCancel by handler { controllerMatcher = ControllerMatcher() }
 
+    val scanningIndicatorRef = ref<HTMLElement>()
+    val handleSearchBoxFocusChange by handler { focused: Boolean ->
+        scanningIndicatorRef.current?.style?.visibility = if (focused) "hidden" else ""
+    }
+
     var selectedController by state<ControllerId?> { null }
     val handleControllerSelect by mouseEventHandler { event ->
         val target = event.currentTarget as HTMLElement
@@ -71,6 +76,7 @@ private val ControllerListView = xComponent<DeviceListProps>("ControllerList") {
                 +"Controllers"
 
                 div(+styles.scanningIndicator) {
+                    ref = scanningIndicatorRef
                     CircularProgress {
                         attrs.sx {
                             marginLeft = 2.em
@@ -98,6 +104,7 @@ private val ControllerListView = xComponent<DeviceListProps>("ControllerList") {
                     attrs.onSearchChange = handleSearchChange
                     attrs.onSearchRequest = handleSearchRequest
                     attrs.onSearchCancel = handleSearchCancel
+                    attrs.onFocusChange = handleSearchBoxFocusChange
                 }
             }
         }
