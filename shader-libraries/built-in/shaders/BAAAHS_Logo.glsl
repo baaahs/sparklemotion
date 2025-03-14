@@ -1,3 +1,4 @@
+// BAAAHS Logo
 // Basic GLSL construction of the BAAAHS logo -- you can replace primitives in other shaders with this!
 // Ben Bartlett
 

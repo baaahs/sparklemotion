@@ -1,184 +1,8 @@
 {
-  "title": "Sparkle Motion Built-In",
+  "title": "Built-In",
   "description": "Some built-in shaders!",
   "license": null,
   "entries": [
-    {
-      "id": "flatprojection",
-      "title": "Flat Projection",
-      "description": "Project pixels onto a model",
-      "lastModifiedMs": 0,
-      "tags": [
-        "@filter",
-        "@type=projection"
-      ],
-      "srcFile": "projections/Flat.glsl"
-    },
-    {
-      "id": "beatshift",
-      "title": "Beat Shift",
-      "description": "Adjusts time by beat intensity.",
-      "lastModifiedMs": 0,
-      "tags": [
-        "@filter",
-        "@type=filter"
-      ],
-      "srcFile": "effects/BeatShift.glsl"
-    },
-    {
-      "id": "blackout",
-      "title": "Blackout",
-      "description": "Makes the sheep dark",
-      "lastModifiedMs": 0,
-      "tags": [
-        "@filter",
-        "@type=filter"
-      ],
-      "srcFile": "effects/Blackout.glsl"
-    },
-    {
-      "id": "brightness",
-      "title": "Brightness",
-      "description": "Adjusts brightness.",
-      "lastModifiedMs": 0,
-      "tags": [
-        "@filter",
-        "@type=filter"
-      ],
-      "srcFile": "effects/Brightness.glsl"
-    },
-    {
-      "id": "movers-on",
-      "title": "Movers On",
-      "description": "Sharpys centered and white!",
-      "lastModifiedMs": 0,
-      "tags": [
-        "@filter",
-        "@type=mover"
-      ],
-      "srcFile": "effects/Movers On.glsl"
-    },
-    {
-      "id": "hsb",
-      "title": "HSB",
-      "description": "Hue, saturation, & brightness adjustments.",
-      "lastModifiedMs": 0,
-      "tags": [
-        "@filter",
-        "@type=filter"
-      ],
-      "srcFile": "effects/HSB.glsl"
-    },
-    {
-      "id": "heart",
-      "title": "Heart",
-      "description": "Beating heart.",
-      "lastModifiedMs": 0,
-      "tags": [
-        "@filter",
-        "@type=filter"
-      ],
-      "srcFile": "effects/Heart.glsl"
-    },
-    {
-      "id": "moires-bad-trip",
-      "title": "Moiré's Bad Trip",
-      "description": "More distortion... I said MORE DISTORTION!",
-      "lastModifiedMs": 0,
-      "tags": [
-        "@filter",
-        "@type=mover"
-      ],
-      "srcFile": "effects/Moires_bad_trip.glsl"
-    },
-    {
-      "id": "movers-swirl",
-      "title": "Movers Swirl Filter",
-      "description": "Swirl sharpys around whatever they're aimed at!",
-      "lastModifiedMs": 0,
-      "tags": [
-        "@filter",
-        "@type=mover"
-      ],
-      "srcFile": "effects/Movers Swirl.glsl"
-    },
-    {
-      "id": "saturation",
-      "title": "Saturation",
-      "description": "Adjusts saturation.",
-      "lastModifiedMs": 0,
-      "tags": [
-        "@filter",
-        "@type=filter"
-      ],
-      "srcFile": "effects/Saturation.glsl"
-    },
-    {
-      "id": "scanners",
-      "title": "Scanners",
-      "description": "Dark bands scanning back and forth",
-      "lastModifiedMs": 0,
-      "tags": [
-        "@filter",
-        "@type=filter"
-      ],
-      "srcFile": "effects/Scanners.glsl"
-    },
-    {
-      "id": "sound-brightness",
-      "title": "Sound Brightness",
-      "description": "Adjusts brightness beat intensity.",
-      "lastModifiedMs": 0,
-      "tags": [
-        "@filter",
-        "@type=filter"
-      ],
-      "srcFile": "effects/SoundBrightness.glsl"
-    },
-    {
-      "id": "sparklez",
-      "title": "Sparklez™",
-      "description": "Adds sparkles.",
-      "lastModifiedMs": 0,
-      "tags": [
-        "@filter",
-        "@type=filter"
-      ],
-      "srcFile": "effects/Sparklez.glsl"
-    },
-    {
-      "id": "thats-all-folks",
-      "title": "That's all, folks!",
-      "description": "Looney Toons filter",
-      "lastModifiedMs": 0,
-      "tags": [
-        "@filter",
-        "@type=filter"
-      ],
-      "srcFile": "effects/ThatsAllFolks.glsl"
-    },
-    {
-      "id": "Ripple",
-      "title": "Ripple",
-      "description": "It's wobbly!",
-      "lastModifiedMs": 0,
-      "tags": [
-        "@filter",
-        "@type=filter"
-      ],
-      "srcFile": "effects/Ripple.glsl"
-    },
-    {
-      "id": "zigzag",
-      "title": "Zigzag",
-      "description": "Wavey lines weeee",
-      "lastModifiedMs": 0,
-      "tags": [
-        "@filter",
-        "@type=filter"
-      ],
-      "srcFile": "effects/ZigZag.glsl"
-    },
     {
       "id": "acid-at-the-disco",
       "title": "Acid at the Disco",
@@ -200,18 +24,8 @@
       "srcFile": "shaders/AquaticFlood.glsl"
     },
     {
-      "id": "baaahs-logo",
-      "title": "BAAAHS Logo",
-      "description": "Basic GLSL construction of the BAAAHS logo",
-      "lastModifiedMs": 0,
-      "tags": [
-        "@type=paint"
-      ],
-      "srcFile": "shaders/BAAAHS_Logo.glsl"
-    },
-    {
       "id": "baaahs-colorpulse",
-      "title": "[\uD83D\uDC11] ColorPulse",
+      "title": "[🐑] ColorPulse",
       "description": "Color pulses sweeping from front to back of the sheep synchronized to the beat",
       "lastModifiedMs": 0,
       "tags": [
@@ -221,7 +35,7 @@
     },
     {
       "id": "baaahs-eclipse",
-      "title": "[\uD83D\uDC11] BAAAHS Eclipse",
+      "title": "[🐑] BAAAHS Eclipse",
       "description": "Sound-activated rainbow sheep eclipse thingy!",
       "lastModifiedMs": 0,
       "tags": [
@@ -251,7 +65,7 @@
     },
     {
       "id": "baaahs-geometric-colorpulse",
-      "title": "[\uD83D\uDC11] Geometric ColorPulse",
+      "title": "[🐑] Geometric ColorPulse",
       "description": "Make each physical panel a different color and swipe color pulses along the panels",
       "lastModifiedMs": 0,
       "tags": [
@@ -261,7 +75,7 @@
     },
     {
       "id": "baaahs-geometric-sheep",
-      "title": "[\uD83D\uDC11] Geometric Sheep",
+      "title": "[🐑] Geometric Sheep",
       "description": "Panels display solid colors and cycle through the rainbow!",
       "lastModifiedMs": 0,
       "tags": [
@@ -270,8 +84,18 @@
       "srcFile": "shaders/BAAAHS_GeometricSheep.glsl"
     },
     {
+      "id": "baaahs-logo",
+      "title": "BAAAHS Logo",
+      "description": "Basic GLSL construction of the BAAAHS logo",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/BAAAHS_Logo.glsl"
+    },
+    {
       "id": "baaahs-squarezzz",
-      "title": "[\uD83D\uDC11] Squarezzz",
+      "title": "[🐑] Squarezzz",
       "description": "Pulsing rainbow squares to the beat!",
       "lastModifiedMs": 0,
       "tags": [
@@ -281,13 +105,35 @@
     },
     {
       "id": "baaahs-zebra",
-      "title": "[\uD83D\uDC11] BAAAHZebra",
+      "title": "[🐑] BAAAHZebra",
       "description": "Cool zebra pattern looking thing that alternates polarity on the beat",
       "lastModifiedMs": 0,
       "tags": [
         "@type=paint"
       ],
       "srcFile": "shaders/BAAAHS_Zebra.glsl"
+    },
+    {
+      "id": "beatshift",
+      "title": "Beat Shift",
+      "description": "Adjusts time by beat intensity.",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@filter",
+        "@type=filter"
+      ],
+      "srcFile": "effects/BeatShift.glsl"
+    },
+    {
+      "id": "blackout",
+      "title": "Blackout",
+      "description": "Makes the sheep dark",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@filter",
+        "@type=filter"
+      ],
+      "srcFile": "effects/Blackout.glsl"
     },
     {
       "id": "blue-dream",
@@ -300,6 +146,16 @@
       "srcFile": "shaders/BlueDream.glsl"
     },
     {
+      "id": "blue-steel",
+      "title": "Blue Steel",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/BlueSteel.glsl"
+    },
+    {
       "id": "blues-clues",
       "title": "Blues Clues",
       "description": "A cool shader!",
@@ -310,14 +166,15 @@
       "srcFile": "shaders/BluesClues.glsl"
     },
     {
-      "id": "blue-steel",
-      "title": "Blue Steel",
-      "description": "A cool shader!",
+      "id": "brightness",
+      "title": "Brightness",
+      "description": "Adjusts brightness.",
       "lastModifiedMs": 0,
       "tags": [
-        "@type=paint"
+        "@filter",
+        "@type=filter"
       ],
-      "srcFile": "shaders/BlueSteel.glsl"
+      "srcFile": "effects/Brightness.glsl"
     },
     {
       "id": "circular-dependency",
@@ -341,7 +198,7 @@
     },
     {
       "id": "complex-trippy-shit-1",
-      "title": "[\uD83D\uDC11] Complex Trippy Shit #1",
+      "title": "[🐑] Complex Trippy Shit #1",
       "description": "It's complex-valued trippy shit!",
       "lastModifiedMs": 0,
       "tags": [
@@ -380,16 +237,6 @@
       "srcFile": "shaders/FaeriePulse.glsl"
     },
     {
-      "id": "fireball",
-      "title": "Fireball",
-      "description": "A burning ball of fire!",
-      "lastModifiedMs": 0,
-      "tags": [
-        "@type=paint"
-      ],
-      "srcFile": "shaders/Fireball.glsl"
-    },
-    {
       "id": "fire-clouds",
       "title": "Fire Clouds",
       "description": "A cool shader!",
@@ -420,6 +267,16 @@
       "srcFile": "shaders/FirePulsation.glsl"
     },
     {
+      "id": "fireball",
+      "title": "Fireball",
+      "description": "A burning ball of fire!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/Fireball.glsl"
+    },
+    {
       "id": "first-raymarches",
       "title": "First Raymarches",
       "description": "A cool shader!",
@@ -428,6 +285,27 @@
         "@type=paint"
       ],
       "srcFile": "shaders/FirstRaymarches.glsl"
+    },
+    {
+      "id": "flatprojection",
+      "title": "Flat Projection",
+      "description": "Project pixels onto a model",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@filter",
+        "@type=projection"
+      ],
+      "srcFile": "projections/Flat.glsl"
+    },
+    {
+      "id": "g-spot",
+      "title": "G Spot",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/GSpot.glsl"
     },
     {
       "id": "gadzooks",
@@ -480,14 +358,26 @@
       "srcFile": "shaders/GooeyRedInnards.glsl"
     },
     {
-      "id": "g-spot",
-      "title": "G Spot",
-      "description": "A cool shader!",
+      "id": "heart",
+      "title": "Heart",
+      "description": "Beating heart.",
       "lastModifiedMs": 0,
       "tags": [
-        "@type=paint"
+        "@filter",
+        "@type=filter"
       ],
-      "srcFile": "shaders/GSpot.glsl"
+      "srcFile": "effects/Heart.glsl"
+    },
+    {
+      "id": "hsb",
+      "title": "HSB",
+      "description": "Hue, saturation, & brightness adjustments.",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@filter",
+        "@type=filter"
+      ],
+      "srcFile": "effects/HSB.glsl"
     },
     {
       "id": "huearthquake",
@@ -530,6 +420,39 @@
       "srcFile": "shaders/JacobianUndistortion.glsl"
     },
     {
+      "id": "moires-bad-trip",
+      "title": "Moiré's Bad Trip",
+      "description": "More distortion... I said MORE DISTORTION!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@filter",
+        "@type=mover"
+      ],
+      "srcFile": "effects/Moires_bad_trip.glsl"
+    },
+    {
+      "id": "movers-on",
+      "title": "Movers On",
+      "description": "Sharpys centered and white!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@filter",
+        "@type=mover"
+      ],
+      "srcFile": "effects/Movers On.glsl"
+    },
+    {
+      "id": "movers-swirl",
+      "title": "Movers Swirl Filter",
+      "description": "Swirl sharpys around whatever they're aimed at!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@filter",
+        "@type=mover"
+      ],
+      "srcFile": "effects/Movers Swirl.glsl"
+    },
+    {
       "id": "orange-snowflake",
       "title": "Orange Snowflake",
       "description": "A cool shader!",
@@ -560,16 +483,6 @@
       "srcFile": "shaders/PicassosNightmare.glsl"
     },
     {
-      "id": "poolside-delight",
-      "title": "Poolside Delight",
-      "description": "A cool shader!",
-      "lastModifiedMs": 0,
-      "tags": [
-        "@type=paint"
-      ],
-      "srcFile": "shaders/PoolsideDelight.glsl"
-    },
-    {
       "id": "plasma",
       "title": "Plasma",
       "description": "A cool shader!",
@@ -580,14 +493,14 @@
       "srcFile": "shaders/Plasma.glsl"
     },
     {
-      "id": "purple-lightning",
-      "title": "Purple Lightning",
+      "id": "poolside-delight",
+      "title": "Poolside Delight",
       "description": "A cool shader!",
       "lastModifiedMs": 0,
       "tags": [
         "@type=paint"
       ],
-      "srcFile": "shaders/PurpleLightning.glsl"
+      "srcFile": "shaders/PoolsideDelight.glsl"
     },
     {
       "id": "prime-waves",
@@ -598,6 +511,16 @@
         "@type=paint"
       ],
       "srcFile": "shaders/PrimeWaves.glsl"
+    },
+    {
+      "id": "purple-lightning",
+      "title": "Purple Lightning",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/PurpleLightning.glsl"
     },
     {
       "id": "rainbow-trianglez",
@@ -650,6 +573,39 @@
       "srcFile": "shaders/RedWaves.glsl"
     },
     {
+      "id": "Ripple",
+      "title": "Ripple",
+      "description": "It's wobbly!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@filter",
+        "@type=filter"
+      ],
+      "srcFile": "effects/Ripple.glsl"
+    },
+    {
+      "id": "saturation",
+      "title": "Saturation",
+      "description": "Adjusts saturation.",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@filter",
+        "@type=filter"
+      ],
+      "srcFile": "effects/Saturation.glsl"
+    },
+    {
+      "id": "scanners",
+      "title": "Scanners",
+      "description": "Dark bands scanning back and forth",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@filter",
+        "@type=filter"
+      ],
+      "srcFile": "effects/Scanners.glsl"
+    },
+    {
       "id": "seascape",
       "title": "Seascape",
       "description": "A cool shader!",
@@ -690,6 +646,28 @@
       "srcFile": "shaders/SolidColor.glsl"
     },
     {
+      "id": "sound-brightness",
+      "title": "Sound Brightness",
+      "description": "Adjusts brightness beat intensity.",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@filter",
+        "@type=filter"
+      ],
+      "srcFile": "effects/SoundBrightness.glsl"
+    },
+    {
+      "id": "sparklez",
+      "title": "Sparklez™",
+      "description": "Adds sparkles.",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@filter",
+        "@type=filter"
+      ],
+      "srcFile": "effects/Sparklez.glsl"
+    },
+    {
       "id": "spastic-rainbow",
       "title": "Spastic Rainbow",
       "description": "A cool shader!",
@@ -718,6 +696,17 @@
         "@type=paint"
       ],
       "srcFile": "shaders/SunsetDelight.glsl"
+    },
+    {
+      "id": "thats-all-folks",
+      "title": "That's all, folks!",
+      "description": "Looney Toons filter",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@filter",
+        "@type=filter"
+      ],
+      "srcFile": "effects/ThatsAllFolks.glsl"
     },
     {
       "id": "tv-test-pattern",
@@ -768,6 +757,17 @@
         "@type=paint"
       ],
       "srcFile": "shaders/ZebraMadness.glsl"
+    },
+    {
+      "id": "zigzag",
+      "title": "Zigzag",
+      "description": "Wavey lines weeee",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@filter",
+        "@type=filter"
+      ],
+      "srcFile": "effects/ZigZag.glsl"
     },
     {
       "id": "movers-beats",
