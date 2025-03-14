@@ -5,6 +5,7 @@ import baaahs.app.ui.controls.gridArea
 import baaahs.ui.asColor
 import baaahs.ui.child
 import baaahs.ui.important
+import baaahs.ui.isSmallScreen
 import kotlinx.css.*
 import kotlinx.css.properties.deg
 import kotlinx.css.properties.rotate
@@ -18,6 +19,9 @@ class ShaderEditorStyles(private val theme: Theme) : StyleSheet("app-ui-editor-S
         flex = Flex.GROW
         display = Display.grid
         gridTemplateAreas = GridTemplateAreas("\"editor preview\" \"editor properties\"")
+        theme.isSmallScreen {
+            gridTemplateAreas = GridTemplateAreas("\"preview\" \"properties\"")
+        }
         gridTemplateColumns = GridTemplateColumns(1.fr, LinearDimension.minContent)
         gridTemplateRows = GridTemplateRows(LinearDimension.minContent, LinearDimension.auto)
     }
@@ -51,7 +55,7 @@ class ShaderEditorStyles(private val theme: Theme) : StyleSheet("app-ui-editor-S
     val propsPanel by css {
         display = Display.flex
         flexDirection = FlexDirection.row
-        padding = Padding(1.em)
+//        padding = Padding(1.em)
         maxWidth = 300.px
         height = 100.pct
         position = Position.relative
@@ -61,6 +65,12 @@ class ShaderEditorStyles(private val theme: Theme) : StyleSheet("app-ui-editor-S
             position = Position.absolute
             display = Display.block
         }
+        theme.isSmallScreen {
+            maxWidth = LinearDimension.inherit
+        }
+    }
+    val withGutter by css {
+        padding = Padding(1.em)
     }
 
     val adjustGadgetsSwitch by css {
