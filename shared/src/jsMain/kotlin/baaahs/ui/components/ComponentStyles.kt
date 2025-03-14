@@ -12,14 +12,17 @@ import styled.StyleSheet
 
 class CollapsibleSearchBoxStyles(val theme: Theme) : StyleSheet("ui-components-collapsible-search-box", isStatic = true) {
     val searchBoxFormControl by css {
-        position = Position.absolute
-        right = 1.em
-        top = 4.px
         flexDirection = FlexDirection.rowReverse
-        width = 15.em
         fieldset {
             borderColor = Color.transparent.important
         }
+    }
+
+    val alignRight by css {
+        position = Position.absolute
+        right = 1.em
+        top = 4.px
+        width = 15.em
     }
 }
 

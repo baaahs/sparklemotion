@@ -49,5 +49,3 @@ expect fun getResource(name: String): String
 expect suspend fun getResourceAsync(name: String): String
 
 val resourcesFs = ResourcesFs()
-
-class NoSuchFileException(message: String, cause: Throwable? = null) : Exception(message, cause)

@@ -8,20 +8,20 @@ import kotlin.js.JsName
 import kotlin.random.Random
 
 @Serializable
-@SerialName("baaahs.Core:RadioButtonStrip")
-data class RadioButtonStrip(
+@SerialName("baaahs.Core:Select")
+data class Select(
     override val title: String,
-    val buttonTitles: List<String>,
+    val options: List<Pair<Int, String>>,
     val initialSelectionIndex: Int
 ) : Gadget() {
     @JsName("selectionIndex")
     var selectionIndex: Int by updatable("selectionIndex", initialSelectionIndex, Int.serializer())
 
     override fun adjustALittleBit() {
-        selectionIndex = Random.nextInt(buttonTitles.size)
+        selectionIndex = Random.nextInt(options.size)
     }
 
     override fun adjustInRange(value: Float) {
-        selectionIndex = (buttonTitles.size * value).toInt()
+        selectionIndex = (options.size * value).toInt()
     }
 }

@@ -1,33 +1,15 @@
 package baaahs.ui.components
 
 import baaahs.app.ui.appContext
+import baaahs.mapper.styleIf
 import baaahs.ui.*
 import js.objects.jso
-import kotlinx.css.Color
-import kotlinx.css.FlexDirection
-import kotlinx.css.Position
-import kotlinx.css.borderColor
-import kotlinx.css.fieldset
-import kotlinx.css.flexDirection
-import kotlinx.css.position
-import kotlinx.css.px
-import kotlinx.css.right
-import kotlinx.css.top
-import kotlinx.css.width
-import materialui.icon
 import mui.icons.material.Search
-import mui.icons.material.Stop
 import mui.icons.material.StopCircle
-import mui.material.FormControl
-import mui.material.FormHelperText
-import mui.material.Size
-import mui.material.StandardTextFieldProps
-import mui.material.TextField
-import mui.material.styles.Theme
+import mui.material.*
 import mui.system.sx
 import react.*
 import react.dom.events.ChangeEvent
-import styled.StyleSheet
 import web.cssom.Transition
 import web.cssom.em
 import web.html.HTMLElement
@@ -37,10 +19,13 @@ private val CollapsibleSearchBoxView = xComponent<CollapsibleSearchBoxProps>("Co
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.collapsibleSearchBox
 
-    var searchFieldFocused by state { false }
+    var searchFieldFocused by state { props.startFocused == true }
+    props.onFocusChange?.invoke(searchFieldFocused)
+
     val searchFieldRef = useRef<HTMLElement>()
-    val handleSearchBoxClick by mouseEventHandler { e ->
+    val handleSearchBoxClick by mouseEventHandler(props.onFocusChange) { e ->
         searchFieldFocused = true
+        props.onFocusChange?.invoke(true)
         (searchFieldRef.current?.querySelector("input") as? HTMLInputElement)
             ?.focus()
         e.preventDefault()
@@ -52,19 +37,26 @@ private val CollapsibleSearchBoxView = xComponent<CollapsibleSearchBoxProps>("Co
     val handleSearchCancel by mouseEventHandler(props.onSearchCancel) { _ ->
         props.onSearchCancel?.invoke()
     }
-    val handleFocus by focusEventHandler { _ -> searchFieldFocused = true }
-    val handleBlur by focusEventHandler { _ -> searchFieldFocused = false }
+    val handleFocus by focusEventHandler(props.onFocusChange) { _ ->
+        searchFieldFocused = true
+        props.onFocusChange?.invoke(true)
+    }
+    val handleBlur by focusEventHandler(props.onFocusChange) { _ ->
+        searchFieldFocused = false
+        props.onFocusChange?.invoke(false)
+    }
 
     val isSearching = props.isSearching == true
 
     FormControl {
-        attrs.className = -styles.searchBoxFormControl
+        attrs.className = -styles.searchBoxFormControl and
+                styleIf(props.alignRight, styles.alignRight) and props.className
         attrs.onClick = handleSearchBoxClick
 
         TextField<StandardTextFieldProps> {
             ref = searchFieldRef
             attrs.sx {
-                val isOpen = searchFieldFocused || props.searchString?.isNotBlank() == true
+                val isOpen = searchFieldFocused || props.defaultSearchString?.isNotBlank() == true
                 width = if (isOpen) 15.em else 3.em
                 backgroundColor = if (isOpen) rgba(0, 0, 0, 0.25).asColor() else rgba(0, 0, 0, 0.0).asColor()
                 transition = "width 300ms, background-color 300ms".unsafeCast<Transition>()
@@ -77,7 +69,7 @@ private val CollapsibleSearchBoxView = xComponent<CollapsibleSearchBoxProps>("Co
                     Search.create()
                 }
             }
-            attrs.defaultValue = props.searchString
+            attrs.defaultValue = props.defaultSearchString
 
             attrs.onChange = handleSearchChange
             attrs.onFocus = handleFocus
@@ -90,13 +82,16 @@ private val CollapsibleSearchBoxView = xComponent<CollapsibleSearchBoxProps>("Co
     }
 }
 
-external interface CollapsibleSearchBoxProps : Props {
-    var searchString: String?
+external interface CollapsibleSearchBoxProps : PropsWithClassName {
+    var defaultSearchString: String?
     var isSearching: Boolean?
+    var startFocused: Boolean?
+    var alignRight: Boolean?
+    var helpText: ReactElement<*>?
     var onSearchChange: ((String) -> Unit)?
     var onSearchRequest: ((String) -> Unit)?
     var onSearchCancel: (() -> Unit)?
-    var helpText: ReactElement<*>?
+    var onFocusChange: ((focused: Boolean) -> Unit)?
 }
 
 fun RBuilder.collapsibleSearchBox(handler: RHandler<CollapsibleSearchBoxProps>) =

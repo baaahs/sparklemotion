@@ -41,6 +41,7 @@ import baaahs.show.ShowProvider
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
 import baaahs.sim.FakeNetwork
+import baaahs.sim.MergedFs
 import baaahs.sim.SimulatorSettingsManager
 import baaahs.sm.brain.BrainManager
 import baaahs.sm.brain.FirmwareDaddy
@@ -196,7 +197,7 @@ interface PinkyModule : KModule {
                 )
             }
             scoped { ProdBrainSimulator(get(), get()) }
-            scoped { ShaderLibraryManager(get(), get(), get(), get()) }
+            scoped { ShaderLibraryManager(get(), MergedFs(get(), ResourcesFs()), get(), get(), get()) }
             scoped { pinkySettings }
             scoped { ServerNotices(get(), get<CoroutineScope>(Named.pinkyScope).coroutineContext) }
             scoped { PinkyMapperHandlers(get()) }

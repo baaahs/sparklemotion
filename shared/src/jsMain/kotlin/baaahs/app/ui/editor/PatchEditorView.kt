@@ -8,6 +8,7 @@ import baaahs.app.ui.toolchainContext
 import baaahs.gl.preview.GadgetAdjuster
 import baaahs.gl.preview.PreviewShaderBuilder
 import baaahs.gl.withCache
+import baaahs.mapper.styleIf
 import baaahs.show.mutable.EditingShader
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShow
@@ -15,7 +16,10 @@ import baaahs.ui.*
 import js.objects.jso
 import materialui.icon
 import mui.material.*
+import mui.material.styles.Theme
+import mui.material.styles.useTheme
 import mui.system.sx
+import mui.system.useMediaQuery
 import react.*
 import react.dom.div
 import react.dom.onClick
@@ -23,13 +27,17 @@ import web.cssom.Auto
 import web.dom.Element
 import web.events.Event
 
-private enum class PageTabs {
-    Patch, Ports, Gadgets, Help
+private enum class PageTabs(
+    val showGutter: Boolean = true
+) {
+    Source(showGutter = false), Patch, Ports, Gadgets, Help
 }
 
 private val PatchEditorView = xComponent<PatchEditorProps>("PatchEditor") { props ->
     val appContext = useContext(appContext)
     val shaderEditorStyles = appContext.allStyles.shaderEditor
+    val theme = useTheme<Theme>()
+    val isSmallScreen = useMediaQuery(theme.isSmallScreen)
 
     val baseToolchain = useContext(toolchainContext)
     val toolchain = memo(baseToolchain) { baseToolchain.withCache("Editor") }
@@ -38,11 +46,9 @@ private val PatchEditorView = xComponent<PatchEditorProps>("PatchEditor") { prop
     val showSettingsMenu by mouseEventHandler { event -> settingsMenuAnchor = event.target as Element? }
     val hideSettingsMenu = callback { _: Event?, _: String? -> settingsMenuAnchor = null }
 
-    var selectedTab by state { PageTabs.Patch }
-    @Suppress("UNCHECKED_CAST")
-    val handleChangeTab by handler { _: Event, value: PageTabs ->
-        selectedTab = value
-    }
+    var selectedTab by state { if (isSmallScreen) PageTabs.Source else PageTabs.Patch }
+    val handleChangeTab by handler { _: Event, value: PageTabs -> selectedTab = value }
+    val showSelectedTab = if (!isSmallScreen && selectedTab == PageTabs.Source) PageTabs.Patch else selectedTab
 
     // props.mutablePatch.id is included here so we re-memoize if we have a different instance
     // from before; this happens after clicking "Apply" when the whole mutable document is regenerated.
@@ -94,9 +100,11 @@ private val PatchEditorView = xComponent<PatchEditorProps>("PatchEditor") { prop
         attrs.value = toolchain
 
         div(+shaderEditorStyles.container) {
-            div(+shaderEditorStyles.shaderEditor) {
-                shaderEditor {
-                    attrs.editingShader = editingShader
+            if (!isSmallScreen) {
+                div(+shaderEditorStyles.shaderEditor) {
+                    shaderEditor {
+                        attrs.editingShader = editingShader
+                    }
                 }
             }
 
@@ -122,11 +130,14 @@ private val PatchEditorView = xComponent<PatchEditorProps>("PatchEditor") { prop
             div(+shaderEditorStyles.propsTabsAndPanels) {
                 Tabs {
                     attrs.classes = muiClasses { flexContainer = -shaderEditorStyles.tabsContainer }
-                    attrs.value = selectedTab
+                    attrs.value = showSelectedTab
                     attrs.onChange = handleChangeTab.asDynamic()
                     attrs.orientation = Orientation.horizontal
                     attrs.variant = TabsVariant.scrollable
-                    PageTabs.values().forEach { tab ->
+                    PageTabs.entries.forEach { tab ->
+                        if (tab == PageTabs.Source && !isSmallScreen)
+                            return@forEach
+
                         Tab {
                             attrs.className = -shaderEditorStyles.tab
                             attrs.label = buildElement { +tab.name }
@@ -136,8 +147,12 @@ private val PatchEditorView = xComponent<PatchEditorProps>("PatchEditor") { prop
                     }
                 }
 
-                div(+shaderEditorStyles.propsPanel) {
-                    when (selectedTab) {
+                div(+shaderEditorStyles.propsPanel and
+                        styleIf(showSelectedTab.showGutter, shaderEditorStyles.withGutter)) {
+                    when (showSelectedTab) {
+                        PageTabs.Source -> shaderEditor {
+                            attrs.editingShader = editingShader
+                        }
                         PageTabs.Patch -> shaderPropertiesEditor {
                             attrs.editableManager = props.editableManager
                             attrs.editingShader = editingShader

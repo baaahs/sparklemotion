@@ -31,7 +31,7 @@ class BrainManagerSpec : DescribeSpec({
     describe<BrainManager> {
         val link by value { TestNetwork().link("brainlink") }
         val pubSub by value { FakePubSub().server }
-        val surface1 by value { entityDataForTest("surface1") }
+        val surface1 by value { lightBarForTest("surface1") }
         val controllerConfigs by value { mapOf<ControllerId, MutableControllerConfig>() }
         val fixtureMappings by value { mapOf<ControllerId, MutableList<MutableFixtureMapping>>() }
         val brain1Id by value { ControllerId(BrainManager.controllerTypeName, "brain1") }

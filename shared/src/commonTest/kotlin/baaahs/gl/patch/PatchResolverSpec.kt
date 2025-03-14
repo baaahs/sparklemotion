@@ -6,6 +6,7 @@ import baaahs.control.OpenButtonControl
 import baaahs.device.PixelArrayDevice
 import baaahs.getBang
 import baaahs.gl.autoWire
+import baaahs.gl.autoWireWithDefaults
 import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.render.RenderManager
 import baaahs.gl.testToolchain
@@ -25,21 +26,11 @@ import baaahs.show.mutable.*
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
 import io.kotest.core.spec.style.DescribeSpec
-import io.kotest.matchers.*
 import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.shouldBe
 
 @Suppress("unused")
 class PatchResolverSpec : DescribeSpec({
-    fun autoWire(
-        vararg shaders: Shader,
-        stream: Stream = Stream.Main,
-        block: (UnresolvedPatches.() -> Unit)? = null
-    ): MutablePatchSet {
-        return testToolchain.autoWire(*shaders, stream = stream)
-            .apply { block?.invoke(this) }
-            .acceptSuggestedLinkOptions().confirm()
-    }
-
     describe("Layering of patch links") {
         val uvShader = Shaders.cylindricalProjection
         val blackShader by value {
@@ -109,14 +100,14 @@ class PatchResolverSpec : DescribeSpec({
         context("for a show with a couple buttons") {
             beforeEach {
                 mutableShow.apply {
-                    addPatch(autoWire(uvShader, blackShader))
+                    addPatch(autoWireWithDefaults(uvShader, blackShader))
 
                     addButton(mainPanel, "Brightness") {
-                        addPatch(autoWire(brightnessFilter))
+                        addPatch(autoWireWithDefaults(brightnessFilter))
                     }
 
                     addButton(mainPanel, "Orange") {
-                        addPatch(autoWire(orangeShader).apply {
+                        addPatch(autoWireWithDefaults(orangeShader).apply {
                             mutablePatches.first().incomingLinks.forEach { (k, v) ->
                                 println("$k = $v")
                             }
@@ -258,7 +249,7 @@ class PatchResolverSpec : DescribeSpec({
                 beforeEach {
                     mutableShow.apply {
                         addButton(mainPanel, "Time Wobble") {
-                            addPatch(autoWire(wobblyTimeFilter, stream = Stream("time")).apply {
+                            addPatch(autoWireWithDefaults(wobblyTimeFilter, stream = Stream("time")).apply {
                                 mutablePatches.only("patch")
                                     .incomingLinks["time"] = MutableFeedPort(TimeFeed())
                             })
@@ -412,9 +403,9 @@ class PatchResolverSpec : DescribeSpec({
         context("with a color mixer") {
             beforeEach {
                 mutableShow.apply {
-                    addPatch(autoWire(uvShader, blackShader))
+                    addPatch(autoWireWithDefaults(uvShader, blackShader))
                     addPatch(
-                        autoWire(
+                        autoWireWithDefaults(
                             Shader(
                                 "A Main Shader",
                                 /**language=glsl*/
@@ -450,8 +441,8 @@ class PatchResolverSpec : DescribeSpec({
                             }
                         }.acceptSuggestedLinkOptions().confirm()
                     )
-                    addPatch(autoWire(orangeShader, stream = Stream("other")))
-                    addPatch(autoWire(wobblyTimeFilter, stream = Stream("time")))
+                    addPatch(autoWireWithDefaults(orangeShader, stream = Stream("other")))
+                    addPatch(autoWireWithDefaults(wobblyTimeFilter, stream = Stream("time")))
                 }
             }
 
@@ -747,7 +738,7 @@ class PatchResolverSpec : DescribeSpec({
         val show by value {
             MutableShow("show") {
                 addPatch(
-                    autoWire(
+                    autoWireWithDefaults(
                         pinksShader,
                         badgerShader,
                         projectionShader,

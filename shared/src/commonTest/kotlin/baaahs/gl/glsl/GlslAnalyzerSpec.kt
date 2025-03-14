@@ -82,8 +82,12 @@ class GlslAnalyzerSpec : DescribeSpec({
                     """.trimIndent()
                 }
 
-                it("finds the title") {
+                it("uses the first comment line as the title") {
                     importedShader.title.shouldBe("This Shader's Name")
+                }
+
+                it("uses subsequent comment lines as the description") {
+                    importedShader.description.shouldBe("Other stuff.")
                 }
             }
 

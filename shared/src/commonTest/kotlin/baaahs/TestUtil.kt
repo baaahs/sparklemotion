@@ -97,6 +97,16 @@ fun testModelSurfaceData(
     vertices: List<Vector3F> = emptyList()
 ) = SurfaceDataForTest(name, name, expectedPixelCount = expectedPixelCount, vertices = vertices)
 
+fun lightBarForTest(
+    name: String,
+    position: Vector3F = Vector3F.origin,
+    rotation: EulerAngle = EulerAngle.identity,
+    scale: Vector3F = Vector3F.unit3d
+) = LightBarData(
+    name, startVertex = Vector3F.origin, endVertex = Vector3F.unit3d,
+    position = position, rotation = rotation, scale = scale
+)
+
 fun entityDataForTest(
     name: String,
     position: Vector3F = Vector3F.origin,

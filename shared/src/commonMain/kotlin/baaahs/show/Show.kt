@@ -13,6 +13,7 @@ import baaahs.plugin.Plugins
 import baaahs.plugin.core.feed.ModelInfoFeed
 import baaahs.show.mutable.*
 import kotlinx.serialization.*
+import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -147,9 +148,54 @@ data class Surfaces(
 data class Shader(
     val title: String,
     /**language=glsl*/
-    val src: String
+    val src: String,
+    val description: String? = null,
+    val author: String? = null,
+    val tags: List<Tag> = emptyList()
 ) {
     fun suggestId(): String = title.camelize()
+}
+
+@Serializable(with = TagSerializer::class)
+data class Tag(
+    val category: String = "",
+    val value: String
+) {
+    val fullString get() =
+        when {
+            category == "" -> value
+            value == "" -> "@$category"
+            else -> "@$category=$value"
+        }
+    val minusString get() = "-$fullString"
+
+    companion object {
+        private val tagPattern = Regex("(?:@([^=]+)(=)?)?(.*)")
+
+        fun fromString(fullTag: String): Tag {
+            val match = tagPattern.matchEntire(fullTag)!!
+            val (_, type, equals, value) = match.groupValues
+            return when {
+                type != "" && equals == "" -> Tag(type, "")
+                type != "" -> Tag(type, value)
+                else -> Tag("", value)
+            }
+        }
+    }
+
+}
+
+object TagSerializer : KSerializer<Tag> {
+    override val descriptor: SerialDescriptor
+        get() = String.serializer().descriptor
+
+    override fun serialize(encoder: Encoder, value: Tag) {
+        String.serializer().serialize(encoder, value.fullString)
+    }
+
+    override fun deserialize(decoder: Decoder): Tag {
+        return Tag.fromString(String.serializer().deserialize(decoder))
+    }
 }
 
 @Serializable(with = Stream.Serializer::class)

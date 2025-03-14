@@ -200,14 +200,20 @@ data class MutablePatch(
         } + stream).filterNotNull()
     }
 
-    fun link(portId: String, toPort: Feed) {
+    fun link(portId: String, toPort: Feed): MutablePatch {
         incomingLinks[portId] = toPort.editor()
+        return this
     }
 
-    fun link(portId: String, toPort: MutablePort) {
+    fun link(portId: String, toPort: MutablePort): MutablePatch {
         incomingLinks[portId] = toPort
+        return this
     }
 
+    fun tag(tag: String): MutablePatch {
+        mutableShader.tags.add(Tag.fromString(tag))
+        return this
+    }
     fun build(showBuilder: ShowBuilder): Patch {
         return Patch(
             showBuilder.idFor(mutableShader.build()),
@@ -279,13 +285,19 @@ class MutablePatchSet(val mutablePatches: MutableList<MutablePatch> = mutableLis
 data class MutableShader(
     var title: String,
     /**language=glsl*/
-    var src: String
+    var src: String,
+    var description: String? = null,
+    var author: String? = null,
+    var tags: MutableList<Tag> = mutableListOf()
 ) {
-    constructor(shader: Shader) : this(shader.title, shader.src)
+    constructor(shader: Shader) : this(
+        shader.title, shader.src,
+        shader.description, shader.author,
+        ArrayList(shader.tags)
+    )
 
-    fun build(): Shader {
-        return Shader(title, src)
-    }
+    fun build(): Shader =
+        Shader(title, src, description, author, tags)
 
     fun accept(visitor: MutableShowVisitor, log: VisitationLog = VisitationLog()) {
         if (log.shaders.add(this)) visitor.visit(this)

@@ -15,7 +15,7 @@ class SliderControlSpec : DescribeSpec({
 //            val channel = sliderControl.allocateChannel("brightness")
 //            expect(channel.id).shouldBe("brightness")
 //            expect(channel.initialValue).shouldBe(1f)
-//            expect(channel.serializer).toBe(Float.serializer())
+//            channel.serializer.shouldBe(Float.serializer())
 //        }
     }
 })

@@ -4,10 +4,8 @@ import baaahs.app.ui.appContext
 import baaahs.controller.ControllerId
 import baaahs.controller.ControllerMatcher
 import baaahs.controller.SacnManager
-import baaahs.dmx.DmxManager
 import baaahs.fixtures.FixtureInfo
 import baaahs.scene.MutableScene
-import baaahs.sm.brain.BrainManager
 import baaahs.ui.*
 import baaahs.ui.components.ListAndDetail
 import baaahs.ui.components.collapsibleSearchBox
@@ -51,6 +49,11 @@ private val ControllerListView = xComponent<DeviceListProps>("ControllerList") {
     val handleSearchRequest by handler { value: String -> }
     val handleSearchCancel by handler { controllerMatcher = ControllerMatcher() }
 
+    val scanningIndicatorRef = ref<HTMLElement>()
+    val handleSearchBoxFocusChange by handler { focused: Boolean ->
+        scanningIndicatorRef.current?.style?.visibility = if (focused) "hidden" else ""
+    }
+
     var selectedController by state<ControllerId?> { null }
     val handleControllerSelect by mouseEventHandler { event ->
         val target = event.currentTarget as HTMLElement
@@ -71,6 +74,7 @@ private val ControllerListView = xComponent<DeviceListProps>("ControllerList") {
                 +"Controllers"
 
                 div(+styles.scanningIndicator) {
+                    ref = scanningIndicatorRef
                     CircularProgress {
                         attrs.sx {
                             marginLeft = 2.em
@@ -94,10 +98,12 @@ private val ControllerListView = xComponent<DeviceListProps>("ControllerList") {
                 }
 
                 collapsibleSearchBox {
-                    attrs.searchString = controllerMatcher.searchString
+                    attrs.alignRight = true
+                    attrs.defaultSearchString = controllerMatcher.searchString
                     attrs.onSearchChange = handleSearchChange
                     attrs.onSearchRequest = handleSearchRequest
                     attrs.onSearchCancel = handleSearchCancel
+                    attrs.onFocusChange = handleSearchBoxFocusChange
                 }
             }
         }
@@ -243,8 +249,8 @@ private val ControllerListView = xComponent<DeviceListProps>("ControllerList") {
     }
 }
 
-fun styleIf(condition: Boolean, style: RuleSet, otherwise: RuleSet? = null): String {
-    return if (condition) +style else otherwise?.let { +it } ?: ""
+fun styleIf(condition: Boolean?, style: RuleSet, otherwise: RuleSet? = null): String {
+    return if (condition == true) +style else otherwise?.let { +it } ?: ""
 }
 
 external interface DeviceListProps : Props {

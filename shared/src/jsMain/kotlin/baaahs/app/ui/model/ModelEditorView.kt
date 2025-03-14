@@ -23,10 +23,8 @@ import baaahs.ui.components.Renderer
 import baaahs.ui.components.collapsibleSearchBox
 import baaahs.ui.components.listAndDetail
 import baaahs.ui.components.nestedList
-import baaahs.ui.render
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
-import baaahs.ui.withMouseEvent
 import baaahs.ui.xComponent
 import baaahs.util.globalLaunch
 import baaahs.util.useResizeListener
@@ -39,36 +37,17 @@ import baaahs.visualizer.modelEntity
 import baaahs.visualizer.sim.PixelArranger
 import baaahs.visualizer.sim.SwirlyPixelArranger
 import baaahs.window
-import emotion.styled.styled
 import materialui.icon
-import mui.icons.material.Delete
-import mui.icons.material.ExpandMore
-import mui.material.Accordion
-import mui.material.AccordionDetails
-import mui.material.AccordionSummary
 import mui.material.Button
 import mui.material.ButtonColor
-import mui.material.Card
-import mui.material.FormControl
-import mui.material.FormControlMargin
-import mui.material.IconButton
-import mui.material.IconButtonColor
-import mui.material.Paper
-import mui.material.Size
-import mui.material.Typography
-import mui.system.sx
 import mui.system.useMediaQuery
 import react.Props
 import react.RBuilder
 import react.RHandler
 import react.buildElement
-import react.create
 import react.dom.div
 import react.dom.span
 import react.useContext
-import web.cssom.em
-import web.cssom.pct
-import web.cssom.px
 import web.dom.Element
 import web.dom.document
 import web.html.HTMLDivElement
@@ -258,7 +237,8 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
                     span {
                         +"Model Entities"
                         collapsibleSearchBox {
-                            attrs.searchString = entityMatcher.searchString
+                            attrs.alignRight = true
+                            attrs.defaultSearchString = entityMatcher.searchString
                             attrs.onSearchChange = handleSearchChange
                             attrs.onSearchRequest = handleSearchRequest
                             attrs.onSearchCancel = handleSearchCancel

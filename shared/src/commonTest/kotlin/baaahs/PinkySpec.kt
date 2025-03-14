@@ -111,7 +111,7 @@ class PinkySpec : DescribeSpec({
                 clock, PermissiveFirmwareDaddy(), plugins, fakeFs.rootFile, link, httpServer, pubSub,
                 dmxManager, mappingManager, fixtureManager, CoroutineScope(ImmediateDispatcher), toolchain,
                 stageManager, controllersManager, brainManager,
-                ShaderLibraryManager(plugins, fakeFs, FsServerSideSerializer(), pubSub),
+                ShaderLibraryManager(plugins, fakeFs, FsServerSideSerializer(), pubSub, toolchain),
                 Pinky.NetworkStats(), PinkySettings(), serverNotices, PinkyMapperHandlers(mappingStore),
                 PinkyConfigStore(plugins, fakeFs.rootFile), eventManager,
                 ObservableProvider(FeatureFlags.JVM), ResourcesFs()

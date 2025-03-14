@@ -11,6 +11,7 @@ import baaahs.client.WebClient
 import baaahs.client.document.SceneManager
 import baaahs.client.document.ShowManager
 import baaahs.gl.Toolchain
+import baaahs.libraries.ShaderLibraries
 import baaahs.plugin.Plugins
 import baaahs.scene.SceneProvider
 import baaahs.ui.KeyboardShortcutHandler
@@ -40,6 +41,7 @@ external interface AppContext {
     var showManager: ShowManager.Facade
     var sceneManager: SceneManager.Facade
     var sceneProvider: SceneProvider
+    var shaderLibraries: ShaderLibraries
     var fileDialog: FileDialog
     var notifier: Notifier.Facade
     var featureFlags: FeatureFlags

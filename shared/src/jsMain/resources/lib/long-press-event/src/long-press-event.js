@@ -207,7 +207,6 @@
    * @returns {void}
    */
   function mouseDownHandler(e) {
-    console.log("mouseDownHandler", e);
     startX = e.clientX;
     startY = e.clientY;
     startLongPressTimer(e);
