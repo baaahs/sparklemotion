@@ -1,6 +1,7 @@
 package baaahs.ui.components
 
 import baaahs.app.ui.appContext
+import baaahs.mapper.styleIf
 import baaahs.ui.*
 import js.objects.jso
 import mui.icons.material.Search
@@ -48,13 +49,14 @@ private val CollapsibleSearchBoxView = xComponent<CollapsibleSearchBoxProps>("Co
     val isSearching = props.isSearching == true
 
     FormControl {
-        attrs.className = -styles.searchBoxFormControl
+        attrs.className = -styles.searchBoxFormControl and
+                styleIf(props.alignRight, styles.alignRight) and props.className
         attrs.onClick = handleSearchBoxClick
 
         TextField<StandardTextFieldProps> {
             ref = searchFieldRef
             attrs.sx {
-                val isOpen = searchFieldFocused || props.searchString?.isNotBlank() == true
+                val isOpen = searchFieldFocused || props.defaultSearchString?.isNotBlank() == true
                 width = if (isOpen) 15.em else 3.em
                 backgroundColor = if (isOpen) rgba(0, 0, 0, 0.25).asColor() else rgba(0, 0, 0, 0.0).asColor()
                 transition = "width 300ms, background-color 300ms".unsafeCast<Transition>()
@@ -67,7 +69,7 @@ private val CollapsibleSearchBoxView = xComponent<CollapsibleSearchBoxProps>("Co
                     Search.create()
                 }
             }
-            attrs.defaultValue = props.searchString
+            attrs.defaultValue = props.defaultSearchString
 
             attrs.onChange = handleSearchChange
             attrs.onFocus = handleFocus
@@ -80,10 +82,11 @@ private val CollapsibleSearchBoxView = xComponent<CollapsibleSearchBoxProps>("Co
     }
 }
 
-external interface CollapsibleSearchBoxProps : Props {
-    var searchString: String?
+external interface CollapsibleSearchBoxProps : PropsWithClassName {
+    var defaultSearchString: String?
     var isSearching: Boolean?
     var startFocused: Boolean?
+    var alignRight: Boolean?
     var helpText: ReactElement<*>?
     var onSearchChange: ((String) -> Unit)?
     var onSearchRequest: ((String) -> Unit)?

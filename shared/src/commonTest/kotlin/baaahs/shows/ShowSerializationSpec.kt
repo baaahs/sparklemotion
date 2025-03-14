@@ -47,6 +47,23 @@ class ShowSerializationSpec : DescribeSpec({
             }
         }
 
+        context("shader") {
+            context("tags") {
+                it("serializes as expected") {
+                    plugins.expectJson(
+                        Json.parseToJsonElement("""
+                            ["@type=filter", "@filter", "beatshift"]
+                        """.trimIndent())
+                    ) {
+                        showJson
+                            .jsonObject["shaders"]!!
+                            .jsonObject["beatLink"]!!
+                            .jsonObject["tags"]!!
+                    }
+                }
+            }
+        }
+
         context("referencing an unresolvable feed") {
             val fakePluginBuilder by value {
                 FakePlugin.Builder("some.plugin", listOf(FakeFeed.Builder))
@@ -141,9 +158,11 @@ private fun <V> Map<String, V>.jsonMap(block: JsonObjectBuilder.(V) -> JsonEleme
     return buildJsonObject { entries.forEach { (k, v) -> put(k, block(v)) } }
 }
 
-private fun <T> List<T>.jsonMap(block: (T) -> JsonElement): JsonArray {
-    return buildJsonArray { forEach { add(block(it)) } }
-}
+private fun <T> List<T>.jsonMap(block: (T) -> JsonElement): JsonArray =
+    buildJsonArray { forEach { add(block(it)) } }
+
+private fun <T> Set<T>.jsonMap(block: (T) -> JsonElement): JsonArray =
+    buildJsonArray { forEach { add(block(it)) } }
 
 private fun forJson(show: Show): JsonObject {
     return buildJsonObject {
@@ -334,7 +353,7 @@ private fun jsonFor(shader: Shader) = buildJsonObject {
     put("src", shader.src)
     put("description", shader.description)
     put("author", shader.author)
-    put("tags", shader.tags.jsonMap { JsonPrimitive(it) })
+    put("tags", shader.tags.jsonMap { JsonPrimitive(it.fullString) })
 }
 
 private fun jsonFor(patch: Patch) = buildJsonObject {
@@ -421,6 +440,9 @@ object TestSampleData {
                 )
             ) {
                 link("beat", MutableFeedPort(beatLinkPlugin.beatLinkFeed))
+                tag("@type=filter")
+                tag("@filter")
+                tag("beatshift")
             }
         }.getShow()
 }

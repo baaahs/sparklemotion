@@ -14,6 +14,7 @@ import baaahs.plugin.Plugins
 import baaahs.plugin.core.feed.ColorPickerFeed
 import baaahs.plugin.core.feed.XyPadFeed
 import baaahs.show.Shader
+import baaahs.show.Tag
 import baaahs.util.Logger
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -198,8 +199,9 @@ class IsfShaderAnalyzer(
     override fun findAuthor(): String? =
         isfShader?.CREDIT
 
-    override fun findTags(): List<String> =
-        isfShader?.CATEGORIES ?: emptyList()
+    override fun findTags(): List<Tag> =
+        isfShader?.CATEGORIES?.map { Tag.fromString(it) }
+            ?: emptyList()
 
     private fun createSwitch(input: IsfBoolInput): InputPort {
         return InputPort(

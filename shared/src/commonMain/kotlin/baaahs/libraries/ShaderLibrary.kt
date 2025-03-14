@@ -2,6 +2,7 @@ package baaahs.libraries
 
 import baaahs.io.Fs
 import baaahs.show.Shader
+import baaahs.show.Tag
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -17,13 +18,18 @@ data class ShaderLibrary(
         val id: String,
         val shader: Shader
     ) {
+        val tags: List<Tag>
+            get() = shader.tags
+
         fun matches(term: String): Boolean {
-            val lcTerm = term.lowercase()
-            return shader.title.lowercase().contains(lcTerm) ||
-                    shader.description?.lowercase()?.contains(lcTerm) ?: false ||
+            val negate = term.startsWith('-')
+            val lcTerm = term.trimStart('-').lowercase()
+            val matches = shader.title.lowercase().contains(lcTerm) ||
+                    shader.description?.lowercase()?.contains(lcTerm) == true ||
                     shader.tags.any {
-                        it.lowercase().contains(lcTerm)
+                        it.fullString.lowercase().contains(lcTerm)
                     }
+            return if (negate) !matches else matches
         }
     }
 }

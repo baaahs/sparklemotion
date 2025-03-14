@@ -439,7 +439,6 @@ sealed class Plugins(
         ): ServerPlugins {
             val serverPlugins = (listOf(CorePlugin) + plugins)
                 .map { plugin -> plugin.openForServer(pluginContext) }
-            println("serverPlugins = ${serverPlugins}")
             return ServerPlugins(serverPlugins, pluginContext, pinkyArgs)
         }
 

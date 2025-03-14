@@ -7,11 +7,10 @@ import baaahs.gl.openShader
 import baaahs.hyphenize
 import baaahs.io.Fs
 import baaahs.io.FsServerSideSerializer
-import baaahs.io.resourcesFs
 import baaahs.migrator.DataMigrator
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
-import baaahs.sim.MergedFs
+import baaahs.show.Tag
 import baaahs.sm.webapi.ShaderLibraryCommands
 import baaahs.sm.webapi.Topics
 import baaahs.util.Logger
@@ -34,8 +33,7 @@ class ShaderLibraryManager(
         @OptIn(ExperimentalSerializationApi::class)
         prettyPrintIndent = "  "
     }
-    private val shaderLibrariesPath = MergedFs(fs, resourcesFs)
-        .resolve("shader-libraries")
+    private val shaderLibrariesPath = fs.resolve("shader-libraries")
 
 
     private lateinit var shaderLibraries: Map<Fs.File, ShaderLibrary>
@@ -46,20 +44,25 @@ class ShaderLibraryManager(
     }
 
     inner class Facade : ShaderLibraries {
-        override suspend fun searchFor(terms: String): List<ShaderLibrary.Entry> {
-            return this@ShaderLibraryManager.searchFor(terms)
-        }
+        override suspend fun searchFor(terms: String): List<ShaderLibrary.Entry> =
+            this@ShaderLibraryManager.searchFor(terms)
+
+        override suspend fun tagList(): Set<Tag> =
+            this@ShaderLibraryManager.tagList()
     }
 
     init {
         Topics.shaderLibrariesCommands.createReceiver(pubSub, object : ShaderLibraryCommands {
             override suspend fun search(terms: String): List<ShaderLibrary.Entry> =
                 searchFor(terms)
+
+            override suspend fun tagList(): Set<Tag> =
+                this@ShaderLibraryManager.tagList()
         })
     }
 
     private suspend fun listShaderLibraries(): List<Fs.File> {
-        return MergedFs(fs, resourcesFs)
+        return fs
             .resolve("shader-libraries").listFiles()
             .also { logger.debug { "shader libraries: $it" } }
             .filter { it.libraryIndexFile().exists() }
@@ -84,6 +87,11 @@ class ShaderLibraryManager(
                 }
             }
         }.sortedBy { it.shader.title }
+
+    fun tagList(): Set<Tag> =
+        shaderLibraries.flatMap { (_, shaderLibrary) ->
+            shaderLibrary.entries.flatMap { entry -> entry.tags }
+        }.toSet()
 
     suspend fun start() {
         shaderLibraries = loadShaderLibraries().also {
@@ -115,8 +123,8 @@ class ShaderLibraryManager(
                 val openShader = toolchain.openShader(shader)
 //                println("${file.name}: $analysis")
                 val tags = buildList {
-                    add("@type=${openShader.shaderType.title}")
-                    if (openShader.isFilter) add("@filter")
+                    add(Tag.fromString("@type=${openShader.shaderType.title}"))
+                    if (openShader.isFilter) add(Tag.fromString("@filter"))
                     addAll(shader.tags)
                 }
                 ShaderLibraryIndexFile.Entry(

@@ -2,10 +2,12 @@ package baaahs.libraries
 
 import baaahs.PubSub
 import baaahs.io.RemoteFsSerializer
+import baaahs.show.Tag
 import baaahs.sm.webapi.Topics
 
 interface ShaderLibraries {
     suspend fun searchFor(terms: String): List<ShaderLibrary.Entry>
+    suspend fun tagList(): Set<Tag>
 }
 
 class ShaderLibrariesClient(pubSub: PubSub.Client, remoteFsSerializer: RemoteFsSerializer) {
@@ -21,8 +23,10 @@ class ShaderLibrariesClient(pubSub: PubSub.Client, remoteFsSerializer: RemoteFsS
     private val searchShaderLibraries = Topics.shaderLibrariesCommands.createSender(pubSub)
 
     inner class Facade : baaahs.ui.Facade(), ShaderLibraries {
-        override suspend fun searchFor(terms: String): List<ShaderLibrary.Entry> {
-            return searchShaderLibraries.search(terms)
-        }
+        override suspend fun searchFor(terms: String): List<ShaderLibrary.Entry> =
+            searchShaderLibraries.search(terms)
+
+        override suspend fun tagList(): Set<Tag> =
+            searchShaderLibraries.tagList()
     }
 }

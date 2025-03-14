@@ -8,6 +8,7 @@ import baaahs.app.ui.Themes
 import baaahs.app.ui.editor.shaderLibraryDialog
 import baaahs.gl.Toolchain
 import baaahs.io.FsServerSideSerializer
+import baaahs.io.ResourcesFs
 import baaahs.libraries.ShaderLibraries
 import baaahs.libraries.ShaderLibraryManager
 import baaahs.model.Model
@@ -16,6 +17,7 @@ import baaahs.scene.OpenScene
 import baaahs.scene.SceneMonitor
 import baaahs.sim.BrowserSandboxFs
 import baaahs.sim.HostedWebApp
+import baaahs.sim.MergedFs
 import baaahs.ui.xComponent
 import baaahs.util.SystemClock
 import baaahs.util.globalLaunch
@@ -30,7 +32,7 @@ class ShaderLibraryDevApp(
     override fun render(): ReactElement<*> {
         val fs = BrowserSandboxFs("Browser Data", "data")
         val fsSerializer = FsServerSideSerializer()
-        val shaderLibraryManager = ShaderLibraryManager(plugins, fs, fsSerializer, pubSub, toolchain)
+        val shaderLibraryManager = ShaderLibraryManager(plugins, MergedFs(fs, ResourcesFs()), fsSerializer, pubSub, toolchain)
         globalLaunch {
             shaderLibraryManager.start()
         }

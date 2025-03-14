@@ -76,6 +76,12 @@ class XBuilder(val logger: Logger) : react.RBuilderImpl() {
         }
     }
 
+    fun countRenders(name: String? = null) {
+        val renderCount = ref(0)
+        println("${logger.id}${if (name != null) " $name" else ""}: renderCount = ${renderCount.current}")
+        renderCount.current = (renderCount.current ?: 0) + 1
+    }
+
     @Suppress("UNCHECKED_CAST")
     fun <T: Any> ref(initialValue: T? = null): MutableRefObject<T> =
         react.useRef(initialValue)

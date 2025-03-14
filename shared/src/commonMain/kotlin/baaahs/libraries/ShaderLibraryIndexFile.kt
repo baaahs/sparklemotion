@@ -1,5 +1,6 @@
 package baaahs.libraries
 
+import baaahs.show.Tag
 import baaahs.util.Time
 import kotlinx.serialization.Serializable
 
@@ -17,7 +18,7 @@ data class ShaderLibraryIndexFile(
         val title: String,
         val description: String? = null,
         val lastModifiedMs: Time? = null,
-        val tags: List<String> = emptyList(),
+        val tags: List<Tag> = emptyList(),
         val srcFile: String,
         val errors: List<String>? = emptyList()
     )

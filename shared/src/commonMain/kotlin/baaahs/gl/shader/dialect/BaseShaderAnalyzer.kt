@@ -5,6 +5,7 @@ import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OutputPort
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
+import baaahs.show.Tag
 
 abstract class BaseShaderAnalyzer(
     protected val glslCode: GlslCode,
@@ -169,7 +170,7 @@ abstract class BaseShaderAnalyzer(
 
     open fun findAuthor(): String? = null
 
-    open fun findTags(): List<String> = emptyList()
+    open fun findTags(): List<Tag> = emptyList()
 
     fun findEntryPoint(): GlslCode.GlslFunction {
         return glslCode.findFunction(entryPointName)

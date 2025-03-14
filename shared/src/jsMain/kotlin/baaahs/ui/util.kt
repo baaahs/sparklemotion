@@ -48,6 +48,10 @@ fun Array<*>.truncateStrings(length: Int): List<String?> {
     return map { it?.toString()?.truncate(length) }
 }
 
+fun concat(vararg strings: String): String =
+    strings.filter { it.isNotEmpty() }.joinToString(" ")
+
+
 fun String?.truncate(length: Int): String? {
     return if (this != null && this.length >= length) {
         substring(0, length - 1) + "…"
@@ -119,6 +123,8 @@ infix fun ClassName.and(ruleSet: RuleSet?): ClassName =
     if (ruleSet == null) this else ClassName(this.unsafeCast<String>() + " " + ruleSet.name)
 infix fun ClassName.and(className: String?): ClassName =
     if (className == null) this else ClassName(this.unsafeCast<String>() + " " + className)
+infix fun ClassName.and(className: ClassName?): ClassName =
+    if (className == null) this else ClassName(this.unsafeCast<String>() + " " + className)
 infix fun <T> RuleSet.on(clazz: T): Pair<T, String> = clazz to name
 infix fun <T> String.on(clazz: T): Pair<T, String> = clazz to this
 infix fun <T> List<RuleSet>.on(clazz: T): Pair<T, String> = clazz to joinToString(" ") { it.name }
@@ -176,10 +182,10 @@ fun <T> StyledElement.important(property: KProperty<T>, value: T) {
 }
 
 val <T : CssValue> T.important: T
-    get() = (object : CssValue("${this.value} !important") {}) as T
+    get() = (object : CssValue("${this.value} !important") {}).unsafeCast<T>()
 
 val <T : Any> T.important: T
-    get() = (object : CssValue("$this !important") {}) as T
+    get() = (object : CssValue("$this !important") {}).unsafeCast<T>()
 
 inline fun RBuilder.typographyH1(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography {
@@ -309,10 +315,20 @@ fun HTMLElement.fitText() {
     style.transform = if (width > buttonWidth) "scaleX(${buttonWidth / width})" else ""
 
     // This is extra dumb; we should check how many lines are likely to be rendered, not just use 2.
-    style.lineHeight = if (buttonHeight < elementStyle.lineHeight.fromPx() * 2) "1em" else ""
+    val baseLineHeight = elementStyle.lineHeight.fromPx(null)
+    if (baseLineHeight != null) {
+        style.lineHeight = if (buttonHeight < baseLineHeight * 2) "1em" else ""
+    }
 }
 
 private fun String.fromPx() = replace("px", "").toDouble()
+
+private fun String.fromPx(default: Double? = null) =
+    try {
+        replace("px", "").toDouble()
+    } catch (_: NumberFormatException) {
+        default
+    }
 
 fun Element.isParentOf(other: Element): Boolean {
     var current: Element? = other

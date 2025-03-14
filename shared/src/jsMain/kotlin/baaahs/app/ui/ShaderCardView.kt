@@ -6,8 +6,11 @@ import baaahs.gl.openShader
 import baaahs.gl.preview.GadgetAdjuster
 import baaahs.gl.preview.ShaderBuilder
 import baaahs.show.mutable.MutablePatch
+import baaahs.ui.fitText
 import baaahs.ui.unaryMinus
+import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
+import baaahs.util.useResizeListener
 import kotlinx.css.LinearDimension
 import materialui.icon
 import mui.material.*
@@ -17,9 +20,11 @@ import react.Props
 import react.RBuilder
 import react.RHandler
 import react.buildElement
+import react.dom.div
 import web.cssom.Display
 import web.cssom.MaxWidth
 import web.cssom.important
+import web.html.HTMLDivElement
 
 private val ShaderCardView = xComponent<ShaderCardProps>("ShaderCard") { props ->
     val styles = EditableStyles
@@ -27,6 +32,7 @@ private val ShaderCardView = xComponent<ShaderCardProps>("ShaderCard") { props -
     val mutablePatch = props.mutablePatch
     val shader = mutablePatch.mutableShader.build()
     val openShader = props.toolchain.openShader(shader)
+    val dense = props.dense == true
 
     val handleCardClick by mouseEventHandler(props.onSelect) { e ->
         props.onSelect()
@@ -36,6 +42,11 @@ private val ShaderCardView = xComponent<ShaderCardProps>("ShaderCard") { props -
     val handleDeleteClick by mouseEventHandler(props.onDelete) { e ->
         props.onDelete?.invoke()
         e.stopPropagation()
+    }
+
+    val titleDivRef = ref<HTMLDivElement>()
+    useResizeListener(titleDivRef) { _, _ ->
+        titleDivRef.current?.fitText()
     }
 
     Card {
@@ -48,13 +59,15 @@ private val ShaderCardView = xComponent<ShaderCardProps>("ShaderCard") { props -
         CardActionArea {
             attrs.onClick = handleCardClick
 
-            CardHeader {
-                attrs.avatar = buildElement {
-                    Avatar { icon(openShader.shaderType.icon) }
-                }
-                attrs.title = buildElement { +shader.title }
-                props.subtitle?.let {
-                    attrs.subheader = buildElement { +it }
+            if (!dense) {
+                CardHeader {
+                    attrs.avatar = buildElement {
+                        Avatar { icon(openShader.shaderType.icon) }
+                    }
+                    attrs.title = buildElement { +shader.title }
+                    props.subtitle?.let {
+                        attrs.subheader = buildElement { +it }
+                    }
                 }
             }
 
@@ -67,24 +80,33 @@ private val ShaderCardView = xComponent<ShaderCardProps>("ShaderCard") { props -
                 attrs.onShaderStateChange = props.onShaderStateChange
             }
 
-            CardActions {
-                attrs.className = -styles.shaderCardActions
-                Typography {
-                    attrs.className = -styles.shaderCardContent
-                    attrs.variant = TypographyVariant.body2
-                    attrs.sx {
-                        display = Display.block
-                        color = Colors.secondary
+            if (dense) {
+                div(+styles.shaderCardDenseText) {
+                    ref = titleDivRef
+                    +shader.title
+                }
+            }
+
+            if (!dense) {
+                CardActions {
+                    attrs.className = -styles.shaderCardActions
+                    Typography {
+                        attrs.className = -styles.shaderCardContent
+                        attrs.variant = TypographyVariant.body2
+                        attrs.sx {
+                            display = Display.block
+                            color = Colors.secondary
+                        }
+
+                        +"${openShader.shaderType.title} Shader"
                     }
 
-                    +"${openShader.shaderType.title} Shader"
-                }
+                    if (props.onDelete != null) {
+                        IconButton {
+                            attrs.onClick = handleDeleteClick
 
-                if (props.onDelete != null) {
-                    IconButton {
-                        attrs.onClick = handleDeleteClick
-
-                        icon(mui.icons.material.Delete)
+                            icon(mui.icons.material.Delete)
+                        }
                     }
                 }
             }
@@ -97,6 +119,7 @@ external interface ShaderCardProps : Props {
     var subtitle: String?
     var toolchain: Toolchain
     var cardSize: LinearDimension?
+    var dense: Boolean?
     var adjustGadgets: Boolean?
     var onSelect: () -> Unit
     var onDelete: (() -> Unit)?
