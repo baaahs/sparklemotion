@@ -332,18 +332,18 @@ gradle.projectsEvaluated {
 }
 
 fun ProcessResources.includeIsfFiles() {
-    from("submodules/ISF-Files/ISF") {
+    from("../submodules/ISF-Files/ISF") {
         into("shader-libraries/ISF Files")
         include("*")
     }
 
-    from("submodules/ISF-Files") {
+    from("../submodules/ISF-Files") {
         into("shader-libraries/ISF Files")
         include("LICENSE")
         include("notes_on_categories.txt")
     }
 
-    from("data/shader-libraries/ISF Files") {
+    from("../data/shader-libraries/ISF Files") {
         into("shader-libraries/ISF Files")
         include("_libraryIndex.json")
     }
