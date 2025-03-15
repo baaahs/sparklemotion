@@ -20,6 +20,6 @@ data class ShaderLibraryIndexFile(
         val lastModifiedMs: Time? = null,
         val tags: List<Tag> = emptyList(),
         val srcFile: String,
-        val errors: List<String>? = emptyList()
+        val errors: List<String> = emptyList()
     )
 }

@@ -16,7 +16,8 @@ data class ShaderLibrary(
     @Serializable
     data class Entry(
         val id: String,
-        val shader: Shader
+        val shader: Shader,
+        val errors: List<String> = emptyList()
     ) {
         val tags: List<Tag>
             get() = shader.tags

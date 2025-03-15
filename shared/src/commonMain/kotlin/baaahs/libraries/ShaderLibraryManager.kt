@@ -185,18 +185,22 @@ class ShaderLibraryManager(
                 indexFile.description,
                 indexFile.license,
                 indexFile.entries.map { fileEntry ->
-                    val src = libDir.resolve(fileEntry.srcFile).read()
-                        ?: error("No such file \"${fileEntry.srcFile}\" in shader library \"${indexFile.title}\".")
+                    val src = try {
+                        libDir.resolve(fileEntry.srcFile).read()
+                            ?: error("No such file \"${fileEntry.srcFile}\" in shader library \"${indexFile.title}\".")
+                    } catch (e: Exception) {
+                        val fakeSrc = "// Error: ${e.message?.replace("\n", "\\n") ?: "???"}"
+                        return@map ShaderLibrary.Entry(
+                            fileEntry.id,
+                            Shader(fileEntry.title, fakeSrc, fileEntry.description, null, fileEntry.tags),
+                            listOf(e.message ?: "Can't find file.") + fileEntry.errors
+                        )
+                    }
 
                     ShaderLibrary.Entry(
                         fileEntry.id,
-                        Shader(
-                            fileEntry.title,
-                            src,
-                            fileEntry.description,
-                            null,
-                            fileEntry.tags
-                        )
+                        Shader(fileEntry.title, src, fileEntry.description, null, fileEntry.tags),
+                        fileEntry.errors
                     )
                 }
             )
