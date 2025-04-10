@@ -3,7 +3,7 @@ package baaahs.util
 import external.lodash.throttle
 import react.*
 import web.dom.Element
-import web.dom.observers.ResizeObserver
+import web.resize.ResizeObserver
 import web.timers.clearTimeout
 import web.timers.setTimeout
 import kotlin.time.Duration.Companion.milliseconds

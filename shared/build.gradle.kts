@@ -160,7 +160,7 @@ kotlin {
                 implementation(kotlinw("styled-next"))
                 implementation(kotlinw("mui-material"))
                 implementation(kotlinw("mui-icons-material"))
-                implementation(kotlinw("emotion"))
+                implementation(kotlinw("emotion-styled"))
 
                 // ThreeJS:
                 implementation(projects.ext.three)

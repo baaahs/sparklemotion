@@ -218,7 +218,7 @@ class GifImage(data: ByteArray, clock: Clock = SystemClock) : Image {
         imageDatas = buildList {
             frames.forEach { frame ->
                 needsDisposal?.let { dims ->
-                    val clear = arrayOf<Byte>(0, 0, 0, 0)
+                    val clear = arrayOf<Short>(0, 0, 0, 0)
                     with(dims) {
                         for (y in top until top + height) {
                             for (x in left until left + width) {

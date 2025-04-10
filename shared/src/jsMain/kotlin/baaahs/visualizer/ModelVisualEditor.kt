@@ -15,7 +15,7 @@ import three.Group
 import three.Object3D
 import three.examples.jsm.controls.TransformControls
 import three_ext.toVector3F
-import web.dom.observers.IntersectionObserver
+import web.intersection.IntersectionObserver
 import kotlin.reflect.KClass
 
 class ModelVisualEditor(
