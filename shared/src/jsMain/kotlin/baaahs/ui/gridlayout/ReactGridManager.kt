@@ -16,6 +16,7 @@ import react.dom.img
 import react.dom.onPointerDown
 import web.dom.document
 import web.dom.observers.ResizeObserver
+import web.events.AddEventListenerOptions
 import web.events.Event
 import web.events.addEventListener
 import web.events.removeEventListener
@@ -387,13 +388,13 @@ class ReactGridManager(
         }
 
         private fun addDraggingListeners() {
-            document.addEventListener(TouchEvent.TOUCH_MOVE, preventDefault, jso { passive = false })
+            document.addEventListener(TouchEvent.TOUCH_MOVE, preventDefault, AddEventListenerOptions(passive = false))
             el!!.addEventListener(PointerEvent.POINTER_MOVE, handlePointerMove)
             document.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown)
         }
 
         private fun removeDraggingListeners() {
-            document.removeEventListener(TouchEvent.TOUCH_MOVE, preventDefault, jso { passive = false })
+            document.removeEventListener(TouchEvent.TOUCH_MOVE, preventDefault, AddEventListenerOptions(passive = false))
             el?.removeEventListener(PointerEvent.Companion.POINTER_MOVE, handlePointerMove)
             document.removeEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown)
         }

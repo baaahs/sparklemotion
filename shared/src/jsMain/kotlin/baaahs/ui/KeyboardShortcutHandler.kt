@@ -58,7 +58,7 @@ class KeyboardShortcutHandler(val target: EventTarget? = null) {
 
     private val handlePointerDown = { e: PointerEvent -> pointersDown++; Unit }
     private val handlePointerUp = { e: PointerEvent -> pointersDown--; Unit }
-    private val capture = jso<AddEventListenerOptions> { capture = true}
+    private val capture = AddEventListenerOptions(capture = true)
 
     fun listen(target: EventTarget): EventTarget {
         target.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown)
