@@ -8,6 +8,7 @@ import baaahs.util.SystemClock
 import external.gifuct.ParsedFrameDims
 import external.gifuct.decompressFrames
 import external.gifuct.parseGIF
+import js.buffer.ArrayBuffer
 import js.typedarrays.Uint8Array
 import js.typedarrays.Uint8ClampedArray
 import kotlinx.coroutines.await
@@ -191,7 +192,7 @@ class VideoElementImage(private val videoEl: HTMLVideoElement) : JsImage() {
     }
 }
 
-class JsUByteClampedArray(private val delegate: Uint8ClampedArray) : UByteClampedArray {
+class JsUByteClampedArray(private val delegate: Uint8ClampedArray<*>) : UByteClampedArray {
     override val size: Int get() = delegate.length
 
     override operator fun get(index: Int): Int {
@@ -210,7 +211,7 @@ class GifImage(data: ByteArray, clock: Clock = SystemClock) : Image {
     private val imageDatas: List<ImageData>
 
     init {
-        val bytes = Uint8ClampedArray(width * height * 4)
+        val bytes = Uint8ClampedArray<ArrayBuffer>(width * height * 4)
         var needsDisposal: ParsedFrameDims? = null
         val fullWidth = parsedGif.lsd.width
 
@@ -243,7 +244,7 @@ class GifImage(data: ByteArray, clock: Clock = SystemClock) : Image {
                     }
                 }
 
-                add(ImageData(Uint8ClampedArray(bytes), width, height))
+                add(ImageData(Uint8ClampedArray<ArrayBuffer>(bytes), width, height))
             }
         }
     }

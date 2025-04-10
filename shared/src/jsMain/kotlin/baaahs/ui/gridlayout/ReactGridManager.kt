@@ -74,7 +74,7 @@ class ReactGridManager(
     }
 
     inner class ReactPlaceholder : Placeholder() {
-        val ref = RefCallback<HTMLElement> { el -> this.mounted(el) }
+        val ref = RefCallback<HTMLElement> { el -> this@ReactPlaceholder.mounted(el) }
         var el: HTMLElement? = null
         val reactNode by lazy {
             buildElement {
@@ -102,7 +102,7 @@ class ReactGridManager(
         val cell: Vector2I,
         renderEmptyCell: RenderEmptyCell
     ) {
-        val ref = RefCallback<HTMLElement> { el -> this.mounted(el) }
+        val ref = RefCallback<HTMLElement> { el -> this@EmptyCellWrapper.mounted(el) }
         var el: HTMLElement? = null
         val reactNode = renderEmptyCell.render(parentNode, cell, ref)
         private var layoutBounds: Rect? = null
@@ -148,7 +148,7 @@ class ReactGridManager(
     inner class ReactNodeWrapper(
         node: Node
     ) : NodeWrapper(node) {
-        val ref = RefCallback<HTMLElement> { el -> this.mounted(el) }
+        val ref = RefCallback<HTMLElement> { el -> this@ReactNodeWrapper.mounted(el) }
         var el: HTMLElement? = null
 
         // Must be lazy, or outer class won't be initialized yet.

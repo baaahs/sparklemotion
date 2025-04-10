@@ -82,7 +82,7 @@ class WebGl2ResultDeliveryStrategy(private val gl: GlBase.JsGlContext) : ResultD
             gl.check {
                 webgl2.getBufferSubData(
                     PIXEL_PACK_BUFFER, 0,
-                    cpuBuffer.getJsBufferWithOffset().unsafeCast<ArrayBufferView>(),
+                    cpuBuffer.getJsBufferWithOffset() as ArrayBufferView<*>,
                     0, 0
                 )
             }
