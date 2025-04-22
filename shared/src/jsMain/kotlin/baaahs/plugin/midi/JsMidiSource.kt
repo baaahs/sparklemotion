@@ -9,6 +9,7 @@ import web.events.EventHandler
 import web.midi.MIDIConnectionEvent
 import web.midi.MIDIInput
 import web.midi.MIDIMessageEvent
+import web.midi.MIDIOptions
 import web.navigator.navigator
 
 /**
@@ -36,7 +37,7 @@ class JsMidiSource(
             return
         }
         try {
-            navigator.requestMIDIAccess(jso { sysex = true }).let { midiAccess ->
+            navigator.requestMIDIAccess(MIDIOptions(sysex = true)).let { midiAccess ->
                 logger.info { "Got MIDI access." }
                 midiAccess.onstatechange = EventHandler { event ->
                     val port = event.port

@@ -9,6 +9,8 @@ import org.khronos.webgl.TexImageSource
 import web.events.EventHandler
 import web.html.HTMLVideoElement
 import web.media.streams.ConstrainULongRange
+import web.media.streams.MediaStreamConstraints
+import web.media.streams.MediaTrackConstraints
 import web.navigator.navigator
 import web.window.Window
 import web.window.window
@@ -41,12 +43,12 @@ object BrowserWebCamVideoProvider : VideoProvider {
         }
 
         try {
-            val mediaStream = navigator.mediaDevices.getUserMedia(jso {
-                video = jso {
-                    width = jso<ConstrainULongRange> { min = 320; ideal = 640; max = 1920 }
-                    height = jso<ConstrainULongRange> { min = 200; ideal = 480; max = 1080 }
-                }
-            })
+            val mediaStream = navigator.mediaDevices.getUserMedia(MediaStreamConstraints(
+                video = MediaTrackConstraints(
+                    width = ConstrainULongRange(min = 320, ideal = 640, max = 1920),
+                    height = ConstrainULongRange(min = 200, ideal = 480, max = 1080)
+                )
+            ))
             logger.warn { "From getUserMedia" }
             console.warn("From getUserMedia: ", mediaStream)
             // apply the stream to the video element used in the texture

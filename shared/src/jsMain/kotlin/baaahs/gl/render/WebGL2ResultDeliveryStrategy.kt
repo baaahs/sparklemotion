@@ -10,6 +10,7 @@ import com.danielgergely.kgl.GlBuffer
 import com.danielgergely.kgl.Kgl
 import js.buffer.ArrayBufferView
 import kotlinx.coroutines.delay
+import web.gl.GLbitfield
 import web.gl.GLenum
 import web.gl.WebGL2RenderingContext
 import web.gl.WebGL2RenderingContext.Companion.PIXEL_PACK_BUFFER
@@ -82,7 +83,7 @@ class WebGl2ResultDeliveryStrategy(private val gl: GlBase.JsGlContext) : ResultD
             gl.check {
                 webgl2.getBufferSubData(
                     PIXEL_PACK_BUFFER, 0,
-                    cpuBuffer.getJsBufferWithOffset().unsafeCast<ArrayBufferView>(),
+                    cpuBuffer.getJsBufferWithOffset() as ArrayBufferView<*>,
                     0, 0
                 )
             }
@@ -99,7 +100,7 @@ private fun Kgl.bindBuffer(target: GLenum, bufferId: GlBuffer?) =
 class FenceSync(private val gl: GlBase.JsGlContext) {
     private val webgl2 = gl.webgl
 
-    private val fenceSync = gl.check { webgl2.fenceSync(SYNC_GPU_COMMANDS_COMPLETE, 0) }
+    private val fenceSync = gl.check { webgl2.fenceSync(SYNC_GPU_COMMANDS_COMPLETE, 0 as GLbitfield) }
 
     suspend fun await() {
         fenceSync ?: error("Fence sync not supported.")
@@ -110,7 +111,7 @@ class FenceSync(private val gl: GlBase.JsGlContext) {
         val maxTries = fenceTimeoutMs / delayBetweenSyncChecksMs
         var tries = 0
         while (tries ++ < maxTries) {
-            val result = clientWaitSync(fenceSync, timeout = 0)
+            val result = clientWaitSync(fenceSync, timeout = 0.0)
             if (result) {
                 gl.check { webgl2.deleteSync(fenceSync) }
                 return
@@ -123,9 +124,9 @@ class FenceSync(private val gl: GlBase.JsGlContext) {
         error("Fence sync failed after ${internalTimerClock.now() - startTime}ms, $tries tries!")
     }
 
-    private fun clientWaitSync(fence: WebGLSync, timeout: Int): Boolean {
+    private fun clientWaitSync(fence: WebGLSync, timeout: Double): Boolean {
         return when (
-            val result = gl.check { gl.webgl.clientWaitSync(fence, 0, timeout) }
+            val result = gl.check { gl.webgl.clientWaitSync(fence, 0 as GLbitfield, timeout) }
         ) {
             WebGL2RenderingContext.ALREADY_SIGNALED -> true
             WebGL2RenderingContext.TIMEOUT_EXPIRED -> false

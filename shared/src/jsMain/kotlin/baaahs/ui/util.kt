@@ -4,7 +4,6 @@ import baaahs.dasherize
 import baaahs.document
 import baaahs.get2DContext
 import js.objects.Object
-import kotlinext.js.getOwnPropertyNames
 import kotlinx.css.*
 import kotlinx.css.properties.Time
 import kotlinx.css.properties.Timing
@@ -153,7 +152,7 @@ fun CssBuilder.mixIn(mixin: Any) =
     when (mixin) {
         is CssBuilder -> declarations.putAll(mixin.declarations)
         else -> {
-            for (key in mixin.getOwnPropertyNames()) {
+            for (key in Object.getOwnPropertyNames(mixin)) {
                 declarations[key] = mixin.asDynamic()[key]
             }
         }

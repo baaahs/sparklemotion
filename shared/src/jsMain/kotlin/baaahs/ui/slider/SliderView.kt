@@ -10,6 +10,7 @@ import react.dom.div
 import react.dom.events.KeyboardEvent
 import react.dom.events.PointerEvent
 import web.dom.Element
+import web.events.AddEventListenerOptions
 import web.events.addEventListener
 import web.events.removeEventListener
 import web.html.HTMLElement
@@ -165,7 +166,8 @@ private val Slider = xComponent<BetterSliderProps>("Slider") { props ->
         sliderEl.addEventListener(
             web.uievents.PointerEvent.POINTER_UP,
             handlePointerUp,
-            jso { once = true })
+            AddEventListenerOptions(once = true)
+        )
 
         if (handleId != null) {
             val handle = handlesById[handleId]

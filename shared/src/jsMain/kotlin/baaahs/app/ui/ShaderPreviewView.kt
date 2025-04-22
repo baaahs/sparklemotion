@@ -26,7 +26,7 @@ import react.useContext
 import styled.StyleSheet
 import styled.inlineStyles
 import web.dom.Element
-import web.dom.observers.IntersectionObserver
+import web.intersection.IntersectionObserver
 import web.html.HTMLDivElement
 
 private val ShaderPreviewView = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
