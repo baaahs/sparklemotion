@@ -19,7 +19,7 @@ On OS X, start the simulator:
 ```
 brew install openjdk
 export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
-./gradlew --continuous jsRun
+./gradlew --continuous jsBrowserDevelopmentRun
 ```
 
 A brand new session starts with no Show or Scene loaded and the Show/Scene menu open. For an existing session:

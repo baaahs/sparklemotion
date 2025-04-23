@@ -122,7 +122,7 @@ In simulator mode, most of Sparkle Motion runs within a web browser.
 
 Run this in a shell window; a browser window will open with the simulator:
 
-    ./gradlew --continuous jsRun
+    ./gradlew --continuous jsBrowserDevelopmentRun
 
 ### Production Mode
 
