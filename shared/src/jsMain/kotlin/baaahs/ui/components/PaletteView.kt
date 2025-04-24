@@ -58,6 +58,7 @@ private val PaletteView = xComponent<PaletteProps>("Palette") { props ->
 
         Draggable {
             attrs.handle = ".$styleForDragHandle"
+            attrs.nodeRef = frameRef
 
             Resizable {
                 attrs.handle = ::buildResizeHandle

@@ -53,6 +53,9 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
 
     val shiftDown = ref(false)
 
+    val mappingSessionDraggableRef = ref<HTMLElement>()
+    val mappingSessionDraggable2logNRef = ref<HTMLElement>()
+
     // init:
     onMount {
         ui.onMount(
@@ -275,12 +278,14 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
             val metadata = session.metadata
             if (metadata is TwoLogNMappingStrategy.TwoLogNSessionMetadata) {
                 Draggable {
+                    attrs.nodeRef = mappingSessionDraggable2logNRef
                     val styleForDragHandle = "MappingSessionDragHandleTwoN"
                     attrs.handle = ".$styleForDragHandle"
 
                     div(+styles.twoLogNMasksPalette) {
+                        ref = mappingSessionDraggable2logNRef
                         div(+baaahs.app.ui.Styles.dragHandle and styleForDragHandle) {
-                            icon(mui.icons.material.DragIndicator)
+                            icon(DragIndicator)
                         }
 
                         twoLogNSlices {
@@ -293,12 +298,14 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
         }
 
         Draggable {
+            attrs.nodeRef = mappingSessionDraggableRef
             val styleForDragHandle = "MappingSessionDragHandle"
             attrs.handle = ".$styleForDragHandle"
 
             div(+styles.threeDControls) {
+                ref = mappingSessionDraggableRef
                 div(+baaahs.app.ui.Styles.dragHandle and styleForDragHandle) {
-                    icon(mui.icons.material.DragIndicator)
+                    icon(DragIndicator)
                 }
 
                 div(+styles.controls) {

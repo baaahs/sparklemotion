@@ -63,13 +63,17 @@ val FakeClientDevice = xComponent<FakeClientDeviceProps>("FakeClientDevice") { p
         return@handler false
     }
 
+    val devicePadRef = ref<HTMLElement>()
+
     if (!isOpen) {
         div {}
     } else {
         Draggable {
+            attrs.nodeRef = devicePadRef
             attrs.onStart = handleDragStart
 
             div(+SimulatorStyles.fakeClientDevicePad) {
+                ref = devicePadRef
                 inlineStyles {
                     width = (props.width * zoom + BORDER_WIDTH * 2).px
                     height = (props.height * zoom + BORDER_WIDTH * 2).px

@@ -276,6 +276,10 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
             display = Display.none
         }
 
+        ".app-ui-layout-resize-handle" {
+            position = Position.absolute
+        }
+
         ".app-ui-layout-resize-handle-sw" {
             bottom = inset
             left = inset

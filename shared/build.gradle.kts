@@ -173,7 +173,7 @@ kotlin {
                 implementation(npm("dagre-d3", "^0.6.4"))
 
                 implementation(npm("clsx", "^2.0.0"))
-                implementation(npm("react-draggable", "^4.4.4"))
+                implementation(npm("react-draggable", "^4.4.6"))
                 implementation(npm("react-dropzone", "^14.2.1"))
                 implementation(npm("react-mosaic-component", "^6.1.0"))
                 implementation(npm("react-error-boundary", "^2.2.2"))

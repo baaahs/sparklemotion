@@ -8,6 +8,7 @@ import react.buildElement
 import react.dom.svg.ReactSVG
 import web.cssom.ClassName
 import web.html.HTMLElement
+import web.svg.SVGSVGElement
 
 typealias ResizeHandle =
             (resizeHandleAxis: ResizeHandleAxis, ref: Ref<HTMLElement>) -> ReactElement<*>
@@ -35,6 +36,7 @@ val ResizeHandleAxes = arrayOf(
 
 fun buildResizeHandle(axis: ResizeHandleAxis, ref: Ref<HTMLElement>) = buildElement {
     SvgIcon {
+        attrs.ref = ref.unsafeCast<Ref<SVGSVGElement>>()
         attrs.viewBox = "0 0 20 20"
         attrs.className = ClassName("app-ui-layout-resize-handle " +
                 "app-ui-layout-resize-handle-$axis react-resizable-handle")
