@@ -60,6 +60,7 @@ kotlin {
                 implementation(libs.expressionsEvaluator)
                 api(libs.kgl)
                 implementation(projects.rpc)
+                implementation(libs.kable)
             }
         }
         commonTest {

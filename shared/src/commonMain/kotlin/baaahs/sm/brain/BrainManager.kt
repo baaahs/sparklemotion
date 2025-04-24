@@ -18,10 +18,18 @@ import baaahs.sm.brain.proto.*
 import baaahs.ui.View
 import baaahs.util.Clock
 import baaahs.util.Logger
+import baaahs.util.globalLaunch
 import baaahs.util.unixMillis
 import baaahs.visualizer.entity.visualizerBuilder
+import com.juul.kable.Filter
+import com.juul.kable.Scanner
+import com.juul.kable.logs.Logging
+import com.juul.kable.logs.SystemLogEngine
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
 import kotlinx.serialization.KSerializer
@@ -58,6 +66,26 @@ class BrainManager(
             }
         }
     })
+
+    val scanner = Scanner {
+        filters {
+            match {
+                name = Filter.Name.Exact("esp32")
+            }
+        }
+        logging {
+            engine = SystemLogEngine
+            level = Logging.Level.Warnings
+            format = Logging.Format.Multiline
+        }
+        
+    }
+    
+    init {
+        globalLaunch {
+            scanner.advertisements.collect { println(it) }
+        }
+    }
 
     internal val activeBrains: MutableMap<BrainId, BrainController> = mutableMapOf()
 
