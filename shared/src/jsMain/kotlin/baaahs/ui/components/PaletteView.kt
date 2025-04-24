@@ -57,8 +57,8 @@ private val PaletteView = xComponent<PaletteProps>("Palette") { props ->
         attrs.disablePortal = props.disablePortal == true
 
         Draggable {
-            attrs.handle = ".$styleForDragHandle"
             attrs.nodeRef = frameRef
+            attrs.handle = ".$styleForDragHandle"
 
             Resizable {
                 attrs.handle = ::buildResizeHandle

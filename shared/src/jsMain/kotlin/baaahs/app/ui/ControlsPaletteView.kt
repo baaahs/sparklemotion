@@ -43,6 +43,7 @@ private val ControlsPaletteView = xComponent<ControlsPaletteProps>("ControlsPale
     }
 
     Draggable {
+        attrs.nodeRef = unplacedControlPaletteDiv
         val styleForDragHandle = "ControlsPaletteDragHandle"
         attrs.handle = ".$styleForDragHandle"
 

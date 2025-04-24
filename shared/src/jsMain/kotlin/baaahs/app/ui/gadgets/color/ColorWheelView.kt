@@ -31,10 +31,11 @@ val ColorWheelView = xComponent<ColorWheelProps>("ColorWheelView") { props ->
     var colors by state { Array(1) { Color.WHITE } }
     var selectedIndex by state<Int?> { null }
     var grabbingIndex by state<Int?> { null }
-    val mouseDraggingState = useRef(false)
+    val mouseDraggingState = ref(false)
 
-    val containerDiv = ref<HTMLElement>(null)
-    val canvasEl = ref<HTMLCanvasElement>(null)
+    val containerDiv = ref<HTMLElement>()
+    val canvasEl = ref<HTMLCanvasElement>()
+    val draggableRef = ref<HTMLElement>()
     val colorWheel = memo(canvasEl.current) {
         canvasEl.current?.let {
             ColorWheel(it, radius, harmonyMode, colors)
@@ -127,6 +128,7 @@ val ColorWheelView = xComponent<ColorWheelProps>("ColorWheelView") { props ->
 
                 Draggable {
                     key = index.toString()
+                    attrs.nodeRef = draggableRef
                     attrs.defaultClassName = +ColorWheelStyles.draggablePicker
                     attrs.defaultClassNameDragging = +ColorWheelStyles.dragging
                     attrs.position = jso {
@@ -163,6 +165,8 @@ val ColorWheelView = xComponent<ColorWheelProps>("ColorWheelView") { props ->
                     }
 
                     div {
+                        ref = draggableRef
+
                         if (mouseDraggingState.current == true) {
                             inlineStyles {
                                 pointerEvents = PointerEvents.none

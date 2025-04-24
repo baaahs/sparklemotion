@@ -241,7 +241,7 @@ class ReactGridManager(
 
         private fun onResizeInnerContainer(el: HTMLElement) {
             val rect = el.getBoundingClientRect()
-            val rootEl = rootRef.current ?: error("No root ref?")
+            val rootEl = rootRef.current ?: return
             val rootRect = rootEl.getBoundingClientRect()
             val adjustedBounds = Rect(
                 (rect.x - rootRect.x).roundToInt(),
