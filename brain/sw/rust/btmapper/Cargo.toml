@@ -1,0 +1,61 @@
+[package]
+edition = "2021"
+name = "btmapper"
+version = "0.1.0"
+
+[[bin]]
+name = "btmapper"
+path = "./src/bin/main.rs"
+
+[dependencies]
+bleps = { git = "https://github.com/bjoernQ/bleps", package = "bleps", rev = "a5148d8ae679e021b78f53fd33afb8bb35d0b62e", features = [
+  "async",
+  "macros",
+] }
+cfg-if = "1.0.0"
+critical-section = "1.2.0"
+embassy-executor = { version = "0.7.0", features = ["task-arena-size-20480"] }
+embassy-time = "0.4.0"
+embedded-io = "0.6.1"
+embedded-io-async = "0.6.1"
+esp-alloc = "0.7.0"
+esp-backtrace = { version = "0.15.1", features = [
+  "esp32",
+  "println",
+], default-features = false }
+esp-hal = { version = "1.0.0-beta.0", features = ["esp32", "unstable"] }
+esp-hal-embassy = { version = "0.7.0", features = ["esp32"] }
+esp-println = { version = "0.13.1", features = ["esp32", "log"] }
+esp-wifi = { version = "0.13.0", features = [
+  "ble",
+  "builtin-scheduler",
+  "esp-alloc",
+  "esp32",
+] }
+static_cell = { version = "2.1.0", features = ["nightly"] }
+serde = { version = "1.0.215", features = [
+  "derive",
+  "alloc",
+], default-features = false }
+serde_json = { version = "1.0.105", features = [
+  "alloc",
+], default-features = false }
+
+
+[profile.dev]
+# Rust debug is too slow.
+# For debug builds always builds with some optimization
+opt-level = "s"
+
+[profile.release]
+codegen-units = 1        # LLVM can perform better optimizations using a single thread
+debug = 2
+debug-assertions = false
+incremental = false
+lto = 'fat'
+opt-level = 's'
+overflow-checks = false
+
+[features]
+default = ["esp32"]
+esp32 = []
