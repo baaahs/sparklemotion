@@ -1,6 +1,7 @@
 package baaahs.net
 
 import baaahs.io.Fs
+import baaahs.io.RealFs
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.application.*
@@ -12,7 +13,6 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import kotlinx.coroutines.CoroutineScope
-import java.io.File
 import java.time.Duration
 
 class JvmKtorHttpServer(
@@ -67,7 +67,8 @@ class JvmKtorHttpServer(
         }
 
         override fun staticFiles(path: String, dir: Fs.File) {
-            routing.staticFiles(path, File(dir.fullPath))
+            val fsPath = (dir.fs as RealFs).resolve(dir)
+            routing.staticFiles(path, fsPath.toFile())
         }
 
         class KtorHttpHandling(
