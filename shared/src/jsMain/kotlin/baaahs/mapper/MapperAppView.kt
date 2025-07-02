@@ -212,7 +212,7 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
                 if (!ui.mappingEnabled) {
                     betterSelect<String?> {
                         attrs.label = "Load Session:"
-                        attrs.values = listOf(null) + ui.sessions.map { it }
+                        attrs.values = listOf(null) + ui.sessions.map { it }.sorted()
                         attrs.renderValueOption = { name, _ -> buildElement { +(name ?: "None" ) } }
                         attrs.value = ui.selectedMappingSessionName
                         attrs.onChange = handleLoadMappingSession
