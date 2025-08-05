@@ -1,12 +1,10 @@
 package baaahs.mapper.twologn
 
-import baaahs.imaging.Bitmap
 import baaahs.mapper.JsMapper
-import baaahs.mapper.TwoLogNMappingStrategy
+import baaahs.mapper.LoadingSlice
 import baaahs.mapper.mapperImage
 import baaahs.ui.xComponent
 import baaahs.util.globalLaunch
-import kotlinx.coroutines.CompletableDeferred
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -18,45 +16,27 @@ import web.html.HTMLImageElement
 private val TwoLogNSliceView = xComponent<TwoLogNSliceProps>("TwoLogNSlice") { props ->
     val overlapImg = ref<HTMLImageElement>()
 
-    val deferredBitmaps = memo(props.imageNames) {
-        props.imageNames.map { CompletableDeferred<Bitmap>() }
-    }
-    var overlapBitmap by state<Bitmap?> { null }
-
-    onMount(props.imageNames) {
+    val loadingSlice = props.loadingSlice
+    onMount(loadingSlice) {
         globalLaunch {
-            val origBitmaps = deferredBitmaps.map { it.await() }
-            val slice = TwoLogNMappingStrategy.Slice.build(origBitmaps[0], null, origBitmaps[1], null)
-            overlapImg.current!!.src = slice.overlapBitmap.toDataUrl()
-            overlapBitmap = slice.overlapBitmap
+            loadingSlice.deferredSlice.await()
+            val slice = loadingSlice.deferredSlice.await()
+            overlapImg.current!!.src = slice.overlap.toDataUrl()
         }
     }
 
     tr {
         td { +props.sliceIndex.toString() }
 
-        props.imageNames.forEachIndexed { frameIndex, origImageName ->
+        loadingSlice.halves.forEachIndexed { frameIndex, loadingImage ->
             td {
-                if (origImageName != null) {
+                if (loadingImage != null) {
                     mapperImage {
                         attrs.mapper = props.mapper
-                        attrs.imageName = origImageName
+                        attrs.loadingSlice = loadingSlice
+                        attrs.loadingImage = loadingImage
                         attrs.width = 100
-                        attrs.onBitmap = { deferredBitmaps[frameIndex].complete(it) }
-                    }
-
-                    if (props.showExclusives == true) {
-                        img {
-                            val theOverlapBitmap = overlapBitmap
-                            if (theOverlapBitmap != null) {
-                                attrs.src =
-                                    deferredBitmaps[frameIndex].getCompleted()
-                                        .clone()
-                                        .subtract(theOverlapBitmap)
-                                        .toDataUrl()
-                            }
-                            attrs.width = "100"
-                        }
+                        attrs.showWithoutOverlap = props.showWithoutOverlap
                     }
                 }
             }
@@ -73,8 +53,8 @@ private val TwoLogNSliceView = xComponent<TwoLogNSliceProps>("TwoLogNSlice") { p
 
 external interface TwoLogNSliceProps : Props {
     var sliceIndex: Int
-    var imageNames: List<String?>
-    var showExclusives: Boolean?
+    var loadingSlice: LoadingSlice
+    var showWithoutOverlap: Boolean?
     var mapper: JsMapper
 }
 

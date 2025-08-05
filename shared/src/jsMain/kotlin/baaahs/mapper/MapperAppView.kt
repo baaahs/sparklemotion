@@ -4,7 +4,6 @@ import baaahs.MediaDevices
 import baaahs.app.ui.editor.betterSelect
 import baaahs.app.ui.editor.textFieldEditor
 import baaahs.device.PixelFormat
-import baaahs.mapper.twologn.twoLogNSlices
 import baaahs.model.Model
 import baaahs.ui.*
 import baaahs.ui.components.palette
@@ -54,7 +53,6 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
     val shiftDown = ref(false)
 
     val mappingSessionDraggableRef = ref<HTMLElement>()
-    val mappingSessionDraggable2logNRef = ref<HTMLElement>()
 
     // init:
     onMount {
@@ -92,6 +90,7 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
 
     val handlePixelFormatChange by handler(ui.mappingController) { pixelFormat: PixelFormat? ->
         ui.mappingController?.pixelFormat = pixelFormat
+        ui.mappingController?.shadeSolidColor()
         forceRender()
     }
 
@@ -219,19 +218,21 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
                     }
                 }
 
-                ui.selectedMappingSession?.let { session ->
-                    mappingSession {
-                        attrs.name = ui.selectedMappingSessionName ?: "unknown session!?"
-                        attrs.session = session
-                        attrs.mapper = ui
-                    }
+                if (!ui.mappingEnabled) {
+                    ui.selectedMappingSession?.let { session ->
+                        mappingSession {
+                            attrs.name = ui.selectedMappingSessionName ?: "unknown session!?"
+                            attrs.session = session
+                            attrs.mapper = ui
+                        }
 
-                    betterSelect<String?> {
-                        attrs.label = "Load Image:"
-                        attrs.values = listOf(null) + ui.images.map { it }
-                        attrs.renderValueOption = { name, _ -> buildElement { +(name ?: "None" ) } }
-                        attrs.value = ui.selectedImageName
-                        attrs.onChange = handleLoadImage
+                        betterSelect<String?> {
+                            attrs.label = "Load Image:"
+                            attrs.values = listOf(null) + ui.images.map { it }
+                            attrs.renderValueOption = { name, _ -> buildElement { +(name ?: "None") } }
+                            attrs.value = ui.selectedImageName
+                            attrs.onChange = handleLoadImage
+                        }
                     }
                 }
             }
@@ -274,28 +275,6 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
             ref = perfStatsRef
         }
 
-        ui.selectedMappingSession?.let { session ->
-            val metadata = session.metadata
-            if (metadata is TwoLogNMappingStrategy.TwoLogNSessionMetadata) {
-                Draggable {
-                    attrs.nodeRef = mappingSessionDraggable2logNRef
-                    val styleForDragHandle = "MappingSessionDragHandleTwoN"
-                    attrs.handle = ".$styleForDragHandle"
-
-                    div(+styles.twoLogNMasksPalette) {
-                        ref = mappingSessionDraggable2logNRef
-                        div(+baaahs.app.ui.Styles.dragHandle and styleForDragHandle) {
-                            icon(DragIndicator)
-                        }
-
-                        twoLogNSlices {
-                            attrs.mapper = ui
-                            attrs.sessionMetadata = metadata
-                        }
-                    }
-                }
-            }
-        }
 
         Draggable {
             attrs.nodeRef = mappingSessionDraggableRef

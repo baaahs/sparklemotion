@@ -1,6 +1,5 @@
 package baaahs.mapper
 
-import baaahs.Color
 import baaahs.MediaDevices
 import baaahs.SparkleMotion
 import baaahs.geom.Vector2F
@@ -94,8 +93,7 @@ abstract class Mapper(
 
             ui.showMessage("${brainsToMap.size} SURFACES DISCOVERED!")
 
-            // Less voltage causes less LED glitches.
-            mappableBrain.shade { MapperUtil.solidColor(Color.GREEN.withBrightness(.4f)) }
+            mappableBrain.shadeSolidColor()
         }
         mapperBackend = MapperBackend(plugins, clock, link, pinkyAddress, udpSockets)
 

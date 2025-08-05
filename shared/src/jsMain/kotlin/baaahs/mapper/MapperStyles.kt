@@ -154,8 +154,17 @@ class MapperStyles(val theme: Theme) : StyleSheet("mapper", isStatic = true) {
     val twoLogNMasks by css(statusText) {
         fontSize = .6.rem
 
+        table {
+            borderCollapse = BorderCollapse.collapse
+            border = Border(1.px, BorderStyle.solid, Color.green)
+        }
+
+        th {
+            border = Border(1.px, BorderStyle.solid, Color.green)
+        }
         td {
             whiteSpace = WhiteSpace.pre
+            border = Border(1.px, BorderStyle.solid, Color.green)
         }
     }
 
@@ -191,6 +200,7 @@ class MapperStyles(val theme: Theme) : StyleSheet("mapper", isStatic = true) {
     }
 
     val pixels by css {
+        cursor = Cursor.default
         lineHeight = 0.px.lh
 
         child("div") {

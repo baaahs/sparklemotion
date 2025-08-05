@@ -27,6 +27,7 @@ import baaahs.visualizer.geometry.SurfaceGeometry
 import baaahs.visualizer.toVector3
 import js.objects.jso
 import kotlinx.coroutines.*
+import kotlinx.datetime.Instant
 import mui.icons.material.KeyboardArrowRight
 import org.khronos.webgl.Float32Array
 import org.khronos.webgl.set
@@ -53,6 +54,7 @@ import web.prompts.prompt
 import web.uievents.KeyboardEvent
 import web.uievents.MouseEvent
 import kotlin.math.*
+import kotlin.time.Duration.Companion.seconds
 import three.Clock as ThreeJsClock
 
 class MemoizedJsMapper(mapperUi: JsMapper) {
@@ -194,6 +196,8 @@ class JsMapper(
         get() = selectedEntityAndPixel?.second
 
     private var dragging = false
+
+    private var suppressPinkyUntil: Instant? = null
 
     fun onMount(
         ui2dCanvas: HTMLCanvasElement,
@@ -1234,6 +1238,20 @@ class JsMapper(
             udpSockets.allDark()
         }
 
+        udpSockets.adviseMapperStatus(true)
+        if (suppressPinkyUntil != null) {
+            suppressPinkyUntil = kotlinx.datetime.Clock.System.now() + 10.seconds
+        } else {
+            suppressPinkyUntil = kotlinx.datetime.Clock.System.now() + 10.seconds
+            globalLaunch {
+                val until = suppressPinkyUntil
+                while (until != null && until > kotlinx.datetime.Clock.System.now()) {
+                    delay(1000L)
+                }
+                suppressPinkyUntil = null
+                udpSockets.adviseMapperStatus(false)
+            }
+        }
         selectedEntityAndPixel = panelInfo to index
 
         notifyChanged()

@@ -4,6 +4,7 @@ import baaahs.imaging.Bitmap
 import baaahs.imaging.createWritableBitmap
 import baaahs.net.Network
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.serialization.KSerializer
@@ -35,20 +36,46 @@ object TwoLogNMappingStrategy : MappingStrategy() {
         mapperBackend: MapperBackend
     ) = Session(scope, mapper, stats, ui, session, brainsToMap, mapperBackend)
 
-    class Slices(val slices: List<Slice>) : List<Slice> by slices
+    class Slices(
+        val slices: List<Slice>
+    ) : List<Slice> by slices {
+        fun reconstructPixel(pixelIndex: Int): Bitmap {
+            var compositeBitmap: Bitmap? = null
+
+            for (b in 0 until slices.size) {
+                val shouldBeOn = pixelIndex ushr b and 1 == 1
+
+                val mask = slices[b]
+                    .let { if (shouldBeOn) it.snapshot0 else it.snapshot1 }
+                    .exclusiveBitmap
+
+                if (compositeBitmap == null) {
+                    compositeBitmap = mask.clone()
+                } else {
+                    compositeBitmap.darken(mask)
+                }
+            }
+            return compositeBitmap!!
+        }
+    }
 
     class Slice(
-        val frame0: Frame,
-        val frame1: Frame,
-        val overlapBitmap: Bitmap
+        snapshot0Bitmap: Bitmap,
+        snapshot0FileName: String?,
+        snapshot1Bitmap: Bitmap,
+        snapshot1FileName: String?
     ) {
-        val frames get() = listOf(frame0, frame1)
+        val overlap by lazy { snapshot0.originalBitmap.clone().darken(snapshot1.originalBitmap) }
+        val snapshot0 = Snapshot(snapshot0Bitmap, snapshot0FileName)
+        val snapshot1 = Snapshot(snapshot1Bitmap, snapshot1FileName)
+        val snapshots get() = listOf(snapshot0, snapshot1)
 
-        class Frame(
+        inner class Snapshot(
             val originalBitmap: Bitmap,
             val originalImageName: String?,
-            val exclusiveBitmap: Bitmap
-        )
+        ) {
+            val exclusiveBitmap: Bitmap by lazy { originalBitmap.clone().subtract(overlap) }
+        }
 
         companion object {
             fun build(
@@ -56,16 +83,7 @@ object TwoLogNMappingStrategy : MappingStrategy() {
                 bitmap0Image: String?,
                 bitmap1: Bitmap,
                 bitmap1Image: String?
-            ): Slice {
-                val overlap = bitmap0.clone().darken(bitmap1)
-                val excl0 = bitmap0.clone().subtract(overlap)
-                val excl1 = bitmap1.clone().subtract(overlap)
-                return Slice(
-                    Frame(bitmap0, bitmap0Image, excl0),
-                    Frame(bitmap1, bitmap1Image, excl1),
-                    overlap
-                )
-            }
+            ): Slice = Slice(bitmap0, bitmap0Image, bitmap1, bitmap1Image)
         }
     }
 
@@ -88,7 +106,7 @@ object TwoLogNMappingStrategy : MappingStrategy() {
             val slices = buildSlices(sliceCount)
             session.metadata = TwoLogNSessionMetadata(
                 sliceCount,
-                slices.map { it.frames.map { it.originalImageName } }
+                slices.map { it.snapshots.map { it.originalImageName } }
             )
 
             derivePixelLocations(maxPixelForTheseBrains, slices)
@@ -100,33 +118,26 @@ object TwoLogNMappingStrategy : MappingStrategy() {
             val slices = arrayListOf<Slice>()
 
             ui.message = "Capturing pixel masks…"
-            for (b in 0 until sliceCount) {
-                ui.message2 = "${b * 2 + 1} of ${sliceCount * 2} steps"
-                val bitmap0 = captureMaskedPixelsImage(b, false)
-                val deferredImage0Name = scope.async {
-                    mapperBackend.saveImage(session.sessionStartTime, maskedImageName(b, false), bitmap0)
-                }
+            for (sliceIndex in 0 until sliceCount) {
+                ui.message2 = "${sliceIndex * 2 + 1} of ${sliceCount * 2} steps"
+                val bitmap0 = captureMaskedPixelsImage(sliceIndex, false)
+                val deferredImage0Name = saveSliceImage(sliceIndex, Half.First, bitmap0)
 
-                ui.message2 = "${b * 2 + 2} of ${sliceCount * 2} steps"
-                val bitmap1 = captureMaskedPixelsImage(b, true)
-                val deferredImage1Name = scope.async {
-                    mapperBackend.saveImage(session.sessionStartTime, maskedImageName(b, true), bitmap1)
-                }
+                ui.message2 = "${sliceIndex * 2 + 2} of ${sliceCount * 2} steps"
+                val bitmap1 = captureMaskedPixelsImage(sliceIndex, true)
+                val deferredImage1Name = saveSliceImage(sliceIndex, Half.Second, bitmap1)
 
-                val bitmapBoth = bitmap0.clone()
-                bitmapBoth.darken(bitmap1)
-                bitmap0.subtract(bitmapBoth)
-                bitmap1.subtract(bitmapBoth)
                 val slice = Slice.build(bitmap0, deferredImage0Name.await(), bitmap1, deferredImage1Name.await())
-//                val slice = Slice.build(
-//                    bitmap0.clone().subtract(bitmapBoth), deferredImage0Name.await(),
-//                    bitmap1.clone().subtract(bitmapBoth), deferredImage1Name.await())
-
                 slices.add(slice)
-
-                mapperBackend.saveImage(session.sessionStartTime, maskedImageName(b, "both"), bitmapBoth)
             }
             return Slices(slices)
+        }
+
+        private fun saveSliceImage(i: Int, half: Half, bitmap: Bitmap): Deferred<String> {
+            val origBitmap = bitmap.clone()
+            return scope.async {
+                mapperBackend.saveImage(session.sessionStartTime, maskedImageName(i, half), origBitmap)
+            }
         }
 
         private suspend fun derivePixelLocations(
@@ -138,29 +149,28 @@ object TwoLogNMappingStrategy : MappingStrategy() {
                 val progress = (pixelIndex.toFloat() / maxPixelForTheseBrains * 100).roundToInt()
                 ui.message2 = "$pixelIndex of $maxPixelForTheseBrains pixels — $progress%"
 
-                val compositeBitmap = reconstructFromSlices(slices, pixelIndex)
+                val compositeBitmap = slices.reconstructPixel(pixelIndex)
 
                 ui.showDiffImage(compositeBitmap)
 
-                val analysis = stats.diffImage.time {
-                    ImageProcessing.analyze(compositeBitmap)
-                }
-                val pixelChangeRegion = stats.detectChangeRegion.time {
-                    analysis.detectChangeRegion(.9f)
-                }
-                ui.showDiffImage(compositeBitmap, pixelChangeRegion)
-                //                mapper.pauseForUserInteraction(ui.message2 ?: "???")
-                //                mapper.waitUntilUnpaused()
-
-                val pixelOnImageName =
-                    mapperBackend.saveImage(session.sessionStartTime, "pixel-$pixelIndex", compositeBitmap)
+                val pixelOnImageName = null
 
                 brainsToMap.values.forEach { brainToMap ->
                     val visibleSurface = brainToMap.guessedVisibleSurface
 
+                    val analysis = stats.diffImage.time {
+                        ImageProcessing.analyze(compositeBitmap)
+                    }
+                    val pixelChangeRegion = stats.detectChangeRegion.time {
+                        analysis.detectChangeRegion(.9f)
+                    }
+                    ui.showDiffImage(compositeBitmap, pixelChangeRegion)
+                    //                mapper.pauseForUserInteraction(ui.message2 ?: "???")
+                    //                mapper.waitUntilUnpaused()
+
                     Mapper.logger.debug { "* analysis: hasBrightSpots=${analysis.hasBrightSpots()}" }
                     Mapper.logger.debug { "* pixelChangeRegion=$pixelChangeRegion" }
-                    if (analysis.hasBrightSpots() && !pixelChangeRegion.isEmpty() && pixelChangeRegion.changedAmount < .01) {
+                    if (/*analysis.hasBrightSpots() &&*/ !pixelChangeRegion.isEmpty() /*&& pixelChangeRegion.changedAmount < .01*/) {
                         val centerUv = pixelChangeRegion.centerUv
                         visibleSurface?.setPixel(pixelIndex, centerUv)
                         brainToMap.pixelMapData[pixelIndex] = Mapper.PixelMapData(
@@ -170,34 +180,15 @@ object TwoLogNMappingStrategy : MappingStrategy() {
                         Mapper.logger.debug { "$pixelIndex/${brainToMap.brainId}: centerUv = $centerUv" }
                     } else {
                         ui.message2 = "looks like no pixel $pixelIndex for ${brainToMap.brainId}…"
-                        Mapper.logger.debug { "looks like no pixel $pixelIndex for ${brainToMap.brainId}…" }
+                        Mapper.logger.warn {
+                            "looks like no pixel $pixelIndex for ${brainToMap.brainId}…\n" +
+                                    "hasBrightSpots == ${analysis.hasBrightSpots()} && !pixelChangeRegion.isEmpty() = ${!pixelChangeRegion.isEmpty()} && changedAmount == ${pixelChangeRegion.changedAmount}"
+                        }
                     }
                 }
 
                 delay(1)
             }
-        }
-
-        private fun reconstructFromSlices(
-            slices: Slices,
-            pixelIndex: Int
-        ): Bitmap {
-            var compositeBitmap: Bitmap? = null
-
-            for (b in 0 until slices.size) {
-                val shouldBeOn = pixelIndex ushr b and 1 == 1
-
-                val mask = slices[b]
-                    .let { if (shouldBeOn) it.frame0 else it.frame1 }
-                    .exclusiveBitmap
-
-                if (compositeBitmap == null) {
-                    compositeBitmap = mask.clone()
-                } else {
-                    compositeBitmap.darken(mask)
-                }
-            }
-            return compositeBitmap!!
         }
 
         private suspend fun captureMaskedPixelsImage(maskBit: Int, invert: Boolean): Bitmap {
@@ -237,6 +228,18 @@ object TwoLogNMappingStrategy : MappingStrategy() {
         }
 
         private suspend fun findMissingPixels(maxPixelForTheseBrains: Int) {
+            var totalPixels = 0
+            var ambiguousPixels = 0
+            brainsToMap.values.forEach { brainToMap ->
+                for (pixelIndex in 0 until maxPixelForTheseBrains) {
+                    totalPixels++
+                    if (brainToMap.pixelMapData[pixelIndex] == null) {
+                        ambiguousPixels++
+                    }
+                }
+            }
+
+            ui.message = "Find ambiguous pixels ($ambiguousPixels / $totalPixels)…"
             brainsToMap.values.forEach { brainToMap ->
                 val visibleSurface = brainToMap.guessedVisibleSurface
 
@@ -285,11 +288,8 @@ object TwoLogNMappingStrategy : MappingStrategy() {
         }
     }
 
-    fun maskedImageName(mapBit: Int, invert: Boolean) =
-        maskedImageName(mapBit, if (invert) "B" else "A")
-
-    fun maskedImageName(mapBit: Int, type: String) =
-        "mask-$mapBit$type"
+    fun maskedImageName(sliceIndex: Int, half: Half) =
+        "mask-$sliceIndex${half.shortName}"
 
     @Serializable @SerialName("TwoLogN")
     data class TwoLogNSessionMetadata(
@@ -307,4 +307,8 @@ object TwoLogNMappingStrategy : MappingStrategy() {
         val calculatedImage: String? = null,
         val singleImage: String? = null
     ) : PixelMetadata
+}
+
+enum class Half(val shortName: String) {
+    First("A"), Second("B")
 }
