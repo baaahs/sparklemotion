@@ -267,6 +267,10 @@ tasks.named<ProcessResources>("jvmProcessResources") {
     }
 }
 
+// This task is deprecated, use `jsBrowserDevelopmentRun` instead.
+tasks.create("jsRun") {
+    dependsOn("jsBrowserDevelopmentRun")
+}
 
 tasks.named<DokkaTask>("dokkaHtml") {
     outputDirectory.set(buildDir("javadoc"))
