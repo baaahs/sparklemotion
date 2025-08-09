@@ -2,13 +2,13 @@ dependencies:
   brain-common:
     dependencies: []
     source:
-      path: /System/Volumes/Data/code/github/baaahs/sparklemotion/brain/sw/components/brain-common
+      path: /Users/kevin/src/burningman/sparklemotion/brain/sw/components/brain-common
       type: local
     version: 1.0.0
   brain-ui:
     dependencies: []
     source:
-      path: /System/Volumes/Data/code/github/baaahs/sparklemotion/brain/sw/components/brain-ui
+      path: /Users/kevin/src/burningman/sparklemotion/brain/sw/components/brain-ui
       type: local
     version: 1.0.0
   espressif/jsmn:
@@ -26,7 +26,7 @@ dependencies:
     dependencies:
     - name: idf
       require: private
-      version: '>=4.4'
+      version: '>=5.0'
     source:
       registry_url: https://components.espressif.com/
       type: service
@@ -34,29 +34,29 @@ dependencies:
   idf:
     source:
       type: idf
-    version: 5.3.0
+    version: 5.1.0
   iso:
     dependencies: []
     source:
-      path: /System/Volumes/Data/code/github/baaahs/sparklemotion/brain/sw/components/iso
+      path: /Users/kevin/src/burningman/sparklemotion/brain/sw/components/iso
       type: local
     version: 1.0.0
   led-renderer:
     dependencies: []
     source:
-      path: /System/Volumes/Data/code/github/baaahs/sparklemotion/brain/sw/components/led-renderer
+      path: /Users/kevin/src/burningman/sparklemotion/brain/sw/components/led-renderer
       type: local
     version: 1.0.0
   net:
     dependencies: []
     source:
-      path: /System/Volumes/Data/code/github/baaahs/sparklemotion/brain/sw/components/net
+      path: /Users/kevin/src/burningman/sparklemotion/brain/sw/components/net
       type: local
     version: 1.0.0
   sysmon:
     dependencies: []
     source:
-      path: /System/Volumes/Data/code/github/baaahs/sparklemotion/brain/sw/components/sysmon
+      path: /Users/kevin/src/burningman/sparklemotion/brain/sw/components/sysmon
       type: local
     version: 1.0.0
 direct_dependencies:
