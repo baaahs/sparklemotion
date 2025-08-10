@@ -67,7 +67,11 @@ class JvmKtorHttpServer(
         }
 
         override fun staticFiles(path: String, dir: Fs.File) {
-            routing.staticFiles(path, File(dir.fullPath))
+            val absPath = dir.fs.absolutePath()
+            if (absPath == null) {
+                throw IllegalArgumentException("static file directory must have non-null absolute path")
+            }
+            routing.staticFiles(path, File(absPath))
         }
 
         class KtorHttpHandling(
