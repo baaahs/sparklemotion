@@ -72,8 +72,8 @@ class JvmPinkyModule(
     override val Scope.firmwareDir: Fs.File
         get() = RealFs(
             "Sparkle Motion Firmware",
-            File(System.getProperty("user.home")).toPath()
-        ).resolve("sparklemotion/fw")
+            File(System.getProperty("user.home")).toPath().resolve("sparklemotion/fw")
+        ).rootFile
 
     override val Scope.firmwareDaddy: FirmwareDaddy
         get() {

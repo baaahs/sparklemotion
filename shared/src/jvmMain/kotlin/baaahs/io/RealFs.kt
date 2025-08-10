@@ -5,7 +5,6 @@ import kotlinx.coroutines.withContext
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardOpenOption
-import kotlin.streams.toList
 
 class RealFs(
     override val name: String,
@@ -20,6 +19,10 @@ class RealFs(
                 emptyList()
             }
         }
+
+    override fun absolutePath(): String? {
+        return basePath.toAbsolutePath().toString()
+    }
 
     override suspend fun loadFile(file: Fs.File): String? =
         withContext(Dispatchers.IO) {

@@ -16,6 +16,9 @@ interface Fs {
     suspend fun saveFile(file: File, content: ByteArray, allowOverwrite: Boolean = false)
     suspend fun saveFile(file: File, content: String, allowOverwrite: Boolean = false)
 
+    // TODO: HACK to interop with ktor http server. It needs the absolute path to serve static files correctly.
+    fun absolutePath(): String? = null
+
     fun resolve(vararg pathParts: String): File {
         return File(this, pathParts.joinToString("/"))
     }
