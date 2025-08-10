@@ -29,6 +29,15 @@ class JvmNetwork(
         val myAddress = InetAddress.getByName("127.0.0.1")
         val broadcastAddress = InetAddress.getByName("255.255.255.255")
 
+
+        fun defaultLocalIPv4(): InetAddress? {
+            DatagramSocket().use { s ->
+                // Any public IP/port works; no packet is sent on UDP connect
+                s.connect(InetSocketAddress("8.8.8.8", 53))
+                return s.localAddress
+            }
+        }
+
         fun msgId(data: ByteArray): String {
             return "msgId=${((data[0].toInt() and 0xff) * 256) or (data[1].toInt() and 0xff)}"
         }
@@ -268,6 +277,10 @@ class JvmNetwork(
     data class IpAddress(val address: InetAddress) : Network.Address {
         companion object {
             fun mine(): IpAddress {
+                val default = defaultLocalIPv4()
+                if (default != null) {
+                    return IpAddress(default)
+                }
                 val envIp: String? = System.getenv("sparklemotion_ip")
                 envIp?.let {
                     return IpAddress(InetAddress.getByName(it))
