@@ -331,14 +331,14 @@ class MutableImportedEntityGroup(
     ) {
         override val fixtureType: FixtureType? get() = null
         override val entityTypeTitle: String get() = "Imported Entity"
-        val childId = nextChildId++
+//        val childId = nextChildId++
 
-        init {
-            println("New MutableChildMeta(parent=${this@MutableImportedEntityGroup.locator}).child for ${childEntity.title}, id=${childEntity.locator} childId=$childId")
-            if (childEntity.title == "F3P") {
-                Exception().printStackTrace()
-            }
-        }
+//        init {
+//            println("New MutableChildMeta(parent=${this@MutableImportedEntityGroup.locator}).child for ${childEntity.title}, id=${childEntity.locator} childId=$childId")
+//            if (childEntity.title == "F3P") {
+//                Exception().printStackTrace()
+//            }
+//        }
 
         override fun build(): EntityData =
             SurfaceDataForTest(
