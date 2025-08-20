@@ -2,7 +2,7 @@ package baaahs.mapper
 
 import baaahs.MediaDevices
 import baaahs.app.ui.editor.betterSelect
-import baaahs.app.ui.editor.textFieldEditor
+import baaahs.app.ui.editor.numberFieldEditor
 import baaahs.device.PixelFormat
 import baaahs.model.Model
 import baaahs.ui.*
@@ -24,7 +24,6 @@ import styled.inlineStyles
 import web.html.HTMLCanvasElement
 import web.html.HTMLElement
 import web.html.HTMLImageElement
-import web.html.InputType
 import web.uievents.KeyboardEvent
 
 val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView") { props ->
@@ -83,8 +82,8 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
         forceRender()
     }
 
-    val handlePixelCountChange by handler(ui.mappingController) { pixelCount: String ->
-        ui.mappingController?.expectedPixelCount = pixelCount.toIntOrNull()
+    val handlePixelCountChange by handler(ui.mappingController) { pixelCount: Int? ->
+        ui.mappingController?.expectedPixelCount = pixelCount
         forceRender()
     }
 
@@ -101,6 +100,10 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
     val handleLoadImage by handler(uiActions.loadMappingSession) { name: String? ->
         uiActions.loadImage(name, true)
     }
+
+    var findingLastPixel by state { false }
+    val handleFindLastPixel by mouseEventHandler { findingLastPixel = true }
+    val handleFindLastPixelCancel by handler { findingLastPixel = false }
 
     useResizeListener(screenRef) { _, _ ->
         screenRef.current?.let { el ->
@@ -189,13 +192,26 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
                             gridTemplateColumns = GridTemplateColumns(50.pct, 50.pct)
                         }
 
-                        textFieldEditor {
-                            attrs.type = InputType.number
-                            attrs.label = "Pixel Count"
-                            attrs.fullWidth = false
-                            attrs.getValue = { mappingController.expectedPixelCount?.toString() ?: "" }
-                            attrs.setValue = handlePixelCountChange
-                            attrs.onChange = {}
+                        if (!findingLastPixel) {
+                            numberFieldEditor<Int?> {
+                                attrs.label = "Pixel Count"
+                                attrs.isInteger = true
+                                attrs.isNullable = true
+                                attrs.getValue = { mappingController.expectedPixelCount }
+                                attrs.setValue = handlePixelCountChange
+                            }
+
+                            Button {
+                                attrs.onClick = handleFindLastPixel
+                                +"Find Last Pixel"
+                            }
+                        } else {
+                            findLastPixel {
+                                attrs.mapper = ui
+                                attrs.onFoundPixel = handlePixelCountChange
+                                attrs.onCancel = handleFindLastPixelCancel
+                                attrs.maxPossiblePixel = 2048
+                            }
                         }
 
                         betterSelect<PixelFormat?> {

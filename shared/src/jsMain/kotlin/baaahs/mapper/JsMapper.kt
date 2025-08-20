@@ -185,7 +185,7 @@ class JsMapper(
 
     var redoFn: (() -> Unit)? by notifyOnChange(null)
 
-    private var selectedEntityAndPixel: Pair<PanelInfo, Int?>? = null
+    private var selectedEntityAndPixel: Pair<PanelInfo?, Int?>? = null
     private val cameraPositions = mutableMapOf<String, CameraPosition>()
 
     private var points: Points<*,*>? = null
@@ -1204,8 +1204,8 @@ class JsMapper(
 
     private fun deselectEntityPixel() {
         selectedEntityAndPixel?.let { (entity, pixelIndex) ->
-            entity.deselect()
-            if (pixelIndex != null) entity.deselectPixel(pixelIndex)
+            entity?.deselect()
+            if (pixelIndex != null) entity?.deselectPixel(pixelIndex)
             hideImage()
         }
     }
@@ -1216,23 +1216,26 @@ class JsMapper(
     ) {
         deselectEntityPixel()
 
-        if (panelInfo == null) return
-        panelInfo.select()
-        if (index != null) {
-            panelInfo.selectPixel(index)
+        panelInfo?.select()
 
-            val pixelData = panelInfo.getPixelData(index)
-            pixelData?.metadata?.let { pixelMetadata ->
-                when (pixelMetadata) {
-                    is OneAtATimeMappingStrategy.OneAtATimePixelMetadata -> {
-                        pixelMetadata.deltaImage?.let { loadImage(it, true) }
+        if (index != null) {
+            if (panelInfo != null) {
+                panelInfo.selectPixel(index)
+
+                val pixelData = panelInfo.getPixelData(index)
+                pixelData?.metadata?.let { pixelMetadata ->
+                    when (pixelMetadata) {
+                        is OneAtATimeMappingStrategy.OneAtATimePixelMetadata -> {
+                            pixelMetadata.deltaImage?.let { loadImage(it, true) }
+                        }
+                        is TwoLogNMappingStrategy.TwoLogNPixelMetadata -> {
+                            (pixelMetadata.singleImage ?: pixelMetadata.calculatedImage)?.let { loadImage(it, true) }
+                        }
+                        else -> error("Unknown pixel metadata $pixelMetadata.")
                     }
-                    is TwoLogNMappingStrategy.TwoLogNPixelMetadata -> {
-                        (pixelMetadata.singleImage ?: pixelMetadata.calculatedImage)?.let { loadImage(it, true) }
-                    }
-                    else -> error("Unknown pixel metadata $pixelMetadata.")
                 }
             }
+
             udpSockets.pixelOnByBroadcast(index)
         } else {
             udpSockets.allDark()

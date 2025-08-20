@@ -23,19 +23,26 @@ class RealMediaDevices : MediaDevices, CoroutineScope by MainScope() {
         return window.navigator.mediaDevices.enumerateDevices().await()
             .filter { it.kind == MediaDeviceKind.VIDEOINPUT }
             .map { MediaDevices.Device(it.deviceId, it.kind.toString(), it.label, it.groupId) }
+            .also {
+                it.forEach { device -> console.log("Camera:", device.label, device.deviceId) }
+            }
     }
 
     override fun getCamera(selectedDevice: MediaDevices.Device?): MediaDevices.Camera {
         return object : MediaDevices.Camera {
-            val constraints = jso<dynamic> {
+            val constraints = MediaStreamConstraints(video = jso<dynamic> {
                 if (selectedDevice != null) {
                     deviceId = selectedDevice.deviceId
                 }
-                width = js("({ min: 640, ideal: 1280, max: 1920 })")
+//                width = js("({ min: 640, ideal: 1280, max: 1920 })")
+            })
+
+            init {
+                console.log("getCamera(${selectedDevice?.deviceId}) ->", constraints)
             }
 
             val camPromise: Promise<MediaStream> =
-                window.navigator.mediaDevices.getUserMedia(MediaStreamConstraints(video = constraints))
+                window.navigator.mediaDevices.getUserMedia(constraints)
             lateinit var videoTrack: MediaStreamTrack
             lateinit var videoTrackSettings: MediaTrackSettings
             //            lateinit var imageCapture: ImageCapture
