@@ -82,20 +82,17 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
     ui.setSizes()
 
     val handleChangeEntity by handler(ui.mappingController) { entity: Model.Entity? ->
-        ui.mappingController?.guessedEntity = entity
-        ui.mappingController?.guessedVisibleSurface = null
+        ui.setEntity(entity)
         forceRender()
     }
 
     val handlePixelCountChange by handler(ui.mappingController) { pixelCount: Int? ->
-        ui.mappingController?.guessedVisibleSurface = null
         ui.mappingController?.expectedPixelCount = pixelCount
         findingLastPixel = false
         forceRender()
     }
 
     val handlePixelFormatChange by handler(ui.mappingController) { pixelFormat: PixelFormat? ->
-        ui.mappingController?.guessedVisibleSurface = null
         ui.mappingController?.pixelFormat = pixelFormat
         ui.mappingController?.shadeSolidColor()
         forceRender()

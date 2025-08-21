@@ -245,6 +245,12 @@ class JsMapper(
         onClose()
     }
 
+    fun setEntity(entity: Model.Entity?) {
+        mappingController?.guessedEntity = entity
+        val visibleSurface = ui.getVisibleSurfaces().first { it.entity == entity }
+        mappingController?.guessedVisibleSurface = visibleSurface
+    }
+
     private fun Event.getMouse(): Vector2 {
         this as MouseEvent
         return Vector2(
