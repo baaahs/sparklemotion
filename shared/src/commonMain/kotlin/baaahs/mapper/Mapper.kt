@@ -270,13 +270,13 @@ abstract class Mapper(
                     // the next line causes the UI to wait after each panel has been identified...
                     pauseForUserInteraction()
 
-                    var retryCount = 0
-                    ui.setRedo {
-                        identifyBrain(index, brainToMap, ++retryCount)
-                    }
-
+//                    var retryCount = 0
+//                    ui.setRedo {
+//                        identifyBrain(index, brainToMap, ++retryCount)
+//                    }
+//
                     waitUntilUnpaused()
-                    ui.setRedo(null)
+//                    ui.setRedo(null)
 
                     udpSockets.deliverer.send(brainToMap, MapperUtil.solidColorBuffer(MapperUtil.inactiveColor))
                     udpSockets.deliverer.await()
