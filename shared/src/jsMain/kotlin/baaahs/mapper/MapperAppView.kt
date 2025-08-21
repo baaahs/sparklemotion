@@ -53,6 +53,10 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
 
     val mappingSessionDraggableRef = ref<HTMLElement>()
 
+    var findingLastPixel by state { false }
+    val handleFindLastPixel by mouseEventHandler { findingLastPixel = true }
+    val handleFindLastPixelCancel by handler { findingLastPixel = false }
+
     // init:
     onMount {
         ui.onMount(
@@ -79,15 +83,19 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
 
     val handleChangeEntity by handler(ui.mappingController) { entity: Model.Entity? ->
         ui.mappingController?.guessedEntity = entity
+        ui.mappingController?.guessedVisibleSurface = null
         forceRender()
     }
 
     val handlePixelCountChange by handler(ui.mappingController) { pixelCount: Int? ->
+        ui.mappingController?.guessedVisibleSurface = null
         ui.mappingController?.expectedPixelCount = pixelCount
+        findingLastPixel = false
         forceRender()
     }
 
     val handlePixelFormatChange by handler(ui.mappingController) { pixelFormat: PixelFormat? ->
+        ui.mappingController?.guessedVisibleSurface = null
         ui.mappingController?.pixelFormat = pixelFormat
         ui.mappingController?.shadeSolidColor()
         forceRender()
@@ -100,10 +108,6 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
     val handleLoadImage by handler(uiActions.loadMappingSession) { name: String? ->
         uiActions.loadImage(name, true)
     }
-
-    var findingLastPixel by state { false }
-    val handleFindLastPixel by mouseEventHandler { findingLastPixel = true }
-    val handleFindLastPixelCancel by handler { findingLastPixel = false }
 
     useResizeListener(screenRef) { _, _ ->
         screenRef.current?.let { el ->
@@ -207,10 +211,10 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
                             }
                         } else {
                             findLastPixel {
-                                attrs.mapper = ui
+                                attrs.maxPossiblePixel = 2048
                                 attrs.onFoundPixel = handlePixelCountChange
                                 attrs.onCancel = handleFindLastPixelCancel
-                                attrs.maxPossiblePixel = 2048
+                                attrs.mapper = ui
                             }
                         }
 

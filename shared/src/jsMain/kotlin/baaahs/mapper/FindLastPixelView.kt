@@ -3,7 +3,9 @@ package baaahs.mapper
 import baaahs.app.ui.appContext
 import baaahs.ui.*
 import react.*
+import react.dom.button
 import react.dom.div
+import react.dom.onClick
 import react.dom.span
 
 private enum class Direction {
@@ -33,8 +35,8 @@ private val FindLastPixelView = xComponent<FindLastPixelProps>("FindLastPixel") 
         props.mapper.selectEntityPixel(null, currentPixel)
     }
 
-    val handleDown by handler(props.mapper) {
-        currentPixel--
+    val handleDown by handler(props.mapper) { withShift: Boolean ->
+        currentPixel -= if (withShift) 10 else 1
         props.mapper.selectEntityPixel(null, currentPixel)
     }
 
@@ -52,8 +54,8 @@ private val FindLastPixelView = xComponent<FindLastPixelProps>("FindLastPixel") 
         props.mapper.selectEntityPixel(null, currentPixel)
     }
 
-    val handleUp by handler(props.mapper) {
-        currentPixel++
+    val handleUp by handler(props.mapper) { withShift: Boolean ->
+        currentPixel += if (withShift) 10 else 1
         props.mapper.selectEntityPixel(null, currentPixel)
     }
 
@@ -61,7 +63,7 @@ private val FindLastPixelView = xComponent<FindLastPixelProps>("FindLastPixel") 
         props.mapper.selectEntityPixel(null, currentPixel)
     }
     val handleDone by handler(props.onFoundPixel) {
-        props.onFoundPixel(currentPixel)
+        props.onFoundPixel(currentPixel + 1)
     }
     val handleEsc by handler(props.onCancel) {
         props.onCancel()
@@ -73,11 +75,15 @@ private val FindLastPixelView = xComponent<FindLastPixelProps>("FindLastPixel") 
             when (keypress) {
                 Keypress("ArrowLeft") -> handleLower()
                 Keypress("ArrowRight") -> handleHigher()
-                Keypress("ArrowUp") -> handleUp()
-                Keypress("ArrowDown") -> handleDown()
+                Keypress("ArrowUp") -> handleUp(false)
+                Keypress("ArrowUp", shiftKey = true) -> handleUp(true)
+                Keypress("ArrowDown") -> handleDown(false)
+                Keypress("ArrowDown", shiftKey = true) -> handleDown(true)
                 Keypress("Space") -> handleSpace()
                 Keypress("Enter") -> handleDone()
-                Keypress("Esc") -> handleDone()
+                Keypress("Z") -> handleDone()
+                Keypress("Esc") -> handleEsc()
+                Keypress("x") -> handleDone()
 //                Keypress("KeyL", metaKey = true) -> props.onShaderLibraryDialogToggle()
                 else -> result = KeypressResult.NotHandled
             }
@@ -88,6 +94,10 @@ private val FindLastPixelView = xComponent<FindLastPixelProps>("FindLastPixel") 
     div {
         span {
             +"Pixel count: $currentPixel"
+        }
+        button {
+            attrs.onClick = handleDone.withMouseEvent()
+            +"OK"
         }
     }
 }
