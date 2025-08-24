@@ -1,0 +1,7986 @@
+{
+  "startedAt": "2025-08-20T08:08:59.450Z",
+  "surfaces": [
+    {
+      "brainId": "C78474",
+      "panelName": "35D",
+      "pixelCount": 565,
+      "pixelFormat": null,
+      "pixels": [
+        {
+          "modelPosition": {
+            "x": -360.8747,
+            "y": 124.75653,
+            "z": -103.67345
+          },
+          "screenPosition": {
+            "x": 0.5945051,
+            "y": 1.5643324
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -360.0835,
+            "y": 124.8791,
+            "z": -105.26725
+          },
+          "screenPosition": {
+            "x": 0.60888356,
+            "y": 1.5577332
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -360.01816,
+            "y": 125.68383,
+            "z": -103.50601
+          },
+          "screenPosition": {
+            "x": 0.5795721,
+            "y": 1.5470836
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -360.48776,
+            "y": 126.68196,
+            "z": -102.55988
+          },
+          "screenPosition": {
+            "x": 0.55102694,
+            "y": 1.5451899
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -361.54422,
+            "y": 127.473595,
+            "z": -101.49502
+          },
+          "screenPosition": {
+            "x": 0.5200562,
+            "y": 1.5528533
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -362.96762,
+            "y": 127.50255,
+            "z": -100.86894
+          },
+          "screenPosition": {
+            "x": 0.50626266,
+            "y": 1.5707638
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -364.3721,
+            "y": 126.700714,
+            "z": -100.732285
+          },
+          "screenPosition": {
+            "x": 0.5107216,
+            "y": 1.5948075
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.48358,
+            "y": 125.5945,
+            "z": -101.11583
+          },
+          "screenPosition": {
+            "x": 0.5273197,
+            "y": 1.617794
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.67264,
+            "y": 124.38946,
+            "z": -102.0004
+          },
+          "screenPosition": {
+            "x": 0.55723953,
+            "y": 1.6293869
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.98245,
+            "y": 123.43279,
+            "z": -103.68978
+          },
+          "screenPosition": {
+            "x": 0.5868418,
+            "y": 1.6444664
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -363.84714,
+            "y": 123.60967,
+            "z": -103.44078
+          },
+          "screenPosition": {
+            "x": 0.59887534,
+            "y": 1.6112506
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -362.42883,
+            "y": 123.5875,
+            "z": -104.074
+          },
+          "screenPosition": {
+            "x": 0.61358285,
+            "y": 1.5930835
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -361.08398,
+            "y": 124.02194,
+            "z": -104.287384
+          },
+          "screenPosition": {
+            "x": 0.6134269,
+            "y": 1.5727941
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -360.39563,
+            "y": 125.20236,
+            "z": -103.78071
+          },
+          "screenPosition": {
+            "x": 0.59155416,
+            "y": 1.5550416
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -360.44406,
+            "y": 126.309044,
+            "z": -102.84838
+          },
+          "screenPosition": {
+            "x": 0.56128204,
+            "y": 1.5472994
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -361.02527,
+            "y": 127.25334,
+            "z": -101.770454
+          },
+          "screenPosition": {
+            "x": 0.5296924,
+            "y": 1.5475359
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -362.37427,
+            "y": 127.695564,
+            "z": -100.97646
+          },
+          "screenPosition": {
+            "x": 0.5072579,
+            "y": 1.5616078
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -363.8836,
+            "y": 127.32945,
+            "z": -100.53271
+          },
+          "screenPosition": {
+            "x": 0.50015074,
+            "y": 1.5839192
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.18646,
+            "y": 126.35083,
+            "z": -100.732765
+          },
+          "screenPosition": {
+            "x": 0.51237017,
+            "y": 1.6082221
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.70047,
+            "y": 125.077515,
+            "z": -101.44877
+          },
+          "screenPosition": {
+            "x": 0.54042715,
+            "y": 1.6242207
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.13846,
+            "y": 124.198555,
+            "z": -102.37428
+          },
+          "screenPosition": {
+            "x": 0.5692248,
+            "y": 1.6235429
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -363.74557,
+            "y": 124.49986,
+            "z": -102.87872
+          },
+          "screenPosition": {
+            "x": 0.57726943,
+            "y": 1.603493
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -362.5704,
+            "y": 125.37708,
+            "z": -102.443245
+          },
+          "screenPosition": {
+            "x": 0.565124,
+            "y": 1.5805202
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -362.0364,
+            "y": 126.68046,
+            "z": -101.82154
+          },
+          "screenPosition": {
+            "x": 0.5343269,
+            "y": 1.5651965
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -362.22083,
+            "y": 128.01778,
+            "z": -100.80389
+          },
+          "screenPosition": {
+            "x": 0.5012392,
+            "y": 1.5570016
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -362.54993,
+            "y": 129.03888,
+            "z": -99.75168
+          },
+          "screenPosition": {
+            "x": 0.4696895,
+            "y": 1.5534108
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -363.3955,
+            "y": 129.99078,
+            "z": -98.79541
+          },
+          "screenPosition": {
+            "x": 0.43835884,
+            "y": 1.5573847
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -364.58914,
+            "y": 130.51422,
+            "z": -97.8121
+          },
+          "screenPosition": {
+            "x": 0.41282198,
+            "y": 1.5685347
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -366.1026,
+            "y": 130.59422,
+            "z": -97.08395
+          },
+          "screenPosition": {
+            "x": 0.3952924,
+            "y": 1.587548
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -367.63263,
+            "y": 130.0983,
+            "z": -96.799904
+          },
+          "screenPosition": {
+            "x": 0.39368334,
+            "y": 1.610844
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -368.91684,
+            "y": 129.16382,
+            "z": -96.90208
+          },
+          "screenPosition": {
+            "x": 0.40469578,
+            "y": 1.6343184
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -369.3364,
+            "y": 127.82914,
+            "z": -97.712494
+          },
+          "screenPosition": {
+            "x": 0.43453693,
+            "y": 1.6498055
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -369.0751,
+            "y": 126.645706,
+            "z": -98.74197
+          },
+          "screenPosition": {
+            "x": 0.4680105,
+            "y": 1.65538
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -368.07233,
+            "y": 125.90009,
+            "z": -99.772766
+          },
+          "screenPosition": {
+            "x": 0.49540514,
+            "y": 1.6485721
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -366.5957,
+            "y": 126.349884,
+            "z": -100.08064
+          },
+          "screenPosition": {
+            "x": 0.5004331,
+            "y": 1.6257318
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.1652,
+            "y": 127.00536,
+            "z": -100.22445
+          },
+          "screenPosition": {
+            "x": 0.4979696,
+            "y": 1.6023477
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.05072,
+            "y": 128.05331,
+            "z": -99.31821
+          },
+          "screenPosition": {
+            "x": 0.47139323,
+            "y": 1.5922874
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.19656,
+            "y": 129.29738,
+            "z": -98.43029
+          },
+          "screenPosition": {
+            "x": 0.4363962,
+            "y": 1.5858388
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.2776,
+            "y": 130.55815,
+            "z": -97.49598
+          },
+          "screenPosition": {
+            "x": 0.40540814,
+            "y": 1.5770124
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -366.4217,
+            "y": 131.1312,
+            "z": -96.49259
+          },
+          "screenPosition": {
+            "x": 0.37863147,
+            "y": 1.5872661
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -367.84122,
+            "y": 131.06357,
+            "z": -95.91817
+          },
+          "screenPosition": {
+            "x": 0.36642876,
+            "y": 1.6060175
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -369.31708,
+            "y": 130.4301,
+            "z": -95.719376
+          },
+          "screenPosition": {
+            "x": 0.3665411,
+            "y": 1.6300677
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -370.6738,
+            "y": 129.41849,
+            "z": -95.960625
+          },
+          "screenPosition": {
+            "x": 0.38073194,
+            "y": 1.6551594
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -371.216,
+            "y": 128.1109,
+            "z": -96.56467
+          },
+          "screenPosition": {
+            "x": 0.40832266,
+            "y": 1.6714271
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -371.47974,
+            "y": 127.353935,
+            "z": -98.27041
+          },
+          "screenPosition": {
+            "x": 0.4282068,
+            "y": 1.6808712
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -370.46185,
+            "y": 126.62789,
+            "z": -99.273865
+          },
+          "screenPosition": {
+            "x": 0.45969298,
+            "y": 1.6780376
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -369.58902,
+            "y": 126.0053,
+            "z": -100.134346
+          },
+          "screenPosition": {
+            "x": 0.47832438,
+            "y": 1.6602769
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -367.42264,
+            "y": 126.39066,
+            "z": -99.67387
+          },
+          "screenPosition": {
+            "x": 0.4910154,
+            "y": 1.636057
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -366.12787,
+            "y": 127.47472,
+            "z": -99.43071
+          },
+          "screenPosition": {
+            "x": 0.47619823,
+            "y": 1.6111656
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.62268,
+            "y": 128.69026,
+            "z": -98.582726
+          },
+          "screenPosition": {
+            "x": 0.4464402,
+            "y": 1.5956205
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.6687,
+            "y": 130.03865,
+            "z": -97.66506
+          },
+          "screenPosition": {
+            "x": 0.4129546,
+            "y": 1.5862614
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -366.0806,
+            "y": 131.07233,
+            "z": -96.686745
+          },
+          "screenPosition": {
+            "x": 0.3835611,
+            "y": 1.5833051
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -367.2699,
+            "y": 131.49165,
+            "z": -95.73975
+          },
+          "screenPosition": {
+            "x": 0.36061963,
+            "y": 1.5949844
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -368.67697,
+            "y": 130.77113,
+            "z": -95.76048
+          },
+          "screenPosition": {
+            "x": 0.36433294,
+            "y": 1.6192949
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -369.49573,
+            "y": 129.73318,
+            "z": -96.24782
+          },
+          "screenPosition": {
+            "x": 0.38361213,
+            "y": 1.6378084
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -369.19388,
+            "y": 128.43399,
+            "z": -97.16353
+          },
+          "screenPosition": {
+            "x": 0.41627443,
+            "y": 1.6435547
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -367.97574,
+            "y": 128.30228,
+            "z": -97.81185
+          },
+          "screenPosition": {
+            "x": 0.435618,
+            "y": 1.6280283
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -366.54272,
+            "y": 129.04869,
+            "z": -97.89895
+          },
+          "screenPosition": {
+            "x": 0.4308129,
+            "y": 1.6039871
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.3248,
+            "y": 130.0614,
+            "z": -97.795166
+          },
+          "screenPosition": {
+            "x": 0.41578704,
+            "y": 1.5816422
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -364.0766,
+            "y": 131.00395,
+            "z": -97.62183
+          },
+          "screenPosition": {
+            "x": 0.40563527,
+            "y": 1.55788
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -363.2116,
+            "y": 132.2899,
+            "z": -97.02267
+          },
+          "screenPosition": {
+            "x": 0.3810119,
+            "y": 1.5370247
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -362.83856,
+            "y": 133.5692,
+            "z": -96.221405
+          },
+          "screenPosition": {
+            "x": 0.3510091,
+            "y": 1.5228754
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -363.63715,
+            "y": 134.51593,
+            "z": -95.11197
+          },
+          "screenPosition": {
+            "x": 0.31929907,
+            "y": 1.5255417
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.0087,
+            "y": 134.84885,
+            "z": -94.28991
+          },
+          "screenPosition": {
+            "x": 0.29726458,
+            "y": 1.5408282
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -366.53607,
+            "y": 134.60355,
+            "z": -93.82264
+          },
+          "screenPosition": {
+            "x": 0.2884062,
+            "y": 1.5624697
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -368.1041,
+            "y": 133.9358,
+            "z": -93.57626
+          },
+          "screenPosition": {
+            "x": 0.2887844,
+            "y": 1.5877852
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -369.11667,
+            "y": 132.84619,
+            "z": -93.99697
+          },
+          "screenPosition": {
+            "x": 0.30778253,
+            "y": 1.608959
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -369.93747,
+            "y": 131.63498,
+            "z": -94.60551
+          },
+          "screenPosition": {
+            "x": 0.33100814,
+            "y": 1.6289142
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -369.86868,
+            "y": 130.40253,
+            "z": -95.56722
+          },
+          "screenPosition": {
+            "x": 0.36268777,
+            "y": 1.6375114
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -368.83228,
+            "y": 129.6541,
+            "z": -96.448944
+          },
+          "screenPosition": {
+            "x": 0.39131042,
+            "y": 1.6293045
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -367.3791,
+            "y": 129.63977,
+            "z": -97.16633
+          },
+          "screenPosition": {
+            "x": 0.4057761,
+            "y": 1.6111455
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.87054,
+            "y": 130.27654,
+            "z": -97.44656
+          },
+          "screenPosition": {
+            "x": 0.40606657,
+            "y": 1.5869778
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.18185,
+            "y": 131.56479,
+            "z": -96.68368
+          },
+          "screenPosition": {
+            "x": 0.38002753,
+            "y": 1.5677963
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.49597,
+            "y": 132.70715,
+            "z": -95.67671
+          },
+          "screenPosition": {
+            "x": 0.34739307,
+            "y": 1.5632282
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -366.25488,
+            "y": 133.7246,
+            "z": -94.57379
+          },
+          "screenPosition": {
+            "x": 0.31289187,
+            "y": 1.5655996
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -367.62143,
+            "y": 134.05144,
+            "z": -93.744896
+          },
+          "screenPosition": {
+            "x": 0.2911963,
+            "y": 1.5807426
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -368.99265,
+            "y": 134.2155,
+            "z": -93.04667
+          },
+          "screenPosition": {
+            "x": 0.27338648,
+            "y": 1.5973186
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -370.4888,
+            "y": 134.16101,
+            "z": -92.3186
+          },
+          "screenPosition": {
+            "x": 0.25842917,
+            "y": 1.6168559
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -371.8858,
+            "y": 133.51085,
+            "z": -92.26971
+          },
+          "screenPosition": {
+            "x": 0.26281005,
+            "y": 1.6396981
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -373.0243,
+            "y": 132.37894,
+            "z": -92.549095
+          },
+          "screenPosition": {
+            "x": 0.2804016,
+            "y": 1.6625785
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -373.2367,
+            "y": 131.13116,
+            "z": -93.31781
+          },
+          "screenPosition": {
+            "x": 0.307632,
+            "y": 1.6749362
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -372.62408,
+            "y": 130.12659,
+            "z": -94.34719
+          },
+          "screenPosition": {
+            "x": 0.3420253,
+            "y": 1.6740816
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -371.33887,
+            "y": 130.20267,
+            "z": -95.07473
+          },
+          "screenPosition": {
+            "x": 0.3538958,
+            "y": 1.657822
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -369.95477,
+            "y": 130.8832,
+            "z": -95.16431
+          },
+          "screenPosition": {
+            "x": 0.34896445,
+            "y": 1.6351159
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -368.7528,
+            "y": 132.02275,
+            "z": -94.81842
+          },
+          "screenPosition": {
+            "x": 0.33279294,
+            "y": 1.6106373
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -368.80063,
+            "y": 133.2039,
+            "z": -93.79472
+          },
+          "screenPosition": {
+            "x": 0.29989463,
+            "y": 1.6023636
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -369.28278,
+            "y": 134.41225,
+            "z": -92.77784
+          },
+          "screenPosition": {
+            "x": 0.2653226,
+            "y": 1.5996529
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -370.1849,
+            "y": 135.17044,
+            "z": -91.76163
+          },
+          "screenPosition": {
+            "x": 0.23723242,
+            "y": 1.6051692
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -371.3943,
+            "y": 135.54822,
+            "z": -90.9213
+          },
+          "screenPosition": {
+            "x": 0.2152397,
+            "y": 1.6178588
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -372.95877,
+            "y": 135.13174,
+            "z": -90.48669
+          },
+          "screenPosition": {
+            "x": 0.20825343,
+            "y": 1.6414758
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -374.14706,
+            "y": 134.12195,
+            "z": -90.66534
+          },
+          "screenPosition": {
+            "x": 0.22398393,
+            "y": 1.6636173
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -375.53195,
+            "y": 133.34343,
+            "z": -90.624016
+          },
+          "screenPosition": {
+            "x": 0.2300981,
+            "y": 1.687281
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -375.95056,
+            "y": 132.09048,
+            "z": -91.37429
+          },
+          "screenPosition": {
+            "x": 0.25789282,
+            "y": 1.7021319
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -375.19168,
+            "y": 131.07346,
+            "z": -92.47899
+          },
+          "screenPosition": {
+            "x": 0.29189134,
+            "y": 1.6999775
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -373.97726,
+            "y": 130.774,
+            "z": -93.25137
+          },
+          "screenPosition": {
+            "x": 0.30979776,
+            "y": 1.6870228
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -372.65112,
+            "y": 131.62062,
+            "z": -93.2883
+          },
+          "screenPosition": {
+            "x": 0.30366138,
+            "y": 1.6634929
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -371.63876,
+            "y": 132.7039,
+            "z": -92.85993
+          },
+          "screenPosition": {
+            "x": 0.2856391,
+            "y": 1.6420276
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -371.2683,
+            "y": 133.98897,
+            "z": -92.06387
+          },
+          "screenPosition": {
+            "x": 0.25471795,
+            "y": 1.6280727
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -371.70618,
+            "y": 135.18399,
+            "z": -91.11994
+          },
+          "screenPosition": {
+            "x": 0.2218546,
+            "y": 1.6248543
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -372.66962,
+            "y": 136.01158,
+            "z": -90.10817
+          },
+          "screenPosition": {
+            "x": 0.19109182,
+            "y": 1.6311965
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -374.0542,
+            "y": 136.10294,
+            "z": -89.222404
+          },
+          "screenPosition": {
+            "x": 0.17246637,
+            "y": 1.6479816
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -375.48575,
+            "y": 135.9893,
+            "z": -88.76523
+          },
+          "screenPosition": {
+            "x": 0.1629849,
+            "y": 1.667212
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -376.88007,
+            "y": 135.35637,
+            "z": -88.746155
+          },
+          "screenPosition": {
+            "x": 0.16499259,
+            "y": 1.6906726
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -377.73157,
+            "y": 134.1255,
+            "z": -89.24422
+          },
+          "screenPosition": {
+            "x": 0.18879277,
+            "y": 1.7104993
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -377.74252,
+            "y": 132.77525,
+            "z": -90.05252
+          },
+          "screenPosition": {
+            "x": 0.22251199,
+            "y": 1.7199801
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -377.86658,
+            "y": 131.9096,
+            "z": -91.97407
+          },
+          "screenPosition": {
+            "x": 0.24309292,
+            "y": 1.7218314
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -375.71738,
+            "y": 131.59442,
+            "z": -91.851326
+          },
+          "screenPosition": {
+            "x": 0.27240452,
+            "y": 1.7029777
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -374.19183,
+            "y": 132.10886,
+            "z": -92.154045
+          },
+          "screenPosition": {
+            "x": 0.2753048,
+            "y": 1.679333
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -373.1901,
+            "y": 133.22813,
+            "z": -91.76707
+          },
+          "screenPosition": {
+            "x": 0.2565799,
+            "y": 1.6580336
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -372.93015,
+            "y": 134.44371,
+            "z": -91.04749
+          },
+          "screenPosition": {
+            "x": 0.22826369,
+            "y": 1.6458533
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -372.89688,
+            "y": 135.68417,
+            "z": -90.095276
+          },
+          "screenPosition": {
+            "x": 0.19479434,
+            "y": 1.6364809
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -373.61316,
+            "y": 136.7773,
+            "z": -89.01024
+          },
+          "screenPosition": {
+            "x": 0.161483,
+            "y": 1.6371676
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -374.78625,
+            "y": 137.34415,
+            "z": -88.16999
+          },
+          "screenPosition": {
+            "x": 0.13563813,
+            "y": 1.6484565
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -376.15143,
+            "y": 137.23097,
+            "z": -87.624916
+          },
+          "screenPosition": {
+            "x": 0.12454765,
+            "y": 1.6668737
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -377.57336,
+            "y": 137.00471,
+            "z": -87.19099
+          },
+          "screenPosition": {
+            "x": 0.115927204,
+            "y": 1.6870987
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -378.7588,
+            "y": 136.07811,
+            "z": -87.30038
+          },
+          "screenPosition": {
+            "x": 0.1274468,
+            "y": 1.7091244
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -379.52457,
+            "y": 134.84557,
+            "z": -87.976616
+          },
+          "screenPosition": {
+            "x": 0.15240045,
+            "y": 1.7285179
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -380.1345,
+            "y": 133.52725,
+            "z": -89.73832
+          },
+          "screenPosition": {
+            "x": 0.18513328,
+            "y": 1.7505301
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -378.22192,
+            "y": 133.18022,
+            "z": -89.53267
+          },
+          "screenPosition": {
+            "x": 0.20605792,
+            "y": 1.723326
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -376.8026,
+            "y": 133.43567,
+            "z": -90.00777
+          },
+          "screenPosition": {
+            "x": 0.21508415,
+            "y": 1.7030342
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -376.2433,
+            "y": 134.69936,
+            "z": -89.36467
+          },
+          "screenPosition": {
+            "x": 0.1884359,
+            "y": 1.6865495
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -376.2245,
+            "y": 135.99548,
+            "z": -88.49032
+          },
+          "screenPosition": {
+            "x": 0.15446702,
+            "y": 1.6772519
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -376.53302,
+            "y": 137.20132,
+            "z": -87.3932
+          },
+          "screenPosition": {
+            "x": 0.11958324,
+            "y": 1.6721114
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -377.15533,
+            "y": 138.2517,
+            "z": -86.43878
+          },
+          "screenPosition": {
+            "x": 0.08858969,
+            "y": 1.6721689
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -378.30072,
+            "y": 138.42528,
+            "z": -85.565735
+          },
+          "screenPosition": {
+            "x": 0.06973912,
+            "y": 1.685213
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -379.68335,
+            "y": 138.01692,
+            "z": -85.33113
+          },
+          "screenPosition": {
+            "x": 0.068598084,
+            "y": 1.7058566
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -380.78577,
+            "y": 137.10999,
+            "z": -85.661385
+          },
+          "screenPosition": {
+            "x": 0.08151678,
+            "y": 1.7274597
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -381.19287,
+            "y": 135.75815,
+            "z": -86.25996
+          },
+          "screenPosition": {
+            "x": 0.11037403,
+            "y": 1.7420578
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -380.5765,
+            "y": 134.92133,
+            "z": -87.165276
+          },
+          "screenPosition": {
+            "x": 0.1388633,
+            "y": 1.7402825
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -379.26486,
+            "y": 135.41727,
+            "z": -87.61905
+          },
+          "screenPosition": {
+            "x": 0.139572,
+            "y": 1.720802
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -377.87164,
+            "y": 135.75557,
+            "z": -87.76038
+          },
+          "screenPosition": {
+            "x": 0.14250542,
+            "y": 1.6997193
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -376.97824,
+            "y": 136.90178,
+            "z": -87.41271
+          },
+          "screenPosition": {
+            "x": 0.121869676,
+            "y": 1.6803054
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -376.6511,
+            "y": 138.28679,
+            "z": -86.487755
+          },
+          "screenPosition": {
+            "x": 0.091296874,
+            "y": 1.6650398
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -376.88403,
+            "y": 139.6065,
+            "z": -85.568535
+          },
+          "screenPosition": {
+            "x": 0.05657571,
+            "y": 1.6585846
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -377.9877,
+            "y": 140.1576,
+            "z": -84.61162
+          },
+          "screenPosition": {
+            "x": 0.031114224,
+            "y": 1.6684438
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -379.35394,
+            "y": 139.9528,
+            "z": -84.113495
+          },
+          "screenPosition": {
+            "x": 0.022502908,
+            "y": 1.6874083
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -380.63104,
+            "y": 139.43452,
+            "z": -83.89563
+          },
+          "screenPosition": {
+            "x": 0.02162726,
+            "y": 1.7079505
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -381.9656,
+            "y": 138.72989,
+            "z": -83.87287
+          },
+          "screenPosition": {
+            "x": 0.026952831,
+            "y": 1.7304788
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -382.6681,
+            "y": 137.50844,
+            "z": -84.28243
+          },
+          "screenPosition": {
+            "x": 0.048410792,
+            "y": 1.7482826
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -382.59607,
+            "y": 136.35379,
+            "z": -85.18038
+          },
+          "screenPosition": {
+            "x": 0.08174507,
+            "y": 1.7554789
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -381.57605,
+            "y": 136.09889,
+            "z": -85.831665
+          },
+          "screenPosition": {
+            "x": 0.097214505,
+            "y": 1.7445227
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -381.0078,
+            "y": 135.29419,
+            "z": -86.6912
+          },
+          "screenPosition": {
+            "x": 0.12351577,
+            "y": 1.743278
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -379.5897,
+            "y": 135.36957,
+            "z": -87.274536
+          },
+          "screenPosition": {
+            "x": 0.13448566,
+            "y": 1.7247825
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -378.16156,
+            "y": 136.23657,
+            "z": -87.35292
+          },
+          "screenPosition": {
+            "x": 0.12733312,
+            "y": 1.7002493
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -377.60315,
+            "y": 137.50441,
+            "z": -86.722084
+          },
+          "screenPosition": {
+            "x": 0.101829566,
+            "y": 1.6835626
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -377.46573,
+            "y": 138.63432,
+            "z": -85.78577
+          },
+          "screenPosition": {
+            "x": 0.07183051,
+            "y": 1.6732268
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -378.42645,
+            "y": 139.36038,
+            "z": -84.80809
+          },
+          "screenPosition": {
+            "x": 0.044623412,
+            "y": 1.679778
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -379.84457,
+            "y": 139.285,
+            "z": -84.224754
+          },
+          "screenPosition": {
+            "x": 0.03228635,
+            "y": 1.6985453
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -381.17575,
+            "y": 138.72601,
+            "z": -84.04314
+          },
+          "screenPosition": {
+            "x": 0.03329309,
+            "y": 1.7198004
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -381.83987,
+            "y": 137.58423,
+            "z": -84.68109
+          },
+          "screenPosition": {
+            "x": 0.05806371,
+            "y": 1.7368363
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -381.2257,
+            "y": 137.06871,
+            "z": -85.50578
+          },
+          "screenPosition": {
+            "x": 0.07708258,
+            "y": 1.7337117
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -380.05814,
+            "y": 136.57271,
+            "z": -86.26109
+          },
+          "screenPosition": {
+            "x": 0.102049485,
+            "y": 1.7216058
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -378.85068,
+            "y": 136.59145,
+            "z": -86.944984
+          },
+          "screenPosition": {
+            "x": 0.113677025,
+            "y": 1.7067337
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -377.6325,
+            "y": 136.44177,
+            "z": -87.56466
+          },
+          "screenPosition": {
+            "x": 0.12967537,
+            "y": 1.6920067
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -376.3137,
+            "y": 136.67169,
+            "z": -88.00348
+          },
+          "screenPosition": {
+            "x": 0.13762294,
+            "y": 1.6732472
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -374.8832,
+            "y": 136.95967,
+            "z": -88.34417
+          },
+          "screenPosition": {
+            "x": 0.14364693,
+            "y": 1.6524895
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -373.38748,
+            "y": 137.53085,
+            "z": -88.45293
+          },
+          "screenPosition": {
+            "x": 0.14257169,
+            "y": 1.6286886
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -372.09738,
+            "y": 138.54747,
+            "z": -88.28793
+          },
+          "screenPosition": {
+            "x": 0.13082351,
+            "y": 1.6040374
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -371.29584,
+            "y": 139.81345,
+            "z": -87.74742
+          },
+          "screenPosition": {
+            "x": 0.10502299,
+            "y": 1.5850598
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -371.55045,
+            "y": 141.07213,
+            "z": -86.627426
+          },
+          "screenPosition": {
+            "x": 0.0700982,
+            "y": 1.578538
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -372.41354,
+            "y": 141.99623,
+            "z": -85.57407
+          },
+          "screenPosition": {
+            "x": 0.038754825,
+            "y": 1.5823531
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -373.8737,
+            "y": 142.02623,
+            "z": -84.86408
+          },
+          "screenPosition": {
+            "x": 0.02345686,
+            "y": 1.6006545
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -375.22604,
+            "y": 141.35687,
+            "z": -84.90756
+          },
+          "screenPosition": {
+            "x": 0.027773967,
+            "y": 1.6237019
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -376.09418,
+            "y": 140.27997,
+            "z": -85.45808
+          },
+          "screenPosition": {
+            "x": 0.047358613,
+            "y": 1.6435182
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -376.3535,
+            "y": 138.87935,
+            "z": -86.25353
+          },
+          "screenPosition": {
+            "x": 0.08015598,
+            "y": 1.6568234
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -375.08185,
+            "y": 138.77945,
+            "z": -86.85285
+          },
+          "screenPosition": {
+            "x": 0.095272824,
+            "y": 1.6410202
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -373.7639,
+            "y": 138.83661,
+            "z": -87.40837
+          },
+          "screenPosition": {
+            "x": 0.10705387,
+            "y": 1.6236578
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -373.00314,
+            "y": 137.99115,
+            "z": -88.39192
+          },
+          "screenPosition": {
+            "x": 0.13646558,
+            "y": 1.6202611
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -371.84634,
+            "y": 137.39049,
+            "z": -89.367424
+          },
+          "screenPosition": {
+            "x": 0.16354401,
+            "y": 1.6099168
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -370.3662,
+            "y": 137.21765,
+            "z": -90.050835
+          },
+          "screenPosition": {
+            "x": 0.1805825,
+            "y": 1.5923842
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -368.90134,
+            "y": 137.79198,
+            "z": -90.347565
+          },
+          "screenPosition": {
+            "x": 0.1825774,
+            "y": 1.5688311
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -367.74268,
+            "y": 138.78714,
+            "z": -90.05815
+          },
+          "screenPosition": {
+            "x": 0.16792397,
+            "y": 1.5463566
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -367.0347,
+            "y": 140.19565,
+            "z": -89.35432
+          },
+          "screenPosition": {
+            "x": 0.13927093,
+            "y": 1.5266541
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -366.48157,
+            "y": 141.54256,
+            "z": -88.6557
+          },
+          "screenPosition": {
+            "x": 0.11041143,
+            "y": 1.5096962
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -367.08063,
+            "y": 142.52376,
+            "z": -87.58873
+          },
+          "screenPosition": {
+            "x": 0.07902294,
+            "y": 1.5096934
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -367.75977,
+            "y": 143.50537,
+            "z": -86.62935
+          },
+          "screenPosition": {
+            "x": 0.047331914,
+            "y": 1.5113835
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -368.69522,
+            "y": 144.27464,
+            "z": -85.51524
+          },
+          "screenPosition": {
+            "x": 0.0156146325,
+            "y": 1.5184442
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -370.54816,
+            "y": 144.9354,
+            "z": -85.51265
+          },
+          "screenPosition": {
+            "x": -3.928107E-4,
+            "y": 1.5425367
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -371.62454,
+            "y": 143.11258,
+            "z": -85.19628
+          },
+          "screenPosition": {
+            "x": 0.017664991,
+            "y": 1.5646687
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -372.36676,
+            "y": 141.70187,
+            "z": -85.7871
+          },
+          "screenPosition": {
+            "x": 0.04693028,
+            "y": 1.5837163
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -372.78723,
+            "y": 140.36505,
+            "z": -86.5994
+          },
+          "screenPosition": {
+            "x": 0.07708693,
+            "y": 1.5991771
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -372.1944,
+            "y": 139.4131,
+            "z": -87.7118
+          },
+          "screenPosition": {
+            "x": 0.10751587,
+            "y": 1.5994987
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -370.9158,
+            "y": 138.86115,
+            "z": -88.57101
+          },
+          "screenPosition": {
+            "x": 0.13455479,
+            "y": 1.5864227
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -369.49954,
+            "y": 138.85265,
+            "z": -89.21637
+          },
+          "screenPosition": {
+            "x": 0.14727001,
+            "y": 1.569025
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -368.2307,
+            "y": 139.56013,
+            "z": -89.34011
+          },
+          "screenPosition": {
+            "x": 0.14382215,
+            "y": 1.5470132
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -366.68546,
+            "y": 140.20999,
+            "z": -89.46909
+          },
+          "screenPosition": {
+            "x": 0.14229476,
+            "y": 1.521909
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.836,
+            "y": 141.52574,
+            "z": -88.90952
+          },
+          "screenPosition": {
+            "x": 0.11639335,
+            "y": 1.5017154
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.66373,
+            "y": 142.86058,
+            "z": -88.00314
+          },
+          "screenPosition": {
+            "x": 0.083954304,
+            "y": 1.4895194
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -366.25894,
+            "y": 144.01125,
+            "z": -86.81189
+          },
+          "screenPosition": {
+            "x": 0.047865454,
+            "y": 1.4884671
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -367.49454,
+            "y": 144.51965,
+            "z": -85.99432
+          },
+          "screenPosition": {
+            "x": 0.023634374,
+            "y": 1.5005673
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -369.54672,
+            "y": 145.32637,
+            "z": -85.67142
+          },
+          "screenPosition": {
+            "x": -0.011981789,
+            "y": 1.5256405
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -370.9832,
+            "y": 144.76555,
+            "z": -85.44367
+          },
+          "screenPosition": {
+            "x": 0.0039961734,
+            "y": 1.5500576
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -371.28952,
+            "y": 142.62741,
+            "z": -85.68488
+          },
+          "screenPosition": {
+            "x": 0.03442059,
+            "y": 1.5633352
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -371.07455,
+            "y": 141.3807,
+            "z": -86.72352
+          },
+          "screenPosition": {
+            "x": 0.0686729,
+            "y": 1.5699768
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -370.5216,
+            "y": 140.34619,
+            "z": -87.80085
+          },
+          "screenPosition": {
+            "x": 0.10106581,
+            "y": 1.5708617
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -369.0847,
+            "y": 139.93784,
+            "z": -88.59016
+          },
+          "screenPosition": {
+            "x": 0.12525342,
+            "y": 1.5547785
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -367.5868,
+            "y": 140.41734,
+            "z": -89.03251
+          },
+          "screenPosition": {
+            "x": 0.12853055,
+            "y": 1.5324267
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -366.12817,
+            "y": 141.20221,
+            "z": -88.9857
+          },
+          "screenPosition": {
+            "x": 0.12145493,
+            "y": 1.5078453
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -364.65,
+            "y": 142.00755,
+            "z": -89.0686
+          },
+          "screenPosition": {
+            "x": 0.115842454,
+            "y": 1.4828072
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -363.83798,
+            "y": 143.25046,
+            "z": -88.49102
+          },
+          "screenPosition": {
+            "x": 0.092824474,
+            "y": 1.4624645
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -363.98514,
+            "y": 144.56058,
+            "z": -87.55952
+          },
+          "screenPosition": {
+            "x": 0.058180682,
+            "y": 1.4549824
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.011,
+            "y": 145.2216,
+            "z": -86.46774
+          },
+          "screenPosition": {
+            "x": 0.029417178,
+            "y": 1.4632794
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -366.5587,
+            "y": 145.08826,
+            "z": -86.00589
+          },
+          "screenPosition": {
+            "x": 0.018781267,
+            "y": 1.4841201
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -367.9457,
+            "y": 144.14456,
+            "z": -86.090515
+          },
+          "screenPosition": {
+            "x": 0.028117549,
+            "y": 1.5097177
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -368.5788,
+            "y": 142.92014,
+            "z": -86.58304
+          },
+          "screenPosition": {
+            "x": 0.053638417,
+            "y": 1.5258439
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -368.31427,
+            "y": 141.63705,
+            "z": -87.664116
+          },
+          "screenPosition": {
+            "x": 0.08929149,
+            "y": 1.5320921
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -367.32742,
+            "y": 141.00658,
+            "z": -88.69674
+          },
+          "screenPosition": {
+            "x": 0.115451455,
+            "y": 1.5248674
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.93918,
+            "y": 140.8186,
+            "z": -89.34919
+          },
+          "screenPosition": {
+            "x": 0.13360517,
+            "y": 1.5080202
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -364.41803,
+            "y": 141.33994,
+            "z": -89.66301
+          },
+          "screenPosition": {
+            "x": 0.13515352,
+            "y": 1.4848639
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -363.10568,
+            "y": 142.18486,
+            "z": -89.71553
+          },
+          "screenPosition": {
+            "x": 0.12801112,
+            "y": 1.4614528
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -361.75314,
+            "y": 143.31644,
+            "z": -89.44075
+          },
+          "screenPosition": {
+            "x": 0.11228006,
+            "y": 1.4354302
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -361.04398,
+            "y": 144.63103,
+            "z": -88.78664
+          },
+          "screenPosition": {
+            "x": 0.08569151,
+            "y": 1.4164389
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -361.0717,
+            "y": 146.01463,
+            "z": -87.77059
+          },
+          "screenPosition": {
+            "x": 0.04998236,
+            "y": 1.4065268
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -362.20523,
+            "y": 146.78502,
+            "z": -86.78649
+          },
+          "screenPosition": {
+            "x": 0.019259324,
+            "y": 1.4157385
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -363.48355,
+            "y": 145.81992,
+            "z": -86.708435
+          },
+          "screenPosition": {
+            "x": 0.030230585,
+            "y": 1.4385142
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -364.6778,
+            "y": 144.82909,
+            "z": -86.91228
+          },
+          "screenPosition": {
+            "x": 0.041927293,
+            "y": 1.4625932
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.6314,
+            "y": 143.6777,
+            "z": -87.34503
+          },
+          "screenPosition": {
+            "x": 0.063753225,
+            "y": 1.4822452
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -366.22638,
+            "y": 142.40012,
+            "z": -88.162254
+          },
+          "screenPosition": {
+            "x": 0.09121024,
+            "y": 1.5000297
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.36383,
+            "y": 141.56665,
+            "z": -89.16253
+          },
+          "screenPosition": {
+            "x": 0.12124478,
+            "y": 1.4951502
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -364.17578,
+            "y": 141.09006,
+            "z": -89.94513
+          },
+          "screenPosition": {
+            "x": 0.14422232,
+            "y": 1.4834069
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -362.6086,
+            "y": 141.23543,
+            "z": -90.539474
+          },
+          "screenPosition": {
+            "x": 0.15638687,
+            "y": 1.4620534
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -361.09302,
+            "y": 141.33131,
+            "z": -91.15366
+          },
+          "screenPosition": {
+            "x": 0.16967838,
+            "y": 1.4415413
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -359.60938,
+            "y": 142.12865,
+            "z": -91.22319
+          },
+          "screenPosition": {
+            "x": 0.16406193,
+            "y": 1.4164569
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -358.7324,
+            "y": 143.43076,
+            "z": -90.74125
+          },
+          "screenPosition": {
+            "x": 0.13951345,
+            "y": 1.3960097
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -358.37784,
+            "y": 144.79706,
+            "z": -89.778755
+          },
+          "screenPosition": {
+            "x": 0.10780581,
+            "y": 1.3805516
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -358.89377,
+            "y": 145.99449,
+            "z": -88.6653
+          },
+          "screenPosition": {
+            "x": 0.07108619,
+            "y": 1.3789194
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -360.00842,
+            "y": 146.84631,
+            "z": -87.72074
+          },
+          "screenPosition": {
+            "x": 0.039693262,
+            "y": 1.3869836
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -361.51367,
+            "y": 146.54865,
+            "z": -87.05102
+          },
+          "screenPosition": {
+            "x": 0.029421136,
+            "y": 1.4092256
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -362.68912,
+            "y": 145.39017,
+            "z": -87.486626
+          },
+          "screenPosition": {
+            "x": 0.049699377,
+            "y": 1.4319305
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -362.87314,
+            "y": 144.07289,
+            "z": -88.42222
+          },
+          "screenPosition": {
+            "x": 0.08186843,
+            "y": 1.4443322
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -362.18677,
+            "y": 143.00223,
+            "z": -89.43507
+          },
+          "screenPosition": {
+            "x": 0.11584781,
+            "y": 1.4431511
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -360.72113,
+            "y": 142.70074,
+            "z": -90.29649
+          },
+          "screenPosition": {
+            "x": 0.13757387,
+            "y": 1.4268801
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -359.164,
+            "y": 143.03035,
+            "z": -90.79406
+          },
+          "screenPosition": {
+            "x": 0.14490886,
+            "y": 1.404577
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -357.63058,
+            "y": 143.5555,
+            "z": -91.21471
+          },
+          "screenPosition": {
+            "x": 0.14799355,
+            "y": 1.3809712
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -356.2041,
+            "y": 144.28758,
+            "z": -91.178604
+          },
+          "screenPosition": {
+            "x": 0.14290372,
+            "y": 1.3565837
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -355.3447,
+            "y": 145.59908,
+            "z": -90.7196
+          },
+          "screenPosition": {
+            "x": 0.11715744,
+            "y": 1.3372657
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -354.8665,
+            "y": 147.05246,
+            "z": -89.690865
+          },
+          "screenPosition": {
+            "x": 0.084601566,
+            "y": 1.3190011
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -355.2099,
+            "y": 148.30798,
+            "z": -88.67755
+          },
+          "screenPosition": {
+            "x": 0.049769264,
+            "y": 1.3138369
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -356.4813,
+            "y": 148.9042,
+            "z": -87.70448
+          },
+          "screenPosition": {
+            "x": 0.021719739,
+            "y": 1.3260581
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -358.5924,
+            "y": 149.6032,
+            "z": -87.4082
+          },
+          "screenPosition": {
+            "x": 0.0045554247,
+            "y": 1.354165
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -359.45035,
+            "y": 147.73056,
+            "z": -87.14281
+          },
+          "screenPosition": {
+            "x": 0.021806125,
+            "y": 1.3724723
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -359.2199,
+            "y": 146.46545,
+            "z": -88.148285
+          },
+          "screenPosition": {
+            "x": 0.05539012,
+            "y": 1.3797151
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -358.60916,
+            "y": 145.377,
+            "z": -89.23969
+          },
+          "screenPosition": {
+            "x": 0.08974497,
+            "y": 1.379815
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -357.41293,
+            "y": 144.92474,
+            "z": -90.162994
+          },
+          "screenPosition": {
+            "x": 0.11431519,
+            "y": 1.3674418
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -355.8823,
+            "y": 144.93423,
+            "z": -90.93714
+          },
+          "screenPosition": {
+            "x": 0.12924488,
+            "y": 1.348538
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -354.4356,
+            "y": 145.59128,
+            "z": -91.18153
+          },
+          "screenPosition": {
+            "x": 0.12795556,
+            "y": 1.3247842
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -353.3401,
+            "y": 146.80533,
+            "z": -90.645805
+          },
+          "screenPosition": {
+            "x": 0.105675906,
+            "y": 1.302432
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -353.0289,
+            "y": 148.12346,
+            "z": -89.698845
+          },
+          "screenPosition": {
+            "x": 0.07597462,
+            "y": 1.2867512
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -353.21585,
+            "y": 149.53111,
+            "z": -88.748
+          },
+          "screenPosition": {
+            "x": 0.03874586,
+            "y": 1.2793416
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -354.68604,
+            "y": 151.12833,
+            "z": -88.02755
+          },
+          "screenPosition": {
+            "x": 0.0018028098,
+            "y": 1.2927303
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -356.28497,
+            "y": 150.50407,
+            "z": -87.77404
+          },
+          "screenPosition": {
+            "x": 0.0076576606,
+            "y": 1.3180219
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -356.92953,
+            "y": 148.42746,
+            "z": -87.71106
+          },
+          "screenPosition": {
+            "x": 0.028987115,
+            "y": 1.3346238
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -357.8505,
+            "y": 147.18777,
+            "z": -88.41802
+          },
+          "screenPosition": {
+            "x": 0.052489627,
+            "y": 1.3565825
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -357.70856,
+            "y": 145.89584,
+            "z": -89.37583
+          },
+          "screenPosition": {
+            "x": 0.086803764,
+            "y": 1.3641679
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -356.75668,
+            "y": 145.00708,
+            "z": -90.482864
+          },
+          "screenPosition": {
+            "x": 0.11926953,
+            "y": 1.3586588
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -355.39008,
+            "y": 144.77344,
+            "z": -91.25689
+          },
+          "screenPosition": {
+            "x": 0.13795845,
+            "y": 1.3435282
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -353.94635,
+            "y": 145.25102,
+            "z": -91.500465
+          },
+          "screenPosition": {
+            "x": 0.13954893,
+            "y": 1.3215253
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -352.4449,
+            "y": 146.28842,
+            "z": -91.36385
+          },
+          "screenPosition": {
+            "x": 0.1285951,
+            "y": 1.2936333
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -351.4313,
+            "y": 147.48325,
+            "z": -90.89952
+          },
+          "screenPosition": {
+            "x": 0.10848125,
+            "y": 1.2710226
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -351.35522,
+            "y": 148.70932,
+            "z": -90.014854
+          },
+          "screenPosition": {
+            "x": 0.07771474,
+            "y": 1.2608229
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -351.98325,
+            "y": 149.98476,
+            "z": -89.07696
+          },
+          "screenPosition": {
+            "x": 0.039964925,
+            "y": 1.2605424
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -353.58752,
+            "y": 151.55722,
+            "z": -88.20171
+          },
+          "screenPosition": {
+            "x": 0.004674819,
+            "y": 1.2751215
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -354.97,
+            "y": 151.01746,
+            "z": -87.98252
+          },
+          "screenPosition": {
+            "x": -0.011962116,
+            "y": 1.295394
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -355.3409,
+            "y": 149.50899,
+            "z": -87.88735
+          },
+          "screenPosition": {
+            "x": 0.018342182,
+            "y": 1.3071691
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -355.4245,
+            "y": 148.01923,
+            "z": -88.696106
+          },
+          "screenPosition": {
+            "x": 0.054595478,
+            "y": 1.3183436
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -355.15808,
+            "y": 146.82002,
+            "z": -89.71516
+          },
+          "screenPosition": {
+            "x": 0.08811359,
+            "y": 1.3239338
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -354.02673,
+            "y": 146.32677,
+            "z": -90.675934
+          },
+          "screenPosition": {
+            "x": 0.10983156,
+            "y": 1.3157588
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -352.63675,
+            "y": 145.98914,
+            "z": -91.47554
+          },
+          "screenPosition": {
+            "x": 0.13480018,
+            "y": 1.2977605
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -351.24268,
+            "y": 146.51689,
+            "z": -91.91409
+          },
+          "screenPosition": {
+            "x": 0.13518083,
+            "y": 1.2775705
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -349.8328,
+            "y": 147.61288,
+            "z": -91.678215
+          },
+          "screenPosition": {
+            "x": 0.12046652,
+            "y": 1.2514888
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -348.69247,
+            "y": 148.63733,
+            "z": -91.54588
+          },
+          "screenPosition": {
+            "x": 0.107545614,
+            "y": 1.2282537
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -347.7892,
+            "y": 149.81654,
+            "z": -91.06794
+          },
+          "screenPosition": {
+            "x": 0.08363079,
+            "y": 1.2106303
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -348.1074,
+            "y": 151.04388,
+            "z": -90.125374
+          },
+          "screenPosition": {
+            "x": 0.051024146,
+            "y": 1.2043262
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -348.9826,
+            "y": 151.972,
+            "z": -88.85682
+          },
+          "screenPosition": {
+            "x": 0.018523887,
+            "y": 1.206771
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -350.89688,
+            "y": 152.6077,
+            "z": -88.6283
+          },
+          "screenPosition": {
+            "x": -0.011956618,
+            "y": 1.231057
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -351.68872,
+            "y": 151.0607,
+            "z": -88.45706
+          },
+          "screenPosition": {
+            "x": 0.01549438,
+            "y": 1.2488829
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -351.33472,
+            "y": 149.63199,
+            "z": -89.332535
+          },
+          "screenPosition": {
+            "x": 0.052016765,
+            "y": 1.2559291
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -350.72394,
+            "y": 148.54353,
+            "z": -90.42394
+          },
+          "screenPosition": {
+            "x": 0.08764701,
+            "y": 1.2546227
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -349.72778,
+            "y": 147.97037,
+            "z": -91.57419
+          },
+          "screenPosition": {
+            "x": 0.11288076,
+            "y": 1.2479243
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -348.3391,
+            "y": 147.63847,
+            "z": -92.48572
+          },
+          "screenPosition": {
+            "x": 0.13561304,
+            "y": 1.2326114
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -346.89258,
+            "y": 148.03049,
+            "z": -92.89317
+          },
+          "screenPosition": {
+            "x": 0.14158747,
+            "y": 1.210002
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.9333,
+            "y": 149.08632,
+            "z": -92.50955
+          },
+          "screenPosition": {
+            "x": 0.12395491,
+            "y": 1.1896228
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -344.62918,
+            "y": 150.26576,
+            "z": -91.88294
+          },
+          "screenPosition": {
+            "x": 0.10246412,
+            "y": 1.1657254
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -344.84558,
+            "y": 151.51672,
+            "z": -90.84764
+          },
+          "screenPosition": {
+            "x": 0.070885494,
+            "y": 1.1560003
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.72156,
+            "y": 152.58952,
+            "z": -90.00514
+          },
+          "screenPosition": {
+            "x": 0.03610638,
+            "y": 1.1606592
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -347.36356,
+            "y": 153.9872,
+            "z": -89.18851
+          },
+          "screenPosition": {
+            "x": -0.0027862063,
+            "y": 1.176317
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -348.83057,
+            "y": 153.41444,
+            "z": -88.95592
+          },
+          "screenPosition": {
+            "x": -0.01195383,
+            "y": 1.1984185
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -349.1943,
+            "y": 151.43869,
+            "z": -88.944046
+          },
+          "screenPosition": {
+            "x": 0.029223522,
+            "y": 1.2125082
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -349.32227,
+            "y": 150.07697,
+            "z": -89.90699
+          },
+          "screenPosition": {
+            "x": 0.06295772,
+            "y": 1.2243949
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -348.58298,
+            "y": 149.24306,
+            "z": -91.14433
+          },
+          "screenPosition": {
+            "x": 0.091783546,
+            "y": 1.223659
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -347.15228,
+            "y": 148.88293,
+            "z": -92.00026
+          },
+          "screenPosition": {
+            "x": 0.11642306,
+            "y": 1.2063887
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.65668,
+            "y": 148.98601,
+            "z": -92.737366
+          },
+          "screenPosition": {
+            "x": 0.12911864,
+            "y": 1.1872663
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -344.13345,
+            "y": 149.49973,
+            "z": -92.931465
+          },
+          "screenPosition": {
+            "x": 0.13103573,
+            "y": 1.1630402
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -342.77045,
+            "y": 150.38766,
+            "z": -92.630196
+          },
+          "screenPosition": {
+            "x": 0.12075927,
+            "y": 1.1378073
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -342.0075,
+            "y": 151.75137,
+            "z": -91.95228
+          },
+          "screenPosition": {
+            "x": 0.09051658,
+            "y": 1.1211883
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -342.0758,
+            "y": 153.07378,
+            "z": -90.93027
+          },
+          "screenPosition": {
+            "x": 0.05865713,
+            "y": 1.1086727
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -343.12628,
+            "y": 154.15056,
+            "z": -90.13791
+          },
+          "screenPosition": {
+            "x": 0.02261634,
+            "y": 1.1160862
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -344.99924,
+            "y": 154.91028,
+            "z": -89.56336
+          },
+          "screenPosition": {
+            "x": -0.0019809394,
+            "y": 1.1411948
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -346.3894,
+            "y": 154.36754,
+            "z": -89.342964
+          },
+          "screenPosition": {
+            "x": -0.010204222,
+            "y": 1.1600177
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -347.42722,
+            "y": 153.96234,
+            "z": -89.17841
+          },
+          "screenPosition": {
+            "x": -0.0119519355,
+            "y": 1.1762516
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -347.85748,
+            "y": 151.81235,
+            "z": -89.57563
+          },
+          "screenPosition": {
+            "x": 0.031872947,
+            "y": 1.1968589
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -347.6255,
+            "y": 150.55586,
+            "z": -90.584885
+          },
+          "screenPosition": {
+            "x": 0.06712617,
+            "y": 1.2020861
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -346.755,
+            "y": 149.63843,
+            "z": -91.52664
+          },
+          "screenPosition": {
+            "x": 0.09778368,
+            "y": 1.1982679
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.231,
+            "y": 149.56064,
+            "z": -92.13994
+          },
+          "screenPosition": {
+            "x": 0.11252859,
+            "y": 1.1808355
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -343.81866,
+            "y": 149.97447,
+            "z": -92.593765
+          },
+          "screenPosition": {
+            "x": 0.11892216,
+            "y": 1.1576836
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -342.51303,
+            "y": 150.98204,
+            "z": -92.30084
+          },
+          "screenPosition": {
+            "x": 0.106250085,
+            "y": 1.13214
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -341.4538,
+            "y": 152.12389,
+            "z": -92.18982
+          },
+          "screenPosition": {
+            "x": 0.089969195,
+            "y": 1.1096094
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -340.45956,
+            "y": 153.27235,
+            "z": -91.51064
+          },
+          "screenPosition": {
+            "x": 0.06978007,
+            "y": 1.0863959
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -340.08725,
+            "y": 154.64128,
+            "z": -90.65256
+          },
+          "screenPosition": {
+            "x": 0.038314354,
+            "y": 1.0713124
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -341.46332,
+            "y": 156.29079,
+            "z": -90.12398
+          },
+          "screenPosition": {
+            "x": -0.011943887,
+            "y": 1.082049
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -342.7383,
+            "y": 155.79301,
+            "z": -89.92183
+          },
+          "screenPosition": {
+            "x": -0.0045266394,
+            "y": 1.1028718
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -344.18933,
+            "y": 155.22649,
+            "z": -89.69177
+          },
+          "screenPosition": {
+            "x": -0.0075898548,
+            "y": 1.1289383
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.58414,
+            "y": 154.68193,
+            "z": -89.470634
+          },
+          "screenPosition": {
+            "x": -0.011949448,
+            "y": 1.1471394
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -346.20352,
+            "y": 152.84563,
+            "z": -89.28199
+          },
+          "screenPosition": {
+            "x": 0.020767177,
+            "y": 1.1668707
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -347.60715,
+            "y": 151.89592,
+            "z": -89.72333
+          },
+          "screenPosition": {
+            "x": 0.035229944,
+            "y": 1.1903237
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -348.06345,
+            "y": 150.42188,
+            "z": -90.59073
+          },
+          "screenPosition": {
+            "x": 0.06838949,
+            "y": 1.2071747
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -347.43823,
+            "y": 149.24348,
+            "z": -91.60473
+          },
+          "screenPosition": {
+            "x": 0.10427113,
+            "y": 1.2073961
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -346.27368,
+            "y": 148.6378,
+            "z": -92.459404
+          },
+          "screenPosition": {
+            "x": 0.1267224,
+            "y": 1.2008215
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -344.98245,
+            "y": 148.62323,
+            "z": -93.208786
+          },
+          "screenPosition": {
+            "x": 0.1431455,
+            "y": 1.182534
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -343.37457,
+            "y": 149.33987,
+            "z": -93.23091
+          },
+          "screenPosition": {
+            "x": 0.13906573,
+            "y": 1.1569972
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -342.51862,
+            "y": 150.7304,
+            "z": -92.48693
+          },
+          "screenPosition": {
+            "x": 0.113154426,
+            "y": 1.1335132
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -342.78503,
+            "y": 151.9296,
+            "z": -91.46788
+          },
+          "screenPosition": {
+            "x": 0.08095955,
+            "y": 1.126398
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -343.9753,
+            "y": 152.8559,
+            "z": -90.7144
+          },
+          "screenPosition": {
+            "x": 0.04733638,
+            "y": 1.1366966
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.00455,
+            "y": 153.15498,
+            "z": -89.54798
+          },
+          "screenPosition": {
+            "x": 0.022456545,
+            "y": 1.1519005
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -346.63318,
+            "y": 152.52705,
+            "z": -89.503845
+          },
+          "screenPosition": {
+            "x": 0.027942766,
+            "y": 1.1722908
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -347.81577,
+            "y": 151.44893,
+            "z": -89.75449
+          },
+          "screenPosition": {
+            "x": 0.041096445,
+            "y": 1.1985784
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -348.78168,
+            "y": 150.22704,
+            "z": -90.038414
+          },
+          "screenPosition": {
+            "x": 0.06332635,
+            "y": 1.2176434
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -349.39838,
+            "y": 148.85089,
+            "z": -90.79165
+          },
+          "screenPosition": {
+            "x": 0.09372419,
+            "y": 1.2345947
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -349.8663,
+            "y": 147.46397,
+            "z": -91.73054
+          },
+          "screenPosition": {
+            "x": 0.1237474,
+            "y": 1.2528611
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -350.20517,
+            "y": 146.16182,
+            "z": -92.595085
+          },
+          "screenPosition": {
+            "x": 0.15546036,
+            "y": 1.2658165
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -349.73636,
+            "y": 145.0051,
+            "z": -93.77248
+          },
+          "screenPosition": {
+            "x": 0.1903602,
+            "y": 1.2688928
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -348.52002,
+            "y": 144.35536,
+            "z": -94.666176
+          },
+          "screenPosition": {
+            "x": 0.21864398,
+            "y": 1.2575556
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -346.9016,
+            "y": 144.71661,
+            "z": -95.016975
+          },
+          "screenPosition": {
+            "x": 0.22511627,
+            "y": 1.2335819
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.64847,
+            "y": 145.67152,
+            "z": -95.05127
+          },
+          "screenPosition": {
+            "x": 0.21396883,
+            "y": 1.211047
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -344.94183,
+            "y": 146.89903,
+            "z": -94.354225
+          },
+          "screenPosition": {
+            "x": 0.18907113,
+            "y": 1.1923313
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.66263,
+            "y": 147.72055,
+            "z": -93.32442
+          },
+          "screenPosition": {
+            "x": 0.16030662,
+            "y": 1.1950573
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -347.2595,
+            "y": 147.85056,
+            "z": -92.69647
+          },
+          "screenPosition": {
+            "x": 0.14173096,
+            "y": 1.2154436
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -348.78864,
+            "y": 147.51472,
+            "z": -92.39588
+          },
+          "screenPosition": {
+            "x": 0.13568355,
+            "y": 1.2381462
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -350.33054,
+            "y": 147.35054,
+            "z": -91.660835
+          },
+          "screenPosition": {
+            "x": 0.123691104,
+            "y": 1.2585428
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -351.6531,
+            "y": 146.624,
+            "z": -91.7062
+          },
+          "screenPosition": {
+            "x": 0.12947936,
+            "y": 1.2814624
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -351.6279,
+            "y": 145.23097,
+            "z": -92.499
+          },
+          "screenPosition": {
+            "x": 0.16442847,
+            "y": 1.2904898
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -351.19366,
+            "y": 144.19077,
+            "z": -93.67165
+          },
+          "screenPosition": {
+            "x": 0.19525756,
+            "y": 1.2944634
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -350.50452,
+            "y": 143.03441,
+            "z": -94.65228
+          },
+          "screenPosition": {
+            "x": 0.23219779,
+            "y": 1.292564
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -349.30673,
+            "y": 142.50255,
+            "z": -95.732315
+          },
+          "screenPosition": {
+            "x": 0.25755656,
+            "y": 1.2824696
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -347.76828,
+            "y": 143.08162,
+            "z": -95.85145
+          },
+          "screenPosition": {
+            "x": 0.25846013,
+            "y": 1.2570232
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -346.37924,
+            "y": 144.33101,
+            "z": -96.87036
+          },
+          "screenPosition": {
+            "x": 0.24625836,
+            "y": 1.2352121
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.88452,
+            "y": 145.4012,
+            "z": -95.01375
+          },
+          "screenPosition": {
+            "x": 0.21793771,
+            "y": 1.2155774
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -346.82776,
+            "y": 146.37442,
+            "z": -94.04762
+          },
+          "screenPosition": {
+            "x": 0.18430431,
+            "y": 1.2211475
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -348.13507,
+            "y": 146.56126,
+            "z": -93.08814
+          },
+          "screenPosition": {
+            "x": 0.1653383,
+            "y": 1.2356119
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -349.67352,
+            "y": 146.14748,
+            "z": -92.855995
+          },
+          "screenPosition": {
+            "x": 0.160208,
+            "y": 1.2600204
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -350.8504,
+            "y": 145.05273,
+            "z": -92.9834
+          },
+          "screenPosition": {
+            "x": 0.17551926,
+            "y": 1.282914
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -352.03195,
+            "y": 143.80501,
+            "z": -93.46255
+          },
+          "screenPosition": {
+            "x": 0.19738892,
+            "y": 1.3067256
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -352.55804,
+            "y": 142.45738,
+            "z": -94.256226
+          },
+          "screenPosition": {
+            "x": 0.22538586,
+            "y": 1.32477
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -352.83624,
+            "y": 141.19963,
+            "z": -95.08975
+          },
+          "screenPosition": {
+            "x": 0.25588956,
+            "y": 1.3372152
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -353.30273,
+            "y": 139.72362,
+            "z": -95.97172
+          },
+          "screenPosition": {
+            "x": 0.28751868,
+            "y": 1.3552185
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -352.55646,
+            "y": 138.615,
+            "z": -97.039
+          },
+          "screenPosition": {
+            "x": 0.3252452,
+            "y": 1.3521881
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -350.9865,
+            "y": 138.92958,
+            "z": -97.511566
+          },
+          "screenPosition": {
+            "x": 0.3315916,
+            "y": 1.3304609
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -349.64777,
+            "y": 139.69167,
+            "z": -98.87305
+          },
+          "screenPosition": {
+            "x": 0.32604343,
+            "y": 1.3155217
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -348.83023,
+            "y": 140.85207,
+            "z": -98.37213
+          },
+          "screenPosition": {
+            "x": 0.3111132,
+            "y": 1.2928944
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -348.82132,
+            "y": 141.91171,
+            "z": -96.256294
+          },
+          "screenPosition": {
+            "x": 0.275704,
+            "y": 1.2810386
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -350.07883,
+            "y": 142.40991,
+            "z": -95.31245
+          },
+          "screenPosition": {
+            "x": 0.25253257,
+            "y": 1.2917867
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -351.7023,
+            "y": 141.73186,
+            "z": -95.3237
+          },
+          "screenPosition": {
+            "x": 0.2547274,
+            "y": 1.3187283
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -353.0398,
+            "y": 140.91112,
+            "z": -95.219505
+          },
+          "screenPosition": {
+            "x": 0.25958726,
+            "y": 1.343148
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -354.01297,
+            "y": 139.78406,
+            "z": -95.68252
+          },
+          "screenPosition": {
+            "x": 0.28131065,
+            "y": 1.3628758
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -354.67007,
+            "y": 138.52136,
+            "z": -96.31995
+          },
+          "screenPosition": {
+            "x": 0.3070957,
+            "y": 1.3807881
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -355.4191,
+            "y": 137.14499,
+            "z": -96.977806
+          },
+          "screenPosition": {
+            "x": 0.3348819,
+            "y": 1.4005821
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -355.1024,
+            "y": 136.14252,
+            "z": -97.74355
+          },
+          "screenPosition": {
+            "x": 0.36238724,
+            "y": 1.4039749
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -353.65375,
+            "y": 136.83292,
+            "z": -98.093216
+          },
+          "screenPosition": {
+            "x": 0.36101696,
+            "y": 1.3805768
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -352.29916,
+            "y": 136.6743,
+            "z": -98.71496
+          },
+          "screenPosition": {
+            "x": 0.37821117,
+            "y": 1.3639066
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -351.35657,
+            "y": 137.51332,
+            "z": -99.70648
+          },
+          "screenPosition": {
+            "x": 0.3714787,
+            "y": 1.3503752
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -350.48282,
+            "y": 138.50636,
+            "z": -99.384705
+          },
+          "screenPosition": {
+            "x": 0.35484213,
+            "y": 1.3317871
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -351.4178,
+            "y": 139.30244,
+            "z": -97.03749
+          },
+          "screenPosition": {
+            "x": 0.31900093,
+            "y": 1.3323758
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -352.75034,
+            "y": 139.87857,
+            "z": -96.19872
+          },
+          "screenPosition": {
+            "x": 0.29123172,
+            "y": 1.3462574
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -354.24927,
+            "y": 139.16797,
+            "z": -95.98076
+          },
+          "screenPosition": {
+            "x": 0.29337415,
+            "y": 1.3710063
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -355.49826,
+            "y": 138.10907,
+            "z": -96.09092
+          },
+          "screenPosition": {
+            "x": 0.308202,
+            "y": 1.394111
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -356.50354,
+            "y": 136.9081,
+            "z": -96.54259
+          },
+          "screenPosition": {
+            "x": 0.3287789,
+            "y": 1.4161943
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -357.1562,
+            "y": 135.58098,
+            "z": -97.352745
+          },
+          "screenPosition": {
+            "x": 0.35752568,
+            "y": 1.4346619
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -357.41095,
+            "y": 134.20639,
+            "z": -98.20928
+          },
+          "screenPosition": {
+            "x": 0.39012545,
+            "y": 1.4479997
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -357.07825,
+            "y": 132.94919,
+            "z": -99.24561
+          },
+          "screenPosition": {
+            "x": 0.42554495,
+            "y": 1.4529464
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -355.97128,
+            "y": 132.21068,
+            "z": -100.29861
+          },
+          "screenPosition": {
+            "x": 0.45565295,
+            "y": 1.4442661
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -354.46793,
+            "y": 132.8499,
+            "z": -101.826454
+          },
+          "screenPosition": {
+            "x": 0.45274767,
+            "y": 1.4293858
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -353.7599,
+            "y": 133.85487,
+            "z": -101.39264
+          },
+          "screenPosition": {
+            "x": 0.441556,
+            "y": 1.408911
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -353.43094,
+            "y": 134.43153,
+            "z": -99.78014
+          },
+          "screenPosition": {
+            "x": 0.4240492,
+            "y": 1.3948966
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -353.89172,
+            "y": 135.6753,
+            "z": -98.63999
+          },
+          "screenPosition": {
+            "x": 0.3874367,
+            "y": 1.3914676
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -354.93137,
+            "y": 136.55746,
+            "z": -97.60214
+          },
+          "screenPosition": {
+            "x": 0.3528651,
+            "y": 1.3995624
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -356.4827,
+            "y": 136.22113,
+            "z": -97.10378
+          },
+          "screenPosition": {
+            "x": 0.34624803,
+            "y": 1.421521
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -357.64807,
+            "y": 135.05365,
+            "z": -97.503174
+          },
+          "screenPosition": {
+            "x": 0.3660759,
+            "y": 1.4448435
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -358.37958,
+            "y": 133.73227,
+            "z": -98.07152
+          },
+          "screenPosition": {
+            "x": 0.39233908,
+            "y": 1.4637913
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -359.1568,
+            "y": 132.56479,
+            "z": -98.65515
+          },
+          "screenPosition": {
+            "x": 0.41477066,
+            "y": 1.4828305
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -360.0018,
+            "y": 131.33028,
+            "z": -99.15928
+          },
+          "screenPosition": {
+            "x": 0.4358737,
+            "y": 1.5035518
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -360.2685,
+            "y": 130.05533,
+            "z": -99.97529
+          },
+          "screenPosition": {
+            "x": 0.46792996,
+            "y": 1.5157349
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -359.52002,
+            "y": 129.05646,
+            "z": -101.09648
+          },
+          "screenPosition": {
+            "x": 0.5012901,
+            "y": 1.5137655
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -358.21545,
+            "y": 129.09747,
+            "z": -101.848175
+          },
+          "screenPosition": {
+            "x": 0.51420814,
+            "y": 1.4974759
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -356.54675,
+            "y": 129.8992,
+            "z": -103.1002
+          },
+          "screenPosition": {
+            "x": 0.5060005,
+            "y": 1.4791956
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -355.66272,
+            "y": 131.15398,
+            "z": -102.55854
+          },
+          "screenPosition": {
+            "x": 0.49190637,
+            "y": 1.4536929
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -355.9947,
+            "y": 131.89803,
+            "z": -100.569214
+          },
+          "screenPosition": {
+            "x": 0.4633792,
+            "y": 1.4472319
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -357.23718,
+            "y": 132.54721,
+            "z": -99.485535
+          },
+          "screenPosition": {
+            "x": 0.43388888,
+            "y": 1.4582425
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -358.7593,
+            "y": 132.33145,
+            "z": -99.12395
+          },
+          "screenPosition": {
+            "x": 0.42529,
+            "y": 1.479939
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -360.24213,
+            "y": 131.92528,
+            "z": -98.635994
+          },
+          "screenPosition": {
+            "x": 0.42033264,
+            "y": 1.5015391
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -361.386,
+            "y": 130.90009,
+            "z": -98.88263
+          },
+          "screenPosition": {
+            "x": 0.43405008,
+            "y": 1.5243329
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -362.15158,
+            "y": 129.63033,
+            "z": -99.50717
+          },
+          "screenPosition": {
+            "x": 0.4602333,
+            "y": 1.5434043
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -361.69855,
+            "y": 128.48921,
+            "z": -100.60075
+          },
+          "screenPosition": {
+            "x": 0.49428087,
+            "y": 1.5462998
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -361.1057,
+            "y": 127.60977,
+            "z": -101.60194
+          },
+          "screenPosition": {
+            "x": 0.52318573,
+            "y": 1.5455961
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -359.5779,
+            "y": 127.67828,
+            "z": -102.191
+          },
+          "screenPosition": {
+            "x": 0.5335881,
+            "y": 1.5261668
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -358.33682,
+            "y": 127.7653,
+            "z": -102.62475
+          },
+          "screenPosition": {
+            "x": 0.54649603,
+            "y": 1.5083704
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -357.84772,
+            "y": 128.90793,
+            "z": -102.0626
+          },
+          "screenPosition": {
+            "x": 0.51991546,
+            "y": 1.4946426
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -357.5562,
+            "y": 130.35732,
+            "z": -101.20736
+          },
+          "screenPosition": {
+            "x": 0.4866978,
+            "y": 1.4802096
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -358.29886,
+            "y": 131.26257,
+            "z": -100.14279
+          },
+          "screenPosition": {
+            "x": 0.45536196,
+            "y": 1.4829005
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -359.6221,
+            "y": 131.60368,
+            "z": -99.18069
+          },
+          "screenPosition": {
+            "x": 0.43353608,
+            "y": 1.4966145
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -361.18634,
+            "y": 131.36882,
+            "z": -98.64211
+          },
+          "screenPosition": {
+            "x": 0.42522898,
+            "y": 1.5179274
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -362.59976,
+            "y": 130.4729,
+            "z": -98.774055
+          },
+          "screenPosition": {
+            "x": 0.43451738,
+            "y": 1.5432433
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -363.47903,
+            "y": 129.32904,
+            "z": -99.14533
+          },
+          "screenPosition": {
+            "x": 0.45179567,
+            "y": 1.5636678
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -363.7123,
+            "y": 128.05241,
+            "z": -100.03395
+          },
+          "screenPosition": {
+            "x": 0.4853569,
+            "y": 1.5755391
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -363.0237,
+            "y": 126.95636,
+            "z": -101.05498
+          },
+          "screenPosition": {
+            "x": 0.51586586,
+            "y": 1.5755883
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -361.62802,
+            "y": 126.90117,
+            "z": -101.79404
+          },
+          "screenPosition": {
+            "x": 0.5324745,
+            "y": 1.5581373
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -360.3921,
+            "y": 127.43288,
+            "z": -101.93983
+          },
+          "screenPosition": {
+            "x": 0.5313548,
+            "y": 1.5381917
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -359.1889,
+            "y": 128.45796,
+            "z": -101.8408
+          },
+          "screenPosition": {
+            "x": 0.5206651,
+            "y": 1.5146086
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -358.2098,
+            "y": 129.47491,
+            "z": -101.42693
+          },
+          "screenPosition": {
+            "x": 0.50382763,
+            "y": 1.4940212
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -358.02,
+            "y": 130.73843,
+            "z": -100.667244
+          },
+          "screenPosition": {
+            "x": 0.4717961,
+            "y": 1.4832169
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -358.57822,
+            "y": 131.87411,
+            "z": -99.56003
+          },
+          "screenPosition": {
+            "x": 0.4377021,
+            "y": 1.4815778
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -359.58124,
+            "y": 132.49272,
+            "z": -98.46452
+          },
+          "screenPosition": {
+            "x": 0.4119736,
+            "y": 1.4886718
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -360.7197,
+            "y": 133.1966,
+            "z": -97.527374
+          },
+          "screenPosition": {
+            "x": 0.3831118,
+            "y": 1.4983636
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -362.06824,
+            "y": 133.57707,
+            "z": -96.60219
+          },
+          "screenPosition": {
+            "x": 0.35958517,
+            "y": 1.5127367
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -363.6205,
+            "y": 133.407,
+            "z": -95.97956
+          },
+          "screenPosition": {
+            "x": 0.34718627,
+            "y": 1.5341319
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.01477,
+            "y": 132.56114,
+            "z": -96.01832
+          },
+          "screenPosition": {
+            "x": 0.3560945,
+            "y": 1.5581843
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.6314,
+            "y": 131.27475,
+            "z": -96.71424
+          },
+          "screenPosition": {
+            "x": 0.3825774,
+            "y": 1.5759702
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -364.94418,
+            "y": 130.33997,
+            "z": -97.8221
+          },
+          "screenPosition": {
+            "x": 0.414005,
+            "y": 1.5745424
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -363.5566,
+            "y": 130.31886,
+            "z": -98.37591
+          },
+          "screenPosition": {
+            "x": 0.42839897,
+            "y": 1.5564029
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -362.55798,
+            "y": 130.91718,
+            "z": -98.3438
+          },
+          "screenPosition": {
+            "x": 0.42285973,
+            "y": 1.5389327
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -362.44724,
+            "y": 132.22226,
+            "z": -97.47319
+          },
+          "screenPosition": {
+            "x": 0.39075056,
+            "y": 1.527903
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -361.71014,
+            "y": 133.31544,
+            "z": -96.88123
+          },
+          "screenPosition": {
+            "x": 0.36824632,
+            "y": 1.510291
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -361.49576,
+            "y": 134.62918,
+            "z": -96.02883
+          },
+          "screenPosition": {
+            "x": 0.3371878,
+            "y": 1.497665
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -362.09668,
+            "y": 135.7014,
+            "z": -94.91845
+          },
+          "screenPosition": {
+            "x": 0.30406585,
+            "y": 1.4969155
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -362.75858,
+            "y": 136.82692,
+            "z": -93.78771
+          },
+          "screenPosition": {
+            "x": 0.2687313,
+            "y": 1.4969212
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -363.86682,
+            "y": 137.4807,
+            "z": -92.79584
+          },
+          "screenPosition": {
+            "x": 0.24078195,
+            "y": 1.5062479
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.38293,
+            "y": 137.47308,
+            "z": -92.12587
+          },
+          "screenPosition": {
+            "x": 0.22561353,
+            "y": 1.5259132
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -366.90433,
+            "y": 136.95099,
+            "z": -91.812675
+          },
+          "screenPosition": {
+            "x": 0.22396012,
+            "y": 1.5492046
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -367.77393,
+            "y": 135.76224,
+            "z": -92.37193
+          },
+          "screenPosition": {
+            "x": 0.24541965,
+            "y": 1.5698221
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -367.15793,
+            "y": 134.75009,
+            "z": -93.39028
+          },
+          "screenPosition": {
+            "x": 0.27743578,
+            "y": 1.5694709
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -366.05914,
+            "y": 134.1155,
+            "z": -94.40432
+          },
+          "screenPosition": {
+            "x": 0.30557474,
+            "y": 1.5600734
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -364.69345,
+            "y": 133.70396,
+            "z": -95.29441
+          },
+          "screenPosition": {
+            "x": 0.32989126,
+            "y": 1.545402
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -363.17035,
+            "y": 134.13371,
+            "z": -95.6583
+          },
+          "screenPosition": {
+            "x": 0.33408538,
+            "y": 1.5225964
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -362.21164,
+            "y": 135.27492,
+            "z": -95.21428
+          },
+          "screenPosition": {
+            "x": 0.31419984,
+            "y": 1.5016294
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -362.2786,
+            "y": 136.59477,
+            "z": -94.1899
+          },
+          "screenPosition": {
+            "x": 0.27955234,
+            "y": 1.4925523
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -363.13348,
+            "y": 137.41489,
+            "z": -93.1676
+          },
+          "screenPosition": {
+            "x": 0.24980216,
+            "y": 1.497278
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -364.4488,
+            "y": 137.87375,
+            "z": -92.25728
+          },
+          "screenPosition": {
+            "x": 0.22491883,
+            "y": 1.5108498
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.91312,
+            "y": 138.00247,
+            "z": -91.51036
+          },
+          "screenPosition": {
+            "x": 0.20649146,
+            "y": 1.5289612
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -367.5188,
+            "y": 137.87169,
+            "z": -90.84533
+          },
+          "screenPosition": {
+            "x": 0.19411233,
+            "y": 1.550182
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -368.75372,
+            "y": 137.24847,
+            "z": -90.75527
+          },
+          "screenPosition": {
+            "x": 0.19749479,
+            "y": 1.5708469
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -370.2504,
+            "y": 136.30757,
+            "z": -90.84255
+          },
+          "screenPosition": {
+            "x": 0.20716432,
+            "y": 1.5973066
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -370.73026,
+            "y": 135.12366,
+            "z": -91.59351
+          },
+          "screenPosition": {
+            "x": 0.23270284,
+            "y": 1.6128561
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -370.06616,
+            "y": 134.16565,
+            "z": -92.59664
+          },
+          "screenPosition": {
+            "x": 0.26311082,
+            "y": 1.6117185
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -368.648,
+            "y": 134.05942,
+            "z": -93.28591
+          },
+          "screenPosition": {
+            "x": 0.28064713,
+            "y": 1.5939461
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -367.1726,
+            "y": 134.3427,
+            "z": -93.71466
+          },
+          "screenPosition": {
+            "x": 0.2878693,
+            "y": 1.572826
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.82974,
+            "y": 135.31346,
+            "z": -93.57766
+          },
+          "screenPosition": {
+            "x": 0.2771002,
+            "y": 1.5479184
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.10678,
+            "y": 136.51787,
+            "z": -92.94836
+          },
+          "screenPosition": {
+            "x": 0.25265887,
+            "y": 1.5295564
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.13556,
+            "y": 137.91081,
+            "z": -91.93624
+          },
+          "screenPosition": {
+            "x": 0.21707472,
+            "y": 1.5195018
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.75015,
+            "y": 139.00615,
+            "z": -90.85635
+          },
+          "screenPosition": {
+            "x": 0.18278876,
+            "y": 1.5192604
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -367.1502,
+            "y": 139.07286,
+            "z": -90.1113
+          },
+          "screenPosition": {
+            "x": 0.16692336,
+            "y": 1.5364082
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -368.6853,
+            "y": 138.92996,
+            "z": -89.614494
+          },
+          "screenPosition": {
+            "x": 0.15556155,
+            "y": 1.5575961
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -369.59058,
+            "y": 137.8375,
+            "z": -90.03923
+          },
+          "screenPosition": {
+            "x": 0.17405318,
+            "y": 1.5777451
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -370.08862,
+            "y": 136.52173,
+            "z": -90.69771
+          },
+          "screenPosition": {
+            "x": 0.20270495,
+            "y": 1.5934975
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -369.83063,
+            "y": 135.25513,
+            "z": -91.800186
+          },
+          "screenPosition": {
+            "x": 0.23831166,
+            "y": 1.5997534
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -368.633,
+            "y": 134.81764,
+            "z": -92.73345
+          },
+          "screenPosition": {
+            "x": 0.26192197,
+            "y": 1.5878954
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -367.24588,
+            "y": 135.58699,
+            "z": -92.76413
+          },
+          "screenPosition": {
+            "x": 0.25598255,
+            "y": 1.5641963
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.89706,
+            "y": 136.37088,
+            "z": -92.72559
+          },
+          "screenPosition": {
+            "x": 0.24887604,
+            "y": 1.5408045
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -364.3688,
+            "y": 136.9668,
+            "z": -92.963264
+          },
+          "screenPosition": {
+            "x": 0.24904473,
+            "y": 1.5165803
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -362.98004,
+            "y": 137.8253,
+            "z": -92.937515
+          },
+          "screenPosition": {
+            "x": 0.24085748,
+            "y": 1.4922383
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -362.17645,
+            "y": 139.16783,
+            "z": -92.321335
+          },
+          "screenPosition": {
+            "x": 0.21441504,
+            "y": 1.4719818
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -362.74338,
+            "y": 140.31711,
+            "z": -91.22863
+          },
+          "screenPosition": {
+            "x": 0.17938405,
+            "y": 1.4706743
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -364.14487,
+            "y": 140.651,
+            "z": -90.320404
+          },
+          "screenPosition": {
+            "x": 0.1566482,
+            "y": 1.4860581
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.44208,
+            "y": 139.73729,
+            "z": -90.45156
+          },
+          "screenPosition": {
+            "x": 0.16696264,
+            "y": 1.5098914
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.65994,
+            "y": 138.42963,
+            "z": -91.30622
+          },
+          "screenPosition": {
+            "x": 0.19804737,
+            "y": 1.5225128
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -365.83377,
+            "y": 137.09651,
+            "z": -92.217354
+          },
+          "screenPosition": {
+            "x": 0.23100646,
+            "y": 1.5345129
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -364.8231,
+            "y": 136.42186,
+            "z": -93.17767
+          },
+          "screenPosition": {
+            "x": 0.25847223,
+            "y": 1.5265958
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -363.3471,
+            "y": 136.62169,
+            "z": -93.66812
+          },
+          "screenPosition": {
+            "x": 0.26803452,
+            "y": 1.5060122
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -361.8745,
+            "y": 137.26247,
+            "z": -93.87666
+          },
+          "screenPosition": {
+            "x": 0.26650065,
+            "y": 1.482338
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -360.5764,
+            "y": 138.17715,
+            "z": -93.74871
+          },
+          "screenPosition": {
+            "x": 0.25529706,
+            "y": 1.458959
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -359.4284,
+            "y": 139.28398,
+            "z": -93.43705
+          },
+          "screenPosition": {
+            "x": 0.2380288,
+            "y": 1.4360868
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -358.66357,
+            "y": 140.73155,
+            "z": -92.697105
+          },
+          "screenPosition": {
+            "x": 0.20895988,
+            "y": 1.4151248
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -358.58374,
+            "y": 142.12538,
+            "z": -91.688385
+          },
+          "screenPosition": {
+            "x": 0.1741936,
+            "y": 1.4034584
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -359.61697,
+            "y": 142.91292,
+            "z": -90.71366
+          },
+          "screenPosition": {
+            "x": 0.14391729,
+            "y": 1.4111724
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -361.22702,
+            "y": 142.6223,
+            "z": -90.1818
+          },
+          "screenPosition": {
+            "x": 0.13538606,
+            "y": 1.4337856
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -362.696,
+            "y": 142.15215,
+            "z": -89.8502
+          },
+          "screenPosition": {
+            "x": 0.13212833,
+            "y": 1.4564352
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -363.3567,
+            "y": 140.80287,
+            "z": -90.54826
+          },
+          "screenPosition": {
+            "x": 0.1605445,
+            "y": 1.4747521
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -363.2336,
+            "y": 139.52507,
+            "z": -91.54273
+          },
+          "screenPosition": {
+            "x": 0.19454497,
+            "y": 1.4827057
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -362.6749,
+            "y": 138.38809,
+            "z": -92.65479
+          },
+          "screenPosition": {
+            "x": 0.22936757,
+            "y": 1.4841328
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -361.16934,
+            "y": 138.4119,
+            "z": -93.34696
+          },
+          "screenPosition": {
+            "x": 0.24416773,
+            "y": 1.4646412
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -359.65878,
+            "y": 138.77281,
+            "z": -93.793304
+          },
+          "screenPosition": {
+            "x": 0.25021404,
+            "y": 1.4426471
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -358.03293,
+            "y": 139.12946,
+            "z": -94.23635
+          },
+          "screenPosition": {
+            "x": 0.25666425,
+            "y": 1.4193032
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -356.48846,
+            "y": 139.70604,
+            "z": -94.44717
+          },
+          "screenPosition": {
+            "x": 0.25620887,
+            "y": 1.3954396
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -355.2457,
+            "y": 140.77106,
+            "z": -94.35139
+          },
+          "screenPosition": {
+            "x": 0.24343184,
+            "y": 1.3711354
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -353.8112,
+            "y": 141.49506,
+            "z": -94.31417
+          },
+          "screenPosition": {
+            "x": 0.23858008,
+            "y": 1.3466624
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -352.9501,
+            "y": 142.8784,
+            "z": -93.66579
+          },
+          "screenPosition": {
+            "x": 0.21117921,
+            "y": 1.3255314
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -353.06653,
+            "y": 144.23293,
+            "z": -92.59799
+          },
+          "screenPosition": {
+            "x": 0.17240703,
+            "y": 1.3190342
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -353.5889,
+            "y": 145.34975,
+            "z": -91.551575
+          },
+          "screenPosition": {
+            "x": 0.139508,
+            "y": 1.3168151
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -354.8559,
+            "y": 146.12491,
+            "z": -90.574524
+          },
+          "screenPosition": {
+            "x": 0.10879765,
+            "y": 1.32707
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -356.25607,
+            "y": 145.76497,
+            "z": -90.01057
+          },
+          "screenPosition": {
+            "x": 0.101643614,
+            "y": 1.3481164
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -357.3086,
+            "y": 144.68057,
+            "z": -90.35667
+          },
+          "screenPosition": {
+            "x": 0.12148974,
+            "y": 1.3677775
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -358.19696,
+            "y": 143.49986,
+            "z": -90.93951
+          },
+          "screenPosition": {
+            "x": 0.1431055,
+            "y": 1.3886743
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -358.92624,
+            "y": 142.09851,
+            "z": -91.55399
+          },
+          "screenPosition": {
+            "x": 0.17132494,
+            "y": 1.4081424
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -359.64294,
+            "y": 140.61884,
+            "z": -92.33972
+          },
+          "screenPosition": {
+            "x": 0.20255253,
+            "y": 1.4282438
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -359.47278,
+            "y": 139.48384,
+            "z": -93.26721
+          },
+          "screenPosition": {
+            "x": 0.23237671,
+            "y": 1.4351975
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -358.34164,
+            "y": 138.74445,
+            "z": -94.408264
+          },
+          "screenPosition": {
+            "x": 0.26406872,
+            "y": 1.4259756
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -356.82986,
+            "y": 139.01534,
+            "z": -94.90788
+          },
+          "screenPosition": {
+            "x": 0.2724743,
+            "y": 1.4045278
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -355.26984,
+            "y": 139.59654,
+            "z": -95.215385
+          },
+          "screenPosition": {
+            "x": 0.27336976,
+            "y": 1.380257
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -353.98425,
+            "y": 140.6104,
+            "z": -95.048386
+          },
+          "screenPosition": {
+            "x": 0.25973293,
+            "y": 1.3564963
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -353.1962,
+            "y": 141.94551,
+            "z": -94.33251
+          },
+          "screenPosition": {
+            "x": 0.23273042,
+            "y": 1.3362417
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -353.28516,
+            "y": 143.18706,
+            "z": -93.28328
+          },
+          "screenPosition": {
+            "x": 0.20034964,
+            "y": 1.3271726
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -354.02264,
+            "y": 144.12517,
+            "z": -92.447685
+          },
+          "screenPosition": {
+            "x": 0.16972017,
+            "y": 1.330422
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -355.53775,
+            "y": 143.84544,
+            "z": -91.83133
+          },
+          "screenPosition": {
+            "x": 0.16105843,
+            "y": 1.3514249
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -357.061,
+            "y": 143.24414,
+            "z": -91.58521
+          },
+          "screenPosition": {
+            "x": 0.16007657,
+            "y": 1.376284
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -358.00812,
+            "y": 142.00049,
+            "z": -92.06544
+          },
+          "screenPosition": {
+            "x": 0.18340173,
+            "y": 1.3970213
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -358.95795,
+            "y": 140.67258,
+            "z": -92.6085
+          },
+          "screenPosition": {
+            "x": 0.20753466,
+            "y": 1.4193428
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -358.9938,
+            "y": 139.33842,
+            "z": -93.61205
+          },
+          "screenPosition": {
+            "x": 0.24086972,
+            "y": 1.430295
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -358.9217,
+            "y": 138.09752,
+            "z": -94.56829
+          },
+          "screenPosition": {
+            "x": 0.27396247,
+            "y": 1.4383751
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -358.3794,
+            "y": 137.06902,
+            "z": -95.64856
+          },
+          "screenPosition": {
+            "x": 0.30688155,
+            "y": 1.4390132
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -356.93875,
+            "y": 137.02715,
+            "z": -96.25194
+          },
+          "screenPosition": {
+            "x": 0.32207388,
+            "y": 1.4204828
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -355.4477,
+            "y": 137.41139,
+            "z": -96.7253
+          },
+          "screenPosition": {
+            "x": 0.3273948,
+            "y": 1.3988749
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -354.29193,
+            "y": 138.50682,
+            "z": -96.40078
+          },
+          "screenPosition": {
+            "x": 0.30922037,
+            "y": 1.3765514
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -354.2361,
+            "y": 139.83995,
+            "z": -95.487816
+          },
+          "screenPosition": {
+            "x": 0.27735204,
+            "y": 1.3651397
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -355.19608,
+            "y": 140.47986,
+            "z": -94.5716
+          },
+          "screenPosition": {
+            "x": 0.2511869,
+            "y": 1.3726921
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -356.59946,
+            "y": 140.73355,
+            "z": -93.73248
+          },
+          "screenPosition": {
+            "x": 0.23063943,
+            "y": 1.388677
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -357.99252,
+            "y": 140.88826,
+            "z": -92.93227
+          },
+          "screenPosition": {
+            "x": 0.21213926,
+            "y": 1.405374
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -359.44296,
+            "y": 140.82591,
+            "z": -92.274734
+          },
+          "screenPosition": {
+            "x": 0.1989689,
+            "y": 1.4242764
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -361.07486,
+            "y": 140.3032,
+            "z": -91.95948
+          },
+          "screenPosition": {
+            "x": 0.19642188,
+            "y": 1.4491508
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -361.88742,
+            "y": 138.97473,
+            "z": -92.595146
+          },
+          "screenPosition": {
+            "x": 0.22229898,
+            "y": 1.4697005
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -362.1053,
+            "y": 137.66797,
+            "z": -93.45302
+          },
+          "screenPosition": {
+            "x": 0.25367022,
+            "y": 1.4822
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -361.9855,
+            "y": 136.30821,
+            "z": -94.51378
+          },
+          "screenPosition": {
+            "x": 0.2894553,
+            "y": 1.4909822
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -361.4427,
+            "y": 135.28398,
+            "z": -95.59795
+          },
+          "screenPosition": {
+            "x": 0.32196084,
+            "y": 1.4918191
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -360.21408,
+            "y": 134.70078,
+            "z": -96.517876
+          },
+          "screenPosition": {
+            "x": 0.34901053,
+            "y": 1.4800972
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -358.80154,
+            "y": 134.52452,
+            "z": -97.2873
+          },
+          "screenPosition": {
+            "x": 0.36772752,
+            "y": 1.463259
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -358.19232,
+            "y": 135.56516,
+            "z": -96.78218
+          },
+          "screenPosition": {
+            "x": 0.34708366,
+            "y": 1.4475982
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -358.65683,
+            "y": 136.64114,
+            "z": -95.76609
+          },
+          "screenPosition": {
+            "x": 0.31413087,
+            "y": 1.4457849
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -359.3338,
+            "y": 137.70047,
+            "z": -94.7205
+          },
+          "screenPosition": {
+            "x": 0.28094998,
+            "y": 1.4464382
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.9149,
+            "y": 183.23232,
+            "z": -62.48626
+          },
+          "screenPosition": {
+            "x": -0.7657782,
+            "y": 0.9251106
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.9149,
+            "y": 183.23232,
+            "z": -62.48626
+          },
+          "screenPosition": {
+            "x": -0.7657782,
+            "y": 0.9251106
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.9149,
+            "y": 183.23232,
+            "z": -62.48626
+          },
+          "screenPosition": {
+            "x": -0.7657782,
+            "y": 0.9251106
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.9149,
+            "y": 183.23232,
+            "z": -62.48626
+          },
+          "screenPosition": {
+            "x": -0.7657782,
+            "y": 0.9251106
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.9149,
+            "y": 183.23232,
+            "z": -62.48626
+          },
+          "screenPosition": {
+            "x": -0.7657782,
+            "y": 0.9251106
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.9149,
+            "y": 183.23232,
+            "z": -62.48626
+          },
+          "screenPosition": {
+            "x": -0.7657782,
+            "y": 0.9251106
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.9149,
+            "y": 183.23232,
+            "z": -62.48626
+          },
+          "screenPosition": {
+            "x": -0.7657782,
+            "y": 0.9251106
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.9149,
+            "y": 183.23232,
+            "z": -62.48626
+          },
+          "screenPosition": {
+            "x": -0.7657782,
+            "y": 0.9251106
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.9149,
+            "y": 183.23232,
+            "z": -62.48626
+          },
+          "screenPosition": {
+            "x": -0.7657782,
+            "y": 0.9251106
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.9149,
+            "y": 183.23232,
+            "z": -62.48626
+          },
+          "screenPosition": {
+            "x": -0.7657782,
+            "y": 0.9251106
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.9149,
+            "y": 183.23232,
+            "z": -62.48626
+          },
+          "screenPosition": {
+            "x": -0.7657782,
+            "y": 0.9251106
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.9149,
+            "y": 183.23232,
+            "z": -62.48626
+          },
+          "screenPosition": {
+            "x": -0.7657782,
+            "y": 0.9251106
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.9149,
+            "y": 183.23232,
+            "z": -62.48626
+          },
+          "screenPosition": {
+            "x": -0.7657782,
+            "y": 0.9251106
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.9149,
+            "y": 183.23232,
+            "z": -62.48626
+          },
+          "screenPosition": {
+            "x": -0.7657782,
+            "y": 0.9251106
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.9149,
+            "y": 183.23232,
+            "z": -62.48626
+          },
+          "screenPosition": {
+            "x": -0.7657782,
+            "y": 0.9251106
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.9149,
+            "y": 183.23232,
+            "z": -62.48626
+          },
+          "screenPosition": {
+            "x": -0.7657782,
+            "y": 0.9251106
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.9149,
+            "y": 183.23232,
+            "z": -62.48626
+          },
+          "screenPosition": {
+            "x": -0.7657782,
+            "y": 0.9251106
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.9149,
+            "y": 183.23232,
+            "z": -62.48626
+          },
+          "screenPosition": {
+            "x": -0.7657782,
+            "y": 0.9251106
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.9149,
+            "y": 183.23232,
+            "z": -62.48626
+          },
+          "screenPosition": {
+            "x": -0.7657782,
+            "y": 0.9251106
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.9149,
+            "y": 183.23232,
+            "z": -62.48626
+          },
+          "screenPosition": {
+            "x": -0.7657782,
+            "y": 0.9251106
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.9149,
+            "y": 183.23232,
+            "z": -62.48626
+          },
+          "screenPosition": {
+            "x": -0.7657782,
+            "y": 0.9251106
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.9149,
+            "y": 183.23232,
+            "z": -62.48626
+          },
+          "screenPosition": {
+            "x": -0.7657782,
+            "y": 0.9251106
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.9149,
+            "y": 183.23232,
+            "z": -62.48626
+          },
+          "screenPosition": {
+            "x": -0.7657782,
+            "y": 0.9251106
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.9149,
+            "y": 183.23232,
+            "z": -62.48626
+          },
+          "screenPosition": {
+            "x": -0.7657782,
+            "y": 0.9251106
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.9149,
+            "y": 183.23232,
+            "z": -62.48626
+          },
+          "screenPosition": {
+            "x": -0.7657782,
+            "y": 0.9251106
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.9149,
+            "y": 183.23232,
+            "z": -62.48626
+          },
+          "screenPosition": {
+            "x": -0.7657782,
+            "y": 0.9251106
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.9149,
+            "y": 183.23232,
+            "z": -62.48626
+          },
+          "screenPosition": {
+            "x": -0.7657782,
+            "y": 0.9251106
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.9149,
+            "y": 183.23232,
+            "z": -62.48626
+          },
+          "screenPosition": {
+            "x": -0.7657782,
+            "y": 0.9251106
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.9149,
+            "y": 183.23232,
+            "z": -62.48626
+          },
+          "screenPosition": {
+            "x": -0.7657782,
+            "y": 0.9251106
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        },
+        {
+          "modelPosition": {
+            "x": -345.9149,
+            "y": 183.23232,
+            "z": -62.48626
+          },
+          "screenPosition": {
+            "x": -0.7657782,
+            "y": 0.9251106
+          },
+          "metadata": {
+            "type": "TwoLogN"
+          }
+        }
+      ],
+      "deltaImage": "20250820-010859/brain-C78474-0.webp"
+    }
+  ],
+  "cameraPosition": {
+    "position": {
+      "x": -385.00778,
+      "y": 173.48436,
+      "z": -141.46008
+    },
+    "target": {
+      "x": -363.61447,
+      "y": 137.9443,
+      "z": -94.04456
+    },
+    "zRotation": 0.8028514559173932
+  },
+  "baseImage": "20250820-010859/base.webp",
+  "metadata": {
+    "type": "TwoLogN",
+    "sliceCount": 10,
+    "sliceImageNames": [
+      [
+        "20250820-010859/mask-0A.webp",
+        "20250820-010859/mask-0B.webp"
+      ],
+      [
+        "20250820-010859/mask-1A.webp",
+        "20250820-010859/mask-1B.webp"
+      ],
+      [
+        "20250820-010859/mask-2A.webp",
+        "20250820-010859/mask-2B.webp"
+      ],
+      [
+        "20250820-010859/mask-3A.webp",
+        "20250820-010859/mask-3B.webp"
+      ],
+      [
+        "20250820-010859/mask-4A.webp",
+        "20250820-010859/mask-4B.webp"
+      ],
+      [
+        "20250820-010859/mask-5A.webp",
+        "20250820-010859/mask-5B.webp"
+      ],
+      [
+        "20250820-010859/mask-6A.webp",
+        "20250820-010859/mask-6B.webp"
+      ],
+      [
+        "20250820-010859/mask-7A.webp",
+        "20250820-010859/mask-7B.webp"
+      ],
+      [
+        "20250820-010859/mask-8A.webp",
+        "20250820-010859/mask-8B.webp"
+      ],
+      [
+        "20250820-010859/mask-9A.webp",
+        "20250820-010859/mask-9B.webp"
+      ]
+    ]
+  },
+  "version": 1,
+  "savedAt": "2025-08-20T08:10:18.806Z"
+}
