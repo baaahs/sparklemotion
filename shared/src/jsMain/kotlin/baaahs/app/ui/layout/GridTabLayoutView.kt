@@ -280,7 +280,8 @@ class AddMenuContext(
                     gridLayoutEditor,
                     column, row,
                     width, height,
-                    addControlMenuItem.createControlFn
+                    addControlMenuItem.createControlFn,
+                    parentNodeId,
                 )
                 appContext.openEditor(editIntent)
                 closeAddMenu()

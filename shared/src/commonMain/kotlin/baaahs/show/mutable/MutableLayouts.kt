@@ -327,6 +327,9 @@ interface MutableIGridLayout : MutableILayout {
     fun find(title: String): MutableGridItem = items.find { it.control.title == title }
         ?: error("No control with title \"$title\" among [${items.joinToString(", ") { it.control.title }}]")
 
+    fun findById(id: String): MutableGridItem = items.find { it.control.asBuiltId == id }
+        ?: error("No control with id \"$id\" among [${items.joinToString(", ") { it.control.asBuiltId.orEmpty() }}]")
+
     fun find(control: MutableControl): MutableGridItem = items.find { it.control == control }
         ?: error("No control \"${control.title}\" among [${items.joinToString(", ") { it.control.title }}]")
 

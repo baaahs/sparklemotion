@@ -126,7 +126,8 @@ class AddControlToGrid<MC : MutableControl>(
     private val row: Int,
     private val width: Int,
     private val height: Int,
-    private val createControlFn: (mutableShow: MutableShow) -> MC
+    private val createControlFn: (mutableShow: MutableShow) -> MC,
+    private val parentNodeId: String,
 ) : AddToContainerEditIntent<MC>() {
     override fun getEditorPanels(
         editableManager: EditableManager<*>,
@@ -141,8 +142,9 @@ class AddControlToGrid<MC : MutableControl>(
 
     override fun addToContainer(mutableShow: MutableShow, mutableControl: MC) {
         editor.edit(mutableShow) {
+            val parent = findById(parentNodeId)
             val layout = if (mutableControl.hasInternalLayout) createSubLayout() else null
-            items.add(MutableGridItem(mutableControl, column, row, width, height, layout))
+            parent.layout?.items?.add(MutableGridItem(mutableControl, column, row, width, height, layout))
         }
     }
 }
