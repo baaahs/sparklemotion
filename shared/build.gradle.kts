@@ -98,7 +98,9 @@ kotlin {
                 implementation(libs.beatLink)
 
                 // DMX
-                implementation(libs.ftd2xx)
+//                implementation(libs.ftd2xx)
+                implementation(files("src/jvmMain/lib/ftd2xxj-2.1.jar"))
+                implementation(files("src/jvmMain/lib/javax.util.property-2_0.jar")) // required by ftd2xxj
 
                 // Java 3D maths
                 implementation(libs.joml)
