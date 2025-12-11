@@ -2,9 +2,8 @@ package baaahs.mapper
 
 import baaahs.MediaDevices
 import baaahs.app.ui.editor.betterSelect
-import baaahs.app.ui.editor.textFieldEditor
+import baaahs.app.ui.editor.numberFieldEditor
 import baaahs.device.PixelFormat
-import baaahs.mapper.twologn.twoLogNSlices
 import baaahs.model.Model
 import baaahs.ui.*
 import baaahs.ui.components.palette
@@ -25,7 +24,6 @@ import styled.inlineStyles
 import web.html.HTMLCanvasElement
 import web.html.HTMLElement
 import web.html.HTMLImageElement
-import web.html.InputType
 import web.uievents.KeyboardEvent
 
 val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView") { props ->
@@ -54,7 +52,10 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
     val shiftDown = ref(false)
 
     val mappingSessionDraggableRef = ref<HTMLElement>()
-    val mappingSessionDraggable2logNRef = ref<HTMLElement>()
+
+    var findingLastPixel by state { false }
+    val handleFindLastPixel by mouseEventHandler { findingLastPixel = true }
+    val handleFindLastPixelCancel by handler { findingLastPixel = false }
 
     // init:
     onMount {
@@ -81,17 +82,19 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
     ui.setSizes()
 
     val handleChangeEntity by handler(ui.mappingController) { entity: Model.Entity? ->
-        ui.mappingController?.guessedEntity = entity
+        ui.setEntity(entity)
         forceRender()
     }
 
-    val handlePixelCountChange by handler(ui.mappingController) { pixelCount: String ->
-        ui.mappingController?.expectedPixelCount = pixelCount.toIntOrNull()
+    val handlePixelCountChange by handler(ui.mappingController) { pixelCount: Int? ->
+        ui.mappingController?.expectedPixelCount = pixelCount
+        findingLastPixel = false
         forceRender()
     }
 
     val handlePixelFormatChange by handler(ui.mappingController) { pixelFormat: PixelFormat? ->
         ui.mappingController?.pixelFormat = pixelFormat
+        ui.mappingController?.shadeSolidColor()
         forceRender()
     }
 
@@ -190,13 +193,26 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
                             gridTemplateColumns = GridTemplateColumns(50.pct, 50.pct)
                         }
 
-                        textFieldEditor {
-                            attrs.type = InputType.number
-                            attrs.label = "Pixel Count"
-                            attrs.fullWidth = false
-                            attrs.getValue = { mappingController.expectedPixelCount?.toString() ?: "" }
-                            attrs.setValue = handlePixelCountChange
-                            attrs.onChange = {}
+                        if (!findingLastPixel) {
+                            numberFieldEditor<Int?> {
+                                attrs.label = "Pixel Count"
+                                attrs.isInteger = true
+                                attrs.isNullable = true
+                                attrs.getValue = { mappingController.expectedPixelCount }
+                                attrs.setValue = handlePixelCountChange
+                            }
+
+                            Button {
+                                attrs.onClick = handleFindLastPixel
+                                +"Find Last Pixel"
+                            }
+                        } else {
+                            findLastPixel {
+                                attrs.maxPossiblePixel = 2048
+                                attrs.onFoundPixel = handlePixelCountChange
+                                attrs.onCancel = handleFindLastPixelCancel
+                                attrs.mapper = ui
+                            }
                         }
 
                         betterSelect<PixelFormat?> {
@@ -212,26 +228,28 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
                 if (!ui.mappingEnabled) {
                     betterSelect<String?> {
                         attrs.label = "Load Session:"
-                        attrs.values = listOf(null) + ui.sessions.map { it }
+                        attrs.values = listOf(null) + ui.sessions.map { it }.sorted()
                         attrs.renderValueOption = { name, _ -> buildElement { +(name ?: "None" ) } }
                         attrs.value = ui.selectedMappingSessionName
                         attrs.onChange = handleLoadMappingSession
                     }
                 }
 
-                ui.selectedMappingSession?.let { session ->
-                    mappingSession {
-                        attrs.name = ui.selectedMappingSessionName ?: "unknown session!?"
-                        attrs.session = session
-                        attrs.mapper = ui
-                    }
+                if (!ui.mappingEnabled) {
+                    ui.selectedMappingSession?.let { session ->
+                        mappingSession {
+                            attrs.name = ui.selectedMappingSessionName ?: "unknown session!?"
+                            attrs.session = session
+                            attrs.mapper = ui
+                        }
 
-                    betterSelect<String?> {
-                        attrs.label = "Load Image:"
-                        attrs.values = listOf(null) + ui.images.map { it }
-                        attrs.renderValueOption = { name, _ -> buildElement { +(name ?: "None" ) } }
-                        attrs.value = ui.selectedImageName
-                        attrs.onChange = handleLoadImage
+                        betterSelect<String?> {
+                            attrs.label = "Load Image:"
+                            attrs.values = listOf(null) + ui.images.map { it }
+                            attrs.renderValueOption = { name, _ -> buildElement { +(name ?: "None") } }
+                            attrs.value = ui.selectedImageName
+                            attrs.onChange = handleLoadImage
+                        }
                     }
                 }
             }
@@ -274,28 +292,6 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
             ref = perfStatsRef
         }
 
-        ui.selectedMappingSession?.let { session ->
-            val metadata = session.metadata
-            if (metadata is TwoLogNMappingStrategy.TwoLogNSessionMetadata) {
-                Draggable {
-                    attrs.nodeRef = mappingSessionDraggable2logNRef
-                    val styleForDragHandle = "MappingSessionDragHandleTwoN"
-                    attrs.handle = ".$styleForDragHandle"
-
-                    div(+styles.twoLogNMasksPalette) {
-                        ref = mappingSessionDraggable2logNRef
-                        div(+baaahs.app.ui.Styles.dragHandle and styleForDragHandle) {
-                            icon(DragIndicator)
-                        }
-
-                        twoLogNSlices {
-                            attrs.mapper = ui
-                            attrs.sessionMetadata = metadata
-                        }
-                    }
-                }
-            }
-        }
 
         Draggable {
             attrs.nodeRef = mappingSessionDraggableRef

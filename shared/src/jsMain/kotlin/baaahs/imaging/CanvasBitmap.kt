@@ -118,6 +118,11 @@ open class CanvasBitmap(internal val canvas: HTMLCanvasElement) : Bitmap {
         return CanvasBitmap(newCanvas)
     }
 
+    fun withContext(callback: CanvasRenderingContext2D.() -> Unit) {
+        ctx.resetTransform()
+        ctx.callback()
+    }
+
     private fun assertSameSizeAs(other: Bitmap) {
         if (width != other.width || height != other.height) {
             throw IllegalArgumentException(

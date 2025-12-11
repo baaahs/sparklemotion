@@ -1,7 +1,7 @@
 package baaahs.mapper.twologn
 
 import baaahs.mapper.JsMapper
-import baaahs.mapper.TwoLogNMappingStrategy
+import baaahs.mapper.LoadingSlices
 import baaahs.mapper.mapperAppContext
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
@@ -13,27 +13,26 @@ import react.dom.*
 private val TwoLogNSlicesView = xComponent<TwoLogNSlicesProps>("TwoLogNSlices") { props ->
     val appContext = useContext(mapperAppContext)
     val styles = appContext.allStyles.mapper
-    val metadata = props.sessionMetadata
-    var showExclusives by state { false }
+    var showWithoutOverlap by state { false }
 
     div(+styles.twoLogNMasks) {
         table {
             thead {
                 tr {
                     th { +"Slice" }
-                    th { +"Frame 0" }
-                    th { +"Frame 1" }
+                    th { +"First Half" }
+                    th { +"Second Half" }
                     th { +"Overlap" }
                 }
             }
 
             tbody {
-                metadata.sliceImageNames?.forEachIndexed { sliceIndex, frames ->
+                props.loadingSlices.loadingSlices.forEachIndexed { sliceIndex, loadingSlice ->
                     twoLogNSlice {
                         attrs.sliceIndex = sliceIndex
-                        attrs.imageNames = frames ?: emptyList()
+                        attrs.loadingSlice = loadingSlice
                         attrs.mapper = props.mapper
-                        attrs.showExclusives = showExclusives
+                        attrs.showWithoutOverlap = showWithoutOverlap
                     }
                 }
             }
@@ -43,16 +42,16 @@ private val TwoLogNSlicesView = xComponent<TwoLogNSlicesProps>("TwoLogNSlices") 
     FormControlLabel {
         attrs.control = buildElement {
             Switch {
-                attrs.checked = showExclusives
-                attrs.onChange = { _, checked ->  showExclusives = checked }
+                attrs.checked = showWithoutOverlap
+                attrs.onChange = { _, checked ->  showWithoutOverlap = checked }
             }
         }
-        attrs.label = buildElement { +"Exclude Overlap" }
+        attrs.label = buildElement { +"Show Without Overlap" }
     }
 }
 
 external interface TwoLogNSlicesProps : Props {
-    var sessionMetadata: TwoLogNMappingStrategy.TwoLogNSessionMetadata
+    var loadingSlices: LoadingSlices
     var mapper: JsMapper
 }
 

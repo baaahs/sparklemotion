@@ -1,6 +1,5 @@
 package baaahs.mapper
 
-import baaahs.Color
 import baaahs.MediaDevices
 import baaahs.SparkleMotion
 import baaahs.geom.Vector2F
@@ -94,8 +93,7 @@ abstract class Mapper(
 
             ui.showMessage("${brainsToMap.size} SURFACES DISCOVERED!")
 
-            // Less voltage causes less LED glitches.
-            mappableBrain.shade { MapperUtil.solidColor(Color.GREEN.withBrightness(.4f)) }
+            mappableBrain.shadeSolidColor()
         }
         mapperBackend = MapperBackend(plugins, clock, link, pinkyAddress, udpSockets)
 
@@ -272,13 +270,13 @@ abstract class Mapper(
                     // the next line causes the UI to wait after each panel has been identified...
                     pauseForUserInteraction()
 
-                    var retryCount = 0
-                    ui.setRedo {
-                        identifyBrain(index, brainToMap, ++retryCount)
-                    }
-
+//                    var retryCount = 0
+//                    ui.setRedo {
+//                        identifyBrain(index, brainToMap, ++retryCount)
+//                    }
+//
                     waitUntilUnpaused()
-                    ui.setRedo(null)
+//                    ui.setRedo(null)
 
                     udpSockets.deliverer.send(brainToMap, MapperUtil.solidColorBuffer(MapperUtil.inactiveColor))
                     udpSockets.deliverer.await()

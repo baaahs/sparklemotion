@@ -27,7 +27,10 @@ import baaahs.visualizer.geometry.SurfaceGeometry
 import baaahs.visualizer.toVector3
 import js.objects.jso
 import kotlinx.coroutines.*
+import kotlinx.datetime.Instant
 import mui.icons.material.KeyboardArrowRight
+import org.khronos.webgl.Float32Array
+import org.khronos.webgl.set
 import react.RBuilder
 import react.dom.br
 import three.*
@@ -50,10 +53,8 @@ import web.images.ImageBitmap
 import web.prompts.prompt
 import web.uievents.KeyboardEvent
 import web.uievents.MouseEvent
-import kotlin.collections.component1
-import kotlin.collections.component2
-import kotlin.collections.set
 import kotlin.math.*
+import kotlin.time.Duration.Companion.seconds
 import three.Clock as ThreeJsClock
 
 class MemoizedJsMapper(mapperUi: JsMapper) {
@@ -184,7 +185,7 @@ class JsMapper(
 
     var redoFn: (() -> Unit)? by notifyOnChange(null)
 
-    private var selectedEntityAndPixel: Pair<PanelInfo, Int?>? = null
+    private var selectedEntityAndPixel: Pair<PanelInfo?, Int?>? = null
     private val cameraPositions = mutableMapOf<String, CameraPosition>()
 
     private var points: Points<*,*>? = null
@@ -195,6 +196,8 @@ class JsMapper(
         get() = selectedEntityAndPixel?.second
 
     private var dragging = false
+
+    private var suppressPinkyUntil: Instant? = null
 
     fun onMount(
         ui2dCanvas: HTMLCanvasElement,
@@ -240,6 +243,12 @@ class JsMapper(
         ui3dCanvas.removeEventListener(MouseEvent.MOUSE_UP, ::mouseUp)
 
         onClose()
+    }
+
+    fun setEntity(entity: Model.Entity?) {
+        mappingController?.guessedEntity = entity
+        val visibleSurface = ui.getVisibleSurfaces().first { it.entity == entity }
+        mappingController?.guessedVisibleSurface = visibleSurface
     }
 
     private fun Event.getMouse(): Vector2 {
@@ -573,15 +582,15 @@ class JsMapper(
             depthTest = false
         }
         val points = Points(pixelsGeom, pixelsMaterial)
-        private var maxPixel = initialPixelCount
+        private var pixelCount = initialPixelCount
         internal val pixelDatas = mutableMapOf<Int, PixelData?>()
-        private var positions = FloatArray(maxPixel * 3) { 0f }
-        private var colors = FloatArray(maxPixel * 3) { 0f }
-        private var positionsAttr = Float32BufferAttribute(positions, 3).also {
+        private var positions = Float32Array(pixelCount * 3)
+        private var colors = Float32Array(pixelCount * 3)
+        private var positionsAttr = BufferAttribute(positions, 3).also {
             it.usage = DynamicDrawUsage
             pixelsGeom.setAttribute("position", it)
         }
-        private var colorsAttr = Float32BufferAttribute(colors, 3).also {
+        private var colorsAttr = BufferAttribute(colors, 3).also {
             it.usage = DynamicDrawUsage
             pixelsGeom.setAttribute("color", it)
         }
@@ -600,7 +609,7 @@ class JsMapper(
         }
 
         fun updatePixel(index: Int, pixelData: PixelData?) {
-            if (index > maxPixel) {
+            if (index >= pixelCount) {
                 // Round up to the nearest power of two.
                 val newMax = ceil(log2(index.toDouble())).pow(2).toInt()
                 resize(newMax)
@@ -632,19 +641,21 @@ class JsMapper(
         }
 
         private fun resize(size: Int) {
-            positions = positions.resize(size * 3) { 0f }
-            positionsAttr = Float32BufferAttribute(positions, positionsAttr.itemSize).also {
+            if (size == pixelCount) return
+
+            positions = Float32Array(size * 3).also { it.set(positions.subarray(0, size * 3)) }
+            positionsAttr = BufferAttribute(positions, positionsAttr.itemSize).also {
                 it.usage = DynamicDrawUsage
                 pixelsGeom.setAttribute("position", it)
             }
 
-            colors = colors.resize(size * 3) { 0f }
-            colorsAttr = Float32BufferAttribute(colors, colorsAttr.itemSize).also {
+            colors = Float32Array(size * 3).also { it.set(colors.subarray(0, size * 3)) }
+            colorsAttr = BufferAttribute(colors, colorsAttr.itemSize).also {
                 it.usage = DynamicDrawUsage
                 pixelsGeom.setAttribute("color", it)
             }
 
-            maxPixel = size
+            pixelCount = size
         }
     }
 
@@ -1199,8 +1210,8 @@ class JsMapper(
 
     private fun deselectEntityPixel() {
         selectedEntityAndPixel?.let { (entity, pixelIndex) ->
-            entity.deselect()
-            if (pixelIndex != null) entity.deselectPixel(pixelIndex)
+            entity?.deselect()
+            if (pixelIndex != null) entity?.deselectPixel(pixelIndex)
             hideImage()
         }
     }
@@ -1211,28 +1222,45 @@ class JsMapper(
     ) {
         deselectEntityPixel()
 
-        if (panelInfo == null) return
-        panelInfo.select()
-        if (index != null) {
-            panelInfo.selectPixel(index)
+        panelInfo?.select()
 
-            val pixelData = panelInfo.getPixelData(index)
-            pixelData?.metadata?.let { pixelMetadata ->
-                when (pixelMetadata) {
-                    is OneAtATimeMappingStrategy.OneAtATimePixelMetadata -> {
-                        pixelMetadata.deltaImage?.let { loadImage(it, true) }
+        if (index != null) {
+            if (panelInfo != null) {
+                panelInfo.selectPixel(index)
+
+                val pixelData = panelInfo.getPixelData(index)
+                pixelData?.metadata?.let { pixelMetadata ->
+                    when (pixelMetadata) {
+                        is OneAtATimeMappingStrategy.OneAtATimePixelMetadata -> {
+                            pixelMetadata.deltaImage?.let { loadImage(it, true) }
+                        }
+                        is TwoLogNMappingStrategy.TwoLogNPixelMetadata -> {
+                            (pixelMetadata.singleImage ?: pixelMetadata.calculatedImage)?.let { loadImage(it, true) }
+                        }
+                        else -> error("Unknown pixel metadata $pixelMetadata.")
                     }
-                    is TwoLogNMappingStrategy.TwoLogNPixelMetadata -> {
-                        (pixelMetadata.singleImage ?: pixelMetadata.calculatedImage)?.let { loadImage(it, true) }
-                    }
-                    else -> error("Unknown pixel metadata $pixelMetadata.")
                 }
             }
+
             udpSockets.pixelOnByBroadcast(index)
         } else {
             udpSockets.allDark()
         }
 
+        udpSockets.adviseMapperStatus(true)
+        if (suppressPinkyUntil != null) {
+            suppressPinkyUntil = kotlinx.datetime.Clock.System.now() + 10.seconds
+        } else {
+            suppressPinkyUntil = kotlinx.datetime.Clock.System.now() + 10.seconds
+            globalLaunch {
+                val until = suppressPinkyUntil
+                while (until != null && until > kotlinx.datetime.Clock.System.now()) {
+                    delay(1000L)
+                }
+                suppressPinkyUntil = null
+                udpSockets.adviseMapperStatus(false)
+            }
+        }
         selectedEntityAndPixel = panelInfo to index
 
         notifyChanged()

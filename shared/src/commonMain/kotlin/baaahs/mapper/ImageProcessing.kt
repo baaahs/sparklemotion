@@ -150,7 +150,7 @@ class ImageProcessing {
             val minY = yMax.indexOfFirst { colMaxValue -> colMaxValue >= thresholdValue }
             val maxX = xMax.indexOfLast { rowMaxValue -> rowMaxValue >= thresholdValue }
             val maxY = yMax.indexOfLast { colMaxValue -> colMaxValue >= thresholdValue }
-            return MediaDevices.Region(minX, minY, maxX, maxY, sourceDimen)
+            return MediaDevices.Region(minX, minY, maxX + 1, maxY + 1, sourceDimen)
         }
 
         private fun ShortArray.copyOfRange(intRange: IntRange): ShortArray {

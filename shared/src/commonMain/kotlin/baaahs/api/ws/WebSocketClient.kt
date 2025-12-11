@@ -80,7 +80,7 @@ class WebSocketClient(
             "loadSession",
             json.encodeToJsonElement(String.serializer(), name)
         )
-        return mappingSessionStore.decode(response, name)
+        return json.decodeFromJsonElement(MappingSession.serializer(), response)
     }
 
     private suspend fun sendCommand(command: String, vararg args: JsonElement): JsonElement {
