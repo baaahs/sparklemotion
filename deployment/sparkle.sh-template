@@ -1,0 +1,6 @@
+#!/bin/bash
+
+export BASE_PATH=/Users/{XYZ}
+export JAVA_HOME=${BASE_PATH}/jdk-20.0.2.jdk/Contents/Home
+cd ${BASE_PATH}/sparklemotion
+${BASE_PATH}/sparklemotion/gradlew --continuous jsRun --debug > ${BASE_PATH}/logs/stdout.log 2> ${BASE_PATH}/logs/stderr.log
