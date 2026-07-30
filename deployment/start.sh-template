@@ -1,0 +1,3 @@
+#!/bin/bash
+
+open -a /System/Applications/Utilities/Terminal.app --args /Users/{XYZ}/sparkle.sh
